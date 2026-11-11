@@ -56,3 +56,15 @@ See `control-migration.md` for test scope and operator checks. OCR and graphics/
 - CSS activation is staged and latest-intent wins. It is not a global source-acknowledgement protocol. Disconnected sources reconcile on reconnect/periodic read; failed styles retain the previous loaded appearance. The operator UI reports saved selection, not verified on-air state.
 
 Coverage and recovery instructions: `roster-themes.md`. All other output types and legacy `/api/theme` remain outside this roster contract.
+
+## Implemented: shared draft display and expanded theme coverage (phase 4)
+
+The display-only format/model in `draft-model.js` mirrors existing controller array order. Normal has 18 display phases, 6-ban has 14, each ending with Adjustment. Explicit output format is `normal` or `six`; it is never inferred from current picks or theme ID. The renderer does not write match/draft state or advance the competition.
+
+Typed `draftdata_update` carries a full draft snapshot. Generic `update.data.draftdata` is a clock tick with valid integer seconds 0–600 and boolean timer_running. The server copies only those clock fields into its current draft cache; phase/hero fields in a tick are ignored. This adds no draft-file write and does not promise clock durability through server restart. Full draft persistence, concurrency and authority remain the existing controller/API contract.
+
+Theme catalog coverage expands to `roster` and `draft`; draft styles use the same preset IDs/selection. `/api/broadcast-themes` and GET/PUT `/api/broadcast-theme` alias the existing roster routes/store and retain the same If-Match requirements. The legacy event topic remains `roster_theme_update`. Client readiness now also emits `broadcast-theme-ready/error` with id, output and optional format; roster-only readiness aliases remain. Operator preview validates output/format before enabling activation.
+
+`/draft-display.html` follows the shared selection; `format=six` chooses the 6-ban display and `theme=<id>` pins a preview. Primary legacy draft URLs retain original geometry and share the renderer. New output canvas is 1920×1080 with a transparent bottom strip. Other graphic types remain outside this selection contract.
+
+Current product constraint: no authored decorative game/league branding, slogans, watermarks or placeholder titles on broadcast scenes. Functional state and actual operator data remain. Automatic roster defaults/edge text were removed. See `draft-display.md` for behavior, audio options and remaining limits.

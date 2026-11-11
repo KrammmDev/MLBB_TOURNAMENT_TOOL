@@ -17,6 +17,7 @@ const { createMatchStore } = require("./lib/match-store");
 const { installMatchRoutes } = require("./lib/match-routes");
 const { loadRosterThemeStore, installRosterThemeRoutes } = require("./lib/roster-theme-store");
 const { validateMatch } = require("./public/script/match-state");
+const { mirrorDraftTimer } = require("./lib/draft-timer");
 
 const app = express();
 const server = http.createServer(app);
@@ -546,6 +547,7 @@ wss.on("connection", (ws) => {
       let msg = JSON.parse(message);
 
       if (msg.type === "update" && msg.data && typeof msg.data === "object") {
+        cache.matchdraft = mirrorDraftTimer(cache.matchdraft, msg.data.draftdata);
         // I-save sa server ang laman para maipadala sa mga susunod na client
         for (const [k, v] of Object.entries(msg.data)) {
           if (v === null) delete sharedState[k];

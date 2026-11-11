@@ -1,0 +1,15 @@
+/* Arena: high-contrast cool panels with a fine gold edge. */
+:root {
+  --draft-bg: #101722f5;
+  --draft-panel: #243044;
+  --draft-line: #84734e;
+  --draft-blue: #84bdfb;
+  --draft-red: #f4a7ad;
+  --draft-muted: #d1c5a9;
+}
+.draft-header {
+  border-bottom: 2px solid #ae9764;
+}
+.draft-center {
+  border-top: 3px solid #ae9764;
+}

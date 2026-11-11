@@ -4,6 +4,18 @@
     frame = document.getElementById("theme-preview");
   const activate = document.getElementById("activate-theme"),
     previous = document.getElementById("previous-theme");
+  const outputSelect = document.getElementById("preview-output");
+  const output = () =>
+    outputSelect.value.startsWith("draft") ? "draft" : "roster";
+  const format = () => (outputSelect.value === "draft-six" ? "six" : "normal");
+  function outputURL() {
+    return output() === "roster"
+      ? "/broadcast-overlay.html"
+      : "/draft-display.html?format=" + format();
+  }
+  function updateURL() {
+    document.getElementById("output-url").value = location.origin + outputURL();
+  }
   const reloadButton = document.getElementById("reload-settings");
   let snapshot = null,
     selected = null,
@@ -26,6 +38,7 @@
       selected === snapshot.data.themeId;
     previous.disabled = saving || !snapshot?.data.previousThemeId;
     reloadButton.disabled = saving;
+    outputSelect.disabled = saving;
   }
   function choose(id) {
     if (saving) return;
@@ -35,9 +48,49 @@
     document.getElementById("preview-label").textContent = theme(id).label;
     for (const card of document.querySelectorAll(".theme-card"))
       card.setAttribute("aria-pressed", String(card.dataset.themeId === id));
+    if (output() === "draft") {
+      const details = {
+        classic: "Warm accents · shared draft layout",
+        arena: "Cool panels · fine gold edges",
+        studio: "Slate panels · restrained team accents",
+      };
+      const colors = {
+        classic: ["#1b0b08", "#ff941f", "#ff4949"],
+        arena: ["#101722", "#84bdfb", "#ae9764"],
+        studio: ["#111925", "#5ed7ef", "#ff8c89"],
+      };
+      for (const card of document.querySelectorAll(".theme-card")) {
+        card.querySelector("p").textContent = details[card.dataset.themeId];
+        [...card.querySelectorAll(".swatches i")].forEach(
+          (chip, index) =>
+            (chip.style.background = colors[card.dataset.themeId][index]),
+        );
+      }
+    } else {
+      const details = {
+        classic: "Asymmetric layout · warm orange accents",
+        arena: "Three-column layout · grand-final framing",
+        studio: "Clean slate panels · blue and coral accents",
+      };
+      const colors = {
+        classic: ["#2a0a00", "#ff7200", "#ff0101"],
+        arena: ["#0d0000", "#ffb380", "#8b0000"],
+        studio: ["#111925", "#5ed7ef", "#ff8c89"],
+      };
+      for (const card of document.querySelectorAll(".theme-card")) {
+        card.querySelector("p").textContent = details[card.dataset.themeId];
+        [...card.querySelectorAll(".swatches i")].forEach(
+          (chip, index) =>
+            (chip.style.background = colors[card.dataset.themeId][index]),
+        );
+      }
+    }
     status("Loading preview…");
     buttons();
-    frame.src = "/broadcast-overlay.html?theme=" + encodeURIComponent(id);
+    const url = new URL(outputURL(), location.origin);
+    url.searchParams.set("theme", id);
+    frame.src = url.href;
+    updateURL();
   }
   for (const preset of catalog.themes) {
     const card = document.createElement("button");
@@ -75,15 +128,17 @@
     if (
       event.origin !== location.origin ||
       event.source !== frame.contentWindow ||
-      event.data?.id !== selected
+      event.data?.id !== selected ||
+      event.data?.output !== output() ||
+      (output() === "draft" && event.data?.format !== format())
     )
       return;
-    if (event.data.type === "roster-theme-ready") {
+    if (event.data.type === "broadcast-theme-ready") {
       previewReady = true;
-      status("Preview ready. Your saved roster selection has not changed.");
+      status("Preview ready. Your saved selection has not changed.");
       buttons();
     }
-    if (event.data.type === "roster-theme-error") {
+    if (event.data.type === "broadcast-theme-error") {
       previewReady = false;
       status(
         "Preview could not load. Your saved selection has not changed.",
@@ -93,7 +148,7 @@
     }
   });
   async function read() {
-    const response = await fetch("/api/roster-theme", { cache: "no-store" });
+    const response = await fetch("/api/broadcast-theme", { cache: "no-store" });
     if (!response.ok) throw Error("Settings unavailable");
     return response.json();
   }
@@ -113,9 +168,9 @@
     if (!previewReady || !snapshot || saving) return;
     saving = true;
     buttons();
-    status("Saving roster selection…");
+    status("Saving broadcast selection…");
     try {
-      const response = await fetch("/api/roster-theme", {
+      const response = await fetch("/api/broadcast-theme", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -131,7 +186,7 @@
       document.getElementById("active-theme").textContent = theme(
         result.data.themeId,
       ).label;
-      status("Roster selection saved.");
+      status("Broadcast selection saved.");
     } catch (error) {
       status(error.message + " Use Reload settings before retrying.", true);
       previewReady = false;
@@ -145,15 +200,19 @@
   };
   reloadButton.onclick = reload;
   const url = document.getElementById("output-url");
-  url.value = location.origin + "/broadcast-overlay.html";
+  updateURL();
+  outputSelect.onchange = () => {
+    updateURL();
+    if (selected) choose(selected);
+  };
   document.getElementById("copy-url").onclick = async () => {
     try {
       await navigator.clipboard.writeText(url.value);
-      status("Roster Browser Source URL copied.");
+      status("Browser Source URL copied.");
     } catch {
       url.focus();
       url.select();
-      status("Select and copy the roster URL from the field.");
+      status("Select and copy the output URL from the field.");
     }
   };
   reload();

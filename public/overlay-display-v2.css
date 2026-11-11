@@ -12,7 +12,7 @@
   --dark: #0d0000;
   --font-display: "Bebas Neue", "Oswald", "Impact", "Arial Narrow", sans-serif;
   --font-body: "Oswald", "Arial Narrow", sans-serif;
-  --edge-text: "WORLD CHAMPIONSHIP";
+  --edge-text: "";
 }
 
 * {
@@ -54,8 +54,7 @@ body {
 /* vertical edge text on both sides of the center column */
 .overlay-stage::before,
 .overlay-stage::after {
-  content: var(--edge-text) "   ·   " var(--edge-text) "   ·   "
-    var(--edge-text);
+  content: "";
   position: absolute;
   top: 0;
   bottom: 0;

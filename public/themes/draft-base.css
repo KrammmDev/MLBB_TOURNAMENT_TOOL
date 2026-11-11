@@ -1,0 +1,343 @@
+:root {
+  --draft-bg: #111925f2;
+  --draft-panel: #1c2939;
+  --draft-line: #40516a;
+  --draft-blue: #5ed7ef;
+  --draft-red: #ff8c89;
+  --draft-text: #eef3f8;
+  --draft-muted: #b0bfd0;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html,
+body {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--draft-text);
+}
+#draft-stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: 0 0;
+  overflow: hidden;
+}
+.draft-strip {
+  position: absolute;
+  left: 32px;
+  right: 32px;
+  bottom: 24px;
+  height: 364px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 224px minmax(0, 1fr);
+  gap: 12px;
+}
+.draft-team {
+  --side: var(--draft-blue);
+  min-width: 0;
+  display: grid;
+  grid-template-rows: 48px 60px minmax(0, 1fr);
+  gap: 8px;
+}
+.draft-team.red-side {
+  --side: var(--draft-red);
+}
+.draft-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding: 5px 14px;
+  background: var(--draft-bg);
+  border: 1px solid var(--draft-line);
+  border-top: 3px solid var(--side);
+  border-radius: 6px;
+}
+.red-side .draft-header {
+  flex-direction: row-reverse;
+}
+.draft-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.draft-team-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 23px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.red-side .draft-team-name {
+  text-align: right;
+}
+.draft-header .score {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.dot {
+  width: 9px;
+  height: 22px;
+  background: var(--draft-line);
+  border-radius: 2px;
+}
+.dot.active {
+  background: var(--side);
+}
+.draft-bans {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.red-side .draft-bans {
+  justify-content: flex-end;
+}
+.banhero {
+  position: relative;
+  width: 66px;
+  height: 58px;
+  overflow: hidden;
+  background: var(--draft-bg);
+  border: 1px solid var(--draft-line);
+  border-radius: 4px;
+}
+.banhero .image-box {
+  position: absolute;
+  inset: 0;
+}
+.banhero img {
+  filter: grayscale(1);
+}
+.banhero .hero-name {
+  display: none;
+}
+.draft-picks {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  min-height: 0;
+}
+.heropick {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--draft-bg);
+  border: 1px solid var(--draft-line);
+  border-radius: 6px;
+}
+.heropick .image-box {
+  position: absolute;
+  inset: 0 0 35px;
+}
+.image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 12%;
+  opacity: 0;
+}
+.image-box.show img {
+  opacity: 1;
+}
+.hero-reveal {
+  animation: hero-reveal 0.42s ease-out;
+}
+@keyframes hero-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(1.06);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.heropick .hero-name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 35px;
+  padding: 25px 8px 7px;
+  background: linear-gradient(transparent, #0a111ce8);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.draft-player {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  background: var(--draft-panel);
+  border-top: 2px solid var(--side);
+}
+.draft-player span {
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lanelogo {
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  z-index: 4;
+  width: 24px;
+  height: 24px;
+}
+.lanelogo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+.box {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  border: 0 solid transparent;
+}
+.box.active-pick {
+  border: 3px solid var(--side);
+  box-shadow: inset 0 0 20px #0006;
+}
+.box.active-ban {
+  border: 3px solid var(--side);
+}
+.picking-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 45%;
+  z-index: 5;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-align: center;
+  text-shadow: 0 1px 4px #000;
+}
+.banhero .picking-label {
+  font-size: 8px;
+  letter-spacing: 0;
+}
+.heropick.has-hero .picking-label {
+  display: none;
+}
+.draft-center {
+  align-self: end;
+  height: 248px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px 14px;
+  background: var(--draft-bg);
+  border: 1px solid var(--draft-line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.draft-phase {
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--draft-muted);
+  min-height: 14px;
+}
+.draft-timer {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+#timer {
+  font-size: 60px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  min-width: 70px;
+  text-align: center;
+}
+.draft-turn {
+  width: 12px;
+  height: 12px;
+  border: solid var(--draft-muted);
+  border-width: 3px 3px 0 0;
+  opacity: 0.15;
+}
+.draft-turn.left {
+  transform: rotate(-135deg);
+}
+.draft-turn.right {
+  transform: rotate(45deg);
+}
+.draft-turn.on {
+  opacity: 1;
+  border-color: var(--draft-blue);
+}
+.draft-turn.right.on {
+  border-color: var(--draft-red);
+}
+.draft-timer.warning #timer {
+  color: var(--draft-red);
+}
+.draft-clock-track {
+  width: 100%;
+  height: 4px;
+  background: var(--draft-line);
+  overflow: hidden;
+  border-radius: 2px;
+}
+#timer-bar {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--draft-blue), var(--draft-red));
+  transform-origin: left;
+  transition: transform 0.2s linear;
+}
+#match-display {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.6;
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  color: var(--draft-muted);
+  max-height: 62px;
+}
+.draft-coach {
+  font-size: 11px;
+  color: var(--draft-muted);
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-reveal {
+    animation: none;
+  }
+  #timer-bar {
+    transition: none;
+  }
+}

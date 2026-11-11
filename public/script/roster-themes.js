@@ -1,4 +1,4 @@
-/* Versioned catalog: these presets cover the roster output only, not an entire broadcast package. */
+/* Versioned catalog: presets currently cover roster and draft outputs, not an entire broadcast package. */
 (function (root, factory) {
   const catalog = factory();
   if (typeof module === "object" && module.exports) module.exports = catalog;
@@ -8,7 +8,8 @@
   return Object.freeze({
     schemaVersion: 1,
     rendererVersion: 1,
-    output: "roster",
+    output: "roster", // Compatibility field; outputs declares current coverage.
+    outputs: ["roster", "draft"],
     canvas: { width: 1920, height: 1080 },
     themes: [
       {
@@ -39,7 +40,11 @@
     ].map((theme) =>
       Object.freeze({
         ...theme,
-        outputs: ["roster"],
+        outputs: ["roster", "draft"],
+        draftStyles: [
+          "/themes/draft-base.css",
+          "/themes/draft-" + theme.id + ".css",
+        ],
         requiredAssets: [],
         fontPolicy: "system-fallback",
       }),

@@ -1,0 +1,13 @@
+/* Classic: warm accents with the shared draft layout and behavior. */
+:root {
+  --draft-bg: #1b0b08f2;
+  --draft-panel: #321913;
+  --draft-line: #714739;
+  --draft-blue: #ff941f;
+  --draft-red: #ff4949;
+}
+.heropick,
+.draft-header,
+.draft-center {
+  border-radius: 2px;
+}
