@@ -13,6 +13,9 @@ const fsSync = require("fs");
 const path = require("path");
 const os = require("os");
 const multer = require("multer");
+const { createMatchStore } = require("./lib/match-store");
+const { installMatchRoutes } = require("./lib/match-routes");
+const { validateMatch } = require("./public/script/match-state");
 
 const app = express();
 const server = http.createServer(app);
@@ -341,8 +344,12 @@ let cache = {
 
 async function loadCache() {
   try {
-    cache.matchdata = JSON.parse(await fs.readFile(matchDataPath, "utf8"));
-  } catch (e) {}
+    const loaded = JSON.parse(await fs.readFile(matchDataPath, "utf8"));
+    validateMatch(loaded);
+    cache.matchdata = loaded;
+  } catch (error) {
+    throw new Error(`Cannot load match data safely: ${error.message}`);
+  }
   try {
     cache.matchdraft = JSON.parse(await fs.readFile(draftDataPath, "utf8"));
   } catch (e) {}
@@ -376,7 +383,7 @@ async function loadCache() {
   }
   console.log(">> In-Memory Cache Loaded!");
 }
-loadCache();
+let matchStore;
 
 async function initFlagDB() {
   if (!fsSync.existsSync(flagJsonPath)) {
@@ -391,7 +398,7 @@ async function initFlagDB() {
     }
   }
 }
-initFlagDB();
+const flagDbReady = initFlagDB();
 
 // ==========================================
 // 4a. SHARED STATE (mirror ng localStorage ng mga client)
@@ -445,7 +452,7 @@ async function loadHeroListMap() {
     "!! WARNING: herolist.json not found in expected locations. Hero stat name-lookup will fail until HEROLIST_CANDIDATES is fixed in server.js.",
   );
 }
-loadHeroListMap();
+const heroListReady = loadHeroListMap();
 
 function resolveHeroName(imgPath) {
   if (!imgPath) return null;
@@ -617,25 +624,7 @@ app.get("/api/players", async (req, res) => {
   }
 });
 // --- MATCH DATA API ---
-app.get("/api/matchdata", (req, res) => {
-  res.json(cache.matchdata);
-});
-
-app.post("/api/matchdata", (req, res) => {
-  try {
-    cache.matchdata = req.body;
-
-    broadcast({ type: "matchdata_update", data: cache.matchdata });
-    broadcast({ type: "update", data: { matchdata: cache.matchdata } });
-
-    const payload = JSON.stringify(cache.matchdata, null, 2);
-    fileQueue.enqueue(() => fs.writeFile(matchDataPath, payload));
-
-    res.json({ message: "Match data saved" });
-  } catch (error) {
-    res.status(500).json({ message: "Error saving match data" });
-  }
-});
+installMatchRoutes(app, () => matchStore);
 
 // --- MATCH DRAFT API ---
 app.get("/api/matchdraft", (req, res) => {
@@ -1325,20 +1314,38 @@ app.post("/api/delete-all-records", async (req, res) => {
 // ==========================================
 // 8. START SERVER (PORT 3000)
 // ==========================================
-const port = 3000;
+const port = Number(process.env.PORT || 3000);
 const localIp = getLocalIp();
 
-server.listen(port, "0.0.0.0", async () => {
-  console.log("=============================================");
-  console.log(` SERVER STARTED (MLBB LIVE ASSETS V1.0) `);
-  console.log(` Local:   http://localhost:${port}`);
-  console.log(` Network: http://${localIp}:${port}`);
-  console.log(` Status:  Cache & Async Queue Active! `);
-  console.log(` Tournament: http://localhost:${port}/controller.html`);
-  console.log(` Viewer:     http://localhost:${port}/viewer.html`);
-  console.log("=============================================");
+async function start() {
+  await Promise.all([loadCache(), flagDbReady, heroListReady]);
+  matchStore = createMatchStore({
+    initial: cache.matchdata,
+    file: matchDataPath,
+    onCommit: ({ data, revision }) => {
+      cache.matchdata = data;
+      broadcast({ type: "matchdata_update", data, revision });
+      broadcast({ type: "update", data: { matchdata: data }, revision });
+    },
+  });
+  server.listen(port, "0.0.0.0", async () => {
+    const boundPort = server.address().port;
+    console.log("=============================================");
+    console.log(` SERVER STARTED (MLBB LIVE ASSETS V1.0) `);
+    console.log(` Local:   http://localhost:${boundPort}`);
+    console.log(` Network: http://${localIp}:${boundPort}`);
+    console.log(` Status:  Cache & Async Queue Active! `);
+    console.log(` Tournament: http://localhost:${boundPort}/controller.html`);
+    console.log(` Viewer:     http://localhost:${boundPort}/viewer.html`);
+    console.log("=============================================");
 
-  try {
-    await fs.writeFile(path.join(__dirname, "public/serverip.txt"), localIp);
-  } catch (error) {}
+    try {
+      await fs.writeFile(path.join(__dirname, "public/serverip.txt"), localIp);
+    } catch (error) {}
+  });
+}
+start().catch(error => {
+  console.error("Server startup failed:", error.message);
+  clearInterval(interval);
+  process.exitCode = 1;
 });
