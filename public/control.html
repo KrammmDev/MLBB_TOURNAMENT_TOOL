@@ -124,10 +124,21 @@
         background: var(--raise-hover);
       }
     </style>
+    <style>
+      .control-sync-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 16px;
+        padding: 12px 20px; background: #171923; color: #e6e8ef; border-bottom: 1px solid #454955; }
+      #control-save-status[data-error="true"] { color: #ffb3b3; }
+      #control-reload { cursor: pointer; padding: 6px 12px; }
+    </style>
   </head>
 
   <body>
-    <div class="content-wrapper">
+    <div class="control-sync-bar">
+      <span id="control-connection">Connecting...</span>
+      <span id="control-save-status" role="status" aria-live="polite">Loading match...</span>
+      <button id="control-reload" type="button" onclick="ControlMatch.reload()" hidden>Reload latest match</button>
+    </div>
+    <div class="content-wrapper" inert>
       <h1>MLBB Control Panel</h1>
 
       <div class="button">
@@ -1040,6 +1051,10 @@
       </div>
     </div>
 
+    <script src="/script/match-state.js"></script>
+    <script src="/script/match-client.js"></script>
+    <script src="/script/control-match.js"></script>
+    <script src="/script/control-panel-match.js"></script>
     <script src="/script/controlnicknamelogo.js"></script>
     <script src="/script/herodropdown.js"></script>
     <script src="script/previousdraft.js"></script>
@@ -1048,13 +1063,6 @@
     <script>
       var blueScore = 0;
       var redScore = 0;
-      let operationQueue = Promise.resolve();
-      let syncInterval = null;
-      let isEditingMatchInfo = false;
-      let isEditingTitle = false;
-      let saveTimeout = null;
-      let coachSaveTimeout = null;
-      let fullNameSaveTimeout = null;
 
       // ===== PLAYER AUTOCOMPLETE SYSTEM =====
       let PLAYER_LIST = [];
@@ -1230,400 +1238,6 @@
           });
         } catch (err) {
           console.error("Failed to update draw server:", err);
-        }
-      }
-
-      function queueOperation(operation) {
-        operationQueue = operationQueue.then(() => operation());
-        return operationQueue;
-      }
-
-      async function adjustTurtle(team, amount) {
-        try {
-          const getResponse = await fetch("/api/matchdata");
-          let fullData = await getResponse.json();
-
-          if (!fullData.teamdata) fullData.teamdata = {};
-          if (!fullData.teamdata.blueteam) fullData.teamdata.blueteam = {};
-          if (!fullData.teamdata.redteam) fullData.teamdata.redteam = {};
-
-          if (team === "blue") {
-            let current = fullData.teamdata.blueteam.turtles || 0;
-            current = Math.max(0, current + amount);
-            fullData.teamdata.blueteam.turtles = current;
-            document.getElementById("blue-turtle-ctrl").textContent = current;
-          } else {
-            let current = fullData.teamdata.redteam.turtles || 0;
-            current = Math.max(0, current + amount);
-            fullData.teamdata.redteam.turtles = current;
-            document.getElementById("red-turtle-ctrl").textContent = current;
-          }
-
-          await fetch("/api/matchdata", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(fullData),
-          });
-
-          console.log(`✅ Turtle updated for ${team}`);
-
-          // I-update lang ang turtle counters sa scoreboard, hindi ang buong match info bar
-          if (window.opener && !window.opener.closed) {
-            if (typeof window.opener.updateTurtleCounters === "function") {
-              window.opener.updateTurtleCounters();
-            }
-          }
-        } catch (e) {
-          console.error("Failed to adjust turtle:", e);
-        }
-      }
-
-      // ===== FIXED AUTO-SAVE TEAM NAME =====
-      async function autoSaveTeamName(team, inputElement) {
-        const name = inputElement.value.trim();
-        const statusEl = document.getElementById(
-          team === "blue" ? "blue-status" : "red-status",
-        );
-
-        if (!name) {
-          console.log(`⚠️ ${team} team name is empty`);
-        }
-
-        inputElement.classList.add("saving");
-        statusEl.textContent = "Saving...";
-        statusEl.className = "status-indicator saving";
-
-        if (saveTimeout) clearTimeout(saveTimeout);
-
-        saveTimeout = setTimeout(async () => {
-          try {
-            const response = await fetch("/api/matchdata");
-            let data = await response.json();
-
-            console.log("📥 Current data:", JSON.stringify(data, null, 2));
-
-            if (!data) data = {};
-            if (!data.teamdata) data.teamdata = {};
-            if (!data.teamdata.blueteam) data.teamdata.blueteam = {};
-            if (!data.teamdata.redteam) data.teamdata.redteam = {};
-
-            if (team === "blue") {
-              data.teamdata.blueteam.name = name;
-            } else {
-              data.teamdata.redteam.name = name;
-            }
-
-            console.log(`📤 Saving ${team} name: "${name}"`);
-
-            const saveResponse = await fetch("/api/matchdata", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data),
-            });
-
-            if (saveResponse.ok) {
-              console.log(`✅ ${team} team name saved: "${name}"`);
-
-              inputElement.classList.remove("saving");
-              inputElement.classList.add("saved");
-              statusEl.textContent = "✓ Saved";
-              statusEl.className = "status-indicator saved";
-
-              setTimeout(() => {
-                inputElement.classList.remove("saved");
-                statusEl.textContent = "Idle";
-                statusEl.className = "status-indicator idle";
-              }, 2000);
-
-              await forceUpdateDisplay();
-            } else {
-              console.error("❌ Save failed with status:", saveResponse.status);
-              statusEl.textContent = "❌ Error";
-              statusEl.className = "status-indicator error";
-            }
-          } catch (e) {
-            console.error(`❌ Failed to save ${team} team name:`, e);
-            statusEl.textContent = "❌ Error";
-            statusEl.className = "status-indicator error";
-            inputElement.classList.remove("saving");
-          }
-        }, 500);
-      }
-
-      // ===== AUTO-SAVE COACH NAME =====
-      async function autoSaveCoachName(team, inputElement) {
-        const coachName = inputElement.value.trim();
-        const statusEl = document.getElementById(
-          team === "blue" ? "blue-coach-status" : "red-coach-status",
-        );
-
-        inputElement.classList.add("saving");
-        statusEl.textContent = "Saving...";
-        statusEl.className = "status-indicator saving";
-
-        if (coachSaveTimeout) clearTimeout(coachSaveTimeout);
-
-        coachSaveTimeout = setTimeout(async () => {
-          try {
-            const response = await fetch("/api/matchdata");
-            let data = await response.json();
-
-            if (!data) data = {};
-            if (!data.teamdata) data.teamdata = {};
-            if (!data.teamdata.blueteam) data.teamdata.blueteam = {};
-            if (!data.teamdata.redteam) data.teamdata.redteam = {};
-
-            if (team === "blue") {
-              data.teamdata.blueteam.coach = coachName;
-            } else {
-              data.teamdata.redteam.coach = coachName;
-            }
-
-            console.log(`📤 Saving ${team} coach: "${coachName}"`);
-
-            const saveResponse = await fetch("/api/matchdata", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data),
-            });
-
-            if (saveResponse.ok) {
-              console.log(`✅ ${team} coach name saved: "${coachName}"`);
-
-              inputElement.classList.remove("saving");
-              inputElement.classList.add("saved");
-              statusEl.textContent = "✓ Saved";
-              statusEl.className = "status-indicator saved";
-
-              setTimeout(() => {
-                inputElement.classList.remove("saved");
-                statusEl.textContent = "Idle";
-                statusEl.className = "status-indicator idle";
-              }, 2000);
-
-              await forceUpdateDisplay();
-            } else {
-              console.error(
-                "❌ Coach save failed with status:",
-                saveResponse.status,
-              );
-              statusEl.textContent = "❌ Error";
-              statusEl.className = "status-indicator error";
-            }
-          } catch (e) {
-            console.error(`❌ Failed to save ${team} coach name:`, e);
-            statusEl.textContent = "❌ Error";
-            statusEl.className = "status-indicator error";
-            inputElement.classList.remove("saving");
-          }
-        }, 500);
-      }
-
-      // ===== AUTO-SAVE FULL TEAM NAME =====
-      async function autoSaveFullName(team, inputElement) {
-        const fullName = inputElement.value.trim();
-        const statusEl = document.getElementById(
-          team === "blue" ? "blue-fullname-status" : "red-fullname-status",
-        );
-
-        inputElement.classList.add("saving");
-        statusEl.textContent = "Saving...";
-        statusEl.className = "status-indicator saving";
-
-        if (fullNameSaveTimeout) clearTimeout(fullNameSaveTimeout);
-
-        fullNameSaveTimeout = setTimeout(async () => {
-          try {
-            const response = await fetch("/api/matchdata");
-            let data = await response.json();
-
-            if (!data) data = {};
-            if (!data.teamdata) data.teamdata = {};
-            if (!data.teamdata.blueteam) data.teamdata.blueteam = {};
-            if (!data.teamdata.redteam) data.teamdata.redteam = {};
-
-            if (team === "blue") {
-              data.teamdata.blueteam.fullname = fullName;
-            } else {
-              data.teamdata.redteam.fullname = fullName;
-            }
-
-            console.log(`📤 Saving ${team} full name: "${fullName}"`);
-
-            const saveResponse = await fetch("/api/matchdata", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data),
-            });
-
-            if (saveResponse.ok) {
-              console.log(`✅ ${team} full name saved: "${fullName}"`);
-
-              inputElement.classList.remove("saving");
-              inputElement.classList.add("saved");
-              statusEl.textContent = "✓ Saved";
-              statusEl.className = "status-indicator saved";
-
-              setTimeout(() => {
-                inputElement.classList.remove("saved");
-                statusEl.textContent = "Idle";
-                statusEl.className = "status-indicator idle";
-              }, 2000);
-
-              await forceUpdateDisplay();
-            } else {
-              console.error(
-                "❌ Full name save failed with status:",
-                saveResponse.status,
-              );
-              statusEl.textContent = "❌ Error";
-              statusEl.className = "status-indicator error";
-            }
-          } catch (e) {
-            console.error(`❌ Failed to save ${team} full name:`, e);
-            statusEl.textContent = "❌ Error";
-            statusEl.className = "status-indicator error";
-            inputElement.classList.remove("saving");
-          }
-        }, 500);
-      }
-
-      // ===== FORCE UPDATE DISPLAY =====
-      async function forceUpdateDisplay() {
-        try {
-          const response = await fetch("/api/matchdata");
-          const data = await response.json();
-          console.log(
-            "📊 Latest data on server:",
-            JSON.stringify(data, null, 2),
-          );
-
-          if (window.opener && !window.opener.closed) {
-            if (typeof window.opener.updateDisplay === "function") {
-              await window.opener.updateDisplay();
-              console.log("✅ Display updated via window.opener");
-            }
-          }
-        } catch (e) {
-          console.error("❌ Failed to force update display:", e);
-        }
-      }
-
-      // ===== LOAD EXISTING TEAM NAMES + COACH NAMES + FULL NAMES =====
-      async function loadTeamNames() {
-        try {
-          const response = await fetch("/api/matchdata");
-          const data = await response.json();
-
-          if (data && data.teamdata) {
-            const blueName = data.teamdata.blueteam?.name || "";
-            const redName = data.teamdata.redteam?.name || "";
-            const blueCoach = data.teamdata.blueteam?.coach || "";
-            const redCoach = data.teamdata.redteam?.coach || "";
-            const blueFullName = data.teamdata.blueteam?.fullname || "";
-            const redFullName = data.teamdata.redteam?.fullname || "";
-
-            document.getElementById("name-input-1").value = blueName;
-            document.getElementById("name-input-8").value = redName;
-            document.getElementById("coach-input-blue").value = blueCoach;
-            document.getElementById("coach-input-red").value = redCoach;
-            document.getElementById("fullname-input-blue").value = blueFullName;
-            document.getElementById("fullname-input-red").value = redFullName;
-
-            console.log(
-              `📥 Loaded team names - Blue: "${blueName}", Red: "${redName}" | Coaches - Blue: "${blueCoach}", Red: "${redCoach}" | Full Names - Blue: "${blueFullName}", Red: "${redFullName}"`,
-            );
-          }
-        } catch (e) {
-          console.error("Failed to load team names:", e);
-        }
-      }
-
-      // ===== EXISTING FUNCTIONS =====
-      async function loadScoreOnly() {
-        try {
-          const response = await fetch("/api/matchdata");
-          const data = await response.json();
-          blueScore = data.teamdata.blueteam.score || 0;
-          redScore = data.teamdata.redteam.score || 0;
-          document.getElementById("blue-score-control").textContent = blueScore;
-          document.getElementById("red-score-control").textContent = redScore;
-          updateScoreDots();
-        } catch (e) {
-          console.error("Failed to load score:", e);
-        }
-      }
-
-      async function loadScore() {
-        try {
-          const response = await fetch("/api/matchdata");
-          const data = await response.json();
-          blueScore = data.teamdata.blueteam.score || 0;
-          redScore = data.teamdata.redteam.score || 0;
-          document.getElementById("blue-score-control").textContent = blueScore;
-          document.getElementById("red-score-control").textContent = redScore;
-
-          // I-load ang Turtle Counts
-          if (data.teamdata.blueteam.turtles !== undefined) {
-            document.getElementById("blue-turtle-ctrl").textContent =
-              data.teamdata.blueteam.turtles;
-          }
-          if (data.teamdata.redteam.turtles !== undefined) {
-            document.getElementById("red-turtle-ctrl").textContent =
-              data.teamdata.redteam.turtles;
-          }
-
-          if (!isEditingMatchInfo) {
-            if (data.matchInfo) {
-              if (data.matchInfo.stage) {
-                document.getElementById("match-stage").value =
-                  data.matchInfo.stage;
-              }
-              if (data.matchInfo.group) {
-                document.getElementById("match-group").value =
-                  data.matchInfo.group;
-              }
-              if (data.matchInfo.match) {
-                document.getElementById("match-number").value =
-                  data.matchInfo.match;
-              }
-              if (data.matchInfo.game) {
-                document.getElementById("game-number-text").value =
-                  data.matchInfo.game;
-              }
-            }
-          }
-
-          if (!isEditingTitle) {
-            const titleInput = document.getElementById(
-              "lowerthird-title-input",
-            );
-            if (titleInput && data.title) {
-              titleInput.value = data.title;
-            }
-          }
-
-          updateScoreDots();
-        } catch (e) {
-          console.error("Failed to load score:", e);
-        }
-      }
-
-      async function saveScoreToServer() {
-        try {
-          const getResponse = await fetch("/api/matchdata");
-          let fullData = await getResponse.json();
-          fullData.teamdata.blueteam.score = blueScore;
-          fullData.teamdata.redteam.score = redScore;
-          fullData.matchFormat =
-            parseInt(localStorage.getItem("matchFormat")) || 3;
-          await fetch("/api/matchdata", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(fullData),
-          });
-        } catch (e) {
-          console.error("Failed to save score:", e);
         }
       }
 
@@ -1847,61 +1461,6 @@
         }
       }
 
-      async function addWinQueued(team) {
-        await queueOperation(async () => {
-          if (team === "blue") blueScore++;
-          else redScore++;
-          document.getElementById(`${team}-score-control`).textContent =
-            team === "blue" ? blueScore : redScore;
-          await saveScoreToServer();
-          await recordHeroStats(team);
-          updateScoreDots();
-        });
-      }
-
-      async function minusWinQueued(team) {
-        await queueOperation(async () => {
-          if (team === "blue") blueScore = Math.max(0, blueScore - 1);
-          else redScore = Math.max(0, redScore - 1);
-          document.getElementById(`${team}-score-control`).textContent =
-            team === "blue" ? blueScore : redScore;
-          await saveScoreToServer();
-          updateScoreDots();
-        });
-      }
-
-      async function resetScore() {
-        blueScore = 0;
-        redScore = 0;
-        document.getElementById("blue-score-control").textContent = 0;
-        document.getElementById("red-score-control").textContent = 0;
-
-        // Reset Turtle counts din
-        document.getElementById("blue-turtle-ctrl").textContent = 0;
-        document.getElementById("red-turtle-ctrl").textContent = 0;
-
-        await saveScoreToServer();
-        updateScoreDots();
-      }
-
-      async function setFormat(format) {
-        localStorage.setItem("matchFormat", format);
-        try {
-          const getResponse = await fetch("/api/matchdata");
-          let fullData = await getResponse.json();
-          fullData.matchFormat = format;
-          await fetch("/api/matchdata", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(fullData),
-          });
-        } catch (e) {
-          console.error("Failed to save format:", e);
-        }
-        await resetScore();
-        highlightActiveFormat(format);
-      }
-
       function highlightActiveFormat(activeFormat) {
         const formatBtns = document.querySelectorAll(".format-control button");
         formatBtns.forEach((btn) => {
@@ -1950,163 +1509,6 @@
           });
       }
 
-      async function safeOperation(originalFunction, ...args) {
-        await queueOperation(async () => {
-          if (typeof originalFunction === "function") {
-            await originalFunction(...args);
-          }
-          await loadScore();
-          await loadGameState();
-        });
-      }
-
-      async function safeResetNames() {
-        if (typeof resetNames === "function") {
-          await safeOperation(resetNames);
-        } else {
-          console.warn("resetNames function not found");
-          await loadScore();
-        }
-      }
-
-      async function safeResetImages() {
-        if (typeof resetImages === "function") {
-          await safeOperation(resetImages);
-        } else {
-          console.warn("resetImages function not found");
-          await loadScore();
-        }
-      }
-
-      async function safeSwitchNames() {
-        if (typeof switchNames === "function") {
-          await safeOperation(switchNames);
-        } else {
-          console.warn("switchNames function not found");
-          await loadScore();
-        }
-      }
-
-      async function safeSwitchImages() {
-        if (typeof switchImages === "function") {
-          await safeOperation(switchImages);
-        } else {
-          console.warn("switchImages function not found");
-          await loadScore();
-        }
-      }
-
-      function startAutoSync() {
-        if (syncInterval) clearInterval(syncInterval);
-        syncInterval = setInterval(async () => {
-          await loadScoreOnly();
-          await loadGameState();
-        }, 1000);
-      }
-
-      function stopAutoSync() {
-        if (syncInterval) {
-          clearInterval(syncInterval);
-          syncInterval = null;
-        }
-      }
-
-      // ===== SAVE MATCH INFO (Stage / Group / Match / Game) =====
-      async function manualSaveMatchInfo() {
-        const stage =
-          document.getElementById("match-stage").value.trim() || "Group Stage";
-        const group =
-          document.getElementById("match-group").value.trim() || "Group A";
-        const match =
-          document.getElementById("match-number").value.trim() || "Match 1";
-        const game =
-          document.getElementById("game-number-text").value.trim() || "Game 1";
-        const matchText = `${match} ${game}`;
-
-        console.log("Saving match info:", stage, group, match, game);
-
-        try {
-          const getResponse = await fetch("/api/matchdata");
-          let fullData = await getResponse.json();
-          fullData.matchInfo = { stage, group, match, game, text: matchText };
-          await fetch("/api/matchdata", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(fullData),
-          });
-          console.log("Match info saved successfully!");
-
-          const btn = document.querySelector(
-            ".match-input-group button:last-child",
-          );
-          if (btn) {
-            const originalText = btn.textContent;
-            btn.textContent = "✓ SAVED!";
-            btn.style.background = "#00ff8c";
-            btn.style.color = "#111";
-            setTimeout(() => {
-              btn.textContent = originalText;
-              btn.style.background = "#00afff";
-              btn.style.color = "white";
-            }, 1500);
-          }
-        } catch (e) {
-          console.error("Failed to save match info:", e);
-          alert("Error saving match info: " + e.message);
-        }
-
-        if (window.opener && !window.opener.closed) {
-          const displayDoc = window.opener.document;
-          const matchElement = displayDoc.getElementById("match-display");
-          if (matchElement) matchElement.textContent = matchText.toUpperCase();
-
-          const mainEl = displayDoc.getElementById("matchinfo-main");
-          if (mainEl) mainEl.textContent = stage;
-          const dayEl = displayDoc.getElementById("matchinfo-day");
-          if (dayEl) dayEl.textContent = group;
-          const matchInfoEl = displayDoc.getElementById("matchinfo-match");
-          if (matchInfoEl) matchInfoEl.textContent = matchText;
-        }
-      }
-
-      async function updateLowerThirdTitle() {
-        const title =
-          document.getElementById("lowerthird-title-input").value.trim() ||
-          "Lorem Ipsum Dolor";
-
-        console.log("Saving lower third title:", title);
-
-        try {
-          const getResponse = await fetch("/api/matchdata");
-          let fullData = await getResponse.json();
-          fullData.title = title;
-          await fetch("/api/matchdata", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(fullData),
-          });
-          console.log("Lower third title saved successfully!");
-
-          const btn = document.querySelector(
-            '[onclick="updateLowerThirdTitle()"]',
-          );
-          if (btn) {
-            const originalText = btn.textContent;
-            btn.textContent = "✓ SAVED!";
-            btn.style.background = "#00ff8c";
-            btn.style.color = "#111";
-            setTimeout(() => {
-              btn.textContent = originalText;
-              btn.style.background = "#00afff";
-              btn.style.color = "white";
-            }, 1500);
-          }
-        } catch (e) {
-          console.error("Failed to save lower third title:", e);
-          alert("Error saving title: " + e.message);
-        }
-      }
-
       async function setVideo(playerId) {
         updateNotifStatus(`SENDING ${playerId.replace("videoPlayer", "")}...`);
         try {
@@ -2134,104 +1536,6 @@
         if (statusEl) statusEl.textContent = message;
       }
 
-      async function updateGameInfo(field, value) {
-        try {
-          const getResponse = await fetch("/api/matchdata");
-          let fullData = await getResponse.json();
-          fullData[field] = value;
-          await fetch("/api/matchdata", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(fullData),
-          });
-          console.log(`Updated ${field} to ${value}`);
-        } catch (e) {
-          console.error("Failed to update game info:", e);
-        }
-      }
-
-      async function setWinner(side) {
-        const btnBlue = document.getElementById("btn-win-blue");
-        const btnRed = document.getElementById("btn-win-red");
-        btnBlue.style.background =
-          side === "blue" ? "rgba(0,175,255,0.3)" : "rgba(0,175,255,0.1)";
-        btnBlue.style.boxShadow =
-          side === "blue" ? "0 0 15px rgba(0,175,255,0.5)" : "";
-        btnRed.style.background =
-          side === "red" ? "rgba(249,72,104,0.3)" : "rgba(249,72,104,0.1)";
-        btnRed.style.boxShadow =
-          side === "red" ? "0 0 15px rgba(249,72,104,0.5)" : "";
-
-        try {
-          const getResponse = await fetch("/api/matchdata");
-          let fullData = await getResponse.json();
-          fullData.winmatches = side;
-          await fetch("/api/matchdata", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(fullData),
-          });
-          console.log(`Winner set to ${side}`);
-        } catch (e) {
-          console.error("Failed to set winner:", e);
-        }
-      }
-
-      async function loadGameState() {
-        try {
-          const response = await fetch("/api/matchdata");
-          const data = await response.json();
-
-          const gameNumberInput = document.getElementById("game-number");
-          if (
-            data.game_number !== undefined &&
-            !gameNumberInput.hasAttribute("data-editing")
-          ) {
-            gameNumberInput.value = data.game_number;
-          }
-
-          if (data.winmatches) {
-            const btnBlue = document.getElementById("btn-win-blue");
-            const btnRed = document.getElementById("btn-win-red");
-            if (data.winmatches === "blue") {
-              btnBlue.style.background = "rgba(0,175,255,0.3)";
-              btnBlue.style.boxShadow = "0 0 15px rgba(0,175,255,0.5)";
-            } else if (data.winmatches === "red") {
-              btnRed.style.background = "rgba(249,72,104,0.3)";
-              btnRed.style.boxShadow = "0 0 15px rgba(249,72,104,0.5)";
-            }
-          }
-
-          const savedFormat =
-            data.matchFormat ||
-            parseInt(localStorage.getItem("matchFormat")) ||
-            3;
-          if (savedFormat) {
-            localStorage.setItem("matchFormat", savedFormat);
-            highlightActiveFormat(savedFormat);
-          }
-        } catch (e) {
-          console.error("Failed to load game state:", e);
-        }
-      }
-
-      function onMatchInputFocus() {
-        isEditingMatchInfo = true;
-      }
-
-      function onMatchInputBlur() {
-        isEditingMatchInfo = false;
-        manualSaveMatchInfo();
-      }
-
-      function onTitleInputFocus() {
-        isEditingTitle = true;
-      }
-
-      function onTitleInputBlur() {
-        isEditingTitle = false;
-      }
-
       document.addEventListener("keydown", (event) => {
         const keys = {
           w: "videoPlayer1",
@@ -2250,7 +1554,8 @@
         if (
           keys[event.key] &&
           event.target.tagName !== "INPUT" &&
-          event.target.tagName !== "TEXTAREA"
+          event.target.tagName !== "TEXTAREA" &&
+          event.target.tagName !== "SELECT" && !event.target.isContentEditable
         ) {
           event.preventDefault();
           setVideo(keys[event.key]);
@@ -2325,63 +1630,17 @@
         }
       }
 
-      // ===== WINDOW LOAD =====
-      window.addEventListener("load", async () => {
-        console.log("🎮 Control Panel Loaded - Auto-Save Mode + Draw Control");
-        await loadTeamNames();
-        await loadScore();
-        await loadGameState();
-        startAutoSync();
-
-        const stageInput = document.getElementById("match-stage");
-        const groupInput = document.getElementById("match-group");
-        const matchInput = document.getElementById("match-number");
-        const gameInput = document.getElementById("game-number-text");
-        const gameNumberInput = document.getElementById("game-number");
-        const titleInput = document.getElementById("lowerthird-title-input");
-
-        // Stage, Group, Match, Game: auto-save on blur
-        [stageInput, groupInput, matchInput, gameInput].forEach((el) => {
-          if (el) {
-            el.addEventListener("focus", onMatchInputFocus);
-            el.addEventListener("blur", onMatchInputBlur);
-          }
-        });
-
-        if (titleInput) {
-          titleInput.addEventListener("focus", onTitleInputFocus);
-          titleInput.addEventListener("blur", onTitleInputBlur);
-        }
-
-        if (gameNumberInput) {
-          gameNumberInput.addEventListener("focus", function () {
-            this.setAttribute("data-editing", "true");
-          });
-          gameNumberInput.addEventListener("blur", function () {
-            this.removeAttribute("data-editing");
-            const value = parseInt(this.value);
-            if (!isNaN(value)) {
-              updateGameInfo("game_number", value);
-            }
-          });
-          gameNumberInput.addEventListener("input", function () {
-            this.setAttribute("data-editing", "true");
-          });
-        }
-
-        const currentFormat =
-          parseInt(localStorage.getItem("matchFormat")) || 3;
-        highlightActiveFormat(currentFormat);
-
-        // Initialize Draw Control
+      let extrasInitialized = false;
+      async function initializeControlExtras() {
+        if (extrasInitialized || !ControlMatch.get()) return;
+        extrasInitialized = true;
         initDrawControl();
-
-        // Initialize Player Autocomplete
         await initPlayerAutocomplete();
-      });
-
-      window.addEventListener("beforeunload", () => {
-        stopAutoSync();
+      }
+      document.addEventListener("control-match-reloaded", initializeControlExtras);
+      window.addEventListener("load", async () => {
+        try { await ControlMatch.ready; await initializeControlExtras(); }
+        catch (error) { console.error("Control panel unavailable:", error.message); }
       });
     </script>
   </body>

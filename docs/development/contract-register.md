@@ -31,3 +31,17 @@ Existing POST /api/matchdata replaces the complete match document. Proposed OCR 
 
 ### Remaining migration limits
 Other controllers still make unconditional whole-document POST requests and can overwrite newer unrelated state. This phase does not claim that concurrency is solved across all legacy panels. Draft, schedule, theme, tournament, MVP and archive persistence paths still need independent migration. Result counting and competition rules are unchanged. Shared overlay/theme rendering and three complete themes remain subsequent work. OCR remains on hold.
+
+## Implemented: control-panel match migration (phase 2)
+
+Both `control.html` and `controlban6.html` now load `control-match.js` (one guarded match-edit session) and `control-panel-match.js` (shared operator controls). Team/player names, lanes, coaches/full names where present, logos, series scores, format, winner, match labels, title and the existing `turtles` counter write through field patches. The shared nickname script and hero/ban match mirrors no longer issue full-document match POSTs. This supersedes the main-control limitation described under phase 1; the compatibility POST endpoint remains available to unmigrated/external callers.
+
+- Each change compares the observed previous field values and match/lineup guards inside the server queue. Input debounce keys are independent per element. Debounced jobs are staged before explicit reset/swap actions, so delayed input does not undo a later operator command.
+- The edit session serializes writes and blocks dependent changes after a conflict/failure. Focused or unsaved inputs hold incoming match snapshots. Reload requires explicit confirmation when discarding local work; initial load failures can also recover through that control.
+- Team-name input updates `teamname` and its existing `name` alias in the same patch. Team nickname switching carries names, full names, coaches, logos, scores and player names/lanes together; it does not move in-game statistics or draft hero assignments. Logo and player-name/lane swaps have their own targeted patches.
+- Score arithmetic normalizes loaded string scores to numbers. Format plus score reset is one batch. The normal panel's existing +Win hero-stat recording occurs only after a successful score save; the 6-ban panel retains its prior behavior without that stats call. This is not game-result idempotency or a result-correction engine.
+- The main `turtles` field remains distinct from postgame `turtle`. No counter-schema migration is implied. Score reset does not pretend to clear persisted objective counters.
+- Match updates use the shared match socket and recovery poll instead of the panels' former one-second match GET loops. Draft transport/timer logic remains separate. Existing overlay URLs and match API/event contracts remain unchanged.
+- A hero/ban mirror patch must succeed before the local draft selection advances. A rejected mirror leaves the persisted draft unchanged and refreshes its UI. **The match mirror and draft JSON save are still separate operations**: draft API/persistence failures and cross-panel draft concurrency require a later domain migration. No cross-file transaction or new draft rules are claimed.
+
+See `control-migration.md` for test scope and operator checks. OCR and graphics/theme redesign remain on hold for this increment.

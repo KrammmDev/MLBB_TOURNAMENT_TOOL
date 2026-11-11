@@ -22,3 +22,5 @@ OCR capture/calibration UI, custom recognition engine, normalized ingestion API,
 
 ## Current development priority
 OCR is on hold at the user's request. The first broadcast architecture increment extracts match persistence/routes, adds guarded field-level PATCH and migrates the postgame editor. See state-foundation.md and the implemented section of contract-register.md. Legacy whole-document writers, stable identities, draft state and shared overlay/theme rendering remain subsequent migration work.
+
+The second increment migrates both main control variants, shared nickname/logo handlers and match hero/ban mirrors to the field-patch API. See control-migration.md and the phase-2 contract section. Existing control layouts and draft sequences remain; shared overlay/theme rendering is next, and OCR stays on hold. The draft JSON API is still separate from match persistence.

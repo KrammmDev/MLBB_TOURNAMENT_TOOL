@@ -138,97 +138,28 @@ function getMatchDataLocation(dropdownIndex) {
 }
 
 async function updateMatchDataHero(dropdownIndex, heroValue) {
-  try {
-    const loc = getMatchDataLocation(dropdownIndex);
-    if (!loc) return;
-
-    const response = await fetch("/api/matchdata");
-    const data = await response.json();
-
-    if (
-      data.teamdata &&
-      data.teamdata[loc.team] &&
-      data.teamdata[loc.team].playerlist[loc.idx]
-    ) {
-      data.teamdata[loc.team].playerlist[loc.idx][loc.field] = heroValue;
-    }
-
-    await fetch("/api/matchdata", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-  } catch (error) {
-    console.error("Error updating matchdata hero:", error);
-  }
+  const loc = getMatchDataLocation(dropdownIndex);
+  if (!loc) return;
+  return ControlMatch.update(data => {
+    data.teamdata[loc.team].playerlist[loc.idx][loc.field] = heroValue;
+  });
 }
 
 async function swapMatchDataHeroes(index1, index2) {
-  try {
-    const loc1 = getMatchDataLocation(index1);
-    const loc2 = getMatchDataLocation(index2);
-
-    if (!loc1 || !loc2) return;
-
-    const response = await fetch("/api/matchdata");
-    const data = await response.json();
-
-    let val1 = "",
-      val2 = "";
-
-    // Ambil value lama
-    if (data.teamdata[loc1.team].playerlist[loc1.idx])
-      val1 = data.teamdata[loc1.team].playerlist[loc1.idx][loc1.field];
-    if (data.teamdata[loc2.team].playerlist[loc2.idx])
-      val2 = data.teamdata[loc2.team].playerlist[loc2.idx][loc2.field];
-
-    // Tukar
-    if (data.teamdata[loc1.team].playerlist[loc1.idx])
-      data.teamdata[loc1.team].playerlist[loc1.idx][loc1.field] = val2;
-    if (data.teamdata[loc2.team].playerlist[loc2.idx])
-      data.teamdata[loc2.team].playerlist[loc2.idx][loc2.field] = val1;
-
-    await fetch("/api/matchdata", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-  } catch (error) {
-    console.error("Error swapping matchdata heroes:", error);
-  }
+  const a = getMatchDataLocation(index1), b = getMatchDataLocation(index2);
+  if (!a || !b) return;
+  return ControlMatch.update(data => {
+    const x = data.teamdata[a.team].playerlist[a.idx], y = data.teamdata[b.team].playerlist[b.idx];
+    const value = x[a.field] || ''; x[a.field] = y[b.field] || ''; y[b.field] = value;
+  });
 }
 
 async function resetMatchDataHeroes() {
-  try {
-    const response = await fetch("/api/matchdata");
-    const data = await response.json();
-
-    // Reset Blue Team
-    if (data.teamdata.blueteam && data.teamdata.blueteam.playerlist) {
-      data.teamdata.blueteam.playerlist.forEach((player) => {
-        player.hero = "";
-        player.banhero = "";
-      });
+  return ControlMatch.update(data => {
+    for (const side of ['blueteam', 'redteam']) for (const player of data.teamdata[side].playerlist) {
+      player.hero = ''; player.banhero = '';
     }
-
-    // Reset Red Team
-    if (data.teamdata.redteam && data.teamdata.redteam.playerlist) {
-      data.teamdata.redteam.playerlist.forEach((player) => {
-        player.hero = "";
-        player.banhero = "";
-      });
-    }
-
-    await fetch("/api/matchdata", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-
-    console.log("Match Data Heroes & Bans Reset Successfully");
-  } catch (error) {
-    console.error("Error resetting matchdata heroes:", error);
-  }
+  });
 }
 
 // ==========================================
@@ -397,22 +328,17 @@ function filterDropdown(index) {
 
         // --- ON CLICK HERO ---
         option.onclick = async function () {
-          // 1. Update State Lokal (Draft - Image)
-          setHeroToData(index, hero.img);
-
-          // 2. Update UI Controller Langsung (Biar responsif)
-          input.value = hero.name;
-          dropdown.style.display = "none";
-
-          // 3. Update Match Data (Names) di background
-          await updateMatchDataHero(index, hero.name);
-
-          // 4. Logic Phase Auto-Advance
-          if (!correctionMode && isCurrentPhaseDropdown(index)) {
-            checkPhaseCompletion();
-          } else {
-            // Jika correction mode atau edit manual, save draft saja
-            await saveDraftData();
+          try {
+            // Do not advance or mutate the local draft when the guarded match mirror rejects.
+            await updateMatchDataHero(index, hero.name);
+            setHeroToData(index, hero.img);
+            input.value = hero.name;
+            dropdown.style.display = "none";
+            if (!correctionMode && isCurrentPhaseDropdown(index)) await checkPhaseCompletion();
+            else await saveDraftData();
+          } catch (error) {
+            console.error("Hero edit not saved:", error.message);
+            await fetchDraftData();
           }
         };
         dropdown.appendChild(option);
@@ -453,7 +379,7 @@ async function checkPhaseCompletion() {
 
   if (allFilled) {
     // Jika penuh, lanjut ke phase berikutnya
-    handleControlAction("nextPhase");
+    await handleControlAction("nextPhase");
   } else {
     // Jika belum (untuk phase double pick), simpan saja perkembangannya
     await saveDraftData();
@@ -474,24 +400,19 @@ function hideDropdown(index) {
 // ==========================================
 
 async function swapHeroes() {
-  if (selected1 !== null && selected2 !== null) {
-    let hero1 = getHeroFromData(selected1);
-    let hero2 = getHeroFromData(selected2);
-
-    // Swap di State Lokal
+  if (selected1 === null || selected2 === null) return;
+  try {
+    const hero1 = getHeroFromData(selected1), hero2 = getHeroFromData(selected2);
+    await swapMatchDataHeroes(selected1, selected2);
     setHeroToData(selected1, hero2);
     setHeroToData(selected2, hero1);
-
-    // Swap UI Controller
     document.getElementById(`search-${selected1}`).value = getHeroName(hero2);
     document.getElementById(`search-${selected2}`).value = getHeroName(hero1);
-
-    // Swap Data Nama di Server
-    await swapMatchDataHeroes(selected1, selected2);
-
-    resetSelection();
     await saveDraftData();
-  }
+  } catch (error) {
+    console.error("Hero swap not saved:", error.message);
+    await fetchDraftData();
+  } finally { resetSelection(); }
 }
 
 function getHeroName(imgSrc) {
@@ -608,6 +529,10 @@ const TimerManager = {
 
 async function handleControlAction(action) {
   if (!currentDraftData) return;
+  if (action === "reset") {
+    try { await resetMatchDataHeroes(); }
+    catch (error) { console.error("Draft reset not saved:", error.message); return; }
+  }
 
   if (action === "start") {
     currentDraftData.timer_running = true;
@@ -641,7 +566,6 @@ async function handleControlAction(action) {
     currentDraftData.redside.pick = JSON.parse(JSON.stringify(empty));
 
     // Reset Match Data (Nama) via API
-    await resetMatchDataHeroes();
     resetSelection();
   }
 
