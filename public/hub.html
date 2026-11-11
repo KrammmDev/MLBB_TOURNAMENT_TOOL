@@ -1,0 +1,1247 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MLBB Overlay Command Center</title>
+    <style>
+      /* ================== FONT ASSETS ================== */
+      @font-face {
+        font-family: "Big Noodle Titling";
+        src: url("Assets/Font/big_noodle_titling.ttf") format("truetype");
+        font-display: swap;
+      }
+
+      /* ================== TOKENS ================== */
+      :root {
+        --bg-0: #0a0c0e;
+        --bg-1: #121519;
+        --bg-2: #171b20;
+        --bg-3: #1d2228;
+        --line-1: #232830;
+        --line-2: #333b45;
+        --text-0: #f1f3f5;
+        --text-1: #c2c9d1;
+        --text-2: #7d8791;
+
+        --accent: #32d17e;
+        --accent-ink: #06170f;
+        --accent-dim: rgba(50, 209, 126, 0.14);
+        --accent-border: rgba(50, 209, 126, 0.32);
+        --accent-glow: rgba(50, 209, 126, 0.35);
+
+        --danger: #ef5858;
+        --danger-dim: rgba(239, 88, 88, 0.14);
+
+        --font-display: "Big Noodle Titling", "Arial Narrow", sans-serif;
+        --font-body: "Segoe UI", Roboto, system-ui, -apple-system, sans-serif;
+        --font-mono: "Consolas", "SF Mono", "Monaco", "Courier New", monospace;
+
+        --sidebar-w: 264px;
+        --r-s: 6px;
+        --r-m: 10px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        color-scheme: dark;
+      }
+
+      body {
+        background-color: var(--bg-0);
+        color: var(--text-0);
+        font-family: var(--font-body);
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+      }
+
+      /* ================== BACKGROUND FIELD ================== */
+      .bg-field {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background:
+          radial-gradient(
+            circle at 15% 0%,
+            rgba(50, 209, 126, 0.07),
+            transparent 45%
+          ),
+          radial-gradient(
+            circle at 100% 100%,
+            rgba(50, 209, 126, 0.05),
+            transparent 50%
+          ),
+          repeating-linear-gradient(
+            0deg,
+            rgba(255, 255, 255, 0.012) 0px,
+            rgba(255, 255, 255, 0.012) 1px,
+            transparent 1px,
+            transparent 3px
+          );
+      }
+
+      a {
+        color: inherit;
+      }
+
+      /* ================== SIDEBAR ================== */
+      .sidebar {
+        width: var(--sidebar-w);
+        flex-shrink: 0;
+        background: var(--bg-1);
+        border-right: 1px solid var(--line-1);
+        display: flex;
+        flex-direction: column;
+        padding: 22px 18px;
+        z-index: 10;
+      }
+
+      .app-brand {
+        margin-bottom: 26px;
+        padding: 0 4px;
+      }
+      .app-brand img {
+        max-width: 100%;
+        max-height: 44px;
+        height: auto;
+        object-fit: contain;
+        display: block;
+      }
+
+      .status-panel {
+        background: var(--bg-2);
+        border: 1px solid var(--line-1);
+        border-radius: var(--r-m);
+        padding: 14px;
+        margin-bottom: 28px;
+      }
+      .status-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .status-label {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-2);
+        font-weight: 600;
+      }
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.66rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        padding: 3px 8px;
+        border-radius: 999px;
+        background: var(--accent-dim);
+        color: var(--accent);
+      }
+      .status-pill.is-offline {
+        background: var(--danger-dim);
+        color: var(--danger);
+      }
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+        box-shadow: 0 0 6px currentColor;
+        animation: pulse 2s infinite;
+      }
+      .ip-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .ip-address {
+        font-family: var(--font-mono);
+        font-size: 0.86rem;
+        color: var(--text-0);
+        word-break: break-all;
+      }
+      .ip-copy-btn {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        background: transparent;
+        border: 1px solid var(--line-1);
+        border-radius: var(--r-s);
+        color: var(--text-2);
+        cursor: pointer;
+        transition:
+          border-color 0.15s ease,
+          color 0.15s ease,
+          background-color 0.15s ease;
+      }
+      .ip-copy-btn:hover {
+        color: var(--text-0);
+        border-color: var(--line-2);
+        background: var(--bg-3);
+      }
+      .ip-copy-btn svg {
+        width: 13px;
+        height: 13px;
+      }
+
+      .nav-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex-grow: 1;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: transparent;
+        border: 1px solid transparent;
+        color: var(--text-1);
+        padding: 10px 12px;
+        text-align: left;
+        font-family: var(--font-display);
+        font-size: 1.2rem;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        cursor: pointer;
+        border-radius: var(--r-s);
+        position: relative;
+        transition:
+          color 0.15s ease,
+          background-color 0.15s ease,
+          border-color 0.15s ease;
+      }
+      .nav-icon {
+        flex: 0 0 auto;
+        display: flex;
+        opacity: 0.7;
+      }
+      .nav-icon svg {
+        width: 17px;
+        height: 17px;
+      }
+      .nav-label {
+        line-height: 1;
+      }
+
+      .nav-item:hover {
+        color: var(--text-0);
+        background: var(--bg-2);
+      }
+      .nav-item:hover .nav-icon {
+        opacity: 1;
+      }
+
+      .nav-item.active {
+        color: var(--accent);
+        background: var(--accent-dim);
+        border-color: var(--accent-border);
+      }
+      .nav-item.active .nav-icon {
+        opacity: 1;
+      }
+      .nav-item.active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 8px;
+        bottom: 8px;
+        width: 2px;
+        border-radius: 2px;
+        background: var(--accent);
+        box-shadow: 0 0 8px var(--accent-glow);
+      }
+
+      .sidebar-footer {
+        margin-top: auto;
+        border-top: 1px solid var(--line-1);
+        padding-top: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .btn-visit {
+        background: var(--accent);
+        border: 1px solid var(--accent);
+        color: var(--accent-ink);
+        padding: 10px;
+        border-radius: var(--r-s);
+        font-family: var(--font-body);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-size: 0.78rem;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        transition:
+          filter 0.15s ease,
+          transform 0.15s ease;
+      }
+      .btn-visit:hover {
+        filter: brightness(1.08);
+        transform: translateY(-1px);
+      }
+
+      .version-tag {
+        text-align: center;
+        font-family: var(--font-mono);
+        font-size: 0.66rem;
+        letter-spacing: 0.02em;
+        color: var(--text-2);
+      }
+
+      /* ================== PREVIEW TOGGLE ================== */
+      .pref-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 14px;
+        padding-top: 12px;
+        border-top: 1px solid var(--line-1);
+      }
+      .switch {
+        position: relative;
+        width: 34px;
+        height: 18px;
+        border-radius: 999px;
+        border: 1px solid var(--line-2);
+        background: var(--bg-3);
+        cursor: pointer;
+        padding: 0;
+        transition:
+          background-color 0.15s ease,
+          border-color 0.15s ease;
+      }
+      .switch::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--text-2);
+        transition:
+          transform 0.15s ease,
+          background-color 0.15s ease;
+      }
+      .switch[aria-checked="true"] {
+        background: var(--accent-dim);
+        border-color: var(--accent-border);
+      }
+      .switch[aria-checked="true"]::after {
+        transform: translateX(16px);
+        background: var(--accent);
+      }
+
+      /* ================== MAIN CONTENT ================== */
+      .main-content {
+        flex-grow: 1;
+        padding: 36px 40px;
+        overflow-y: auto;
+        position: relative;
+      }
+      .page-header {
+        margin-bottom: 28px;
+        border-bottom: 1px solid var(--line-1);
+        padding-bottom: 14px;
+      }
+
+      .page-title {
+        font-family: var(--font-display);
+        font-size: 2.5rem;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        color: var(--text-0);
+      }
+
+      .page-subtitle {
+        color: var(--text-2);
+        font-size: 0.88rem;
+        margin-top: 4px;
+      }
+
+      /* ================== GRID & CARDS ================== */
+      .tab-pane {
+        display: none;
+      }
+      .tab-pane.active {
+        display: block;
+        animation: fadeIn 0.2s ease;
+      }
+      .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(266px, 1fr));
+        gap: 18px;
+      }
+      .tool-card {
+        background: var(--bg-1);
+        border: 1px solid var(--line-1);
+        border-radius: var(--r-m);
+        overflow: hidden;
+        transition:
+          border-color 0.15s ease,
+          transform 0.15s ease;
+      }
+      .tool-card:hover {
+        border-color: var(--line-2);
+        transform: translateY(-2px);
+      }
+
+      .card-preview {
+        aspect-ratio: 16 / 9;
+        width: 100%;
+        background: var(--bg-2);
+        position: relative;
+        overflow: hidden;
+        border-bottom: 1px solid var(--line-1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        contain: layout paint;
+      }
+      /* Live preview: the real overlay page rendered at 1920x1080,
+         then scaled down by JS to fit the card width. */
+      .card-preview iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1920px;
+        height: 1080px;
+        border: 0;
+        background: transparent;
+        transform-origin: top left;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.25s ease;
+      }
+      /* iframe fades in only once it has loaded; the glyph shows until then */
+      .card-preview.is-live iframe {
+        opacity: 1;
+      }
+      .preview-glyph {
+        font-family: var(--font-display);
+        font-size: 2.1rem;
+        letter-spacing: 0.04em;
+        color: var(--line-2);
+      }
+      .preview-tag {
+        position: absolute;
+        left: 8px;
+        bottom: 8px;
+        z-index: 1;
+        font-family: var(--font-mono);
+        font-size: 0.63rem;
+        color: var(--text-1);
+        background: rgba(0, 0, 0, 0.45);
+        padding: 2px 6px;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .card-body {
+        padding: 14px;
+      }
+      .card-title {
+        font-family: var(--font-display);
+        font-size: 1.3rem;
+        margin: 0 0 2px 0;
+        color: var(--text-0);
+        letter-spacing: 0.01em;
+      }
+      .card-path {
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+        color: var(--text-2);
+        margin: 0 0 14px 0;
+      }
+      .card-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--bg-2);
+        border: 1px solid var(--line-1);
+        color: var(--text-1);
+        padding: 9px 8px;
+        border-radius: var(--r-s);
+        cursor: pointer;
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        font-family: var(--font-body);
+        transition:
+          background-color 0.15s ease,
+          border-color 0.15s ease,
+          color 0.15s ease;
+      }
+      .action-btn svg {
+        width: 13px;
+        height: 13px;
+        flex-shrink: 0;
+      }
+      .action-btn:hover {
+        background: var(--bg-3);
+        color: var(--text-0);
+        border-color: var(--line-2);
+      }
+
+      .action-btn.primary {
+        background: var(--accent-dim);
+        border-color: var(--accent-border);
+        color: var(--accent);
+      }
+      .action-btn.primary:hover {
+        background: var(--accent);
+        color: var(--accent-ink);
+      }
+      .action-btn.is-copied {
+        background: var(--accent) !important;
+        border-color: var(--accent) !important;
+        color: var(--accent-ink) !important;
+      }
+
+      /* ================== ACCESSIBILITY / MOTION ================== */
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .status-dot {
+          animation: none;
+        }
+        .tool-card,
+        .btn-visit,
+        .action-btn,
+        .nav-item {
+          transition: none;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .sidebar {
+          width: 80px;
+          padding: 18px 10px;
+        }
+        .app-brand,
+        .status-panel,
+        .page-subtitle,
+        .sidebar-footer {
+          display: none;
+        }
+        .nav-item {
+          justify-content: center;
+          padding: 12px 0;
+        }
+        .nav-label {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          white-space: nowrap;
+        }
+        .main-content {
+          padding: 28px 22px;
+        }
+      }
+
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.35;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--line-2);
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #3f4954;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-field" aria-hidden="true"></div>
+
+    <aside class="sidebar">
+      <div class="app-brand">
+        <!-- <img src="Assets/Other/OVERLAYTOOLLOGO.png" alt="Overlay Tool" /> -->
+      </div>
+
+      <div class="status-panel">
+        <div class="status-row">
+          <span class="status-label">Server status</span>
+          <span class="status-pill" id="statusPill">
+            <span class="status-dot"></span>
+            <span id="statusText">Checking</span>
+          </span>
+        </div>
+        <div class="ip-row">
+          <span class="ip-address" id="sidebarIpDisplay">Loading&hellip;</span>
+          <button
+            class="ip-copy-btn"
+            id="ipCopyBtn"
+            type="button"
+            aria-label="Copy server address"
+            title="Copy server address"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="9" y="9" width="13" height="13" rx="2" />
+              <path
+                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+              />
+            </svg>
+          </button>
+        </div>
+        <div class="pref-row">
+          <span class="status-label">Live preview</span>
+          <button
+            class="switch"
+            id="previewToggle"
+            type="button"
+            role="switch"
+            aria-checked="true"
+            aria-label="Toggle live previews"
+            title="Turn live previews on/off (saves CPU/GPU)"
+          ></button>
+        </div>
+      </div>
+
+      <nav class="nav-menu" role="tablist" aria-label="Overlay sections">
+        <button
+          class="nav-item active"
+          data-tab-target="#control"
+          role="tab"
+          aria-selected="true"
+          aria-controls="control"
+        >
+          <span class="nav-icon" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="4" y1="21" x2="4" y2="14" />
+              <line x1="4" y1="10" x2="4" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12" y2="3" />
+              <line x1="20" y1="21" x2="20" y2="16" />
+              <line x1="20" y1="12" x2="20" y2="3" />
+              <line x1="1" y1="14" x2="7" y2="14" />
+              <line x1="9" y1="8" x2="15" y2="8" />
+              <line x1="17" y1="16" x2="23" y2="16" />
+            </svg>
+          </span>
+          <span class="nav-label">Control Panel</span>
+        </button>
+        <button
+          class="nav-item"
+          data-tab-target="#display"
+          role="tab"
+          aria-selected="false"
+          aria-controls="display"
+        >
+          <span class="nav-icon" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+            </svg>
+          </span>
+          <span class="nav-label">Display Overlay</span>
+        </button>
+        <button
+          class="nav-item"
+          data-tab-target="#utility"
+          role="tab"
+          aria-selected="false"
+          aria-controls="utility"
+        >
+          <span class="nav-icon" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
+            </svg>
+          </span>
+          <span class="nav-label">Utility Overlay</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a
+          href="https://www.falsejl.my.id"
+          target="_blank"
+          rel="noopener"
+          class="btn-visit"
+          >Visit Site</a
+        >
+        <div class="version-tag">MLBB ASSETS OVERLAY TOOL V1.0</div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div
+        id="control"
+        class="tab-pane active"
+        role="tabpanel"
+        aria-labelledby="control"
+      >
+        <div class="page-header">
+          <h1 class="page-title">Control Hub</h1>
+          <div class="page-subtitle">
+            Manage game states, scores, and drafting phases.
+          </div>
+        </div>
+        <div class="tools-grid" id="controlGrid"></div>
+      </div>
+
+      <div
+        id="display"
+        class="tab-pane"
+        role="tabpanel"
+        aria-labelledby="display"
+      >
+        <div class="page-header">
+          <h1 class="page-title">Display Overlay</h1>
+          <div class="page-subtitle">
+            Main broadcast screens. Use "Localhost" if the source runs on this
+            PC.
+          </div>
+        </div>
+        <div class="tools-grid" id="displayGrid"></div>
+      </div>
+
+      <div
+        id="utility"
+        class="tab-pane"
+        role="tabpanel"
+        aria-labelledby="utility"
+      >
+        <div class="page-header">
+          <h1 class="page-title">Utility Overlay</h1>
+          <div class="page-subtitle">Supporting widgets and tickers.</div>
+        </div>
+        <div class="tools-grid" id="utilityGrid"></div>
+      </div>
+    </main>
+
+    <script>
+      const serverPort = 3000;
+      let serverIP = "localhost";
+
+      // Native size of the overlay pages (used to scale the live previews).
+      // Change these if your overlays are not 1920x1080.
+      const PREVIEW_W = 1920;
+      const PREVIEW_H = 1080;
+
+      // --- DATA FILES ---
+      const controlFiles = [
+        "control.html",
+        "controlban6.html",
+        "controller.html",
+        "postgamecontrol.html",
+        "schedulecontrol.html",
+        "panel.html",
+      ];
+      const displayFiles = [
+        "display2.html",
+        "display2ban6.html",
+        "overlay-display.html",
+        "postdraft2.html",
+        "scoreboard.html",
+        "scoreboardocr.html",
+        "previousdraft.html",
+        "notifdisplay.html",
+        "builds.html",
+        "globalban.html",
+        "matchwinner.html",
+        "viewer.html",
+        "stage-viewer.html",
+        "group-viewer.html",
+      ];
+      const utilityFiles = [
+        "postgame.html",
+        "mvpdisplay.html",
+        "scheduledisplay.html",
+        "drawdisplay3.html",
+        "postgametourna.html",
+        "team1.html",
+        "team2.html",
+        "group-matches.html",
+        "group-schedule-loop.html",
+      ];
+
+      const ICON_OPEN =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+      const ICON_COPY =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+
+      function escapeHtml(str) {
+        return str.replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
+      }
+
+      // --- IP INITIALIZATION ---
+      async function initializeIP() {
+        const ipDisplay = document.getElementById("sidebarIpDisplay");
+        const pill = document.getElementById("statusPill");
+        const statusText = document.getElementById("statusText");
+        try {
+          const response = await fetch("/serverip.txt");
+          if (!response.ok) throw new Error("Net Err");
+          const ip = (await response.text()).trim();
+          if (!ip) throw new Error("Empty IP");
+
+          serverIP = ip;
+          ipDisplay.textContent = `${serverIP}:${serverPort}`;
+          pill.classList.remove("is-offline");
+          statusText.textContent = "Online";
+        } catch (error) {
+          console.error("IP Fetch Error:", error);
+          ipDisplay.textContent = "Offline / Localhost";
+          pill.classList.add("is-offline");
+          statusText.textContent = "Offline";
+        }
+      }
+
+      // --- CARD GENERATOR ---
+      function createCard(filename, type) {
+        const title = filename
+          .replace(".html", "")
+          .replace(/([A-Z])/g, " $1")
+          .replace(/^./, (str) => str.toUpperCase());
+
+        const initials = title
+          .split(" ")
+          .filter(Boolean)
+          .slice(0, 2)
+          .map((w) => w[0].toUpperCase())
+          .join("");
+
+        const safeFilename = escapeHtml(filename);
+        const safeTitle = escapeHtml(title);
+
+        // Control pages are forms, so they keep the initials glyph.
+        // Display & utility pages get a live (scaled) preview of the real overlay.
+        const previewInner =
+          type === "control"
+            ? `<div class="preview-glyph" aria-hidden="true">${initials}</div>`
+            : `<div class="preview-glyph" aria-hidden="true">${initials}</div><iframe data-src="/${safeFilename}" allow="autoplay 'none'" tabindex="-1" scrolling="no" title="Preview of ${safeTitle}"></iframe>`;
+
+        let buttons;
+        if (type === "control") {
+          buttons = `
+            <button class="action-btn primary open-btn" data-url="http://${serverIP}:${serverPort}/${safeFilename}">
+              ${ICON_OPEN}<span>Open</span>
+            </button>
+            <button class="action-btn copy-btn" data-url="http://${serverIP}:${serverPort}/${safeFilename}">
+              ${ICON_COPY}<span>Copy IP</span>
+            </button>
+          `;
+        } else {
+          buttons = `
+            <button class="action-btn primary copy-btn" data-url="http://localhost:${serverPort}/${safeFilename}">
+              ${ICON_COPY}<span>Localhost</span>
+            </button>
+            <button class="action-btn copy-btn" data-url="http://${serverIP}:${serverPort}/${safeFilename}">
+              ${ICON_COPY}<span>Net IP</span>
+            </button>
+          `;
+        }
+
+        return `
+          <div class="tool-card">
+            <div class="card-preview">
+              ${previewInner}
+              <div class="preview-tag">/${safeFilename}</div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">${safeTitle}</h3>
+              <p class="card-path">${safeFilename}</p>
+              <div class="card-actions">
+                ${buttons}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // --- PREVIEW ENGINE (laptop-friendly) ---
+      const MAX_LIVE = 8;
+      const STAGGER_MS = 180;
+      const THROTTLE_MS = 250;
+      const PREF_KEY = "mlbb.livePreview";
+
+      let previewsEnabled = true;
+      try {
+        previewsEnabled = localStorage.getItem(PREF_KEY) !== "off";
+      } catch (err) {
+        /* ignore */
+      }
+
+      const visiblePreviews = new Set();
+      let loadQueue = [];
+      let queueTimer = null;
+      let hoverCard = null;
+
+      const FREEZE_CSS =
+        "*,*::before,*::after{animation-duration:0.001s!important;" +
+        "animation-delay:0s!important;animation-iteration-count:1!important;" +
+        "transition:none!important;scroll-behavior:auto!important}";
+
+      function preparePreviewFrame(frame) {
+        try {
+          const win = frame.contentWindow;
+          const doc = frame.contentDocument;
+          if (win && doc) {
+            // 1) mute
+            doc.querySelectorAll("audio, video").forEach((m) => {
+              m.muted = true;
+              m.pause();
+            });
+            win.HTMLMediaElement.prototype.play = function () {
+              this.muted = true;
+              return Promise.resolve();
+            };
+            ["AudioContext", "webkitAudioContext"].forEach((name) => {
+              if (win[name])
+                win[name].prototype.resume = () => Promise.resolve();
+            });
+
+            // 2) freeze CSS animations at their end state
+            const style = doc.createElement("style");
+            style.textContent = FREEZE_CSS;
+            (doc.head || doc.documentElement).appendChild(style);
+            frame._freezeStyle = style;
+
+            // 3) throttle JS animation loops
+            frame._rafOrig = win.requestAnimationFrame;
+            frame._cafOrig = win.cancelAnimationFrame;
+            frame._rafSlow = (cb) =>
+              win.setTimeout(() => cb(win.performance.now()), THROTTLE_MS);
+            frame._cafSlow = (id) => {
+              win.clearTimeout(id);
+              frame._cafOrig.call(win, id);
+            };
+            win.requestAnimationFrame = frame._rafSlow;
+            win.cancelAnimationFrame = frame._cafSlow;
+          }
+        } catch (err) {
+          /* cross-origin or blocked: still show the preview */
+        }
+        frame.parentElement.classList.add("is-live");
+      }
+
+      // Hover = run at normal speed, leave = back to eco mode
+      function setPreviewActive(frame, active) {
+        if (!frame || frame.dataset.loaded !== "1" || !frame._freezeStyle)
+          return;
+        try {
+          const win = frame.contentWindow;
+          frame._freezeStyle.disabled = active;
+          win.requestAnimationFrame = active ? frame._rafOrig : frame._rafSlow;
+          win.cancelAnimationFrame = active ? frame._cafOrig : frame._cafSlow;
+        } catch (err) {
+          /* ignore */
+        }
+      }
+
+      function loadFrame(frame) {
+        if (frame.dataset.loaded === "1") return;
+        frame.dataset.loaded = "1";
+        frame.onload = () => preparePreviewFrame(frame);
+        frame.src = frame.dataset.src;
+      }
+
+      function unloadFrame(frame) {
+        if (frame.dataset.loaded !== "1") return;
+        frame.dataset.loaded = "0";
+        frame.onload = null;
+        frame._freezeStyle = null;
+        frame.parentElement.classList.remove("is-live");
+        frame.src = "about:blank"; // frees the page's memory + stops its scripts
+      }
+
+      function runQueue() {
+        if (queueTimer || !loadQueue.length) return;
+        loadFrame(loadQueue.shift());
+        queueTimer = setTimeout(() => {
+          queueTimer = null;
+          runQueue();
+        }, STAGGER_MS);
+      }
+
+      function updatePreviews() {
+        const pane = document.querySelector(".tab-pane.active");
+        const frames = [...document.querySelectorAll(".tab-pane iframe")];
+        const canRun = previewsEnabled && !document.hidden && pane;
+
+        const want = new Set();
+        if (canRun) {
+          frames
+            .filter((f) => pane.contains(f) && visiblePreviews.has(f))
+            .slice(0, MAX_LIVE)
+            .forEach((f) => want.add(f));
+        }
+
+        loadQueue = [];
+        frames.forEach((f) => {
+          if (pane && pane.contains(f)) {
+            const w = f.parentElement.clientWidth;
+            if (w > 0) f.style.transform = `scale(${w / PREVIEW_W})`;
+          }
+          if (want.has(f)) {
+            if (f.dataset.loaded !== "1") loadQueue.push(f);
+          } else {
+            unloadFrame(f);
+          }
+        });
+        runQueue();
+      }
+
+      function initPreviews() {
+        // Track which preview cards are on screen
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((en) => {
+              const f = en.target.querySelector("iframe");
+              if (!f) return;
+              if (en.isIntersecting) visiblePreviews.add(f);
+              else visiblePreviews.delete(f);
+            });
+            updatePreviews();
+          },
+          { root: document.querySelector(".main-content"), rootMargin: "80px" },
+        );
+        document.querySelectorAll(".card-preview").forEach((el) => {
+          if (el.querySelector("iframe")) io.observe(el);
+        });
+
+        // ON/OFF toggle (remembered)
+        const toggle = document.getElementById("previewToggle");
+        toggle.setAttribute("aria-checked", String(previewsEnabled));
+        toggle.addEventListener("click", () => {
+          previewsEnabled = !previewsEnabled;
+          toggle.setAttribute("aria-checked", String(previewsEnabled));
+          try {
+            localStorage.setItem(PREF_KEY, previewsEnabled ? "on" : "off");
+          } catch (err) {
+            /* ignore */
+          }
+          updatePreviews();
+        });
+
+        // Hover a card to preview it at full speed
+        document.body.addEventListener("mouseover", (e) => {
+          const card = e.target.closest(".tool-card");
+          if (card === hoverCard) return;
+          if (hoverCard)
+            setPreviewActive(hoverCard.querySelector("iframe"), false);
+          hoverCard = card;
+          if (card) setPreviewActive(card.querySelector("iframe"), true);
+        });
+
+        document.addEventListener("visibilitychange", updatePreviews);
+        window.addEventListener("resize", updatePreviews);
+        updatePreviews();
+      }
+
+      // --- SAFE CLIPBOARD COPY (HTTP & HTTPS) ---
+      function copyTextToClipboard(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text);
+        }
+        return new Promise((resolve, reject) => {
+          const textArea = document.createElement("textarea");
+          textArea.value = text;
+          textArea.style.position = "fixed";
+          textArea.style.left = "-9999px";
+          textArea.style.top = "0";
+          document.body.appendChild(textArea);
+          textArea.focus();
+          textArea.select();
+          try {
+            const successful = document.execCommand("copy");
+            document.body.removeChild(textArea);
+            if (successful) resolve();
+            else reject(new Error("ExecCommand Failed"));
+          } catch (err) {
+            document.body.removeChild(textArea);
+            reject(err);
+          }
+        });
+      }
+
+      function flashCopied(btn) {
+        const original = btn.innerHTML;
+        btn.classList.add("is-copied");
+        btn.innerHTML = `${ICON_COPY}<span>Copied</span>`;
+        setTimeout(() => {
+          btn.innerHTML = original;
+          btn.classList.remove("is-copied");
+        }, 1400);
+      }
+
+      // --- CORE LOGIC ---
+      async function renderApp() {
+        await initializeIP();
+
+        document.getElementById("controlGrid").innerHTML = controlFiles
+          .map((f) => createCard(f, "control"))
+          .join("");
+        document.getElementById("displayGrid").innerHTML = displayFiles
+          .map((f) => createCard(f, "display"))
+          .join("");
+        document.getElementById("utilityGrid").innerHTML = utilityFiles
+          .map((f) => createCard(f, "utility"))
+          .join("");
+
+        document
+          .getElementById("ipCopyBtn")
+          .addEventListener("click", async () => {
+            const text =
+              document.getElementById("sidebarIpDisplay").textContent;
+            try {
+              await copyTextToClipboard(text);
+              flashCopied(document.getElementById("ipCopyBtn"));
+            } catch (err) {
+              console.error("Copy Error:", err);
+            }
+          });
+
+        document.body.addEventListener("click", async (e) => {
+          // Tab switching
+          const tabBtn = e.target.closest("[data-tab-target]");
+          if (tabBtn) {
+            const targetId = tabBtn.dataset.tabTarget;
+
+            document.querySelectorAll(".nav-item").forEach((b) => {
+              b.classList.remove("active");
+              b.setAttribute("aria-selected", "false");
+            });
+            tabBtn.classList.add("active");
+            tabBtn.setAttribute("aria-selected", "true");
+
+            document
+              .querySelectorAll(".tab-pane")
+              .forEach((p) => p.classList.remove("active"));
+            document.querySelector(targetId).classList.add("active");
+
+            updatePreviews();
+            return;
+          }
+
+          // Open button
+          const openBtn = e.target.closest(".open-btn");
+          if (openBtn) {
+            window.open(openBtn.dataset.url, "_blank");
+            return;
+          }
+
+          // Copy button
+          const copyBtn = e.target.closest(".copy-btn");
+          if (copyBtn) {
+            try {
+              await copyTextToClipboard(copyBtn.dataset.url);
+              flashCopied(copyBtn);
+            } catch (err) {
+              console.error("Copy Error:", err);
+              alert(
+                "Could not copy automatically. Copy manually:\n" +
+                  copyBtn.dataset.url,
+              );
+            }
+          }
+        });
+
+        initPreviews();
+      }
+
+      renderApp();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,439 @@
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Rajdhani:wght@700&display=swap");
+
+@font-face {
+  font-family: "Roboto Condensed";
+  src: url("Assets/Font/RobotoCondensed-Bold.ttf") format("truetype");
+}
+
+:root {
+  --stats-text: #111111;
+  --plate-text: #ffffff;
+  --blue-accent: #ff7200;
+  --red-accent: #b60000;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 1920px;
+  height: 1080px;
+  margin: 0;
+  overflow: hidden;
+  background: transparent !important;
+}
+
+body {
+  color: var(--stats-text);
+  font-family: "Bebas Neue", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.scoreboard {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  background: transparent;
+}
+
+.scoreboard-bar {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1250px;
+  height: 100px;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: 115px 445px 130px 445px 115px;
+  background: transparent;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.logo img {
+  width: 82px;
+  height: 82px;
+  object-fit: contain;
+}
+
+.team-block {
+  display: grid;
+  grid-template-rows: 38px 62px;
+  background: transparent;
+}
+
+.metrics {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-content: space-evenly;
+  gap: 0;
+  padding: 0 12px;
+  background: transparent;
+}
+
+.metric {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.metric span {
+  display: none;
+}
+.metric strong {
+  min-width: 40px;
+  color: var(--stats-text);
+  font-family: Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.metric.gold strong {
+  min-width: 70px;
+}
+.metric.gold strong::before {
+  content: none;
+}
+
+.team-footer {
+  display: grid;
+  align-items: stretch;
+  background: transparent;
+}
+
+/* Blue: NAME | LINE SCORE | KILL SCORE */
+.blue-team .team-footer {
+  grid-template-columns: 235px 92px 118px;
+}
+/* Red: KILL SCORE | LINE SCORE | NAME */
+.red-team .team-footer {
+  grid-template-columns: 118px 92px 235px;
+}
+
+.team-name,
+.kill-score {
+  font-family: "Anton", Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--plate-text);
+  background: transparent;
+  clip-path: none;
+}
+
+.team-name {
+  font-family: "Anton", Arial, sans-serif;
+  overflow: hidden;
+  padding: 0 16px;
+  font-size: 36px;
+  font-weight: 300;
+  letter-spacing: 1.5px;
+  white-space: nowrap;
+  color: #ffffff;
+  margin-top: 8px;
+
+  /* Idagdag ito para sa mas crisp na rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.kill-score {
+  font-size: 58px;
+  font-weight: 900;
+  line-height: 1;
+  position: relative; /* Basehan ng turtle container */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 9px;
+}
+
+/* TEAM NAME: naka-center sa loob ng kulay na plate (hindi sa buong column) */
+:root {
+  --name-plate-width: 140px; /* lapad ng pula/orange na plate; ito ang i-adjust */
+}
+.blue-team .team-name {
+  width: var(--name-plate-width);
+  justify-self: start;
+  justify-content: center;
+  padding: 0 8px;
+}
+.red-team .team-name {
+  width: var(--name-plate-width);
+  justify-self: end;
+  justify-content: center;
+  padding: 0 8px;
+}
+
+/* KILL SCORE: ipasok papunta sa gitna (padding = 2x ng shift) */
+.blue-team .kill-score {
+  padding-left: 24px; /* gumagalaw pakanan ng ~12px */
+}
+.red-team .kill-score {
+  padding-right: 24px; /* gumagalaw pakaliwa ng ~12px */
+}
+
+.line-score {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+}
+
+.line-score .dot {
+  width: 12px;
+  height: 35px;
+  background: #22222288;
+
+  transform: skewX(15deg);
+}
+
+/* Laging nagsisimula ang dots sa gilid ng KILL SCORE, tapos lumalaki papunta sa name */
+#blue-score-display {
+  flex-direction: row-reverse; /* start = kanan (katabi ng kill score) */
+  justify-content: flex-start;
+  margin-left: 0;
+  margin-right: 12px; /* distansya mula sa kill score */
+}
+
+#red-score-display {
+  flex-direction: row; /* start = kaliwa (katabi ng kill score) */
+  justify-content: flex-start;
+  margin-right: 0;
+  margin-left: 12px; /* distansya mula sa kill score */
+}
+
+#blue-score-display .dot {
+  transform: skewX(15deg);
+}
+
+#red-score-display .dot {
+  transform: skewX(-15deg);
+}
+
+/* Orange para sa Blue side kapag active */
+#blue-score-display .dot.active {
+  background: #ff7200;
+  opacity: 1;
+}
+
+/* Red para sa Red side kapag active */
+#red-score-display .dot.active {
+  background: #ff0101;
+  opacity: 1;
+}
+
+/* ===== TURTLE COUNTER STYLES ===== */
+.turtle-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  position: absolute;
+  bottom: -35px; /* Nasa loob mismo ng box, sa ilalim ng numero */
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Blue side: naka-align sa kanan */
+.blue-turtle {
+  right: 8px;
+  left: auto;
+  transform: none;
+}
+
+/* Red side: naka-align sa kaliwa */
+.red-turtle {
+  left: 8px;
+  right: auto;
+  transform: none;
+}
+
+.turtle-icon-img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  /* GAWING PUTI ANG ICON na may shadow */
+  filter: brightness(0) invert(1) drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.6));
+}
+
+.center-block {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+  border: 0;
+}
+
+.timer {
+  width: 100%;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(1, 1, 1);
+  background: transparent;
+  font-family: Arial, sans-serif;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.tournament-badge {
+  display: none;
+}
+
+.goldlead {
+  position: absolute;
+  top: 115px;
+  left: 50%;
+  min-width: 94px;
+  transform: translateX(-50%);
+  color: var(--plate-text);
+  background: transparent;
+  font-family: "Roboto Condensed", Arial, sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+  -webkit-text-stroke: 1px #17314a;
+  paint-order: stroke fill;
+  text-shadow:
+    1px 1px 0 #17314a,
+    -1px -1px 0 #17314a,
+    0 2px 2px rgba(0, 0, 0, 0.7);
+  transition:
+    left 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s ease;
+}
+
+.goldlead.blue-lead {
+  left: -300%;
+}
+.goldlead.red-lead {
+  left: 400%;
+}
+.goldlead.even {
+  opacity: 0;
+}
+
+.engine-starting {
+  color: #ff7200 !important;
+  animation: pulse-engine 1s infinite alternate;
+}
+
+@keyframes pulse-engine {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.hide {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+
+/* ===== MATCH INFO BLOCK (Right Side - Stacked) ===== */
+.matchinfo-bar {
+  position: absolute;
+  top: 0;
+  left: 1578px;
+  width: 169px;
+  height: 107px;
+  display: flex;
+  font-family: "Roboto Condensed", Arial, sans-serif;
+  text-transform: uppercase;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.matchinfo-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Inayos ang gap para pantay-pantay */
+  padding: 0;
+  color: #ffffff;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  box-shadow: none;
+}
+
+.matchinfo-content > span {
+  display: block;
+  line-height: 1.1;
+}
+
+/* STAGE (Halimbawa: KNOCKOUT STAGE) */
+.matchinfo-content > span:nth-child(1) {
+  font-size: 17px;
+  font-weight: 900;
+}
+
+/* GROUP / DAY (Halimbawa: DAY 2) */
+.matchinfo-content > span:nth-child(2) {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* MATCH - GAME (Halimbawa: SEMI-FINALS 2 - GAME 5) */
+.matchinfo-content > span:nth-child(3) {
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 5px;
+}
+
+.matchinfo-divider {
+  display: none;
+}
+
+.matchinfo-content::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 11px solid #ffffff;
+}
+
+.matchinfo-content::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-right: 11px solid #ffffff;
+}

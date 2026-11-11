@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <link rel="stylesheet" href="postgametourna.css" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Display postdraft</title>
+  </head>
+  <body>
+    <div class="mainbox">
+      <div class="upper">
+        <div class="logoteam">
+          <img id="displayImage1" src="" alt="Logo 1 Tidak Ada" />
+        </div>
+
+        <div class="teamnameblue">
+          <div id="name-box-1" class="name-box"></div>
+        </div>
+
+        <div class="scoreinfo">
+          <div class="score-dots" id="blue-score-display"></div>
+        </div>
+
+        <div class="midscore">
+          <!-- <img src="Assets/Other/CH-Logo-Updated.png" alt="" /> -->
+        </div>
+
+        <div class="scoreinfo">
+          <div class="score-dots" id="red-score-display"></div>
+        </div>
+
+        <div class="teamnamered">
+          <div id="name-box-8" class="name-box"></div>
+        </div>
+
+        <div class="logoteam">
+          <img id="displayImage2" src="" alt="Logo 2 Tidak Ada" />
+        </div>
+      </div>
+
+      <div class="lower"></div>
+    </div>
+
+    <audio id="hero-voice" muted></audio>
+  </body>
+  <script src="script/displayhero.js"></script>
+  <script src="script/displaynicknamelogo.js"></script>
+  <script src="script/laneimg.js"></script>
+  <script>
+    function createDots(containerId, total) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = "";
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement("span");
+        dot.classList.add("dot");
+        container.appendChild(dot);
+      }
+    }
+
+    function getWinsNeeded(format) {
+      if (format === 3) return 2;
+      if (format === 5) return 3;
+      if (format === 7) return 4;
+      return 2;
+    }
+
+    async function updateScoreDots() {
+      try {
+        const response = await fetch("/api/matchdata");
+        const data = await response.json();
+
+        const blueScore = data.teamdata.blueteam.score || 0;
+        const redScore = data.teamdata.redteam.score || 0;
+        const format = data.matchFormat || 3;
+        const winsNeeded = getWinsNeeded(format);
+
+        createDots("blue-score-display", winsNeeded);
+        createDots("red-score-display", winsNeeded);
+
+        document
+          .querySelectorAll("#blue-score-display .dot")
+          .forEach((dot, i) => {
+            dot.classList.toggle("active", i < blueScore);
+          });
+        document
+          .querySelectorAll("#red-score-display .dot")
+          .forEach((dot, i) => {
+            dot.classList.toggle("active", i < redScore);
+          });
+      } catch (e) {
+        console.error("Failed to update score dots:", e);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      updateScoreDots();
+    });
+  </script>
+</html>

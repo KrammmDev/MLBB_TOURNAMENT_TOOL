@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stage Viewer — Vertical Stack</title>
+    <style>
+      @font-face {
+        font-family: "Big Noodle Titling";
+        src: url("Assets/Font/big_noodle_titling.ttf") format("truetype");
+        font-display: swap;
+      }
+
+      :root {
+        --display:
+          "Big Noodle Titling", "Bahnschrift SemiCondensed", "Arial Narrow",
+          sans-serif;
+        --ui:
+          "Bahnschrift SemiCondensed", "Bahnschrift", "Segoe UI", Arial,
+          sans-serif;
+        --panel-bg: #0d0000;
+        --panel-bg-alt: #1a0500;
+        --panel-border: #3a0000;
+        --gold: #ffb380;
+        --gold-dim: #c96a10;
+        --cyan: #ff7200;
+        --text: #ffffff;
+        --text-dim: #a08080;
+        --text-muted: #806060;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: transparent;
+        font-family: var(--ui);
+        color: var(--text);
+      }
+
+      #stage {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        transform-origin: 0 0;
+        background: transparent;
+      }
+
+      #board {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+      }
+
+      .groups-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+        justify-content: center;
+        height: 100%;
+        max-height: 100%;
+      }
+
+      .group-col {
+        width: 420px;
+        display: flex;
+        flex-direction: column;
+        background: var(--panel-bg);
+        border: 1px solid var(--panel-border);
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+        flex-shrink: 0;
+      }
+
+      .group-header {
+        background: linear-gradient(
+          90deg,
+          #a01010 0%,
+          #7a0808 18%,
+          #3a0000 50%,
+          #7a0808 82%,
+          #a01010 100%
+        );
+        color: #ffffff;
+        font-family: var(--display);
+        font-size: 32px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        padding: 8px 18px 6px;
+        line-height: 1;
+        border-bottom: 2px solid #ff7200;
+        text-align: left;
+        text-shadow:
+          0 2px 4px rgba(0, 0, 0, 1),
+          0 0 6px rgba(0, 0, 0, 0.8);
+      }
+
+      .group-rows {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .row {
+        position: relative;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 55px 1fr;
+        align-items: center;
+        padding: 0 18px;
+        height: 44px;
+        border-bottom: 1px solid var(--panel-border);
+        background: var(--panel-bg);
+        transition: background 0.15s ease;
+      }
+      .row:last-child {
+        border-bottom: none;
+      }
+      .row.alt {
+        background: var(--panel-bg-alt);
+      }
+
+      .row-rank {
+        font-family: var(--display);
+        font-size: 26px;
+        line-height: 1;
+        color: var(--gold);
+        text-align: center;
+        letter-spacing: 1px;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+      }
+      .row.eliminated .row-rank {
+        color: var(--cyan);
+      }
+
+      .row-team {
+        font-family: var(--display);
+        font-size: 28px;
+        letter-spacing: 1.5px;
+        color: var(--text);
+        text-transform: uppercase;
+        text-align: right;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-left: 10px;
+        text-shadow:
+          0 1px 3px rgba(0, 0, 0, 0.95),
+          0 0 8px rgba(0, 0, 0, 0.6);
+      }
+      .row-team.tbd {
+        color: var(--text-dim);
+        font-weight: 500;
+      }
+
+      .row.qualified {
+        background: linear-gradient(
+          90deg,
+          rgba(201, 106, 16, 0.18) 0%,
+          rgba(201, 106, 16, 0) 60%
+        );
+      }
+
+      /* ===== TEAM ADDED ANIMATION ===== */
+      .row.just-added {
+        animation: rowGlow 1.6s ease-out both;
+        z-index: 1;
+      }
+      /* Light sweep na dumadaan sa row */
+      .row.just-added::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 45%;
+        pointer-events: none;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 114, 0, 0) 0%,
+          rgba(255, 179, 128, 0.85) 50%,
+          rgba(255, 114, 0, 0) 100%
+        );
+        transform: translateX(-120%) skewX(-20deg);
+        animation: sweep 0.9s 0.1s cubic-bezier(0.3, 0.7, 0.3, 1) forwards;
+      }
+      .row.just-added .row-team {
+        animation: teamIn 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.25) both;
+      }
+      .row.just-added .row-rank {
+        animation: rankPop 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
+      }
+
+      @keyframes teamIn {
+        0% {
+          opacity: 0;
+          transform: translateX(90px) scale(1.15);
+          filter: blur(6px);
+          color: #ffb380;
+        }
+        60% {
+          opacity: 1;
+          filter: blur(0);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(0) scale(1);
+          filter: blur(0);
+        }
+      }
+      @keyframes rankPop {
+        0% {
+          transform: scale(0.2) rotate(-25deg);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1) rotate(0);
+          opacity: 1;
+        }
+      }
+      @keyframes sweep {
+        0% {
+          transform: translateX(-120%) skewX(-20deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateX(320%) skewX(-20deg);
+          opacity: 0;
+        }
+      }
+      @keyframes rowGlow {
+        0% {
+          box-shadow:
+            inset 0 0 0 0 rgba(255, 114, 0, 0),
+            0 0 0 rgba(255, 114, 0, 0);
+          background-color: #5a2000;
+        }
+        25% {
+          box-shadow:
+            inset 0 0 28px 2px rgba(255, 114, 0, 0.75),
+            0 0 22px rgba(255, 114, 0, 0.7);
+          background-color: #4a1800;
+        }
+        100% {
+          box-shadow:
+            inset 0 0 0 0 rgba(255, 114, 0, 0),
+            0 0 0 rgba(255, 114, 0, 0);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .row.just-added,
+        .row.just-added::after,
+        .row.just-added .row-team,
+        .row.just-added .row-rank {
+          animation-duration: 0.01s;
+        }
+      }
+
+      .empty-msg {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        color: var(--text-muted);
+        font-size: 24px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+      }
+      .empty-msg .sub {
+        font-size: 15px;
+        letter-spacing: 0.5px;
+        text-transform: none;
+        color: var(--text-dim);
+      }
+
+      .groups-wrap.g2 .group-col {
+        width: 560px;
+      }
+      .groups-wrap.g2 .group-header {
+        font-size: 40px;
+        padding: 12px 22px 8px;
+      }
+      .groups-wrap.g2 .row {
+        grid-template-columns: 65px 1fr;
+        height: 58px;
+        padding: 0 22px;
+      }
+      .groups-wrap.g2 .row-rank {
+        font-size: 34px;
+      }
+      .groups-wrap.g2 .row-team {
+        font-size: 38px;
+      }
+
+      .groups-wrap.g3 .group-col {
+        width: 420px;
+      }
+
+      .groups-wrap.g4 .group-col {
+        width: 380px;
+      }
+      .groups-wrap.g4 .group-header {
+        font-size: 26px;
+        padding: 6px 16px 5px;
+        letter-spacing: 2px;
+      }
+      .groups-wrap.g4 .row {
+        grid-template-columns: 48px 1fr;
+        height: 38px;
+        padding: 0 16px;
+      }
+      .groups-wrap.g4 .row-rank {
+        font-size: 22px;
+      }
+      .groups-wrap.g4 .row-team {
+        font-size: 24px;
+      }
+
+      .groups-wrap.g-many .group-col {
+        width: 340px;
+      }
+      .groups-wrap.g-many .group-header {
+        font-size: 22px;
+        padding: 5px 14px 4px;
+        letter-spacing: 2px;
+      }
+      .groups-wrap.g-many .row {
+        grid-template-columns: 42px 1fr;
+        height: 34px;
+        padding: 0 14px;
+      }
+      .groups-wrap.g-many .row-rank {
+        font-size: 20px;
+      }
+      .groups-wrap.g-many .row-team {
+        font-size: 22px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage">
+      <div id="board"></div>
+    </div>
+
+    <script>
+      const API_URL = "/api/tournament";
+      const WS_URL = `ws://${location.host}`;
+
+      let state = {
+        teams: [],
+        groups: {},
+        groupMatches: [],
+        currentStage: "setup",
+        tournamentFormat: "single",
+        numGroups: 3,
+        manualGroupAssignment: {},
+      };
+
+      // Para ma-detect kung sinong team ang bagong pasok sa group.
+      // Set ng "Group A|Team Name". Null = hindi pa nagre-render (walang animation sa first load).
+      let prevPlacements = null;
+
+      function getAdvanceCount(groupSize) {
+        if (groupSize >= 5) return 3;
+        if (groupSize === 4) return 2;
+        if (groupSize === 3) return 1;
+        if (groupSize === 2) return 1;
+        return 1;
+      }
+
+      function getGroupNames(n) {
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const names = [];
+        for (let i = 0; i < n; i++) names.push(`Group ${letters[i]}`);
+        return names;
+      }
+
+      // Compute fixed sizes base sa bilang ng teams (5-5-4 etc.)
+      // Kung walang teams pa, default sa 5-5-4 (typical format)
+      function distributeTeamsToGroups(totalTeams, numGroups) {
+        if (totalTeams === 0) {
+          // Default preview: 5-5-4 layout (14 teams, 3 groups)
+          if (numGroups === 2) return [5, 4];
+          if (numGroups === 3) return [5, 5, 4];
+          if (numGroups === 4) return [4, 4, 4, 4];
+          // Generic fallback
+          const sizes = [];
+          for (let i = 0; i < numGroups; i++) sizes.push(5);
+          return sizes;
+        }
+        const base = Math.floor(totalTeams / numGroups);
+        const remainder = totalTeams % numGroups;
+        const sizes = [];
+        for (let i = 0; i < numGroups; i++) {
+          sizes.push(base + (i < remainder ? 1 : 0));
+        }
+        return sizes;
+      }
+
+      function loadState() {
+        return fetch(API_URL)
+          .then((r) => r.json())
+          .then((data) => {
+            if (data && data.teams) {
+              state = { ...state, ...data };
+              if (!state.manualGroupAssignment)
+                state.manualGroupAssignment = {};
+              if (!state.numGroups) state.numGroups = 3;
+              return true;
+            }
+            return false;
+          })
+          .catch((e) => {
+            console.warn("Load failed:", e);
+            return false;
+          });
+      }
+
+      function escapeHtml(str) {
+        const d = document.createElement("div");
+        d.textContent = str;
+        return d.innerHTML;
+      }
+
+      /* ===== RENDER ===== */
+      function render() {
+        const board = document.getElementById("board");
+
+        // Kung Single Stage, walang groups
+        if (state.tournamentFormat === "single") {
+          prevPlacements = null;
+          board.innerHTML = `
+            <div class="empty-msg">
+              <div>Single Stage Tournament</div>
+              <div class="sub">Walang group stage. Tingnan ang bracket.</div>
+            </div>`;
+          return;
+        }
+
+        // Compute group names
+        const numGroups = state.numGroups || 3;
+        const groupNames = getGroupNames(numGroups);
+
+        // Compute expected slot sizes base sa laki ng group
+        // (kung may teams, base sa teams; kung wala, default 5-5-4)
+        const expectedSizes = distributeTeamsToGroups(
+          state.teams.length,
+          numGroups,
+        );
+
+        // Build groups data — priority:
+        // 1. state.groups (kung na-generate na)
+        // 2. manualGroupAssignment (preview)
+        // 3. Empty slots with TBC (default)
+        let groupsData = {};
+        groupNames.forEach((g) => (groupsData[g] = []));
+
+        if (state.groups && Object.keys(state.groups).length > 0) {
+          // Naka-generate na ang groups
+          Object.keys(state.groups).forEach((g) => {
+            if (groupsData[g] !== undefined) {
+              groupsData[g] = state.groups[g] || [];
+            } else {
+              groupsData[g] = state.groups[g] || [];
+            }
+          });
+        } else if (
+          state.manualGroupAssignment &&
+          Object.keys(state.manualGroupAssignment).length > 0
+        ) {
+          // Preview mode — naka-assign na ang teams
+          state.teams.forEach((team) => {
+            const g = state.manualGroupAssignment[team];
+            if (g && groupsData[g]) {
+              groupsData[g].push(team);
+            }
+          });
+        }
+        // else: lahat empty, lalabas ang TBC sa bawat slot
+
+        // ===== Detect bagong pasok na teams (para sa animation) =====
+        const currentPlacements = new Set();
+        groupNames.forEach((g) => {
+          (groupsData[g] || []).forEach((t) => {
+            if (t) currentPlacements.add(`${g}|${t}`);
+          });
+        });
+        // Walang animation sa first render (page load / refresh)
+        const newlyAdded =
+          prevPlacements === null
+            ? new Set()
+            : new Set(
+                [...currentPlacements].filter((k) => !prevPlacements.has(k)),
+              );
+        prevPlacements = currentPlacements;
+
+        // Determine layout class
+        let layoutClass = "";
+        if (groupNames.length === 2) layoutClass = "g2";
+        else if (groupNames.length === 3) layoutClass = "g3";
+        else if (groupNames.length === 4) layoutClass = "g4";
+        else layoutClass = "g-many";
+
+        let html = `<div class="groups-wrap ${layoutClass}">`;
+
+        groupNames.forEach((groupName, gi) => {
+          const teams = groupsData[groupName] || [];
+          const targetSize = expectedSizes[gi] || teams.length;
+          // Row count: kung may teams, use target size; kung wala, use target
+          const rowCount = Math.max(teams.length, targetSize);
+          const advCount = getAdvanceCount(rowCount);
+
+          html += `
+            <div class="group-col">
+              <div class="group-header">${escapeHtml(groupName)}</div>
+              <div class="group-rows">
+          `;
+
+          for (let i = 0; i < rowCount; i++) {
+            const team = teams[i];
+            const hasTeam = !!team;
+            const qualified = i < advCount;
+            const altRow = i % 2 === 1;
+            const isNew = hasTeam && newlyAdded.has(`${groupName}|${team}`);
+
+            html += `
+              <div class="row ${altRow ? "alt" : ""} ${hasTeam ? (qualified ? "qualified" : "eliminated") : ""} ${isNew ? "just-added" : ""}">
+                <div class="row-rank">${i + 1}</div>
+                <div class="row-team ${hasTeam ? "" : "tbd"}">${hasTeam ? escapeHtml(team) : "TBC"}</div>
+              </div>
+            `;
+          }
+
+          html += `</div></div>`;
+        });
+
+        html += `</div>`;
+        board.innerHTML = html;
+      }
+
+      function fit() {
+        const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+        const stage = document.getElementById("stage");
+        stage.style.transform = `translate(${(innerWidth - 1920 * s) / 2}px, ${
+          (innerHeight - 1080 * s) / 2
+        }px) scale(${s})`;
+      }
+      addEventListener("resize", fit);
+
+      let socket = null;
+      function connectWS() {
+        socket = new WebSocket(WS_URL);
+        socket.onopen = () => console.log("🔌 Stage viewer connected");
+        socket.onmessage = (e) => {
+          try {
+            const msg = JSON.parse(e.data);
+            if (msg.type === "tournament_update" && msg.data) {
+              state = { ...state, ...msg.data };
+              if (!state.manualGroupAssignment)
+                state.manualGroupAssignment = {};
+              if (!state.numGroups) state.numGroups = 3;
+              render();
+            }
+          } catch (err) {
+            console.warn("WS error:", err);
+          }
+        };
+        socket.onclose = () => setTimeout(connectWS, 2000);
+        socket.onerror = (e) => console.warn("WS error:", e);
+      }
+
+      fit();
+      loadState().then(render);
+      connectWS();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,115 @@
+/*
+ * Post-draft reveal add-on
+ * Sequence classes are controlled by postdraft-reveal.js:
+ * reveal-blue -> reveal-red -> reveal-all
+ */
+
+:root {
+  --reveal-duration: 850ms;
+  --reveal-easing: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Prevent a flash of the completed lineup before JavaScript starts. */
+.mainbox.reveal-ready .upper > *,
+.mainbox.reveal-ready .middle > .pick,
+.mainbox.reveal-ready .middle > .pickmid {
+  opacity: 0;
+}
+
+.mainbox.reveal-ready .upper > *,
+.mainbox.reveal-ready .middle > .pick,
+.mainbox.reveal-ready .middle > .pickmid {
+  transition:
+    opacity var(--reveal-duration) ease,
+    transform var(--reveal-duration) var(--reveal-easing),
+    filter var(--reveal-duration) ease;
+  will-change: opacity, transform, filter;
+}
+
+/* The two empty edge spacers should never animate. */
+.mainbox.reveal-ready .middle > .nul {
+  opacity: 1;
+}
+
+/* BLUE ELEMENTS: first logo/name/score and first five hero picks. */
+.mainbox.reveal-ready .upper > :nth-child(-n + 3),
+.mainbox.reveal-ready .middle > .pick:nth-child(-n + 6) {
+  transform: translateX(-90px) scale(0.94);
+  filter: blur(7px);
+}
+
+/* RED ELEMENTS: last score/name/logo and last five hero picks. */
+.mainbox.reveal-ready .upper > :nth-child(n + 5),
+.mainbox.reveal-ready .middle > .pick:nth-child(n + 8):nth-child(-n + 12) {
+  transform: translateX(90px) scale(0.94);
+  filter: blur(7px);
+}
+
+/* Center space/logo. */
+.mainbox.reveal-ready .upper > .midscore,
+.mainbox.reveal-ready .middle > .pickmid {
+  transform: scale(0.82);
+  filter: blur(5px);
+}
+
+/* Stage 1: blue only. */
+.mainbox.reveal-blue .upper > :nth-child(-n + 3),
+.mainbox.reveal-blue .middle > .pick:nth-child(-n + 6) {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  filter: blur(0);
+}
+
+/* Stage 2: red only. */
+.mainbox.reveal-red .upper > :nth-child(n + 5),
+.mainbox.reveal-red .middle > .pick:nth-child(n + 8):nth-child(-n + 12) {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  filter: blur(0);
+}
+
+/* Stage 3: complete lineup. */
+.mainbox.reveal-all .upper > *,
+.mainbox.reveal-all .middle > .pick,
+.mainbox.reveal-all .middle > .pickmid {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  filter: blur(0);
+}
+
+/* Cascading hero-card reveal for a broadcast-like entrance. */
+.mainbox.reveal-blue .middle > .pick:nth-child(2),
+.mainbox.reveal-red .middle > .pick:nth-child(12) {
+  transition-delay: 0ms;
+}
+.mainbox.reveal-blue .middle > .pick:nth-child(3),
+.mainbox.reveal-red .middle > .pick:nth-child(11) {
+  transition-delay: 90ms;
+}
+.mainbox.reveal-blue .middle > .pick:nth-child(4),
+.mainbox.reveal-red .middle > .pick:nth-child(10) {
+  transition-delay: 180ms;
+}
+.mainbox.reveal-blue .middle > .pick:nth-child(5),
+.mainbox.reveal-red .middle > .pick:nth-child(9) {
+  transition-delay: 270ms;
+}
+.mainbox.reveal-blue .middle > .pick:nth-child(6),
+.mainbox.reveal-red .middle > .pick:nth-child(8) {
+  transition-delay: 360ms;
+}
+
+/* Remove old delays before the final combined reveal. */
+.mainbox.reveal-all .middle > .pick {
+  transition-delay: 0ms;
+}
+
+/* Accessibility and easier debugging. */
+@media (prefers-reduced-motion: reduce) {
+  .mainbox.reveal-ready .upper > *,
+  .mainbox.reveal-ready .middle > .pick,
+  .mainbox.reveal-ready .middle > .pickmid {
+    transition-duration: 1ms;
+    transition-delay: 0ms !important;
+  }
+}

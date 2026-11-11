@@ -1,0 +1,483 @@
+@font-face {
+  font-family: "myfonts";
+  src: url("Assets/Font/big_noodle_titling.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: "Bebas Neue", sans-serif;
+  margin: 0;
+  padding: 0;
+  
+}
+
+.mainbox {
+  width: 1920px;
+  height: 1080px;
+  background-size: 100%;
+  position: relative; /* Idinagdag para ma-position absolute ang match text */
+}
+
+.upper {
+  width: 1920px;
+  height: 239px;
+  display: flex;
+}
+
+.logoteam {
+  width: 239px;
+  height: 239px;
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: 100%;
+  scale: 0.7;
+}
+
+.logoteam img {
+  width: 239px;
+  height: 150px;
+  object-fit: contain;
+  opacity: 1;
+}
+
+.teamnameblue,
+.teamnamered {
+  width: 520px;
+  height: 239px;
+  display: flex;
+  align-items: center;
+  font-family: "myfonts", sans-serif;
+  font-size: 60px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Orange na team name (kaliwa) */
+.teamnameblue {
+  background: linear-gradient(
+    180deg,
+    #ffb380 0%,
+    #ff8c00 30%,
+    #cc5a00 60%,
+    #663000 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  justify-content: flex-start;
+  margin-right: 20px;
+  margin-top: 35px;
+}
+
+/* Red na team name (kanan) */
+.teamnamered {
+  background: linear-gradient(
+    180deg,
+    #ff9a9a 0%,
+    #ff2a2a 30%,
+    #b30000 60%,
+    #4d0000 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  justify-content: flex-end;
+  margin-left: 20px;
+  margin-top: 35px;
+}
+
+.middle {
+  width: 1920px;
+  height: 680px;
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pick {
+  width: 176px;
+  height: 640px;
+  position: relative;
+  border: none;
+  margin: 0 1px; /* walang overlap, kaya walang doble na border */
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 18px rgba(255, 70, 0, 0.45); /* static, walang flicker */
+}
+
+/* Makinis na orange-to-red border na may dahan-dahang shine */
+.pick::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 4px; /* kapal ng border */
+  background: linear-gradient(
+    180deg,
+    #ff7a00 0%,
+    #ff5a00 20%,
+    #ff2a00 35%,
+    #ff8a3d 50%,
+    /* shine, malambot ang pagpasok at paglabas */ #ff2a00 65%,
+    #ff5a00 80%,
+    #ff7a00 100% /* pareho ng simula, kaya seamless ang loop */
+  );
+  background-size: 100% 200%;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: borderShine 4s linear infinite;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ===== RED SIDE: picks na may .redlane ===== */
+.pick:has(.redlane) {
+  box-shadow: inset 0 0 18px rgba(255, 0, 0, 0.45);
+}
+
+.pick:has(.redlane)::after {
+  background: linear-gradient(
+    180deg,
+    #ff2a2a 0%,
+    #e60000 20%,
+    #b30000 35%,
+    #ff5c5c 50%,
+    #b30000 65%,
+    #e60000 80%,
+    #ff2a2a 100%
+  );
+  background-size: 100% 200%;
+}
+
+@keyframes borderShine {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 200%;
+  }
+}
+
+.image-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  filter: contrast(1.1);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transform: scale(1.02);
+  margin-left: 10px;
+}
+
+.pickmid {
+  width: 140px;
+  height: 680px;
+  background-size: 100%;
+}
+
+.lower {
+  width: 1900px;
+  height: 239px;
+}
+
+/* ===== FIXED NICKNAME BARS ===== */
+.bluenick {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 10 !important;
+  height: 90px !important;
+  min-height: 90px !important;
+  box-sizing: border-box !important;
+  padding: 40px 10px 10px !important;
+  background: linear-gradient(
+    0deg,
+    rgba(255, 114, 0, 0.95) 0%,
+    rgba(255, 114, 0, 0.6) 50%,
+    rgba(255, 114, 0, 0) 100%
+  ) !important;
+  font-size: 22px !important;
+  font-family: "myfonts", sans-serif !important;
+  font-weight: bold !important;
+  color: #ffffff !important;
+  text-align: center !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9) !important;
+  width: 100% !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+}
+
+.rednick {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 10 !important;
+  height: 90px !important;
+  min-height: 90px !important;
+  box-sizing: border-box !important;
+  padding: 40px 10px 10px !important;
+  background: linear-gradient(
+    0deg,
+    rgba(255, 1, 1, 0.95) 0%,
+    rgba(255, 1, 1, 0.6) 50%,
+    rgba(255, 1, 1, 0) 100%
+  ) !important;
+  font-size: 22px !important;
+  font-family: "myfonts", sans-serif !important;
+  font-weight: bold !important;
+  color: #ffffff !important;
+  text-align: center !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9) !important;
+  width: 100% !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+}
+
+.nul {
+  width: 20px;
+}
+
+.playerholder {
+  width: 1920px;
+  height: 543px;
+  opacity: 1;
+  display: flex;
+}
+
+.playerimagebox {
+  width: 176px;
+  height: 243px;
+  margin: -2px;
+  border-radius: 15px;
+  overflow: hidden;
+  display: flex;
+  align-items: top;
+  justify-content: center;
+  margin-top: -480px;
+  border-bottom: 4px solid #000000;
+  border-left: 4px solid #000000;
+  border-right: 4px solid #000000;
+}
+
+.playerimagebox img {
+  display: flex;
+  width: 350px;
+  position: relative;
+  z-index: 2;
+  scale: 1;
+}
+
+.scoreinfo {
+  width: 100px;
+  height: 239px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+  font-size: 50px;
+  background-size: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #ffffff;
+}
+
+.midscore {
+  width: 250px;
+}
+.midscore img {
+  width: 250px;
+  scale: 0.6;
+  margin-top: 140px;
+}
+
+.name-image-box {
+  position: absolute;
+  z-index: 2;
+}
+
+.name-image-box img {
+  scale: 0.4;
+  margin-top: 400px;
+}
+
+/* ===== ROLE ICON: may bg at dikit sa border ===== */
+.lanelogo {
+  width: 56px;
+  height: 56px;
+  position: absolute;
+  z-index: 6; /* nasa ibabaw ng border shine */
+  top: 4px; /* tapat sa loob ng 4px border, walang gap */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Orange side: kanang taas na sulok */
+.bluelane {
+  right: 4px;
+  background: linear-gradient(180deg, #ff8a3d 0%, #ff5a00 100%);
+  border-radius: 0 0 0 12px; /* round lang yung loob na sulok */
+}
+
+/* Red side: kaliwang taas na sulok */
+.redlane {
+  left: 4px;
+  background: linear-gradient(180deg, #ff4d4d 0%, #cc0000 100%);
+  border-radius: 0 0 12px 0;
+}
+
+.score-dots {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+#blue-score-display {
+  flex-direction: row;
+}
+
+#blue-score-display .dot {
+  width: 25px;
+  height: 60px;
+  transform: skewX(-40deg);
+  transition: all 0.3s ease;
+}
+
+#red-score-display {
+  flex-direction: row-reverse;
+}
+
+#red-score-display .dot {
+  width: 25px;
+  height: 60px;
+  transform: skewX(40deg);
+  transition: all 0.3s ease;
+}
+
+/* =========================================
+   BAGONG SCORELINE (SOLID WHITE & DARK GLASS)
+   ========================================= */
+
+/* 1. EMPTY DOTS (Walang score) - Solid Dark */
+#blue-score-display .dot,
+#red-score-display .dot {
+  background: #1a1a1a; /* Halos itim */
+  border: 1px solid #444444; /* Manipis na gray border */
+}
+
+/* 2. ACTIVE DOTS (May score) - Solid Pure White */
+.dot.active,
+#blue-score-display .dot.active,
+#red-score-display .dot.active {
+  background: #ffffff; /* Purong puti */
+  border: 1px solid #ffffff; /* Puting border */
+  opacity: 1;
+  box-shadow: none;
+}
+
+.lanelogo img {
+  width: 65%;
+  height: 65%;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.lane-icon {
+  padding: 3px;
+}
+
+@keyframes playerFloat {
+  0% {
+    transform: translateY(0px) scale(1.05);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.05);
+  }
+  100% {
+    transform: translateY(0px) scale(1.05);
+  }
+}
+
+.image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  margin-left: 10px;
+  animation: playerFloat 4s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ===== MATCH & GAME TEXT SA PINAKA-ILALIM ===== */
+.match-game-info {
+  position: absolute;
+  bottom: 20px; /* Distansya mula sa pinaka-ilalim ng screen */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20; /* Para lumutang sa ibabaw ng lahat */
+  pointer-events: none;
+  text-align: center;
+  width: 100%;
+}
+
+.match-text {
+  font-family: "Bebas Neue", "myfonts", sans-serif;
+  font-size: 40px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.9);
+}
+
+.game-text {
+  font-family: "Bebas Neue", "myfonts", sans-serif;
+  font-size: 55px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.9);
+  margin-top: -15px; /* Pinagdidikit ang MATCH at GAME */
+}

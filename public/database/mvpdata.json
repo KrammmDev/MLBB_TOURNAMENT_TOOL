@@ -1,0 +1,21 @@
+{
+  "mvp": {
+    "checkboxId": "mvp-redteam-0",
+    "side": "red",
+    "nickname": "CONDE",
+    "heroImg": "Assets/HeroPick/Obsidia.png",
+    "playerPhoto": "Assets/player/CONDE.png",
+    "stats": {
+      "LVL": "15",
+      "KDA": "10/1/1",
+      "GOLD": 0,
+      "SPELL": "Flicker",
+      "ITEM 1": "Warrior Boots",
+      "ITEM 2": "Corrosion Scythe",
+      "ITEM 3": "Sky Piercer",
+      "ITEM 4": "Demon Hunter Sword",
+      "ITEM 5": "Golden Staff",
+      "ITEM 6": "Malefic Gun"
+    }
+  }
+}

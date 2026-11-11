@@ -1,0 +1,1770 @@
+/* =====================================================================
+   display2.css — UPDATED (new middle panel, MPL PH S18 style + turn arrows)
+   + TIMER BAR: full-width sa ilalim ng lower row
+   ===================================================================== */
+
+/* ============================== 1. FONTS & VARIABLES ============================== */
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Rajdhani:wght@700&display=swap");
+
+@font-face {
+  font-family: "myfonts";
+  src: url("Assets/Font/big_noodle_titling.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+:root {
+  --primarycolor: #fff;
+  --boredercolor: #ffffff;
+  --textcolor1: #ffffff;
+  --textcolor2: #252525;
+
+  --pick-grow: 1.5;
+  --logo-drop: -3px;
+  --bars-top: -42px;
+
+  --mid-left: #ff7200;
+  --mid-right: #ff0101;
+  --cut-top-l: 30%;
+  --cut-top-r: 70%;
+  --cut-bot-l: 35%;
+  --cut-bot-r: 65%;
+  --edge-w: 3px;
+
+  --l0: calc(var(--cut-top-l) - (var(--cut-bot-l) - var(--cut-top-l)) * 0.1);
+  --l1: calc(var(--cut-bot-l) + (var(--cut-bot-l) - var(--cut-top-l)) * 0.1);
+  --l2: calc(var(--cut-bot-l) + (var(--cut-bot-l) - var(--cut-top-l)) * 0.2);
+  --r0: calc(var(--cut-top-r) - (var(--cut-bot-r) - var(--cut-top-r)) * 0.1);
+  --r1: calc(var(--cut-bot-r) + (var(--cut-bot-r) - var(--cut-top-r)) * 0.1);
+  --r2: calc(var(--cut-bot-r) + (var(--cut-bot-r) - var(--cut-top-r)) * 0.2);
+  --band-start: 0px;
+  --band-extend: 8px;
+}
+
+body {
+  font-family: "Bebas Neue", sans-serif;
+}
+
+/* ============================== 2. PAGE LAYOUT ============================== */
+.mainbox {
+  width: 1920px;
+  height: 367px;
+  display: flex;
+  flex-direction: column;
+  position: relative; /* para sa timer bar */
+}
+
+/* TOP ROW ng middle panel: match info + score bars (60px) */
+.match-info-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 60px;
+  flex: 0 0 60px;
+  margin-bottom: 0;
+  position: relative;
+  z-index: 5;
+}
+
+#match-display {
+  font-family: "Bebas Neue", "Impact", sans-serif;
+  font-size: 22px;
+  letter-spacing: 3px;
+  color: #000000;
+  text-align: center;
+  white-space: nowrap;
+  line-height: 1;
+  padding-top: 0;
+  text-shadow: none;
+}
+
+/* isang linya lang: MATCH 1 GAME 3 */
+#match-display br {
+  display: none;
+}
+
+.upper {
+  width: 1920px;
+  height: 92.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  position: relative;
+  border-top: solid 2px #fff;
+  border-bottom: solid 2px #fff;
+  background: linear-gradient(
+    90deg,
+    #ff7200 0%,
+    #ff7200 37.7%,
+    #ffffff 37.7%,
+    #ffffff 62.3%,
+    #ff0101 62.3%,
+    #ff0101 100%
+  );
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.upper::before,
+.upper::after {
+  display: none;
+}
+
+.lower {
+  width: 1920px;
+  height: 275px;
+  background: linear-gradient(
+    90deg,
+    #ff7200 0%,
+    #ff7200 37.7%,
+    #ffffff 37.7%,
+    #ffffff 62.3%,
+    #ff0101 62.3%,
+    #ff0101 100%
+  );
+  display: flex;
+  overflow: hidden;
+  border-bottom: solid 1px #fff;
+}
+
+/* ============================== 3. UPPER BAR CONTENT ============================== */
+.upperside {
+  width: 725px;
+  height: 92.5px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.uppermid {
+  width: 470px;
+  height: 90.5px;
+  border-left: solid 1px rgba(0, 0, 0, 0.1);
+  border-right: solid 1px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #ff7200 0%, #ff0101 100%);
+}
+
+.uppermid .content {
+  position: relative;
+  z-index: 1;
+}
+
+.match-info-between {
+  text-align: center;
+  z-index: 10;
+}
+
+.match-title {
+  display: inline;
+  font-size: 22px;
+  letter-spacing: 3px;
+  color: #252525;
+  text-shadow: none;
+}
+
+.game-title {
+  display: inline;
+  margin-left: 8px;
+  font-size: 22px;
+  letter-spacing: 3px;
+  color: #3e3e3e;
+  text-shadow: none;
+}
+
+.bantextbox {
+  width: 50px;
+  height: 92.5px;
+}
+
+.coachbox {
+  width: 160px;
+  height: 74px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  box-sizing: border-box;
+}
+
+#coach-box-left {
+  align-items: flex-start;
+  padding-left: 20px;
+}
+
+#coach-box-right {
+  align-items: flex-end;
+  padding-right: 20px;
+}
+
+#coach-box-left .coach-name,
+#coach-box-left .coach-label {
+  text-align: left;
+}
+
+#coach-box-right .coach-name,
+#coach-box-right .coach-label {
+  text-align: right;
+}
+
+.coach-name {
+  font-size: 28px;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.coach-label {
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.85);
+  text-transform: uppercase;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.banholder {
+  flex: 1;
+  height: 92.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.banhero {
+  width: 74px;
+  height: 74px;
+  position: relative;
+  margin: 3px;
+  overflow: hidden;
+  border: solid 2px rgba(255, 255, 255, 0.8);
+  border-radius: 3px;
+  background-image: url(Assets/Other/bab2.png);
+  background-size: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.banhero img {
+  width: 74px;
+  height: 74px;
+  object-fit: contain;
+  scale: 3;
+  margin-top: 50px;
+  filter: grayscale() contrast(1.1) brightness(0.85);
+}
+
+.teamnameholder1,
+.teamnameholder2 {
+  width: 150px;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: #252525;
+  text-align: center;
+  overflow: visible;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: none;
+}
+
+.teamnameholder1 .name-box,
+.teamnameholder2 .name-box {
+  white-space: nowrap;
+  display: inline-block;
+  max-width: none;
+  overflow: visible;
+  text-overflow: ellipsis;
+}
+
+/* ============================== 4. HERO PICK SLOTS ============================== */
+.lowerside {
+  width: 725px;
+  height: 274.5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.pickholder {
+  width: 725px;
+  height: 227px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nickholder {
+  width: 725px;
+  height: 47.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heropick {
+  --accent: 255, 114, 0;
+  --tint-a: 42, 10, 0;
+  --tint-b: 26, 5, 0;
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+  height: 227px;
+  transition: flex-grow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  border: solid 1px rgba(255, 255, 255, 0.5);
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.2),
+    inset 0 -60px 40px -20px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.9) 100%
+  );
+}
+
+.heropick.red-side {
+  --accent: 255, 1, 1;
+  --tint-a: 42, 0, 0;
+  --tint-b: 26, 0, 0;
+}
+
+.heropick.is-growing,
+.playername.is-growing {
+  flex-grow: var(--pick-grow);
+}
+
+.heropick.is-growing {
+  z-index: 5;
+}
+
+.heropick img {
+  width: 100%;
+  height: 227px;
+  object-fit: cover;
+  scale: 1.03;
+}
+
+.heropick::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  z-index: 6;
+  pointer-events: none;
+  background:
+    linear-gradient(rgb(var(--accent)), rgb(var(--accent))) top left / 16px 2px,
+    linear-gradient(rgb(var(--accent)), rgb(var(--accent))) top left / 2px 16px,
+    linear-gradient(rgb(var(--accent)), rgb(var(--accent))) top right / 16px 2px,
+    linear-gradient(rgb(var(--accent)), rgb(var(--accent))) top right / 2px 16px,
+    linear-gradient(rgb(var(--accent)), rgb(var(--accent))) bottom left / 16px
+      2px,
+    linear-gradient(rgb(var(--accent)), rgb(var(--accent))) bottom left / 2px
+      16px,
+    linear-gradient(rgb(var(--accent)), rgb(var(--accent))) bottom right / 16px
+      2px,
+    linear-gradient(rgb(var(--accent)), rgb(var(--accent))) bottom right / 2px
+      16px;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 0 4px rgba(var(--accent), 0.9));
+}
+
+.heropick::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 6;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(var(--accent)),
+    transparent
+  );
+  box-shadow: 0 0 10px rgba(var(--accent), 0.9);
+}
+
+.hero-name {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  margin: 0;
+  padding: 6px 0;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  font-family: "Arial Narrow", "Arial", "Bebas Neue", sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #ffffff;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  white-space: nowrap;
+  overflow: hidden;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  z-index: 2;
+  pointer-events: none;
+  border: none;
+  border-radius: 0;
+  opacity: 0;
+  transform: translateY(150%);
+  transition:
+    transform 2s ease-in-out,
+    opacity 2s;
+}
+
+.hero-name.blue {
+  left: 0;
+  right: auto;
+  background: linear-gradient(
+    135deg,
+    #ffb380 0%,
+    #ff8c00 25%,
+    #ff7200 60%,
+    #cc5a00 100%
+  );
+  border-right: 2px solid #ffb380;
+}
+
+.hero-name.red {
+  right: 0;
+  left: auto;
+  background: linear-gradient(
+    135deg,
+    #ff8080 0%,
+    #ff4040 25%,
+    #ff0101 60%,
+    #cc0000 100%
+  );
+  border-left: 2px solid #ff0101;
+}
+
+.hero-name.ban {
+  display: none;
+}
+
+.heropick.blue-side .hero-name {
+  left: 0;
+  right: auto;
+  transform: translateY(150%);
+}
+
+.heropick.red-side .hero-name {
+  right: 0;
+  left: auto;
+}
+
+.hero-name.show {
+  opacity: 1;
+}
+
+.heropick.blue-side .hero-name.show,
+.heropick.red-side .hero-name.show {
+  transform: translateY(0);
+}
+
+.heropick:has(.hero-name.show) .picking-label {
+  display: none;
+}
+
+.heropick:has(.hero-name.show) .active-pick {
+  opacity: 0;
+  box-shadow: none;
+  animation: none;
+}
+
+.picking-label {
+  --size: 60px;
+  --stroke: 1.5px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scaleX(0.72);
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px; /* Space sa pagitan ng arrow at letters */
+  padding: 2px 10px;
+  font-family: "Anton", "Arial Narrow", Impact, sans-serif;
+  font-weight: 400;
+  font-size: var(--size);
+  line-height: 1;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.banhero .picking-label {
+  display: none !important;
+}
+
+.pl {
+  height: 2em;
+  overflow: hidden;
+  animation: pl-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: calc(var(--i) * 45ms);
+}
+
+.pl-track {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+  animation: roll-up 3.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  animation-delay: calc(var(--i) * 70ms);
+}
+
+.pl-track > span {
+  display: block;
+  height: 1em;
+  line-height: 1;
+}
+
+.pl-track .solid {
+  background: linear-gradient(50deg, #ff7200, #ffb380);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.pl-track .outline {
+  color: #fff;
+  -webkit-text-stroke: var(--stroke) #000;
+  paint-order: stroke fill;
+}
+
+/* ============================== 5. PLAYER NAME BOXES ============================== */
+.playername {
+  --accent: 255, 114, 0;
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+  height: 47.5px;
+  transition: flex-grow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
+  font-size: 20px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #ffffff;
+  border: solid 1px rgba(255, 255, 255, 0.3);
+  background: linear-gradient(180deg, #ff9e4d 0%, #ff7200 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.4),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.lowerside:last-child .playername {
+  --accent: 255, 1, 1;
+  background: linear-gradient(180deg, #ff4d4d 0%, #ff0101 100%);
+}
+
+/* ============================== 6. MIDDLE PANEL (MPL PH S18 style) ============================== */
+.lowermid {
+  width: 470px;
+  height: 274.5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 6; /* para lumabas yung glow sa ibabaw ng katabing pick boxes */
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+/* 3 SECTIONS (kagaya ng reference, kulay ng design mo):
+   1) top row   (y 0-60)     : MATCH INFO + score bars, white->light gray
+   2) band      (y 60-190)   : tinted wings + light trapezoid sa gitna
+                               (malapad sa taas, makitid sa baba)
+                               orange shadow sa kaliwa, red sa kanan
+   3) bottom row (y 190-274) : PICKING / arrow row
+   white line sa pinakataas at pinakababa, orange/red split line
+   sa pagitan ng mga section. */
+.lowermid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='470' height='274.5' viewBox='0 0 470 274.5'>\
+<defs>\
+<filter id='b' filterUnits='userSpaceOnUse' x='-40' y='0' width='550' height='274.5'>\
+<feGaussianBlur stdDeviation='7'/>\
+</filter>\
+<clipPath id='t'><rect x='0' y='60' width='470' height='155'/></clipPath>\
+<clipPath id='l'><rect x='0' y='0' width='235' height='274.5'/></clipPath>\
+<clipPath id='r'><rect x='235' y='0' width='235' height='274.5'/></clipPath>\
+<linearGradient id='base' x1='0' y1='0' x2='0' y2='1'>\
+<stop offset='0' stop-color='%23f7f7fa'/>\
+<stop offset='1' stop-color='%23e6e6ec'/>\
+</linearGradient>\
+<linearGradient id='wl' x1='0' y1='0' x2='1' y2='0'>\
+<stop offset='0' stop-color='%23ff7200' stop-opacity='0.55'/>\
+<stop offset='1' stop-color='%23ff7200' stop-opacity='0.18'/>\
+</linearGradient>\
+<linearGradient id='wr' x1='0' y1='0' x2='1' y2='0'>\
+<stop offset='0' stop-color='%23ff0101' stop-opacity='0.18'/>\
+<stop offset='1' stop-color='%23ff0101' stop-opacity='0.55'/>\
+</linearGradient>\
+<linearGradient id='band' x1='0' y1='0' x2='0' y2='1'>\
+<stop offset='0' stop-color='%23ffffff'/>\
+<stop offset='1' stop-color='%23ececf1'/>\
+</linearGradient>\
+<linearGradient id='split' x1='0' y1='0' x2='1' y2='0'>\
+<stop offset='0.5' stop-color='%23ff7200'/>\
+<stop offset='0.5' stop-color='%23ff0101'/>\
+</linearGradient>\
+</defs>\
+<rect width='470' height='274.5' fill='url(%23base)'/>\
+<polygon points='0,60 141,60 168.3,215 0,215' fill='%23ffffff'/>\
+<polygon points='329,60 470,60 470,215 301.7,215' fill='%23ffffff'/>\
+<g clip-path='url(%23t)'>\
+<g filter='url(%23b)'>\
+<polygon clip-path='url(%23l)' points='141,60 329,60 301.7,215 168.3,215' fill='%23ff7200' stroke='%23ff7200' stroke-width='10'/>\
+<polygon clip-path='url(%23r)' points='141,60 329,60 301.7,215 168.3,215' fill='%23ff0101' stroke='%23ff0101' stroke-width='10'/>\
+</g>\
+</g>\
+<polygon points='141,60 329,60 301.7,215 168.3,215' fill='%23ffffff'/>\
+<rect x='0' y='0' width='470' height='60' fill='url(%23band)'/>\
+<rect x='0' y='215' width='470' height='59.5' fill='url(%23band)'/>\
+<rect x='0' y='58' width='470' height='2' fill='url(%23split)' opacity='0.85'/>\
+<rect x='0' y='213' width='470' height='2' fill='url(%23split)' opacity='0.85'/>\
+<rect x='0' y='3' width='470' height='2' fill='%23000000' opacity='0.12'/>\
+<rect x='0' y='269.5' width='470' height='2' fill='%23000000' opacity='0.12'/>\
+<rect x='0' y='0' width='470' height='3' fill='%23ffffff'/>\
+<rect x='0' y='271.5' width='470' height='3' fill='%23ffffff'/>\
+</svg>")
+    center / 100% 100% no-repeat;
+}
+
+/* ============ SHINE na dumadaan sa orange (kaliwa) at red (kanan) shadow ============ */
+.lowermid::after {
+  content: "";
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 470px;
+  height: 155px;
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: screen;
+
+  /* strip sa labas ng slanted edge ng trapezoid (kung saan nakikita ang shadow) */
+  clip-path: path(
+    "M113 0 L141 0 L168.3 155 L140.3 155 Z
+     M329 0 L357 0 L329.7 155 L301.7 155 Z"
+  );
+
+  /* kaliwa = orange shine, kanan = red shine */
+  background:
+    linear-gradient(
+        180deg,
+        transparent 0%,
+        transparent 38%,
+        rgba(255, 215, 160, 0.95) 50%,
+        transparent 62%,
+        transparent 100%
+      )
+      0 0 / 50% 300% no-repeat,
+    linear-gradient(
+        180deg,
+        transparent 0%,
+        transparent 38%,
+        rgba(255, 170, 170, 0.95) 50%,
+        transparent 62%,
+        transparent 100%
+      )
+      100% 0 / 50% 300% no-repeat;
+
+  filter: blur(5px);
+  animation: shadow-shine 2.6s ease-in-out infinite;
+}
+
+@keyframes shadow-shine {
+  0% {
+    background-position:
+      0 0%,
+      100% 0%;
+  }
+  70%,
+  100% {
+    background-position:
+      0 100%,
+      100% 100%;
+  }
+}
+
+.upperlowermid {
+  width: 470px;
+  height: 130px;
+  flex: 0 0 130px;
+  display: flex;
+  align-items: center; /* ITO ANG MAGLALAGAY SA GITNA NG VERTICAL */
+  justify-content: space-between;
+  box-sizing: border-box;
+  padding: 0 3px;
+  position: relative;
+  z-index: 5;
+  padding-top: 10px; /* <--- IDINAGDAG PARA BUMABA NANG KONTI */
+}
+
+.upperlowermid::before,
+.upperlowermid::after {
+  display: none;
+}
+
+.upperlowermid > * {
+  z-index: 1;
+}
+
+.teamlogo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.upperlowermid .teamlogo-wrap {
+  width: 150px;
+  flex: 0 0 150px;
+  transform: translateY(
+    5px
+  ); /* <--- PALITAN ITO. Dati ay var(--logo-drop) o -3px. Ginawa nating 5px para bumaba */
+}
+
+.teamlogo {
+  width: 92px;
+  height: 92px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: 100%;
+}
+
+.teamlogo img {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+  scale: 0.85;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+}
+
+/* text colors: dark kasi puti na yung panel */
+.score {
+  width: 45px;
+  height: 45px;
+  margin: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #252525;
+  font-size: 50px;
+  font-weight: 700;
+  text-shadow: none;
+}
+
+.vs-container {
+  position: relative; /* kailangan para sa turn arrows */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 70px;
+}
+
+.vs {
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: #252525;
+}
+
+.countdown {
+  background: none !important;
+  font-size: 30px;
+  font-family: "Rajdhani", "Bebas Neue", sans-serif;
+  font-weight: 700;
+  color: #252525;
+  padding: 0;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: auto;
+  line-height: 1;
+}
+
+.countdown p {
+  margin: 0;
+  padding: 0;
+}
+
+.countdown.warning {
+  background-color: #ff4444;
+  color: white;
+  animation: pulse-warning 0.8s ease-in-out infinite alternate;
+}
+
+#timer {
+  font-size: 48px;
+  color: #252525;
+  text-shadow: none;
+}
+
+/* ---------- TURN ARROWS (animated, nasa gilid ng timer) ---------- */
+.turn-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 2px;
+  opacity: 0.3; /* dim kapag hindi turn ng team */
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+/* sa kaliwa ng timer, nakaturo sa Blue (orange) team */
+.turn-arrow.left {
+  right: 100%;
+  margin-right: -4px;
+  flex-direction: row-reverse; /* una = pinakamalapit sa timer */
+  --dir: -1;
+}
+
+/* sa kanan ng timer, nakaturo sa Red team */
+.turn-arrow.right {
+  left: 100%;
+  margin-left: -4px;
+  --dir: 1;
+}
+
+.turn-arrow span {
+  width: 13px;
+  height: 30px;
+  background: #9a9aa5;
+}
+
+.turn-arrow.left span {
+  clip-path: polygon(100% 0, 40% 0, 0 50%, 40% 100%, 100% 100%, 60% 50%);
+}
+
+.turn-arrow.right span {
+  clip-path: polygon(0 0, 60% 0, 100% 50%, 60% 100%, 0 100%, 40% 50%);
+}
+
+.turn-arrow.left.on span {
+  background: #ff7200;
+}
+
+.turn-arrow.right.on span {
+  background: #ff0101;
+}
+
+.turn-arrow.on {
+  opacity: 1;
+}
+
+.turn-arrow.on span {
+  animation: arrow-flow 0.9s ease-in-out infinite;
+}
+
+.turn-arrow.on span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.turn-arrow.on span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.turn-arrow.left.on {
+  filter: drop-shadow(0 0 5px rgba(255, 114, 0, 0.9));
+}
+
+.turn-arrow.right.on {
+  filter: drop-shadow(0 0 5px rgba(255, 1, 1, 0.9));
+}
+
+.lowerlowermid {
+  width: 470px;
+  height: 84.5px;
+  flex: 0 0 84.5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* ito ang nag-ce-center sa PICKING */
+  position: relative;
+  z-index: 5;
+}
+
+/* ============================== TIMER BAR (buong lapad, sa ilalim ng lower row) ============================== */
+.timerbar {
+  position: absolute;
+  top: calc(100% + 5px); /* 5px gap sa ilalim ng lower row */
+  left: 12px;
+  width: 1896px; /* 1920 - 12 - 12 */
+  height: 12px;
+  background: rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  z-index: 20;
+}
+
+/* ORIGINAL #timer-bar: nakatago na lang, source na lang ng value galing sa script mo */
+.timerbar #timer-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* MPL STYLE: dalawang kalahati, umuurong papunta sa gitna */
+.tb-half {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+}
+
+.tb-half.tb-left {
+  left: 0;
+}
+
+.tb-half.tb-right {
+  right: 0;
+}
+
+.tb-fill {
+  width: 100%;
+  height: 100%;
+  transform: scaleX(1);
+  will-change: transform;
+}
+
+.tb-left .tb-fill {
+  transform-origin: right center; /* nakaangkla sa gitna, lumiliit galing sa labas */
+  background: linear-gradient(90deg, #ff7200 0%, #ff9e4d 100%);
+  box-shadow: 0 0 10px rgba(255, 114, 0, 0.7);
+}
+
+.tb-right .tb-fill {
+  transform-origin: left center;
+  background: linear-gradient(90deg, #ff4d4d 0%, #ff0101 100%);
+  box-shadow: 0 0 10px rgba(255, 1, 1, 0.7);
+}
+
+.arrow {
+  width: 470px;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 22px;
+}
+
+.arrow img {
+  scale: 0.19;
+  filter: brightness(0.2);
+}
+
+/* ============================== 7. SCORE BARS (scoreline) ============================== */
+.score-dots {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Inalign natin nang maayos yung positioning at kulay ng score bars */
+#blue-score-display,
+#red-score-display {
+  position: absolute;
+  top: var(--bars-top);
+  z-index: 10;
+}
+
+#blue-score-display {
+  flex-direction: row;
+  left: 15px;
+  transform: none;
+}
+
+#red-score-display {
+  flex-direction: row-reverse;
+  left: auto;
+  right: 15px;
+  transform: none;
+}
+
+#blue-score-display .dot,
+#red-score-display .dot {
+  width: 10px;
+  height: 30px;
+  background: #22222288;
+
+  transform: none;
+  transition: all 0.3s ease;
+}
+
+/* Orange para sa Blue side kapag active */
+#blue-score-display .dot.active {
+  background: #ff7200;
+
+  opacity: 1;
+}
+
+/* Red para sa Red side kapag active */
+#red-score-display .dot.active {
+  background: #ff0101;
+
+  opacity: 1;
+}
+
+.score-slot {
+  display: inline-block;
+  width: 6px;
+  height: 40px;
+  background-color: transparent;
+  border: 1px solid var(--boredercolor);
+  margin: 5px;
+}
+
+.win {
+  background-color: #ff7200;
+  border: 1px solid #ff7200;
+  box-shadow: 0 0 8px 2px rgba(255, 114, 0, 0.7);
+}
+
+/* ============================== 8. HERO STATS / PICK COUNT ============================== */
+.hero-stats-box {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.75) 0%,
+    rgba(255, 255, 255, 0.45) 45%,
+    rgba(255, 255, 255, 0.15) 75%,
+    transparent 100%
+  );
+  border: 1px solid rgba(255, 114, 0, 0.3);
+  border-radius: 6px;
+  box-shadow:
+    0 0 18px rgba(255, 114, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 0 30px rgba(255, 114, 0, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  transform: translateY(20px) scale(0.92);
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s ease;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-stats-box.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  box-shadow:
+    0 0 28px rgba(255, 114, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 0 36px rgba(255, 114, 0, 0.12);
+}
+
+.hero-stats-header,
+.pick-count-card .pick-count-header {
+  font-family: "Arial Narrow", "Arial", "Bebas Neue", sans-serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-align: center;
+  background: linear-gradient(
+    90deg,
+    #ffb380 0%,
+    #ff8c00 18%,
+    #cc5a00 50%,
+    #ff8c00 82%,
+    #ffb380 100%
+  );
+  border-bottom: 1px solid rgba(255, 230, 213, 0.5);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.pick-count-card .pick-count-header {
+  font-size: 15px;
+  padding: 4px 0;
+  width: 100%;
+}
+
+.hero-stats-box .stat-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.05;
+}
+
+.hero-stats-box .stat-label,
+.pick-count-label {
+  font-family: "Arial Narrow", "Arial", "Bebas Neue", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: rgba(249, 249, 249, 0.88);
+  text-transform: uppercase;
+}
+
+.hero-stats-box .stat-value,
+.pick-count-hero {
+  font-family: "Rajdhani", "Bebas Neue", sans-serif;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow:
+    0 0 10px rgba(255, 179, 128, 0.55),
+    0 0 22px rgba(204, 90, 0, 0.3),
+    0 2px 3px rgba(0, 0, 0, 0.85);
+}
+
+.hero-stats-pick {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.hero-stats-pick .hero-stats-header {
+  font-size: 15px;
+  padding: 2px 0;
+}
+
+.hero-stats-pick .stat-row {
+  padding: 4px 0;
+}
+
+.hero-stats-pick .stat-label,
+.hero-stats-pick .stat-value {
+  font-size: 20px;
+}
+
+.hero-stats-ban {
+  left: 3px;
+  right: 3px;
+  top: 3px;
+  padding-bottom: 1px;
+  display: none;
+}
+
+.hero-stats-ban .hero-stats-header {
+  font-size: 5px;
+  padding: 1px 0;
+}
+
+.hero-stats-ban .stat-row {
+  padding: 0.5px 0;
+}
+
+.hero-stats-ban .stat-label {
+  font-size: 5px;
+}
+
+.hero-stats-ban .stat-value {
+  font-size: 8px;
+}
+
+.pick-count-card {
+  position: absolute;
+  z-index: 10;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0.18) 35%,
+    rgba(255, 255, 255, 0.25) 70%,
+    rgba(255, 255, 255, 0.35) 100%
+  );
+  border: 1px solid rgba(255, 114, 0, 0.25);
+  box-shadow:
+    0 0 12px rgba(255, 114, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  opacity: 0;
+  transform: translateY(20px) scale(0.92);
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s ease;
+  pointer-events: none;
+}
+
+.pick-count-card.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  box-shadow:
+    0 0 28px rgba(255, 114, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 0 36px rgba(255, 114, 0, 0.12);
+}
+
+.pick-count-number {
+  font-family: "Rajdhani", "Bebas Neue", sans-serif;
+  font-weight: 700;
+  color: #fafafa;
+  text-shadow:
+    0 0 20px rgba(255, 114, 0, 0.3),
+    0 0 40px rgba(255, 114, 0, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.85);
+  line-height: 1;
+  margin: 10px 0 2px 0;
+}
+
+.pick-count-label {
+  font-size: 16px;
+}
+
+.pick-count-hero {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 4px;
+}
+
+.hero-stats-pick .pick-count-header {
+  font-size: 16px;
+  padding: 6px 0;
+}
+
+.hero-stats-pick .pick-count-number {
+  font-size: 85px;
+}
+
+.hero-stats-pick .pick-count-label {
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+.hero-stats-pick .pick-count-hero {
+  font-size: 20px;
+  letter-spacing: 3px;
+}
+
+.hero-stats-pick.is-pct .pick-count-number {
+  font-size: 46px;
+  letter-spacing: -1px;
+  margin: 10px 0 4px 0;
+}
+
+.hero-stats-pick.is-pct .pick-count-label {
+  font-size: 20px;
+}
+
+.hero-stats-ban .pick-count-header {
+  font-size: 6px;
+  padding: 2px 0;
+}
+
+.hero-stats-ban .pick-count-number {
+  font-size: 28px;
+}
+
+.hero-stats-ban .pick-count-label {
+  font-size: 6px;
+  letter-spacing: 0.5px;
+}
+
+.hero-stats-ban .pick-count-hero {
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.banhero .pick-count-card {
+  display: none;
+}
+
+.heropick .hero-stats-box {
+  background:
+    linear-gradient(0deg, rgba(var(--accent), 0.12) 0%, transparent 35%),
+    linear-gradient(
+      180deg,
+      rgba(var(--tint-a), 0.65) 0%,
+      rgba(var(--tint-b), 0.75) 100%
+    );
+  border-color: rgba(var(--accent), 0.4);
+  -webkit-backdrop-filter: grayscale(1) blur(8px) brightness(0.8);
+  backdrop-filter: grayscale(1) blur(8px) brightness(0.8);
+  box-shadow:
+    0 0 18px rgba(var(--accent), 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 0 30px rgba(var(--accent), 0.1);
+}
+
+.heropick .pick-count-card {
+  background:
+    linear-gradient(0deg, rgba(var(--accent), 0.2) 0%, transparent 40%),
+    linear-gradient(
+      180deg,
+      rgba(var(--tint-a), 0.5) 0%,
+      rgba(var(--tint-b), 0.6) 100%
+    );
+  border-color: rgba(var(--accent), 0.35);
+  -webkit-backdrop-filter: grayscale(1) blur(2px);
+  backdrop-filter: grayscale(1) blur(2px);
+}
+
+.heropick .hero-stats-box.show,
+.heropick .pick-count-card.show {
+  box-shadow:
+    0 0 28px rgba(var(--accent), 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 0 36px rgba(var(--accent), 0.14);
+}
+
+.heropick.red-side .hero-stats-header,
+.heropick.red-side .pick-count-header {
+  background: linear-gradient(
+    90deg,
+    #ff8080 0%,
+    #ff4040 18%,
+    #cc0000 50%,
+    #ff4040 82%,
+    #ff8080 100%
+  );
+  border-bottom-color: rgba(255, 179, 128, 0.45);
+}
+
+.heropick.red-side .hero-stats-box .stat-value,
+.heropick.red-side .pick-count-hero {
+  text-shadow:
+    0 0 10px rgba(255, 1, 1, 0.55),
+    0 0 22px rgba(204, 0, 0, 0.35),
+    0 2px 3px rgba(0, 0, 0, 0.85);
+}
+
+.heropick.red-side .pick-count-number {
+  text-shadow:
+    0 0 20px rgba(255, 1, 1, 0.45),
+    0 0 40px rgba(255, 1, 1, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.85);
+}
+
+/* ============================== 9. ANIMATIONS & MISC ============================== */
+@keyframes pulse-warning {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.6;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes breathe {
+  0% {
+    transform: scale(1.1);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(1.1);
+    opacity: 0.6;
+  }
+}
+
+@keyframes pl-in {
+  from {
+    transform: translateY(110%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes roll-up {
+  0%,
+  20% {
+    transform: translateY(0);
+  }
+  40%,
+  60% {
+    transform: translateY(-25%);
+  }
+  80%,
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* galaw ng turn arrows palabas papunta sa team */
+@keyframes arrow-flow {
+  0% {
+    opacity: 0.15;
+    transform: translateX(0);
+  }
+  40% {
+    opacity: 1;
+    transform: translateX(calc(var(--dir) * 4px));
+  }
+  100% {
+    opacity: 0.15;
+    transform: translateX(calc(var(--dir) * 8px));
+  }
+}
+
+.draft-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.box {
+  width: 1000px;
+  height: 4000px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  transition: 0.3s;
+  margin-left: -200px;
+  margin-top: -100px;
+}
+
+.ban0 {
+  display: flex;
+}
+
+.pick {
+  display: flex;
+  position: absolute;
+}
+
+.active-ban {
+  background-color: rgb(156, 11, 11);
+  color: white;
+  animation: breathe 1.5s infinite alternate;
+  box-shadow: 0 0 20px 4px rgba(156, 11, 11, 0.8);
+}
+
+.active-pick {
+  background: linear-gradient(
+    135deg,
+    #fff0e06d 0%,
+    #fffd9964 15%,
+    #fbff1f63 45%,
+    #a7b602 75%,
+    #aa910082 100%
+  );
+  color: #fff;
+  font-weight: 700;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 16px 4px rgba(255, 255, 255, 0.302),
+    /* white glow = standout */ 0 0 32px rgba(252, 227, 0, 0.979);
+  animation: breathe 1.5s infinite alternate;
+  z-index: 2;
+}
+
+.audiob {
+  margin-top: 100px;
+}
+
+.image-container {
+  display: flex;
+}
+
+.image-box {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.image-box img {
+  width: 100%;
+  opacity: 0;
+  transform: translateY(150%);
+  transition:
+    transform 2s ease-in-out,
+    opacity 2s;
+  z-index: 2;
+  position: absolute;
+}
+
+.image-box.show img {
+  transform: translateX(0%);
+  opacity: 1;
+  position: absolute;
+}
+
+.clone-image-box img {
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  transition-delay: 2s;
+}
+
+.clone-animate {
+  transition-delay: 1s;
+  animation: fadeInScale 1s ease-out forwards;
+}
+
+.hide {
+  width: 0px;
+  height: 0px;
+  display: none;
+  opacity: 0;
+  font-size: 0px;
+  overflow: hidden;
+}
+
+.name-image-box {
+  position: absolute;
+  z-index: 1;
+  scale: 1.3;
+  margin-top: 100px;
+}
+
+.lanelogo {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lanelogo img {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.phasebox {
+  display: none;
+}
+
+/* ---------- TURN ARROWS ---------- */
+.turn-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  transition:
+    opacity 0.3s ease,
+    filter 0.3s ease;
+  opacity: 0.2; /* Default: Gray/Dim */
+  visibility: visible;
+  z-index: 10;
+}
+
+/* Inilapit sa gitna (nasa loob na sila ng puting box) */
+.turn-arrow.left {
+  right: 50%; /* Papasok sa loob */
+  margin-right: 35px; /* Distansya mula sa numero */
+}
+
+.turn-arrow.right {
+  left: 50%; /* Papasok sa loob */
+  margin-left: 35px; /* Distansya mula sa numero */
+}
+
+/* Hugis Triangle */
+.turn-arrow span {
+  display: block;
+  width: 15px;
+  height: 25px;
+  background-color: #d1d1d6;
+  transition: background-color 0.3s ease;
+}
+
+/* KALIWA: Nakatutok Palabas (Pakaliwa) */
+.turn-arrow.left span {
+  clip-path: polygon(100% 0, 0 50%, 100% 100%);
+}
+
+/* KANAN: Nakatutok Palabas (Pakanan) */
+.turn-arrow.right span {
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+/* =========================================
+   ACTIVE STATES (Liliwanag at gagalaw)
+   ========================================= */
+.turn-arrow.on,
+.turn-arrow.both-on {
+  opacity: 1;
+}
+
+/* Kaliwa: Orange */
+.turn-arrow.left.on span,
+.turn-arrow.left.both-on span {
+  background-color: #ff7200;
+}
+.turn-arrow.left.on,
+.turn-arrow.left.both-on {
+  filter: drop-shadow(0 0 8px rgba(255, 114, 0, 0.9));
+}
+
+/* Kanan: Red */
+.turn-arrow.right.on span,
+.turn-arrow.right.both-on span {
+  background-color: #ff0101;
+}
+.turn-arrow.right.on,
+.turn-arrow.right.both-on {
+  filter: drop-shadow(0 0 8px rgba(255, 1, 1, 0.9));
+}
+
+/* =========================================
+   ANIMATION (Tuloy-tuloy na Tulak Palabas)
+   ========================================= */
+.turn-arrow.on span,
+.turn-arrow.both-on span {
+  animation: push-out 0.8s ease-in-out infinite alternate;
+}
+
+/* Kaliwa: Gumagalaw pakaliwa */
+.turn-arrow.left.on span,
+.turn-arrow.left.both-on span {
+  animation-name: push-out-left;
+}
+
+/* Kanan: Gumagalaw pakanan */
+.turn-arrow.right.on span,
+.turn-arrow.right.both-on span {
+  animation-name: push-out-right;
+}
+
+@keyframes push-out-left {
+  0% {
+    transform: translateX(0);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(-6px);
+    opacity: 1;
+  } /* Tumutulak pakaliwa */
+}
+
+@keyframes push-out-right {
+  0% {
+    transform: translateX(0);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(6px);
+    opacity: 1;
+  } /* Tumutulak pakanan */
+}
+/* ---------- ESPORTS HEADSET ICON, kapantay ng COACH NAME ---------- */
+.coach-name {
+  display: flex;
+  align-items: center;
+  line-height: 1; /* para hindi lumaki ang line box ng text */
+}
+
+#coach-box-left .coach-name {
+  justify-content: flex-start;
+}
+
+#coach-box-right .coach-name {
+  justify-content: flex-end;
+}
+
+#coach-box-left .coach-name::before,
+#coach-box-right .coach-name::after {
+  content: "";
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  /* i-adjust dito kung gusto mo pang itaas/ibaba (negative = pataas) */
+  transform: translateY(-1px);
+  /* viewBox na naka-crop sa mismong laman ng icon para pantay ang gitna */
+  background: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 2 24 22' fill='none' stroke='white' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'>\
+<path d='M4 14v-2a8 8 0 0 1 16 0v2'/>\
+<rect x='2.5' y='13' width='4' height='7' rx='1.5' fill='white'/>\
+<rect x='17.5' y='13' width='4' height='7' rx='1.5' fill='white'/>\
+<path d='M19.5 20c0 1.6-1.6 2.2-4 2.2h-2.5'/>\
+<circle cx='12' cy='22.2' r='1' fill='white' stroke='none'/>\
+</svg>")
+    center / contain no-repeat;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.6));
+}
+
+#coach-box-left .coach-name::before {
+  margin-right: 8px;
+}
+
+#coach-box-right .coach-name::after {
+  margin-left: 8px;
+}

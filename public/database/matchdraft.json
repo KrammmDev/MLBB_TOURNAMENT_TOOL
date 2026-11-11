@@ -1,0 +1,80 @@
+{
+  "draftdata": {
+    "timer": "0",
+    "timerRunning": false,
+    "current_phase": 17,
+    "blueside": {
+      "ban": [
+        {
+          "hero": "/Assets/HeroPick/aulus.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/marcel.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/atlas.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/kadita.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/lylia.gif"
+        }
+      ],
+      "pick": [
+        {
+          "hero": "/Assets/HeroPick/cici.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/miya.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/minotaur.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/yve.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/nolan.gif"
+        }
+      ]
+    },
+    "redside": {
+      "ban": [
+        {
+          "hero": "/Assets/HeroPick/natan.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/bruno.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/masha.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/yisunshin.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/eudora.gif"
+        }
+      ],
+      "pick": [
+        {
+          "hero": "/Assets/HeroPick/obsidia.png"
+        },
+        {
+          "hero": "/Assets/HeroPick/hirara.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/beleric.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/novaria.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/kaja.gif"
+        }
+      ]
+    },
+    "timer_running": false
+  }
+}

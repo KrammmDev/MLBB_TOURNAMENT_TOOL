@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Group Stage Schedule Display</title>
+    <style>
+      @font-face {
+        font-family: "Big Noodle Titling";
+        src: url("Assets/Font/big_noodle_titling.ttf") format("truetype");
+        font-display: swap;
+      }
+
+      :root {
+        --orange: #ff7200;
+        --red: #ff0101;
+        --grad: linear-gradient(90deg, #ff7200 0%, #ff0101 100%);
+        --grey: #292929;
+        --ink: #2b2b2b;
+        --card: #ffffff;
+
+        --list-side: 650px;
+        --list-top: 155px;
+        --slot-h: 120px;
+        --slot-gap: 14px;
+        --grp-w: 120px;
+        --time-w: 150px;
+
+        --font:
+          "Bahnschrift SemiCondensed", "Bahnschrift", "Segoe UI", Inter,
+          system-ui, sans-serif;
+        --font-display:
+          "Big Noodle Titling", "Bahnschrift SemiCondensed", sans-serif;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        overflow: hidden;
+      }
+      body {
+        font-family: var(--font);
+        -webkit-font-smoothing: antialiased;
+        font-variant-numeric: tabular-nums;
+      }
+
+      #stage {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 1920px;
+        height: 1080px;
+        transform-origin: center center;
+        background: transparent;
+        overflow: hidden;
+      }
+
+      .header {
+        position: absolute;
+        top: 70px;
+        left: var(--list-side);
+        right: var(--list-side);
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        color: #fff;
+        text-shadow: 0 3px 12px rgba(0, 0, 0, 0.55);
+      }
+      .h-title {
+        font-family: var(--font-display);
+        font-size: 3.2rem;
+        line-height: 0.9;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+      .h-round {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        line-height: 0.9;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 6px 16px;
+        background: var(--grad);
+        text-shadow: none;
+        clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+        transition: opacity 0.25s;
+      }
+
+      #slots {
+        position: absolute;
+        top: var(--list-top);
+        left: var(--list-side);
+        right: var(--list-side);
+        display: flex;
+        flex-direction: column;
+        gap: var(--slot-gap);
+      }
+      .schedule {
+        position: relative;
+        display: grid;
+        grid-template-columns: var(--grp-w) var(--time-w) minmax(0, 1fr);
+        height: var(--slot-h);
+        background: var(--card);
+        box-shadow: 0 6px 22px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+        opacity: 0;
+      }
+      .schedule.hidden {
+        display: none;
+      }
+
+      .grp {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--grey);
+        color: #fff;
+        font-size: 1.3rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        padding-right: 10px;
+        clip-path: polygon(0 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+      }
+      .time {
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-left: -14px;
+        padding-left: 14px;
+        background: var(--grad);
+        color: #fff;
+        line-height: 1.05;
+        clip-path: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+      }
+      .time .t {
+        font-size: 2rem;
+        font-weight: 700;
+      }
+      .time .z {
+        font-size: 0.75rem;
+        font-weight: 600;
+        opacity: 0.92;
+      }
+      .time::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          100deg,
+          transparent 30%,
+          rgba(255, 255, 255, 0.5) 50%,
+          transparent 70%
+        );
+        transform: translateX(-130%);
+        animation: shine 3.4s ease-in-out infinite;
+        pointer-events: none;
+      }
+      @keyframes shine {
+        0%,
+        55% {
+          transform: translateX(-130%);
+        }
+        100% {
+          transform: translateX(130%);
+        }
+      }
+
+      .team-container {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        align-items: center;
+        gap: 12px;
+        padding: 0 18px 0 12px;
+        min-width: 0;
+      }
+      .team {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+      .team.left {
+        justify-content: flex-end;
+      }
+      .team.right {
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+      }
+      .logoholder {
+        flex: 0 0 auto;
+        width: 50px;
+        height: 50px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      .logoholder img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+      .teamnameholder {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--ink);
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
+      }
+      .team.right .teamnameholder {
+        text-align: left;
+      }
+      .team.left .teamnameholder {
+        text-align: right;
+      }
+      .teamnameholder.lose {
+        color: #9aa0ac;
+        font-weight: 600;
+      }
+
+      .scorebox {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .scorebox .box {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .scorebox .box p {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        color: var(--ink);
+        font-size: 2rem;
+        font-weight: 700;
+      }
+      .scorebox .box p.win {
+        background: transparent;
+        color: var(--red);
+      }
+      .scorebox .box p.lose {
+        background: transparent;
+        color: #9aa0ac;
+        opacity: 0.7;
+      }
+      .scorebox .box h1 {
+        color: var(--red);
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+      }
+
+      .schedule.brk {
+        grid-template-columns: var(--grp-w) minmax(0, 1fr);
+      }
+      .schedule.brk .grp {
+        background: #3a3f4b;
+      }
+      .schedule.brk .time {
+        grid-column: 2 / 3;
+        clip-path: polygon(14px 0, 100% 0, 100% 100%, 0 100%);
+      }
+      .schedule.brk .team-container {
+        display: none;
+      }
+      .schedule.brk .time .t {
+        font-size: 2.2rem;
+      }
+
+      .schedule.in {
+        animation: slideIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        animation-delay: var(--d, 0ms);
+      }
+      .schedule.out {
+        animation: slideOut 0.55s cubic-bezier(0.6, 0, 0.9, 0.4) both;
+        animation-delay: var(--d, 0ms);
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-160px) skewX(-8deg);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @keyframes slideOut {
+        from {
+          opacity: 1;
+          transform: none;
+        }
+        to {
+          opacity: 0;
+          transform: translateX(160px) skewX(8deg);
+        }
+      }
+
+      /* FOOTER — NAKATAGO NA */
+      .footer {
+        display: none;
+      }
+      body.no-dots .footer {
+        display: none;
+      }
+      body.no-header .header {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage">
+      <div class="header">
+        <div class="h-title" id="hTitle">Group Stage</div>
+        <div class="h-round" id="hRound">Round 1</div>
+      </div>
+
+      <div id="slots"></div>
+
+      <div class="footer">
+        <div class="dots" id="dots"></div>
+        <div class="prog"><i id="progFill"></i></div>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "/api/tournament";
+      const WS_URL = `ws://${location.host}`;
+      const params = new URLSearchParams(location.search);
+
+      const PER = Math.min(8, Math.max(1, parseInt(params.get("per")) || 5));
+      const HOLD = parseInt(params.get("hold")) || 6000;
+      const STAGGER = 150;
+      const IN_MS = 700;
+      const OUT_MS = 550;
+      const SHOW_LOGOS = params.get("logos") !== "0";
+      const LOGO_DIR = params.get("logodir") || "Assets/Teams/";
+      const LOGO_EXT = params.get("logoext") || ".png";
+      if (params.get("dots") === "0") document.body.classList.add("no-dots");
+      if (params.get("header") === "0")
+        document.body.classList.add("no-header");
+
+      let prefs = { start: "10:00", gap: 45, breakFrom: "", breakTo: "" };
+      try {
+        const p = JSON.parse(
+          localStorage.getItem("groupMatchesPrefs") || "null",
+        );
+        if (p)
+          prefs = {
+            ...prefs,
+            start: p.start || prefs.start,
+            gap: p.gap || prefs.gap,
+            breakFrom: p.breakFrom || "",
+            breakTo: p.breakTo || "",
+          };
+      } catch (e) {}
+      if (params.get("start")) prefs.start = params.get("start");
+      if (params.get("gap"))
+        prefs.gap = parseInt(params.get("gap")) || prefs.gap;
+      if (params.get("breakfrom")) prefs.breakFrom = params.get("breakfrom");
+      if (params.get("breakto")) prefs.breakTo = params.get("breakto");
+
+      const GROUP_FILTER = (params.get("group") || "")
+        .split(",")
+        .map((g) =>
+          g
+            .trim()
+            .toUpperCase()
+            .replace(/^GROUP\s*/, ""),
+        )
+        .filter(Boolean)
+        .map((g) => "GROUP " + g);
+      const ROUND_FILTER = (params.get("round") || "")
+        .split(",")
+        .map((r) => parseInt(r))
+        .filter((r) => r > 0);
+
+      document.documentElement.style.setProperty("--hold", HOLD + "ms");
+
+      function fit() {
+        const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+        document.getElementById("stage").style.transform =
+          `translate(-50%, -50%) scale(${s})`;
+      }
+      addEventListener("resize", fit);
+      fit();
+
+      const slotsEl = document.getElementById("slots");
+      for (let i = 1; i <= PER; i++) {
+        slotsEl.insertAdjacentHTML(
+          "beforeend",
+          `
+          <div id="schedule-${i}" class="schedule hidden">
+            <div class="grp" id="grp-${i}"></div>
+            <div class="time" id="time-${i}"><span class="t"></span><span class="z"></span></div>
+            <div class="team-container">
+              <div class="team left">
+                <div class="logoholder"><img id="logo1-${i}" alt="" /></div>
+                <div id="team1-${i}" class="teamnameholder"></div>
+              </div>
+              <div class="scorebox">
+                <div class="box"><p id="score1-${i}">–</p></div>
+                <div class="box"><h1>VS</h1></div>
+                <div class="box"><p id="score2-${i}">–</p></div>
+              </div>
+              <div class="team right">
+                <div class="logoholder"><img id="logo2-${i}" alt="" /></div>
+                <div id="team2-${i}" class="teamnameholder"></div>
+              </div>
+            </div>
+          </div>`,
+        );
+      }
+      const slots = [...slotsEl.querySelectorAll(".schedule")];
+
+      function toMins(v) {
+        if (!v) return null;
+        const [h, m] = String(v).split(":").map(Number);
+        return isNaN(h) || isNaN(m) ? null : h * 60 + m;
+      }
+      function fmtTime(totalMins) {
+        const m = ((totalMins % 1440) + 1440) % 1440;
+        let h = Math.floor(m / 60);
+        const mm = String(m % 60).padStart(2, "0");
+        const ap = h >= 12 ? "PM" : "AM";
+        h = h % 12 || 12;
+        return `${h}:${mm} ${ap}`;
+      }
+      function gmtLabel() {
+        const off = -new Date().getTimezoneOffset() / 60;
+        return "GMT" + (off >= 0 ? "+" : "") + off;
+      }
+      function buildSchedule(maxR) {
+        const start = toMins(prefs.start);
+        let t = start === null ? 600 : start;
+        const bf = toMins(prefs.breakFrom);
+        const bt = toMins(prefs.breakTo);
+        const hasBreak = bf !== null && bt !== null && bt > bf;
+        const rounds = {};
+        let used = false;
+        for (let r = 1; r <= maxR; r++) {
+          let after = false;
+          if (hasBreak && !used && t < bt && t + prefs.gap > bf) {
+            t = Math.max(t, bt);
+            after = true;
+            used = true;
+          }
+          rounds[r] = { t, after };
+          t += prefs.gap;
+        }
+        return { rounds, hasBreak, bf, bt };
+      }
+
+      let state = { groups: {}, groupMatches: [], tournamentName: "" };
+      let items = [];
+      let pages = [];
+      let pageIdx = 0;
+      let phase = "idle";
+
+      function buildItems() {
+        const all = (state.groupMatches || []).slice();
+        if (!all.length) return [];
+        all.sort(
+          (a, b) =>
+            (a.round || 1) - (b.round || 1) ||
+            String(a.group).localeCompare(String(b.group)) ||
+            a.id - b.id,
+        );
+        const maxR = Math.max(...all.map((m) => m.round || 1));
+        const sched = buildSchedule(maxR);
+        const out = [];
+        let brkDone = false;
+        all.forEach((m) => {
+          const r = m.round || 1;
+          if (
+            GROUP_FILTER.length &&
+            !GROUP_FILTER.includes(String(m.group).toUpperCase())
+          )
+            return;
+          if (ROUND_FILTER.length && !ROUND_FILTER.includes(r)) return;
+          const info = sched.rounds[r];
+          if (info.after && !brkDone && sched.hasBreak) {
+            out.push({
+              type: "break",
+              from: fmtTime(sched.bf),
+              to: fmtTime(sched.bt),
+            });
+            brkDone = true;
+          }
+          out.push({ type: "match", m, time: fmtTime(info.t), round: r });
+        });
+        return out;
+      }
+
+      function rebuildPages() {
+        items = buildItems();
+        pages = [];
+        const byRound = [];
+        let carry = [];
+        items.forEach((it) => {
+          if (it.type === "break") {
+            carry.push(it);
+            return;
+          }
+          const last = byRound[byRound.length - 1];
+          if (last && last.round === it.round) last.items.push(it);
+          else {
+            byRound.push({ round: it.round, items: carry.concat(it) });
+            carry = [];
+          }
+        });
+        if (carry.length) byRound.push({ round: -1, items: carry });
+        byRound.forEach((g) => {
+          for (let i = 0; i < g.items.length; i += PER)
+            pages.push(g.items.slice(i, i + PER));
+        });
+        const dots = document.getElementById("dots");
+        dots.innerHTML = pages.map(() => '<span class="dot"></span>').join("");
+      }
+
+      function setLogo(imgId, team) {
+        const img = document.getElementById(imgId);
+        const holder = img.parentElement;
+        if (!SHOW_LOGOS) {
+          holder.style.display = "none";
+          return;
+        }
+        holder.style.display = "none";
+        img.onload = () => {
+          holder.style.display = "flex";
+        };
+        img.onerror = () => {
+          holder.style.display = "none";
+        };
+        const src = LOGO_DIR + encodeURIComponent(team) + LOGO_EXT;
+        if (img.getAttribute("src") !== src) img.src = src;
+        else if (img.complete && img.naturalWidth)
+          holder.style.display = "flex";
+      }
+
+      function fillSlot(i, item) {
+        const el = slots[i];
+        const n = i + 1;
+        if (item.type === "break") {
+          el.classList.add("brk");
+          document.getElementById(`grp-${n}`).textContent = "Break";
+          const t = document.getElementById(`time-${n}`);
+          t.querySelector(".t").textContent = `${item.from} – ${item.to}`;
+          t.querySelector(".z").textContent = gmtLabel();
+          return;
+        }
+        el.classList.remove("brk");
+        const m = item.m;
+        const done = !!m.resolved;
+        document.getElementById(`grp-${n}`).textContent = m.group;
+        const t = document.getElementById(`time-${n}`);
+        t.querySelector(".t").textContent = item.time;
+        t.querySelector(".z").textContent = gmtLabel();
+
+        const n1 = document.getElementById(`team1-${n}`);
+        const n2 = document.getElementById(`team2-${n}`);
+        n1.textContent = m.team1;
+        n2.textContent = m.team2;
+        const w1 = done && m.winner === m.team1;
+        const w2 = done && m.winner === m.team2;
+        n1.classList.toggle("lose", done && !w1);
+        n2.classList.toggle("lose", done && !w2);
+
+        const s1 = document.getElementById(`score1-${n}`);
+        const s2 = document.getElementById(`score2-${n}`);
+        s1.textContent = done && m.score1 != null ? m.score1 : "–";
+        s2.textContent = done && m.score2 != null ? m.score2 : "–";
+        s1.className = done ? (w1 ? "win" : "lose") : "";
+        s2.className = done ? (w2 ? "win" : "lose") : "";
+
+        setLogo(`logo1-${n}`, m.team1);
+        setLogo(`logo2-${n}`, m.team2);
+      }
+
+      function roundLabel(page) {
+        const rs = page.filter((x) => x.type === "match").map((x) => x.round);
+        if (!rs.length) return "Break";
+        const a = Math.min(...rs),
+          b = Math.max(...rs);
+        return a === b ? `Round ${a}` : `Round ${a} – ${b}`;
+      }
+
+      function showPage(idx) {
+        const page = pages[idx] || [];
+        slots.forEach((el, i) => {
+          if (page[i]) {
+            fillSlot(i, page[i]);
+            el.classList.remove("hidden");
+          } else {
+            el.classList.add("hidden");
+            el.classList.remove("in", "out");
+          }
+        });
+        document.getElementById("hRound").textContent = roundLabel(page);
+        document
+          .querySelectorAll(".dot")
+          .forEach((d, i) => d.classList.toggle("active", i === idx));
+        const tn = state.tournamentName;
+        document.getElementById("hTitle").textContent = "Group Stage";
+        if (tn) document.getElementById("hTitle").title = tn;
+        return page.length;
+      }
+
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+      async function loop() {
+        for (;;) {
+          if (!pages.length) {
+            await sleep(500);
+            continue;
+          }
+          if (pageIdx >= pages.length) pageIdx = 0;
+
+          const count = showPage(pageIdx);
+          const visible = slots.slice(0, count);
+
+          phase = "in";
+          visible.forEach((el, i) => {
+            el.classList.remove("out", "in");
+            el.style.setProperty("--d", i * STAGGER + "ms");
+            void el.offsetWidth;
+            el.classList.add("in");
+          });
+          await sleep(IN_MS + count * STAGGER);
+
+          phase = "hold";
+          const fill = document.getElementById("progFill");
+          if (pages.length > 1) {
+            fill.classList.remove("run");
+            void fill.offsetWidth;
+            fill.classList.add("run");
+            await sleep(HOLD);
+          } else {
+            fill.classList.remove("run");
+            while (pages.length <= 1) await sleep(500);
+          }
+
+          phase = "out";
+          const vis2 = slots.filter((el) => !el.classList.contains("hidden"));
+          vis2.forEach((el, i) => {
+            el.classList.remove("in", "out");
+            el.style.setProperty("--d", i * 100 + "ms");
+            void el.offsetWidth;
+            el.classList.add("out");
+          });
+          await sleep(OUT_MS + vis2.length * 100);
+          slots.forEach((el) => el.classList.remove("out", "in"));
+
+          pageIdx = pages.length ? (pageIdx + 1) % pages.length : 0;
+        }
+      }
+
+      let lastSig = "";
+      function applyState(data) {
+        if (!data || typeof data !== "object") return;
+        const sig = JSON.stringify([
+          data.tournamentName,
+          data.groups,
+          data.groupMatches,
+        ]);
+        if (sig === lastSig) return;
+        lastSig = sig;
+        state = { ...state, ...data };
+        rebuildPages();
+        if (phase === "hold" || phase === "in") {
+          if (pageIdx >= pages.length) pageIdx = Math.max(0, pages.length - 1);
+          if (pages.length) {
+            showPage(pageIdx);
+            slots.forEach((el) => {
+              if (
+                !el.classList.contains("hidden") &&
+                !el.classList.contains("in")
+              ) {
+                el.style.setProperty("--d", "0ms");
+                el.classList.add("in");
+              }
+            });
+          }
+        }
+      }
+      async function load() {
+        try {
+          const res = await fetch(API_URL, { cache: "no-store" });
+          applyState(await res.json());
+        } catch (e) {
+          console.warn("Load failed:", e);
+        }
+      }
+      function connectWS() {
+        let ws;
+        try {
+          ws = new WebSocket(WS_URL);
+        } catch (e) {
+          setTimeout(connectWS, 2000);
+          return;
+        }
+        ws.onmessage = (ev) => {
+          try {
+            const msg = JSON.parse(ev.data);
+            const data =
+              msg &&
+              (msg.data ||
+                msg.tournament ||
+                msg.state ||
+                (msg.groupMatches ? msg : null));
+            if (data) applyState(data);
+            else load();
+          } catch (e) {
+            load();
+          }
+        };
+        ws.onerror = () => {
+          try {
+            ws.close();
+          } catch (e) {}
+        };
+        ws.onclose = () => setTimeout(connectWS, 2000);
+      }
+
+      load();
+      connectWS();
+      setInterval(load, 2000);
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) load();
+      });
+      loop();
+    </script>
+  </body>
+</html>

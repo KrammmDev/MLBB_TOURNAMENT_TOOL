@@ -1,0 +1,589 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500;700&display=swap");
+
+:root {
+  --green-dark: #1a0500;
+  --green-mid: #2a0a00;
+  --green-light: #ff7200;
+  --teal: #ff0101;
+  --glow: #ffb380;
+  --blue-side: #cc5a00;
+  --red-side: #cc0000;
+  --font: "Bebas Neue", "Oswald", "Impact", sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  font-family: var(--font);
+  color: #fff;
+}
+
+.overlay-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  transform-origin: 0 0;
+}
+
+/* ============ BG — INALIS NA ============ */
+.bg-base {
+  display: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ============ TOURNAMENT TITLE — INALIS NA ============ */
+.tournament-block {
+  display: none;
+}
+
+.tournament-title {
+  font-size: 92px;
+  font-weight: normal;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  text-shadow:
+    0 0 25px rgba(255, 179, 128, 0.45),
+    4px 4px 0 rgba(0, 0, 0, 0.5);
+}
+
+.tournament-subtitle {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 24px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  padding: 5px 45px;
+  background: linear-gradient(90deg, var(--green-light), var(--teal));
+  clip-path: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* ============ BADGE ============ */
+.badge-block {
+  position: absolute;
+  top: 18px;
+  right: 30px;
+  z-index: 20;
+  font-size: 24px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 179, 128, 0.4);
+  padding: 4px 20px;
+}
+
+/* ============ SCOREBOARD ============ */
+.scoreboard {
+  position: absolute;
+  top: 330px;
+  left: 40px;
+  width: 785px;
+  z-index: 10;
+  clip-path: polygon(
+    24px 0,
+    100% 0,
+    100% calc(100% - 24px),
+    calc(100% - 24px) 100%,
+    0 100%,
+    0 24px
+  );
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border-bottom: 3px solid var(--glow);
+}
+
+.match-info-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  height: 50px;
+  background: linear-gradient(
+    90deg,
+    #cc5a00 0%,
+    #ff8c00 25%,
+    #ff7200 60%,
+    #ff0101 100%
+  );
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  font-size: 28px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.match-info-bar .mi-time {
+  margin-left: 16px;
+  opacity: 0.8;
+  font-size: 22px;
+}
+.match-info-bar .mi-time:empty {
+  display: none;
+}
+
+.teams-versus {
+  display: grid;
+  grid-template-columns: 1fr 240px 1fr;
+  align-items: center;
+  height: 210px;
+  padding: 0 20px;
+  background: linear-gradient(90deg, #2a0a00 0%, #1a0500 50%, #2a0000 100%);
+}
+
+.team-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.team-logo-box {
+  width: 105px;
+  height: 105px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-logo-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 12px rgba(255, 179, 128, 0.35));
+}
+
+.team-code {
+  font-size: 42px;
+  letter-spacing: 3px;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.score-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.score-num {
+  font-size: 110px;
+  line-height: 1;
+  min-width: 70px;
+  text-align: center;
+  text-shadow:
+    0 0 22px rgba(255, 255, 255, 0.55),
+    0 0 40px rgba(255, 179, 128, 0.35);
+}
+
+.vs-text {
+  font-size: 20px;
+  letter-spacing: 1px;
+  opacity: 0.85;
+}
+
+/* ============ SPONSOR STRIP ============ */
+.sponsor-block {
+  position: absolute;
+  top: 620px;
+  left: 270px;
+  width: 320px;
+  height: 80px;
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1a0500;
+  border-bottom: 3px solid var(--glow);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.sponsor-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 8px;
+  background: linear-gradient(135deg, var(--green-light), var(--teal));
+  color: #fff;
+  font-size: 18px;
+  letter-spacing: 1px;
+  line-height: 1.1;
+}
+
+.sponsor-name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.sponsor-block.has-image .sponsor-name {
+  padding: 8px;
+}
+.sponsor-block .sponsor-name img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* ============ COUNTDOWN — INALIS NA ============ */
+.countdown-block {
+  display: none;
+}
+
+/* ============ COACHES ============ */
+.coach-block {
+  position: absolute;
+  top: 580px;
+  left: 40px;
+  display: flex;
+  gap: 20px;
+  z-index: 10;
+}
+
+.coach-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 8px 20px;
+  font-size: 22px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.coach-label {
+  opacity: 0.7;
+}
+.coach-name {
+  color: var(--glow);
+}
+
+/* ============ PLAYER SLIDESHOW ============ */
+.player-slideshow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1150px;
+  height: 1080px;
+  z-index: 5;
+  overflow: visible;
+}
+
+.player-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition: opacity 0.6s ease-in-out; /* SMOOTH FADE CONTAINER */
+}
+
+.player-slide.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Smooth fade out instead of sliding out */
+.player-slide.leaving {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease-in-out;
+}
+
+.player-slide.active .player-card.blue {
+  animation: blueIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.player-slide.active .player-card.red {
+  animation: redIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+}
+.player-slide.leaving .player-card.blue {
+  animation: blueOut 0.6s ease-in-out both;
+}
+.player-slide.leaving .player-card.red {
+  animation: redOut 0.6s ease-in-out both;
+}
+
+@keyframes blueIn {
+  from {
+    opacity: 0;
+    transform: translateX(-60%);
+    clip-path: inset(-100px 100% -100px 0);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    clip-path: inset(-100px -100px -100px -100px);
+  }
+}
+
+@keyframes redIn {
+  from {
+    opacity: 0;
+    transform: translateX(60%);
+    clip-path: inset(-100px 0 -100px 100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    clip-path: inset(-100px -100px -100px -100px);
+  }
+}
+
+/* SMOOTH FADE OUT KEYFRAMES */
+@keyframes blueOut {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px) scale(0.98);
+  }
+}
+
+@keyframes redOut {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(20px) scale(0.98);
+  }
+}
+
+.player-card {
+  position: absolute;
+  bottom: 0;
+  width: 840px;
+  height: 100%;
+}
+
+.player-card.blue {
+  left: -150px;
+  z-index: 2;
+}
+
+.player-card.red {
+  right: -150px;
+  z-index: 1;
+}
+
+.player-card.solo {
+  left: 50%;
+  right: auto;
+  margin-left: -400px;
+  z-index: 2;
+}
+
+.player-image-wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.player-card.blue .player-image-wrapper {
+  justify-content: flex-end;
+}
+.player-card.red .player-image-wrapper {
+  justify-content: flex-start;
+}
+.player-card.solo .player-image-wrapper {
+  justify-content: center;
+}
+
+.player-image {
+  height: 105%;
+  margin-bottom: -5%;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  filter: drop-shadow(-10px 0 25px rgba(0, 0, 0, 0.55));
+}
+
+.player-card.blue .player-image {
+  object-position: right bottom;
+  transform: translateX(70px);
+}
+
+.player-card.red .player-image {
+  object-position: left bottom;
+  transform: translateX(-70px);
+}
+
+.player-card.solo .player-image {
+  object-position: bottom center;
+  transform: none;
+}
+
+.player-name-bar {
+  position: absolute;
+  z-index: 10;
+  opacity: 0;
+}
+
+.player-slide.active .player-card.blue .player-name-bar {
+  animation: nameSlideBlue 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+}
+.player-slide.active .player-card.red .player-name-bar {
+  animation: nameSlideRed 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.62s both;
+}
+
+/* Smooth fade out for name bar */
+.player-slide.leaving .player-name-bar {
+  opacity: 1;
+  animation: nameFadeOut 0.4s ease-in-out both;
+}
+
+@keyframes nameFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.player-card.blue .player-name-bar {
+  left: 130px;
+  bottom: 170px;
+}
+
+.player-card.red .player-name-bar {
+  right: 150px;
+  bottom: 300px;
+}
+
+.player-card.solo .player-name-bar {
+  left: 50%;
+  margin-left: -170px;
+  bottom: 170px;
+}
+
+@keyframes nameSlideBlue {
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes nameSlideRed {
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.player-name-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-width: 320px;
+  background: linear-gradient(90deg, var(--green-light), var(--blue-side));
+  padding: 8px 36px;
+  clip-path: polygon(18px 0, 100% 0, calc(100% - 18px) 100%, 0 100%);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.player-card.red .player-name-box {
+  background: linear-gradient(90deg, #cc0000, var(--red-side));
+}
+
+.player-lane-text {
+  font-size: 22px;
+  letter-spacing: 3px;
+  opacity: 0.9;
+  text-transform: uppercase;
+  padding-left: 14px;
+  border-left: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.player-name-text {
+  font-size: 42px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ============ BOTTOM BANNER — INALIS NA ============ */
+.bottom-banner {
+  display: none;
+}
+
+.bottom-logo {
+  font-size: 28px;
+  letter-spacing: 3px;
+  padding: 2px 18px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 179, 128, 0.5);
+}
+
+.bottom-text {
+  font-size: 24px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* ============ EMPTY STATE ============ */
+.empty-state {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 46px;
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 6px;
+  text-transform: uppercase;
+}
+.player-lane-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin: 0 4px;
+}
+
+.player-lane-text {
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+}

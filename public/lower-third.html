@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lower Third — Rectangle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --red: #e60000;
+        --red-hot: #ff2a00;
+        --red-deep: #5c0000;
+        --orange: #ff6a00;
+        --white: #ffffff;
+
+        --plate-w: 680px;
+        --plate-h: 112px;
+        --tab-w: 340px;
+        --tab-h: 46px;
+
+        --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+        --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+        --ease-in: cubic-bezier(0.5, 0, 0.75, 0);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        overflow: hidden;
+        font-family: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+      }
+
+      body.greenscreen {
+        background: #00ff00;
+      }
+
+      .stage {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+      }
+
+      /* ===== WRAPPER ===== */
+      .lt-wrap {
+        position: relative;
+        width: var(--plate-w);
+        padding-bottom: var(--tab-h);
+        filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.4));
+        opacity: 0;
+      }
+      .lt-wrap.show,
+      .lt-wrap.hide {
+        opacity: 1;
+      }
+
+      /* ===== PLATE (main rectangle) ===== */
+      .lt-reveal {
+        clip-path: inset(0 100% 0 0);
+        will-change: clip-path;
+      }
+      .lt-wrap.show .lt-reveal {
+        animation: plateIn 0.75s var(--ease-out) both;
+      }
+      .lt-wrap.hide .lt-reveal {
+        animation: plateOut 0.5s var(--ease-in-out) 0.2s both;
+      }
+      @keyframes plateIn {
+        from {
+          clip-path: inset(0 100% 0 0);
+        }
+        to {
+          clip-path: inset(0 0 0 0);
+        }
+      }
+      @keyframes plateOut {
+        from {
+          clip-path: inset(0 0 0 0);
+        }
+        to {
+          clip-path: inset(0 0 0 100%);
+        }
+      }
+
+      .lt-plate {
+        position: relative;
+        height: var(--plate-h);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 48px;
+        overflow: hidden;
+        background: linear-gradient(
+          180deg,
+          #24252d 0%,
+          #101014 55%,
+          #08080a 100%
+        );
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+      }
+
+      /* manipis na pulang linya sa taas */
+      .lt-plate::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--red-deep),
+          var(--red) 45%,
+          #ff0000 72%,
+          var(--orange)
+        );
+      }
+
+      /* ===== SIDE ACCENT BARS ===== */
+      .lt-bar {
+        position: absolute;
+        top: 4px;
+        bottom: 0;
+        width: 12px;
+        background: linear-gradient(
+          180deg,
+          var(--red-hot) 0%,
+          var(--red) 55%,
+          var(--red-deep) 100%
+        );
+      }
+      .lt-bar.l {
+        left: 0;
+      }
+      .lt-bar.r {
+        right: 0;
+      }
+
+      /* maliliit na guhit sa tabi ng bar */
+      .lt-bar::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 5px;
+        background: linear-gradient(
+          180deg,
+          var(--red-hot) 0%,
+          var(--red) 55%,
+          var(--red-deep) 100%
+        );
+        opacity: 0.45;
+      }
+      .lt-bar.l::after {
+        left: 18px;
+      }
+      .lt-bar.r::after {
+        right: 18px;
+      }
+
+      /* ===== TEAM NAME ===== */
+      .lt-team {
+        position: relative;
+        z-index: 1;
+        display: inline-block;
+        white-space: nowrap;
+        font-weight: 700;
+        font-size: 62px;
+        line-height: 1.05;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--white);
+        opacity: 0;
+      }
+      .lt-wrap.show .lt-team {
+        animation: textIn 0.6s var(--ease-out) 0.3s both;
+      }
+      .lt-wrap.hide .lt-team {
+        animation: textOut 0.25s var(--ease-in) both;
+      }
+      @keyframes textIn {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes textOut {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(-8px);
+        }
+      }
+
+      /* ===== GROUP TAB (rectangle sa ilalim) ===== */
+      .lt-tab {
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        width: var(--tab-w);
+        height: var(--tab-h);
+        margin-left: calc(var(--tab-w) / -2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+          radial-gradient(
+            ellipse 28% 130% at 78% 50%,
+            var(--orange),
+            transparent 75%
+          ),
+          linear-gradient(
+            90deg,
+            #b01000 0%,
+            #e60000 45%,
+            #ff0000 70%,
+            #ff2a00 100%
+          );
+        clip-path: inset(0 0 100% 0);
+        will-change: clip-path;
+      }
+      .lt-wrap.show .lt-tab {
+        animation: tabIn 0.5s var(--ease-out) 0.5s both;
+      }
+      .lt-wrap.hide .lt-tab {
+        animation: tabOut 0.3s var(--ease-in) both;
+      }
+      @keyframes tabIn {
+        from {
+          clip-path: inset(0 0 100% 0);
+        }
+        to {
+          clip-path: inset(0 0 0 0);
+        }
+      }
+      @keyframes tabOut {
+        from {
+          clip-path: inset(0 0 0 0);
+        }
+        to {
+          clip-path: inset(0 0 100% 0);
+        }
+      }
+
+      .lt-tab span {
+        font-weight: 700;
+        font-size: 30px;
+        line-height: 1;
+        letter-spacing: 5px;
+        text-indent: 5px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        color: var(--white);
+      }
+
+      /* ===== TEST CONTROLS ===== */
+      .test-controls {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        gap: 10px;
+        pointer-events: auto;
+        z-index: 99;
+      }
+      .test-controls button {
+        background: #111;
+        color: #fff;
+        border: 1px solid #333;
+        padding: 8px 14px;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .test-controls button:hover {
+        background: var(--red);
+        border-color: var(--red);
+      }
+      body.hide-controls .test-controls {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <div class="lt-wrap" id="ltWrap">
+        <div class="lt-reveal">
+          <div class="lt-plate">
+            <div class="lt-bar l"></div>
+            <div class="lt-bar r"></div>
+            <span class="lt-team" id="ltTeam">TSM</span>
+          </div>
+        </div>
+        <div class="lt-tab"><span id="ltGroup">GROUP C</span></div>
+      </div>
+    </div>
+
+    <!-- Preview buttons (?controls=0 para itago sa OBS) -->
+    <div class="test-controls">
+      <button onclick="previewNow('Team Liquid', 'GROUP A')">Liquid (A)</button>
+      <button onclick="previewNow('Fnatic', 'GROUP B')">Fnatic (B)</button>
+      <button onclick="previewNow('T1', 'GROUP C')">T1 (C)</button>
+    </div>
+
+    <script>
+      const API_URL = "/api/tournament";
+      const WS_URL = `ws://${location.host}`;
+      const DISPLAY_MS = 5000;
+      const COOLDOWN_MS = 300;
+      const OUT_MS = 750; // haba ng exit animation (dapat >= 0.2s + 0.5s)
+
+      const params = new URLSearchParams(location.search);
+      if (params.get("green") === "1")
+        document.body.classList.add("greenscreen");
+      if (params.get("controls") === "0")
+        document.body.classList.add("hide-controls");
+
+      const wrap = document.getElementById("ltWrap");
+      const elTeam = document.getElementById("ltTeam");
+      const elGroup = document.getElementById("ltGroup");
+
+      const TEAM_BASE_PX = 62;
+      const TEAM_MIN_PX = 28;
+      const TEAM_MAX_WIDTH = 540;
+
+      // Paliitin ang font kapag mahaba ang pangalan ng team
+      function fitTeam() {
+        let size = TEAM_BASE_PX;
+        elTeam.style.fontSize = size + "px";
+        while (elTeam.scrollWidth > TEAM_MAX_WIDTH && size > TEAM_MIN_PX) {
+          size -= 2;
+          elTeam.style.fontSize = size + "px";
+        }
+      }
+
+      // QUEUE SYSTEM
+      const queue = [];
+      let showing = false;
+      let timers = [];
+
+      function clearTimers() {
+        timers.forEach(clearTimeout);
+        timers = [];
+      }
+
+      function enqueue(team, group) {
+        if (!team || !group) return;
+        const key = `${team}::${group}`;
+        if (queue.some((q) => `${q.team}::${q.group}` === key)) return;
+        queue.push({ team, group });
+        if (!showing) processQueue();
+      }
+
+      function processQueue() {
+        if (queue.length === 0) {
+          showing = false;
+          return;
+        }
+        showing = true;
+        const item = queue.shift();
+        showOverlay(item.team, item.group, () => {
+          timers.push(setTimeout(processQueue, COOLDOWN_MS));
+        });
+      }
+
+      function showOverlay(team, group, onDone) {
+        clearTimers();
+        elTeam.textContent = team;
+        elGroup.textContent = group;
+        fitTeam();
+
+        wrap.classList.remove("show", "hide");
+        void wrap.offsetWidth; // restart animations
+        wrap.classList.add("show");
+
+        timers.push(
+          setTimeout(() => {
+            wrap.classList.remove("show");
+            wrap.classList.add("hide");
+            timers.push(
+              setTimeout(() => {
+                wrap.classList.remove("hide");
+                if (onDone) onDone();
+              }, OUT_MS),
+            );
+          }, DISPLAY_MS),
+        );
+      }
+
+      function previewNow(team, group) {
+        queue.length = 0;
+        showing = true;
+        showOverlay(team, group, () => {
+          showing = false;
+        });
+      }
+
+      // STATE SYNC
+      let prevAssignment = {};
+      let socket = null;
+
+      function diffAssignments(newAssignment) {
+        const changes = [];
+        Object.entries(newAssignment || {}).forEach(([team, group]) => {
+          if (prevAssignment[team] !== group) {
+            changes.push({ team, group });
+          }
+        });
+        prevAssignment = { ...(newAssignment || {}) };
+        return changes;
+      }
+
+      function connectWS() {
+        try {
+          socket = new WebSocket(WS_URL);
+        } catch (e) {
+          setTimeout(connectWS, 2000);
+          return;
+        }
+        socket.onmessage = (event) => {
+          try {
+            const msg = JSON.parse(event.data);
+            if (msg.type !== "tournament_update" || !msg.data) return;
+            const assign = msg.data.manualGroupAssignment || {};
+            const changes = diffAssignments(assign);
+            changes.forEach(({ team, group }) => enqueue(team, group));
+          } catch (err) {}
+        };
+        socket.onclose = () => setTimeout(connectWS, 2000);
+      }
+
+      async function pollState() {
+        try {
+          const res = await fetch(API_URL);
+          const data = await res.json();
+          const assign = data.manualGroupAssignment || {};
+          const changes = diffAssignments(assign);
+          changes.forEach(({ team, group }) => enqueue(team, group));
+        } catch (e) {}
+        setTimeout(pollState, 4000);
+      }
+
+      async function init() {
+        try {
+          const res = await fetch(API_URL);
+          const data = await res.json();
+          prevAssignment = { ...(data.manualGroupAssignment || {}) };
+        } catch (e) {}
+        connectWS();
+        pollState();
+      }
+
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(fitTeam);
+      }
+
+      init();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Schedule Control Panel</title>
+    <style>
+      @font-face {
+        font-family: "Big Noodle Titling";
+        src: url("Assets/Font/big_noodle_titling.ttf") format("truetype");
+      }
+
+      :root {
+        --bg: #07090d;
+        --panel: #0e1218;
+        --panel-2: #141922;
+        --field: #0a0d12;
+        --border: #232a36;
+        --border-strong: #2f3847;
+        --text: #e6e9ef;
+        --muted: #7d8696;
+        --accent: #a855f7;
+        --blue: #00afff;
+        --red: #f94868;
+        --green: #00e676;
+        --yellow: #f5c400;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        overflow: hidden; /* walang scroll */
+      }
+
+      body {
+        font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 13px;
+      }
+
+      /* ---------- HEADER ---------- */
+      .topbar {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border);
+        padding: 0 4px 8px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .status-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--green);
+        box-shadow: 0 0 8px var(--green);
+      }
+      h1 {
+        font-family: "Big Noodle Titling", "Segoe UI", sans-serif;
+        font-size: 26px;
+        letter-spacing: 1.5px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      .top-actions {
+        display: flex;
+        gap: 6px;
+      }
+
+      /* ---------- BUTTONS ---------- */
+      .btn {
+        font-family: "Big Noodle Titling", "Segoe UI", sans-serif;
+        font-size: 14px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        background: var(--panel-2);
+        color: var(--text);
+        border: 1px solid var(--border-strong);
+        padding: 8px 14px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .btn:hover {
+        border-color: var(--accent);
+        background: #1b2230;
+      }
+      .btn.danger {
+        color: var(--red);
+        border-color: var(--red);
+        background: transparent;
+      }
+      .btn.danger:hover {
+        background: var(--red);
+        color: #fff;
+      }
+      .btn.sm {
+        padding: 4px 10px;
+        font-size: 13px;
+      }
+
+      /* ---------- LAYOUT ---------- */
+      .app {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 10px;
+      }
+
+      .section-title {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      /* ---------- SIDEBAR ---------- */
+      .sidebar {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      .sidebar .section-title {
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border);
+      }
+      .sched-list {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .sched-item {
+        flex: 1 1 0;
+        min-height: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 12px;
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid var(--border);
+        border-left: 3px solid transparent;
+        color: var(--muted);
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .sched-item:hover {
+        background: var(--panel-2);
+        color: var(--text);
+      }
+      .sched-item.active {
+        background: var(--panel-2);
+        color: var(--text);
+        border-left-color: var(--accent);
+      }
+      .sched-num {
+        font-family: "Big Noodle Titling", "Segoe UI", sans-serif;
+        font-size: 22px;
+        width: 22px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      .sched-info {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .sched-teams {
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .sched-sub {
+        font-size: 10px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .live-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #2a313d;
+        flex-shrink: 0;
+      }
+      .live-dot.on {
+        background: var(--green);
+        box-shadow: 0 0 8px var(--green);
+      }
+      .sidebar-logo {
+        flex: 0 0 auto;
+        padding: 8px;
+        text-align: center;
+        border-top: 1px solid var(--border);
+      }
+      .sidebar-logo img {
+        max-width: 100%;
+        max-height: 56px;
+        height: auto;
+        object-fit: contain;
+      }
+
+      /* ---------- EDITOR ---------- */
+      .editor {
+        min-height: 0;
+        min-width: 0;
+      }
+      .tab-content {
+        display: none;
+        height: 100%;
+        min-height: 0;
+      }
+      .tab-content.active {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .teams-row {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .team {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+      .team.blue {
+        border-top: 2px solid var(--blue);
+      }
+      .team.red {
+        border-top: 2px solid var(--red);
+      }
+      .team-head {
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+      }
+      .team.blue .team-head {
+        color: var(--blue);
+      }
+      .team.red .team-head {
+        color: var(--red);
+      }
+      .team-body {
+        flex: 1 1 auto;
+        min-height: 0;
+        padding: 14px;
+        display: grid;
+        grid-template-columns: minmax(130px, 38%) 1fr;
+        gap: 14px;
+      }
+
+      .logo-col {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-height: 0;
+      }
+      .logo-preview {
+        flex: 1 1 auto;
+        min-height: 0;
+        background: var(--field);
+        border: 1px dashed var(--border-strong);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+      }
+      .logo-preview img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+
+      .fields-col {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-height: 0;
+        justify-content: center;
+      }
+
+      label.lbl {
+        display: block;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 9px 10px;
+        background: var(--field);
+        border: 1px solid var(--border);
+        color: var(--text);
+        font-size: 14px;
+        transition: all 0.15s ease;
+      }
+      input[type="text"]::placeholder {
+        color: #475062;
+      }
+      input[type="text"]:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px var(--accent);
+      }
+
+      .score-row {
+        display: flex;
+        gap: 6px;
+      }
+      .score-row input {
+        flex: 1;
+        font-family: "Big Noodle Titling", "Segoe UI", sans-serif;
+        font-size: 26px;
+        text-align: center;
+        padding: 2px 8px;
+      }
+      .score-row .btn {
+        width: 44px;
+        padding: 0;
+        font-size: 18px;
+      }
+      .score-row .btn.plus {
+        color: var(--green);
+        border-color: #1e5a3a;
+      }
+      .score-row .btn.plus:hover {
+        background: var(--green);
+        color: #000;
+      }
+
+      /* file upload */
+      .file-upload {
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        background: var(--panel-2);
+        border: 1px solid var(--border-strong);
+        padding: 7px 10px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--text);
+        transition: all 0.15s ease;
+        flex-shrink: 0;
+      }
+      .file-upload:hover {
+        border-color: var(--accent);
+      }
+      .file-upload input[type="file"] {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* ---------- BOTTOM ROW ---------- */
+      .bottom-row {
+        flex: 0 0 auto;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: stretch;
+      }
+      .box {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        padding: 12px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        justify-content: center;
+      }
+      .box.casters {
+        border-color: rgba(168, 85, 247, 0.5);
+      }
+      .casters-inner {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .sidebar-casters {
+        flex: 0 0 auto;
+        padding: 10px 12px;
+        border-top: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        background: rgba(168, 85, 247, 0.05);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .casters-thumb {
+        width: 100%;
+        height: 64px;
+        flex-shrink: 0;
+        background: var(--field);
+        border: 1px dashed var(--border-strong);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .casters-thumb img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+      .casters-inner .file-upload {
+        flex: 1;
+      }
+
+      .box.actions {
+        justify-content: center;
+        gap: 8px;
+        min-width: 190px;
+      }
+
+      /* toggle / checkbox */
+      .check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--text);
+        white-space: nowrap;
+      }
+      .check input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--border-strong);
+        background: var(--field);
+        cursor: pointer;
+        position: relative;
+        transition: all 0.15s ease;
+        flex-shrink: 0;
+      }
+      .check input[type="checkbox"]:checked {
+        background: var(--green);
+        border-color: var(--green);
+      }
+      .check input[type="checkbox"]:checked::after {
+        content: "\2714";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 12px;
+        color: #000;
+      }
+      .check.show-display {
+        background: var(--field);
+        border: 1px solid var(--border-strong);
+        padding: 9px 12px;
+      }
+
+      /* ---------- RESPONSIVE (still no scroll) ---------- */
+      @media (max-width: 1100px) {
+        .app {
+          grid-template-columns: 190px 1fr;
+        }
+        .team-body {
+          grid-template-columns: 1fr;
+          grid-template-rows: minmax(0, 1fr) auto;
+        }
+        .bottom-row {
+          grid-template-columns: 1fr;
+        }
+        .box.actions {
+          flex-direction: row;
+          min-width: 0;
+        }
+        .box.actions > * {
+          flex: 1;
+        }
+      }
+      @media (max-height: 720px) {
+        h1 {
+          font-size: 22px;
+        }
+        .team-body {
+          padding: 8px;
+          gap: 8px;
+        }
+        input[type="text"] {
+          padding: 6px 8px;
+        }
+        .score-row input {
+          font-size: 22px;
+        }
+        .sidebar-logo {
+          display: none;
+        }
+        .casters-thumb {
+          height: 44px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="status-dot"></span>
+        <h1>Schedule Control Panel</h1>
+      </div>
+      <div class="top-actions">
+        <button class="btn" onclick="swapTeams(currentTab)">Swap Teams</button>
+        <button class="btn danger" onclick="resetAll()">Reset All</button>
+      </div>
+    </header>
+
+    <main class="app">
+      <aside class="sidebar">
+        <div class="section-title">Schedules</div>
+        <div class="sched-list" id="sched-list"></div>
+        <div class="sidebar-casters">
+          <div class="section-title">
+            &#127897;&#65039; Casters (All Schedules)
+          </div>
+          <div class="casters-thumb">
+            <img
+              id="casters-img"
+              src="Assets/Other/transparent.png"
+              alt="Casters"
+            />
+          </div>
+          <div class="file-upload">
+            Choose Casters Image<input
+              type="file"
+              id="casters-file"
+              accept="image/*"
+              onchange="updateCasters()"
+            />
+          </div>
+          <label class="check"
+            ><input
+              type="checkbox"
+              id="show-casters"
+              onchange="saveSchedule(1)"
+            />
+            Show Casters</label
+          >
+        </div>
+        <div class="sidebar-logo"></div>
+      </aside>
+
+      <section class="editor" id="tabs-container"></section>
+    </main>
+
+    <script>
+      const DEFAULT_LOGO = "Assets/Other/transparent.png";
+      const TOTAL_SCHEDULES = 8;
+      let currentTab = 1;
+
+      // ============================================
+      // Generate sidebar + editors dynamically
+      // ============================================
+      function teamPanel(i, n, side) {
+        return `
+          <div class="team ${side}">
+            <div class="team-head">${side === "blue" ? "Blue Side" : "Red Side"} &middot; Team ${n}</div>
+            <div class="team-body">
+              <div class="logo-col">
+                <div class="logo-preview"><img id="logo${n}-${i}" src="${DEFAULT_LOGO}" alt="Logo ${n}" /></div>
+                <div class="file-upload">Choose Logo<input type="file" id="logo${n}-file-${i}" accept="image/*" onchange="updateLogo(${i}, ${n})" /></div>
+              </div>
+              <div class="fields-col">
+                <label class="lbl" for="team${n}-${i}">Team Name</label>
+                <input type="text" id="team${n}-${i}" oninput="saveSchedule(${i})" placeholder="Enter Team Name" />
+                <label class="lbl" for="score${n}-${i}" style="margin-top:6px">Score</label>
+                <div class="score-row">
+                  <button class="btn" onclick="adjustScore(${i}, ${n}, -1)">&minus;</button>
+                  <input type="text" id="score${n}-${i}" oninput="saveSchedule(${i})" placeholder="0" />
+                  <button class="btn plus" onclick="adjustScore(${i}, ${n}, 1)">+</button>
+                </div>
+              </div>
+            </div>
+          </div>`;
+      }
+
+      function generateTabs() {
+        const container = document.getElementById("tabs-container");
+        const list = document.getElementById("sched-list");
+        let html = "";
+        let listHtml = "";
+
+        for (let i = 1; i <= TOTAL_SCHEDULES; i++) {
+          listHtml += `
+            <button class="sched-item ${i === 1 ? "active" : ""}" id="sched-item-${i}" onclick="openTab(${i})">
+              <span class="sched-num">${i}</span>
+              <span class="sched-info">
+                <span class="sched-teams" id="sched-teams-${i}">Empty</span>
+                <span class="sched-sub" id="sched-sub-${i}">Hidden</span>
+              </span>
+              <span class="live-dot" id="live-dot-${i}"></span>
+            </button>`;
+
+          html += `
+            <div id="schedule-${i}" class="tab-content ${i === 1 ? "active" : ""}">
+              <div class="teams-row">
+                ${teamPanel(i, 1, "blue")}
+                ${teamPanel(i, 2, "red")}
+              </div>
+
+              <div class="bottom-row">
+                <div class="box">
+                  <label class="lbl" for="time-${i}">Custom Text</label>
+                  <input type="text" id="time-${i}" oninput="saveSchedule(${i})" placeholder="e.g., Match Time / Status" />
+                </div>
+
+                <div class="box actions">
+                  <label class="check show-display"><input type="checkbox" id="show-${i}" onchange="saveSchedule(${i})" /> Show on Display</label>
+                  <button class="btn danger" onclick="resetSchedule(${i})">Reset Schedule</button>
+                </div>
+              </div>
+            </div>`;
+        }
+
+        list.innerHTML = listHtml;
+        container.innerHTML = html;
+      }
+
+      // ============================================
+      // Tab navigation
+      // ============================================
+      function openTab(scheduleNum) {
+        currentTab = scheduleNum;
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((tab) => tab.classList.remove("active"));
+        document
+          .querySelectorAll(".sched-item")
+          .forEach((b) => b.classList.remove("active"));
+        document
+          .getElementById(`schedule-${scheduleNum}`)
+          .classList.add("active");
+        document
+          .getElementById(`sched-item-${scheduleNum}`)
+          .classList.add("active");
+      }
+
+      // ============================================
+      // Sidebar summary refresh
+      // ============================================
+      function refreshListItem(i) {
+        const t1 = document.getElementById(`team1-${i}`).value.trim();
+        const t2 = document.getElementById(`team2-${i}`).value.trim();
+        const s1 = document.getElementById(`score1-${i}`).value.trim();
+        const s2 = document.getElementById(`score2-${i}`).value.trim();
+        const on = document.getElementById(`show-${i}`).checked;
+
+        const teamsEl = document.getElementById(`sched-teams-${i}`);
+        teamsEl.textContent =
+          t1 || t2 ? `${t1 || "TBD"} vs ${t2 || "TBD"}` : "Empty";
+
+        const subEl = document.getElementById(`sched-sub-${i}`);
+        const score = s1 || s2 ? `${s1 || 0} - ${s2 || 0} · ` : "";
+        subEl.textContent = score + (on ? "Live on display" : "Hidden");
+
+        document.getElementById(`live-dot-${i}`).classList.toggle("on", on);
+      }
+
+      // ============================================
+      // Score +/- buttons
+      // ============================================
+      function adjustScore(scheduleNum, teamNum, delta) {
+        const input = document.getElementById(`score${teamNum}-${scheduleNum}`);
+        const current = parseInt(input.value, 10);
+        const next = Math.max(0, (isNaN(current) ? 0 : current) + delta);
+        input.value = next;
+        saveSchedule(scheduleNum);
+      }
+
+      // ============================================
+      // Swap Team 1 <-> Team 2 (current schedule)
+      // ============================================
+      function swapTeams(i) {
+        const swap = (idA, idB, prop) => {
+          const a = document.getElementById(idA);
+          const b = document.getElementById(idB);
+          const tmp = a[prop];
+          a[prop] = b[prop];
+          b[prop] = tmp;
+        };
+        swap(`team1-${i}`, `team2-${i}`, "value");
+        swap(`score1-${i}`, `score2-${i}`, "value");
+        swap(`logo1-${i}`, `logo2-${i}`, "src");
+        saveSchedule(i);
+      }
+
+      // ============================================
+      // Update logo (preview + save)
+      // ============================================
+      function updateLogo(scheduleNum, logoNum) {
+        const fileInput = document.getElementById(
+          `logo${logoNum}-file-${scheduleNum}`,
+        );
+        const imgElement = document.getElementById(
+          `logo${logoNum}-${scheduleNum}`,
+        );
+        const file = fileInput.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            imgElement.src = e.target.result;
+            saveSchedule(scheduleNum);
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+
+      // ============================================
+      // Update casters (preview + save)
+      // ============================================
+      // Isang casters image lang para sa lahat ng schedules
+      function updateCasters() {
+        const fileInput = document.getElementById("casters-file");
+        const imgElement = document.getElementById("casters-img");
+        const file = fileInput.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            imgElement.src = e.target.result;
+            saveSchedule(1);
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+      // Casters data ay sa schedule-1 lang naka-save (hinahanap ng display ang
+      // unang schedule na may castersImg), para hindi ma-duplicate sa localStorage.
+
+      // ============================================
+      // Save schedule -> localStorage (crosshost.js handles the sync)
+      // ============================================
+      function saveSchedule(scheduleNum) {
+        const scheduleData = {
+          show: document.getElementById(`show-${scheduleNum}`).checked,
+          time: document.getElementById(`time-${scheduleNum}`).value,
+          logo1: document.getElementById(`logo1-${scheduleNum}`).src,
+          team1: document.getElementById(`team1-${scheduleNum}`).value,
+          score1: document.getElementById(`score1-${scheduleNum}`).value,
+          logo2: document.getElementById(`logo2-${scheduleNum}`).src,
+          team2: document.getElementById(`team2-${scheduleNum}`).value,
+          score2: document.getElementById(`score2-${scheduleNum}`).value,
+          castersImg:
+            scheduleNum === 1 ? document.getElementById("casters-img").src : "",
+          showCasters:
+            scheduleNum === 1
+              ? document.getElementById("show-casters").checked
+              : false,
+        };
+
+        try {
+          localStorage.setItem(
+            `schedule-${scheduleNum}`,
+            JSON.stringify(scheduleData),
+          );
+        } catch (e) {
+          console.error(`Failed to save schedule-${scheduleNum}:`, e);
+          alert(
+            "Puno na ang storage! Gumamit ng mas maliit na image (logo/casters) o i-reset ang ibang schedule.",
+          );
+        }
+        refreshListItem(scheduleNum);
+        console.log(`💾 Saved schedule-${scheduleNum} to localStorage`);
+      }
+
+      // ============================================
+      // Reset schedule
+      // ============================================
+      function resetSchedule(scheduleNum) {
+        document.getElementById(`show-${scheduleNum}`).checked = false;
+        document.getElementById(`time-${scheduleNum}`).value = "";
+        document.getElementById(`logo1-${scheduleNum}`).src = DEFAULT_LOGO;
+        document.getElementById(`logo1-file-${scheduleNum}`).value = "";
+        document.getElementById(`team1-${scheduleNum}`).value = "";
+        document.getElementById(`score1-${scheduleNum}`).value = "";
+        document.getElementById(`logo2-${scheduleNum}`).src = DEFAULT_LOGO;
+        document.getElementById(`logo2-file-${scheduleNum}`).value = "";
+        document.getElementById(`team2-${scheduleNum}`).value = "";
+        document.getElementById(`score2-${scheduleNum}`).value = "";
+        saveSchedule(scheduleNum);
+      }
+
+      function resetAll() {
+        if (!confirm("Reset ALL 8 schedules?")) return;
+        document.getElementById("casters-img").src = DEFAULT_LOGO;
+        document.getElementById("casters-file").value = "";
+        document.getElementById("show-casters").checked = false;
+        for (let i = 1; i <= TOTAL_SCHEDULES; i++) resetSchedule(i);
+      }
+
+      // ============================================
+      // Load schedules from localStorage
+      // ============================================
+      function loadSchedules() {
+        let castersLoaded = false;
+        const stale = [];
+        for (let i = 1; i <= TOTAL_SCHEDULES; i++) {
+          const raw = localStorage.getItem(`schedule-${i}`);
+          if (!raw) continue;
+
+          try {
+            const data = JSON.parse(raw);
+
+            document.getElementById(`show-${i}`).checked = data.show || false;
+            document.getElementById(`time-${i}`).value = data.time || "";
+
+            const logo1Src =
+              data.logo1 && data.logo1.length > 100 ? data.logo1 : DEFAULT_LOGO;
+            document.getElementById(`logo1-${i}`).src = logo1Src;
+            document.getElementById(`team1-${i}`).value = data.team1 || "";
+            document.getElementById(`score1-${i}`).value = data.score1 || "";
+
+            const logo2Src =
+              data.logo2 && data.logo2.length > 100 ? data.logo2 : DEFAULT_LOGO;
+            document.getElementById(`logo2-${i}`).src = logo2Src;
+            document.getElementById(`team2-${i}`).value = data.team2 || "";
+            document.getElementById(`score2-${i}`).value = data.score2 || "";
+
+            // Casters: kunin sa unang schedule na may naka-save
+            const hasCastersImg =
+              data.castersImg && data.castersImg.length > 100;
+            if (!castersLoaded && hasCastersImg) {
+              document.getElementById("casters-img").src = data.castersImg;
+              castersLoaded = true;
+            }
+            if (data.showCasters) {
+              document.getElementById("show-casters").checked = true;
+            }
+            // Lumang duplicate na casters data (schedule 2-8) -> lilinisin
+            if (i !== 1 && (hasCastersImg || data.showCasters)) stale.push(i);
+          } catch (e) {
+            console.error(`Failed to load schedule-${i}:`, e);
+          }
+        }
+        // Linisin muna ang mga duplicate (para lumuwag ang storage), saka i-save sa schedule-1
+        if (stale.length) {
+          stale.forEach((i) => saveSchedule(i));
+          saveSchedule(1);
+        }
+        for (let i = 1; i <= TOTAL_SCHEDULES; i++) refreshListItem(i);
+      }
+
+      // ============================================
+      // Init
+      // ============================================
+      window.onload = () => {
+        generateTabs();
+        loadSchedules();
+      };
+    </script>
+
+    <script src="crosshost.js"></script>
+  </body>
+</html>

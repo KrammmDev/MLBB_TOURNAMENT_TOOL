@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, initial-scale=1.0" />
+    <title>Match Winner Display</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: transparent !important;
+      }
+
+      body {
+        font-family: "Roboto Condensed", "Arial Narrow", Arial, sans-serif;
+        color: #ffffff;
+      }
+
+      .match-winner-container {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+      }
+
+      .winner-wrapper {
+        width: 900px;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .winner-wrapper.show {
+        display: flex;
+      }
+
+      .game-number {
+        margin-bottom: 20px;
+        font-size: 27px;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: 7px;
+        text-transform: uppercase;
+      }
+
+      .winner-title {
+        margin-bottom: 38px;
+        font-size: 78px;
+        font-weight: 900;
+        line-height: 0.9;
+        letter-spacing: 12px;
+        text-transform: uppercase;
+      }
+
+      .team-logo {
+        width: 330px;
+        height: 330px;
+        margin-bottom: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .team-logo img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: contain;
+      }
+
+      .team-name {
+        width: 100%;
+        overflow-wrap: anywhere;
+        font-size: 72px;
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="match-winner-container">
+      <section id="winnerWrapper" class="winner-wrapper" aria-live="polite">
+        <div class="game-number" id="gameNumber">GAME 1</div>
+        <div class="winner-title">WINNER</div>
+
+        <div class="team-logo">
+          <img id="winnerLogoImg" src="" alt="Winning team logo" />
+        </div>
+
+        <div class="team-name" id="winnerName">---</div>
+      </section>
+    </main>
+
+    <script>
+      let refreshInterval = null;
+
+      async function fetchMatchData() {
+        try {
+          const response = await fetch("/api/matchdata", {
+            cache: "no-store",
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          const data = await response.json();
+          updateDisplay(data);
+        } catch (error) {
+          console.error("Failed to fetch match data:", error);
+        }
+      }
+
+      function updateDisplay(data) {
+        const blueTeam = data.teamdata?.blueteam;
+        const redTeam = data.teamdata?.redteam;
+        const winner = data.winmatches;
+        const gameNumber = data.game_number || 1;
+
+        const wrapper = document.getElementById("winnerWrapper");
+        const winnerName = document.getElementById("winnerName");
+        const winnerLogo = document.getElementById("winnerLogoImg");
+        const gameNumberElement = document.getElementById("gameNumber");
+
+        gameNumberElement.textContent = `GAME ${gameNumber}`;
+
+        const winningTeam =
+          winner === "blue" ? blueTeam : winner === "red" ? redTeam : null;
+
+        if (!winningTeam) {
+          wrapper.classList.remove("show");
+          winnerLogo.removeAttribute("src");
+          return;
+        }
+
+        winnerName.textContent = (
+          winningTeam.teamname || `${winner.toUpperCase()} SIDE`
+        ).toUpperCase();
+
+        if (winningTeam.logo) {
+          winnerLogo.src = winningTeam.logo;
+          winnerLogo.style.display = "block";
+        } else {
+          winnerLogo.removeAttribute("src");
+          winnerLogo.style.display = "none";
+        }
+
+        wrapper.classList.add("show");
+      }
+
+      function startAutoRefresh() {
+        if (refreshInterval) {
+          clearInterval(refreshInterval);
+        }
+
+        refreshInterval = setInterval(fetchMatchData, 1000);
+      }
+
+      fetchMatchData();
+      startAutoRefresh();
+
+      window.addEventListener("beforeunload", () => {
+        if (refreshInterval) {
+          clearInterval(refreshInterval);
+        }
+      });
+    </script>
+  </body>
+</html>

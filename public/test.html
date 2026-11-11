@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Tournament Controller - 2 Stage</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #0f0f1a;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 24px;
+            background: #1a1a2e;
+            border-bottom: 2px solid #2a2a4a;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .top-nav h1 {
+            font-size: 1.2em;
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        .status-badge.live { background: rgba(39, 174, 96, 0.2); color: #27ae60; border: 1px solid #27ae60; }
+        .status-badge.idle { background: rgba(136, 136, 136, 0.2); color: #888; border: 1px solid #555; }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(247, 151, 30, 0.3); }
+        .btn-primary { background: linear-gradient(135deg, #f7971e, #ffd200); color: #0f0f1a; }
+        .btn-secondary { background: #2a2a4a; color: #e0e0e0; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 0.8em; }
+        .btn-block { width: 100%; justify-content: center; }
+
+        .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+
+        .controller-tabs {
+            display: flex;
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 6px;
+            margin-bottom: 20px;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .ctab {
+            flex: 1;
+            min-width: 100px;
+            padding: 12px 8px;
+            background: transparent;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .ctab:hover { color: #f7971e; background: rgba(247, 151, 30, 0.05); }
+        .ctab.active { color: #0f0f1a; background: linear-gradient(135deg, #f7971e, #ffd200); }
+
+        .cpanel { display: none; }
+        .cpanel.active { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: #1a1a2e;
+            border: 1px solid #2a2a4a;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .card h2 { font-size: 1em; color: #ffd200; margin-bottom: 16px; }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.85em;
+            color: #aaa;
+            font-weight: 500;
+        }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px 14px;
+            background: #0f0f1a;
+            border: 2px solid #2a2a4a;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 0.9em;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus { border-color: #f7971e; }
+
+        .form-group { margin-bottom: 16px; }
+
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+
+        .team-list { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+
+        .team-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: #0f0f1a;
+            border: 1px solid #2a2a4a;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+        .team-item:hover { border-color: #f7971e; }
+
+        .seed-num { color: #f7971e; font-weight: 700; margin-right: 8px; font-size: 0.85em; }
+
+        /* GROUPS */
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .group-card {
+            background: #0f0f1a;
+            border: 2px solid #2a2a4a;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .group-card h3 {
+            color: #ffd200;
+            font-size: 1em;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #2a2a4a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .group-team {
+            padding: 6px 10px;
+            background: #1a1a2e;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .group-team .pos {
+            color: #f7971e;
+            font-weight: 700;
+            min-width: 16px;
+        }
+
+        /* STANDINGS TABLE */
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+
+        .standings-table th {
+            background: #0f0f1a;
+            color: #f7971e;
+            padding: 8px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid #2a2a4a;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .standings-table td {
+            padding: 8px;
+            border-bottom: 1px solid #1a1a2e;
+        }
+
+        .standings-table tr.qualified {
+            background: rgba(39, 174, 96, 0.1);
+        }
+
+        .standings-table tr.qualified td:first-child {
+            border-left: 3px solid #27ae60;
+        }
+
+        .standings-table tr.eliminated {
+            opacity: 0.5;
+        }
+
+        .standings-table .team-cell {
+            font-weight: 600;
+        }
+
+        .standings-table .wins { color: #27ae60; font-weight: 700; }
+        .standings-table .losses { color: #e74c3c; font-weight: 700; }
+
+        /* MATCH LIST */
+        .match-list { display: flex; flex-direction: column; gap: 10px; }
+
+        .match-card {
+            background: #0f0f1a;
+            border: 1px solid #2a2a4a;
+            border-radius: 10px;
+            padding: 14px;
+            transition: all 0.2s;
+        }
+        .match-card:hover { border-color: #f7971e; }
+        .match-card.completed { border-color: #27ae60; background: rgba(39, 174, 96, 0.05); }
+        .match-card.ready { border-color: #f7971e; background: rgba(247, 151, 30, 0.05); }
+        .match-card.waiting { opacity: 0.6; }
+
+        .match-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .match-round {
+            font-size: 0.75em;
+            font-weight: 700;
+            color: #f7971e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .match-status {
+            font-size: 0.7em;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        .match-status.live { background: rgba(39, 174, 96, 0.2); color: #27ae60; }
+        .match-status.done { background: rgba(41, 128, 185, 0.2); color: #3498db; }
+        .match-status.pending { background: rgba(136, 136, 136, 0.2); color: #888; }
+
+        .match-score-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .match-score-row .team-name {
+            flex: 1;
+            font-weight: 600;
+            font-size: 0.9em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .match-score-row .team-name.winner { color: #27ae60; }
+
+        .match-score-row input {
+            width: 60px;
+            padding: 8px;
+            text-align: center;
+            background: #0f0f1a;
+            border: 2px solid #2a2a4a;
+            border-radius: 8px;
+            color: #ffd200;
+            font-weight: 700;
+            font-size: 1em;
+            outline: none;
+        }
+        .match-score-row input:focus { border-color: #f7971e; }
+        .match-score-row input:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .match-card-actions { display: flex; gap: 6px; margin-top: 8px; }
+
+        .empty-msg {
+            text-align: center;
+            color: #555;
+            padding: 30px 20px;
+            font-style: italic;
+            font-size: 0.9em;
+        }
+
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 14px 22px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            font-size: 0.9em;
+        }
+        .notification.success { background: #27ae60; }
+        .notification.error { background: #e74c3c; }
+        .notification.info { background: #2980b9; }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .stage-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .stage-badge.group { background: rgba(41, 128, 185, 0.2); color: #3498db; }
+        .stage-badge.playoff { background: rgba(247, 151, 30, 0.2); color: #f7971e; }
+
+        .progress-bar {
+            height: 8px;
+            background: #0f0f1a;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-bar .fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f7971e, #ffd200);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f0f1a; }
+        ::-webkit-scrollbar-thumb { background: #2a2a4a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #f7971e; }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <h1>🎮 Tournament Controller</h1>
+        <div class="nav-actions">
+            <span class="stage-badge group" id="stageBadge">Stage 1: Group</span>
+            <span class="status-badge idle" id="liveStatus">⚪ Not Live</span>
+            <button class="btn btn-secondary btn-sm" onclick="openViewer()">📺 Open Viewer</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="controller-tabs">
+            <button class="ctab active" onclick="switchCPanel('setup', event)">⚙️ Setup</button>
+            <button class="ctab" onclick="switchCPanel('teams', event)">👥 Teams</button>
+            <button class="ctab" onclick="switchCPanel('groups', event)">📊 Groups</button>
+            <button class="ctab" onclick="switchCPanel('playoffs', event)">🏆 Playoffs</button>
+        </div>
+
+        <!-- SETUP -->
+        <div id="cpanel-setup" class="cpanel active">
+            <div class="card">
+                <h2>⚙️ Tournament Settings</h2>
+                <div class="form-group">
+                    <label>Tournament Name</label>
+                    <input type="text" id="tournamentName" placeholder="e.g., MLBB Championship 2024" value="My Tournament">
+                </div>
+                <div class="form-group">
+                    <label>Number of Groups</label>
+                    <select id="numGroups">
+                        <option value="2">2 Groups</option>
+                        <option value="4" selected>4 Groups</option>
+                        <option value="8">8 Groups</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Teams Advancing per Group</label>
+                    <select id="advancePerGroup">
+                        <option value="1">Top 1</option>
+                        <option value="2" selected>Top 2</option>
+                        <option value="3">Top 3</option>
+                        <option value="4">Top 4</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Playoff Elimination Type</label>
+                    <select id="elimType">
+                        <option value="single" selected>Single Elimination</option>
+                        <option value="double">Double Elimination</option>
+                    </select>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary btn-block" onclick="applySettings()">✅ Apply Settings</button>
+                </div>
+                <div class="btn-group" style="margin-top:20px;">
+                    <button class="btn btn-danger btn-block" onclick="resetTournament()">🗑️ Reset Tournament</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📖 Tournament Flow</h2>
+                <div style="font-size:0.9em; color:#aaa; line-height:2;">
+                    <div><span class="stage-badge group">Stage 1</span> Group Stage — Round Robin within groups</div>
+                    <div><span class="stage-badge playoff">Stage 2</span> Playoffs — Top teams advance to bracket</div>
+                    <div style="margin-top:10px; padding:10px; background:#0f0f1a; border-radius:8px; font-size:0.85em;">
+                        <strong style="color:#ffd200;">Formula:</strong> (Num Groups × Advance per Group) = Playoff Teams
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TEAMS -->
+        <div id="cpanel-teams" class="cpanel">
+            <div class="card">
+                <h2>👥 Add Teams</h2>
+                <div class="form-group">
+                    <label>Team Name</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="teamInput" placeholder="Team name..." onkeydown="if(event.key==='Enter') addTeam()">
+                        <button class="btn btn-primary" onclick="addTeam()">➕</button>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-secondary btn-sm" onclick="addSampleTeams(8)">📋 Sample (8)</button>
+                    <button class="btn btn-secondary btn-sm" onclick="addSampleTeams(16)">📋 Sample (16)</button>
+                    <button class="btn btn-danger btn-sm" onclick="clearTeams()">Clear All</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📝 Registered Teams (<span id="teamCount">0</span>)</h2>
+                <div id="teamList" class="team-list">
+                    <div class="empty-msg">No teams yet.</div>
+                </div>
+                <div class="btn-group" style="margin-top:20px;">
+                    <button class="btn btn-success btn-block" onclick="generateGroups()">📊 Generate Groups & Start Group Stage</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- GROUPS -->
+        <div id="cpanel-groups" class="cpanel">
+            <div id="groupsContainer">
+                <div class="empty-msg">No groups yet. Add teams first.</div>
+            </div>
+        </div>
+
+        <!-- PLAYOFFS -->
+        <div id="cpanel-playoffs" class="cpanel">
+            <div id="playoffsContainer">
+                <div class="empty-msg">Playoffs not started. Complete group stage first.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'tournamentState_v3';
+
+        let state = {
+            tournamentName: 'My Tournament',
+            numGroups: 4,
+            advancePerGroup: 2,
+            elimType: 'single',
+            teams: [],
+            groups: {},          // { "Group A": [team1, team2, ...] }
+            groupMatches: [],    // round robin matches
+            playoffMatches: [],
+            currentStage: 'setup', // setup | group | playoff | done
+            champion: null,
+            grandFinalId: null,
+            grandFinalResetId: null
+        };
+
+        // ===== PERSISTENCE =====
+        function saveState() {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+        }
+        function loadState() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (parsed && parsed.teams) { state = { ...state, ...parsed }; return true; }
+                }
+            } catch(e) {}
+            return false;
+        }
+
+        // ===== NOTIFY =====
+        function notify(msg, type = 'info') {
+            const n = document.createElement('div');
+            n.className = `notification ${type}`;
+            n.textContent = msg;
+            document.body.appendChild(n);
+            setTimeout(() => {
+                n.style.transition = 'all 0.3s';
+                n.style.opacity = '0';
+                n.style.transform = 'translateX(100%)';
+                setTimeout(() => n.remove(), 300);
+            }, 2500);
+        }
+
+        // ===== TABS =====
+        function switchCPanel(panel, event) {
+            document.querySelectorAll('.cpanel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.ctab').forEach(t => t.classList.remove('active'));
+            document.getElementById(`cpanel-${panel}`).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // ===== OPEN VIEWER =====
+        function openViewer() {
+            window.open('viewer.html', 'TournamentViewer', 'width=1400,height=900');
+        }
+
+        // ===== SETUP =====
+        function applySettings() {
+            const name = document.getElementById('tournamentName').value.trim();
+            const numGroups = parseInt(document.getElementById('numGroups').value);
+            const advancePerGroup = parseInt(document.getElementById('advancePerGroup').value);
+            const elimType = document.getElementById('elimType').value;
+            
+            if (!name) { notify('Enter tournament name', 'error'); return; }
+            if (state.teams.length > 0 && state.currentStage !== 'setup') {
+                if (!confirm('Changing settings will reset groups and matches. Continue?')) return;
+            }
+            
+            state.tournamentName = name;
+            state.numGroups = numGroups;
+            state.advancePerGroup = advancePerGroup;
+            state.elimType = elimType;
+            
+            saveState();
+            updateStageBadge();
+            notify('Settings applied!', 'success');
+        }
+
+        function resetTournament() {
+            if (!confirm('Reset the ENTIRE tournament? All teams, groups, and matches will be deleted.')) return;
+            state = {
+                tournamentName: 'My Tournament',
+                numGroups: 4,
+                advancePerGroup: 2,
+                elimType: 'single',
+                teams: [],
+                groups: {},
+                groupMatches: [],
+                playoffMatches: [],
+                currentStage: 'setup',
+                champion: null,
+                grandFinalId: null,
+                grandFinalResetId: null
+            };
+            document.getElementById('tournamentName').value = 'My Tournament';
+            document.getElementById('numGroups').value = '4';
+            document.getElementById('advancePerGroup').value = '2';
+            document.getElementById('elimType').value = 'single';
+            saveState();
+            renderAll();
+            notify('Tournament reset!', 'info');
+        }
+
+        // ===== TEAMS =====
+        function addTeam() {
+            const input = document.getElementById('teamInput');
+            const name = input.value.trim();
+            if (!name) { notify('Enter team name', 'error'); return; }
+            if (state.teams.some(t => t.toLowerCase() === name.toLowerCase())) {
+                notify('Team already exists!', 'error'); return;
+            }
+            if (state.currentStage !== 'setup') {
+                notify('Cannot add teams after groups are generated', 'error'); return;
+            }
+            state.teams.push(name);
+            input.value = '';
+            input.focus();
+            saveState();
+            renderTeamList();
+            notify(`"${name}" added!`, 'success');
+        }
+
+        function removeTeam(index) {
+            if (state.currentStage !== 'setup') { notify('Cannot remove after groups generated', 'error'); return; }
+            state.teams.splice(index, 1);
+            saveState();
+            renderTeamList();
+        }
+
+        function clearTeams() {
+            if (state.currentStage !== 'setup') { notify('Cannot clear after groups generated', 'error'); return; }
+            if (state.teams.length === 0) return;
+            if (!confirm('Clear all teams?')) return;
+            state.teams = [];
+            saveState();
+            renderTeamList();
+        }
+
+        function addSampleTeams(count) {
+            if (state.currentStage !== 'setup') { notify('Cannot add after groups generated', 'error'); return; }
+            const pool = ['Team Liquid', 'Fnatic', 'G2 Esports', 'T1', 'Gen.G', 'DRX', 'Cloud9', 'TSM',
+                          'NaVi', 'Vitality', 'FaZe', 'Astralis', 'Heroic', 'NIP', 'OG', 'BIG'];
+            for (let i = 0; i < count && i < pool.length; i++) {
+                if (!state.teams.some(t => t.toLowerCase() === pool[i].toLowerCase())) {
+                    state.teams.push(pool[i]);
+                }
+            }
+            saveState();
+            renderTeamList();
+            notify(`${count} sample teams added!`, 'success');
+        }
+
+        function renderTeamList() {
+            const container = document.getElementById('teamList');
+            document.getElementById('teamCount').textContent = state.teams.length;
+            if (state.teams.length === 0) {
+                container.innerHTML = '<div class="empty-msg">No teams yet.</div>';
+                return;
+            }
+            container.innerHTML = state.teams.map((team, i) => `
+                <div class="team-item">
+                    <span><span class="seed-num">#${i + 1}</span>${escapeHtml(team)}</span>
+                    ${state.currentStage === 'setup' ? `<button class="btn btn-danger btn-sm" onclick="removeTeam(${i})">✕</button>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ===== GROUP GENERATION =====
+        function generateGroups() {
+            const numGroups = state.numGroups;
+            const advancePerGroup = state.advancePerGroup;
+            
+            if (state.teams.length < numGroups * 2) {
+                notify(`Need at least ${numGroups * 2} teams for ${numGroups} groups.`, 'error');
+                return;
+            }
+            
+            const playoffSize = numGroups * advancePerGroup;
+            if (![2,4,8,16,32].includes(playoffSize)) {
+                notify(`Playoff size (${playoffSize}) must be 2,4,8,16, or 32. Adjust settings.`, 'error');
+                return;
+            }
+            
+            // Shuffle teams
+            const shuffled = shuffleArray(state.teams);
+            
+            // Distribute to groups
+            const groups = {};
+            const groupNames = getGroupNames(numGroups);
+            groupNames.forEach(name => groups[name] = []);
+            
+            shuffled.forEach((team, i) => {
+                const groupIdx = i % numGroups;
+                groups[groupNames[groupIdx]].push(team);
+            });
+            
+            state.groups = groups;
+            state.currentStage = 'group';
+            state.champion = null;
+            state.playoffMatches = [];
+            
+            // Generate round robin matches per group
+            state.groupMatches = [];
+            let matchId = 0;
+            groupNames.forEach(groupName => {
+                const teams = groups[groupName];
+                for (let i = 0; i < teams.length; i++) {
+                    for (let j = i + 1; j < teams.length; j++) {
+                        state.groupMatches.push({
+                            id: matchId++,
+                            group: groupName,
+                            team1: teams[i],
+                            team2: teams[j],
+                            score1: null,
+                            score2: null,
+                            winner: null,
+                            loser: null,
+                            resolved: false
+                        });
+                    }
+                }
+            });
+            
+            saveState();
+            renderAll();
+            notify(`Groups generated! ${state.groupMatches.length} group matches created.`, 'success');
+        }
+
+        function getGroupNames(n) {
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const names = [];
+            for (let i = 0; i < n; i++) names.push(`Group ${letters[i]}`);
+            return names;
+        }
+
+        function shuffleArray(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        // ===== GROUP STANDINGS =====
+        function getGroupStandings(groupName) {
+            const teams = state.groups[groupName] || [];
+            const stats = {};
+            teams.forEach(t => stats[t] = { name: t, wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 });
+            
+            state.groupMatches.filter(m => m.group === groupName && m.resolved).forEach(m => {
+                if (stats[m.team1]) {
+                    stats[m.team1].pointsFor += m.score1 || 0;
+                    stats[m.team1].pointsAgainst += m.score2 || 0;
+                    if (m.winner === m.team1) stats[m.team1].wins++;
+                    else stats[m.team1].losses++;
+                }
+                if (stats[m.team2]) {
+                    stats[m.team2].pointsFor += m.score2 || 0;
+                    stats[m.team2].pointsAgainst += m.score1 || 0;
+                    if (m.winner === m.team2) stats[m.team2].wins++;
+                    else stats[m.team2].losses++;
+                }
+            });
+            
+            return Object.values(stats).sort((a, b) => {
+                if (b.wins !== a.wins) return b.wins - a.wins;
+                const diffA = a.pointsFor - a.pointsAgainst;
+                const diffB = b.pointsFor - b.pointsAgainst;
+                if (diffB !== diffA) return diffB - diffA;
+                return b.pointsFor - a.pointsFor;
+            });
+        }
+
+        function isGroupComplete(groupName) {
+            return state.groupMatches.filter(m => m.group === groupName).every(m => m.resolved);
+        }
+
+        function allGroupsComplete() {
+            return Object.keys(state.groups).every(g => isGroupComplete(g));
+        }
+
+        // ===== GROUP MATCH RESOLUTION =====
+        function setGroupScore(matchId, slot, value) {
+            const m = state.groupMatches.find(x => x.id === matchId);
+            if (!m) return;
+            const score = value === '' ? null : parseInt(value);
+            if (score !== null && (isNaN(score) || score < 0)) return;
+            if (slot === 1) m.score1 = score; else m.score2 = score;
+            saveState();
+        }
+
+        function resolveGroupMatch(matchId) {
+            const m = state.groupMatches.find(x => x.id === matchId);
+            if (!m) return;
+            if (!m.team1 || !m.team2) { notify('Both teams required', 'error'); return; }
+            if (m.score1 === null || m.score2 === null) { notify('Enter both scores', 'error'); return; }
+            if (m.score1 === m.score2) { notify('Cannot tie!', 'error'); return; }
+            
+            m.winner = m.score1 > m.score2 ? m.team1 : m.team2;
+            m.loser = m.score1 > m.score2 ? m.team2 : m.team1;
+            m.resolved = true;
+            
+            saveState();
+            renderAll();
+            notify(`Winner: ${m.winner}`, 'success');
+            
+            if (allGroupsComplete()) {
+                notify('✅ All groups complete! Ready to start playoffs.', 'info');
+            }
+        }
+
+        function editGroupMatch(matchId) {
+            const m = state.groupMatches.find(x => x.id === matchId);
+            if (!m || !m.resolved) return;
+            if (!confirm(`Re-open this match?`)) return;
+            m.winner = null; m.loser = null; m.resolved = false;
+            saveState();
+            renderAll();
+            notify('Match re-opened', 'info');
+        }
+
+        // ===== PLAYOFF GENERATION =====
+        function generatePlayoffs() {
+            if (!allGroupsComplete()) {
+                notify('Complete all group matches first!', 'error');
+                return;
+            }
+            
+            // Get qualified teams
+            const qualified = [];
+            Object.keys(state.groups).forEach(groupName => {
+                const standings = getGroupStandings(groupName);
+                const advancers = standings.slice(0, state.advancePerGroup);
+                advancers.forEach(t => qualified.push({ team: t.name, group: groupName, seed: qualified.length + 1 }));
+            });
+            
+            const seeds = qualified.map(q => q.team);
+            const size = nextPowerOf2(seeds.length);
+            const paddedSeeds = [...seeds];
+            while (paddedSeeds.length < size) paddedSeeds.push(null);
+            
+            state.playoffMatches = [];
+            state.currentStage = 'playoff';
+            state.champion = null;
+            
+            if (state.elimType === 'single') {
+                generateSingleElim(paddedSeeds, size);
+            } else {
+                generateDoubleElim(paddedSeeds, size);
+            }
+            
+            propagateByes();
+            autoAdvanceAll();
+            saveState();
+            renderAll();
+            notify(`Playoffs started! ${seeds.length} teams qualified.`, 'success');
+        }
+
+        function nextPowerOf2(n) { let p = 1; while (p < n) p *= 2; return p; }
+
+        function createMatch(id, round, bracket, position, team1, team2) {
+            return {
+                id, round, bracket, position, team1, team2,
+                score1: null, score2: null,
+                winner: null, loser: null,
+                nextMatchId: null, nextSlot: null,
+                loserNextMatchId: null, loserNextSlot: null,
+                resolved: false, isBye: false
+            };
+        }
+
+        function generateSingleElim(seeds, size) {
+            const totalRounds = Math.log2(size);
+            let matchId = 0;
+
+            const round1 = [];
+            for (let i = 0; i < size; i += 2) {
+                const m = createMatch(matchId++, 1, 'W', i / 2, seeds[i], seeds[i + 1]);
+                state.playoffMatches.push(m);
+                round1.push(m);
+            }
+
+            let prevRound = round1;
+            for (let r = 2; r <= totalRounds; r++) {
+                const count = size / Math.pow(2, r);
+                const current = [];
+                for (let i = 0; i < count; i++) {
+                    const m = createMatch(matchId++, r, 'W', i, null, null);
+                    state.playoffMatches.push(m);
+                    current.push(m);
+                    const m1 = prevRound[i * 2];
+                    const m2 = prevRound[i * 2 + 1];
+                    if (m1) { m1.nextMatchId = m.id; m1.nextSlot = 1; }
+                    if (m2) { m2.nextMatchId = m.id; m2.nextSlot = 2; }
+                }
+                prevRound = current;
+            }
+        }
+
+        function generateDoubleElim(seeds, size) {
+            const totalRounds = Math.log2(size);
+            let matchId = 0;
+
+            const wbR1 = [];
+            for (let i = 0; i < size; i += 2) {
+                const m = createMatch(matchId++, 1, 'W', i / 2, seeds[i], seeds[i + 1]);
+                state.playoffMatches.push(m);
+                wbR1.push(m);
+            }
+
+            let prevWB = wbR1;
+            const wbRounds = [wbR1];
+            for (let r = 2; r <= totalRounds; r++) {
+                const count = size / Math.pow(2, r);
+                const current = [];
+                for (let i = 0; i < count; i++) {
+                    const m = createMatch(matchId++, r, 'W', i, null, null);
+                    state.playoffMatches.push(m);
+                    current.push(m);
+                    const m1 = prevWB[i * 2];
+                    const m2 = prevWB[i * 2 + 1];
+                    if (m1) { m1.nextMatchId = m.id; m1.nextSlot = 1; }
+                    if (m2) { m2.nextMatchId = m.id; m2.nextSlot = 2; }
+                }
+                prevWB = current;
+                wbRounds.push(current);
+            }
+
+            const lbRounds = [];
+            const lbR1 = [];
+            for (let i = 0; i < wbR1.length; i += 2) {
+                const m = createMatch(matchId++, 1, 'L', i / 2, null, null);
+                state.playoffMatches.push(m);
+                lbR1.push(m);
+                if (wbR1[i]) { wbR1[i].loserNextMatchId = m.id; wbR1[i].loserNextSlot = 1; }
+                if (wbR1[i + 1]) { wbR1[i + 1].loserNextMatchId = m.id; wbR1[i + 1].loserNextSlot = 2; }
+            }
+            lbRounds.push(lbR1);
+            let prevLB = lbR1;
+
+            for (let r = 2; r < totalRounds * 2 - 1; r++) {
+                const currentLB = [];
+                const isEven = r % 2 === 0;
+
+                if (isEven) {
+                    const wbRoundIdx = r / 2;
+                    const wbRound = wbRounds[wbRoundIdx];
+                    const count = wbRound ? wbRound.length : Math.floor(prevLB.length / 2);
+                    for (let i = 0; i < count; i++) {
+                        const m = createMatch(matchId++, r, 'L', i, null, null);
+                        state.playoffMatches.push(m);
+                        currentLB.push(m);
+                        if (prevLB[i]) { prevLB[i].nextMatchId = m.id; prevLB[i].nextSlot = 1; }
+                        if (wbRound && wbRound[i]) { wbRound[i].loserNextMatchId = m.id; wbRound[i].loserNextSlot = 2; }
+                    }
+                } else {
+                    const count = Math.floor(prevLB.length / 2);
+                    for (let i = 0; i < count; i++) {
+                        const m = createMatch(matchId++, r, 'L', i, null, null);
+                        state.playoffMatches.push(m);
+                        currentLB.push(m);
+                        if (prevLB[i * 2]) { prevLB[i * 2].nextMatchId = m.id; prevLB[i * 2].nextSlot = 1; }
+                        if (prevLB[i * 2 + 1]) { prevLB[i * 2 + 1].nextMatchId = m.id; prevLB[i * 2 + 1].nextSlot = 2; }
+                    }
+                }
+                prevLB = currentLB;
+                lbRounds.push(currentLB);
+            }
+
+            const wbFinal = wbRounds[wbRounds.length - 1][0];
+            const lbFinal = lbRounds[lbRounds.length - 1][0];
+
+            const gf = createMatch(matchId++, totalRounds + 1, 'GF', 0, null, null);
+            state.playoffMatches.push(gf);
+            state.grandFinalId = gf.id;
+            if (wbFinal) { wbFinal.nextMatchId = gf.id; wbFinal.nextSlot = 1; }
+            if (lbFinal) { lbFinal.nextMatchId = gf.id; lbFinal.nextSlot = 2; }
+
+            const gfReset = createMatch(matchId++, totalRounds + 2, 'GF2', 0, null, null);
+            state.playoffMatches.push(gfReset);
+            state.grandFinalResetId = gfReset.id;
+            gf.nextMatchId = gfReset.id;
+            gf.nextSlot = 1;
+        }
+
+        function propagateByes() {
+            state.playoffMatches.forEach(m => {
+                if (m.bracket === 'W' && m.round === 1) {
+                    if (m.team1 === null && m.team2 !== null) {
+                        m.winner = m.team2; m.score1 = 0; m.score2 = 0;
+                        m.isBye = true; m.resolved = true;
+                    } else if (m.team2 === null && m.team1 !== null) {
+                        m.winner = m.team1; m.score1 = 0; m.score2 = 0;
+                        m.isBye = true; m.resolved = true;
+                    }
+                }
+            });
+        }
+
+        function autoAdvanceAll() {
+            let changed = true, iter = 0;
+            while (changed && iter < 100) {
+                changed = false; iter++;
+                state.playoffMatches.forEach(m => {
+                    if (!m.winner) return;
+                    if (m.nextMatchId !== null) {
+                        const next = state.playoffMatches.find(x => x.id === m.nextMatchId);
+                        if (next) {
+                            if (m.nextSlot === 1 && next.team1 === null) { next.team1 = m.winner; changed = true; }
+                            else if (m.nextSlot === 2 && next.team2 === null) { next.team2 = m.winner; changed = true; }
+                        }
+                    }
+                    if (m.loserNextMatchId !== null && m.loser) {
+                        const lbNext = state.playoffMatches.find(x => x.id === m.loserNextMatchId);
+                        if (lbNext) {
+                            if (m.loserNextSlot === 1 && lbNext.team1 === null) { lbNext.team1 = m.loser; changed = true; }
+                            else if (m.loserNextSlot === 2 && lbNext.team2 === null) { lbNext.team2 = m.loser; changed = true; }
+                        }
+                    }
+                });
+            }
+            checkChampion();
+        }
+
+        function checkChampion() {
+            if (state.elimType === 'single') {
+                const wMatches = state.playoffMatches.filter(m => m.bracket === 'W');
+                if (wMatches.length === 0) return;
+                const maxRound = Math.max(...wMatches.map(m => m.round));
+                const finals = wMatches.filter(m => m.round === maxRound);
+                if (finals.length === 1 && finals[0].winner) {
+                    state.champion = finals[0].winner;
+                    state.currentStage = 'done';
+                }
+            } else {
+                const gf = state.playoffMatches.find(m => m.bracket === 'GF');
+                if (gf && gf.winner) {
+                    const isLBWinner = gf.team2 === gf.winner;
+                    if (isLBWinner) {
+                        const reset = state.playoffMatches.find(m => m.id === state.grandFinalResetId);
+                        if (reset && reset.winner) {
+                            state.champion = reset.winner;
+                            state.currentStage = 'done';
+                        } else state.champion = null;
+                    } else {
+                        state.champion = gf.winner;
+                        state.currentStage = 'done';
+                    }
+                }
+            }
+        }
+
+        // ===== PLAYOFF MATCHES =====
+        function setPlayoffScore(matchId, slot, value) {
+            const m = state.playoffMatches.find(x => x.id === matchId);
+            if (!m) return;
+            const score = value === '' ? null : parseInt(value);
+            if (score !== null && (isNaN(score) || score < 0)) return;
+            if (slot === 1) m.score1 = score; else m.score2 = score;
+            saveState();
+        }
+
+        function resolvePlayoffMatch(matchId) {
+            const m = state.playoffMatches.find(x => x.id === matchId);
+            if (!m) return;
+            if (!m.team1 || !m.team2) { notify('Both teams required', 'error'); return; }
+            if (m.score1 === null || m.score2 === null) { notify('Enter both scores', 'error'); return; }
+            if (m.score1 === m.score2) { notify('Cannot tie!', 'error'); return; }
+
+            const winner = m.score1 > m.score2 ? m.team1 : m.team2;
+            const loser = m.score1 > m.score2 ? m.team2 : m.team1;
+            m.winner = winner; m.loser = loser; m.resolved = true;
+
+            if (m.bracket === 'GF') {
+                const isLBWinner = m.team2 === winner;
+                if (!isLBWinner) {
+                    const reset = state.playoffMatches.find(x => x.id === state.grandFinalResetId);
+                    if (reset) { reset.winner = winner; reset.team1 = winner; reset.team2 = loser; reset.resolved = true; }
+                    state.champion = winner;
+                } else {
+                    const reset = state.playoffMatches.find(x => x.id === state.grandFinalResetId);
+                    if (reset) { reset.team1 = m.team1; reset.team2 = m.team2; }
+                }
+            }
+
+            autoAdvanceAll();
+            saveState();
+            renderAll();
+            notify(state.champion ? `🏆 Champion: ${state.champion}!` : `Winner: ${winner}`, 'success');
+        }
+
+        function editPlayoffMatch(matchId) {
+            const m = state.playoffMatches.find(x => x.id === matchId);
+            if (!m || !m.resolved) return;
+            if (!confirm(`Re-open this match?`)) return;
+            m.winner = null; m.loser = null; m.resolved = false;
+            m.score1 = null; m.score2 = null;
+            if (m.nextMatchId !== null) {
+                const next = state.playoffMatches.find(x => x.id === m.nextMatchId);
+                if (next) {
+                    if (m.nextSlot === 1) next.team1 = null;
+                    if (m.nextSlot === 2) next.team2 = null;
+                }
+            }
+            if (m.loserNextMatchId !== null) {
+                const lbNext = state.playoffMatches.find(x => x.id === m.loserNextMatchId);
+                if (lbNext) {
+                    if (m.loserNextSlot === 1) lbNext.team1 = null;
+                    if (m.loserNextSlot === 2) lbNext.team2 = null;
+                }
+            }
+            state.champion = null;
+            saveState();
+            renderAll();
+            notify('Match re-opened', 'info');
+        }
+
+        // ===== RENDERING =====
+        function updateStageBadge() {
+            const badge = document.getElementById('stageBadge');
+            const statusEl = document.getElementById('liveStatus');
+            
+            if (state.currentStage === 'setup') {
+                badge.className = 'stage-badge group';
+                badge.textContent = '⚙️ Setup';
+            } else if (state.currentStage === 'group') {
+                badge.className = 'stage-badge group';
+                badge.textContent = '📊 Stage 1: Group';
+            } else if (state.currentStage === 'playoff') {
+                badge.className = 'stage-badge playoff';
+                badge.textContent = '🏆 Stage 2: Playoffs';
+            } else {
+                badge.className = 'stage-badge playoff';
+                badge.textContent = '👑 Complete';
+            }
+            
+            if (state.currentStage !== 'setup') {
+                statusEl.className = 'status-badge live';
+                statusEl.textContent = '🟢 Live';
+            } else {
+                statusEl.className = 'status-badge idle';
+                statusEl.textContent = '⚪ Not Live';
+            }
+        }
+
+        function renderGroups() {
+            const container = document.getElementById('groupsContainer');
+            
+            if (state.currentStage === 'setup' || Object.keys(state.groups).length === 0) {
+                container.innerHTML = '<div class="empty-msg">No groups yet. Add teams and generate groups first.</div>';
+                return;
+            }
+            
+            const groupNames = Object.keys(state.groups);
+            const totalMatches = state.groupMatches.length;
+            const completedMatches = state.groupMatches.filter(m => m.resolved).length;
+            const progress = totalMatches > 0 ? (completedMatches / totalMatches * 100) : 0;
+            
+            let html = `
+                <div class="card">
+                    <h2>📊 Group Stage Progress</h2>
+                    <div style="font-size:0.85em; color:#aaa; margin-bottom:6px;">
+                        ${completedMatches} / ${totalMatches} matches completed
+                    </div>
+                    <div class="progress-bar"><div class="fill" style="width:${progress}%"></div></div>
+                    ${allGroupsComplete() && state.currentStage === 'group' ? 
+                        `<button class="btn btn-success btn-block" style="margin-top:16px;" onclick="generatePlayoffs()">🏆 Start Playoffs</button>` 
+                        : ''}
+                </div>
+                
+                <div class="card">
+                    <h2>🏆 Standings</h2>
+                    <div class="groups-grid">
+            `;
+            
+            groupNames.forEach(groupName => {
+                const standings = getGroupStandings(groupName);
+                const complete = isGroupComplete(groupName);
+                
+                html += `
+                    <div class="group-card">
+                        <h3>${groupName} ${complete ? '✅' : '⏳'}</h3>
+                        <table class="standings-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Team</th>
+                                    <th>W</th>
+                                    <th>L</th>
+                                    <th>+/-</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                standings.forEach((t, i) => {
+                    const qualified = i < state.advancePerGroup;
+                    const diff = t.pointsFor - t.pointsAgainst;
+                    html += `
+                        <tr class="${qualified ? 'qualified' : 'eliminated'}">
+                            <td>${i + 1}</td>
+                            <td class="team-cell">${escapeHtml(t.name)}</td>
+                            <td class="wins">${t.wins}</td>
+                            <td class="losses">${t.losses}</td>
+                            <td>${diff > 0 ? '+' : ''}${diff}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += `</tbody></table></div>`;
+            });
+            
+            html += `</div></div>`;
+            
+            // Group matches
+            html += `
+                <div class="card">
+                    <h2>📋 Group Matches</h2>
+                    <div class="match-list">
+            `;
+            
+            if (state.groupMatches.length === 0) {
+                html += '<div class="empty-msg">No matches.</div>';
+            } else {
+                groupNames.forEach(groupName => {
+                    const matches = state.groupMatches.filter(m => m.group === groupName);
+                    if (matches.length === 0) return;
+                    
+                    html += `<div style="margin-bottom:16px;">
+                        <div style="font-size:0.85em; color:#f7971e; font-weight:700; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px;">${groupName}</div>`;
+                    
+                    matches.forEach(m => {
+                        const canEdit = !m.resolved;
+                        const status = m.resolved ? 'done' : 'live';
+                        const statusText = m.resolved ? '✓ Done' : '● Ready';
+                        const cardClass = m.resolved ? 'completed' : 'ready';
+                        
+                        html += `
+                            <div class="match-card ${cardClass}" style="margin-bottom:6px;">
+                                <div class="match-score-row">
+                                    <span class="team-name ${m.winner === m.team1 && m.team1 ? 'winner' : ''}">${escapeHtml(m.team1)}</span>
+                                    <input type="number" min="0" value="${m.score1 !== null ? m.score1 : ''}" placeholder="0" ${!canEdit ? 'disabled' : ''} onchange="setGroupScore(${m.id}, 1, this.value)">
+                                </div>
+                                <div class="match-score-row">
+                                    <span class="team-name ${m.winner === m.team2 && m.team2 ? 'winner' : ''}">${escapeHtml(m.team2)}</span>
+                                    <input type="number" min="0" value="${m.score2 !== null ? m.score2 : ''}" placeholder="0" ${!canEdit ? 'disabled' : ''} onchange="setGroupScore(${m.id}, 2, this.value)">
+                                </div>
+                                <div class="match-card-actions">
+                                    ${canEdit ? `<button class="btn btn-success btn-sm" onclick="resolveGroupMatch(${m.id})">✓ Save</button>` : ''}
+                                    ${m.resolved ? `<button class="btn btn-secondary btn-sm" onclick="editGroupMatch(${m.id})">✏️ Edit</button>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                });
+            }
+            
+            html += `</div></div>`;
+            container.innerHTML = html;
+        }
+
+        function getMatchLabel(m) {
+            if (m.bracket === 'GF') return '👑 Grand Finals';
+            if (m.bracket === 'GF2') return '👑 GF Reset';
+            if (m.bracket === 'L') return `Losers R${m.round}`;
+            return `Winners R${m.round}`;
+        }
+
+        function renderPlayoffs() {
+            const container = document.getElementById('playoffsContainer');
+            
+            if (state.currentStage !== 'playoff' && state.currentStage !== 'done') {
+                container.innerHTML = '<div class="empty-msg">Playoffs not started. Complete group stage first.</div>';
+                return;
+            }
+            
+            const playable = state.playoffMatches.filter(m => !m.isBye);
+            
+            let html = '';
+            
+            if (state.champion) {
+                html += `
+                    <div class="card" style="background: linear-gradient(135deg, rgba(247, 151, 30, 0.15), rgba(255, 210, 0, 0.05)); border: 2px solid #ffd200; text-align:center;">
+                        <div style="font-size:3em;">🏆</div>
+                        <div style="font-size:1.8em; font-weight:700; background: linear-gradient(135deg, #f7971e, #ffd200); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">${escapeHtml(state.champion)}</div>
+                        <div style="color:#aaa; font-size:0.85em; margin-top:4px; text-transform:uppercase; letter-spacing:2px;">Tournament Champion</div>
+                    </div>
+                `;
+            }
+            
+            html += '<div class="card"><h2>🏆 Playoff Matches</h2><div class="match-list">';
+            
+            if (playable.length === 0) {
+                html += '<div class="empty-msg">No playoff matches.</div>';
+            } else {
+                playable.sort((a, b) => {
+                    const aReady = a.team1 && a.team2 && !a.resolved;
+                    const bReady = b.team1 && b.team2 && !b.resolved;
+                    if (aReady && !bReady) return -1;
+                    if (!aReady && bReady) return 1;
+                    const bo = { 'W': 0, 'L': 1, 'GF': 2, 'GF2': 3 };
+                    if (bo[a.bracket] !== bo[b.bracket]) return bo[a.bracket] - bo[b.bracket];
+                    return a.round - b.round || a.position - b.position;
+                });
+                
+                playable.forEach(m => {
+                    const t1 = m.team1 || 'TBD';
+                    const t2 = m.team2 || 'TBD';
+                    const canEdit = m.team1 && m.team2 && !m.resolved;
+                    const cardClass = m.resolved ? 'completed' : (canEdit ? 'ready' : 'waiting');
+                    
+                    html += `
+                        <div class="match-card ${cardClass}">
+                            <div class="match-card-header">
+                                <span class="match-round">${getMatchLabel(m)}</span>
+                                <span class="match-status ${m.resolved ? 'done' : (canEdit ? 'live' : 'pending')}">${m.resolved ? '✓ Done' : (canEdit ? '● Ready' : '⏳ Waiting')}</span>
+                            </div>
+                            <div class="match-score-row">
+                                <span class="team-name ${m.winner === m.team1 && m.team1 ? 'winner' : ''}">${escapeHtml(t1)}</span>
+                                <input type="number" min="0" value="${m.score1 !== null ? m.score1 : ''}" placeholder="0" ${!canEdit ? 'disabled' : ''} onchange="setPlayoffScore(${m.id}, 1, this.value)">
+                            </div>
+                            <div class="match-score-row">
+                                <span class="team-name ${m.winner === m.team2 && m.team2 ? 'winner' : ''}">${escapeHtml(t2)}</span>
+                                <input type="number" min="0" value="${m.score2 !== null ? m.score2 : ''}" placeholder="0" ${!canEdit ? 'disabled' : ''} onchange="setPlayoffScore(${m.id}, 2, this.value)">
+                            </div>
+                            <div class="match-card-actions">
+                                ${canEdit ? `<button class="btn btn-success btn-sm" onclick="resolvePlayoffMatch(${m.id})">✓ Save</button>` : ''}
+                                ${m.resolved ? `<button class="btn btn-secondary btn-sm" onclick="editPlayoffMatch(${m.id})">✏️ Edit</button>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            html += '</div></div>';
+            container.innerHTML = html;
+        }
+
+        function renderAll() {
+            updateStageBadge();
+            renderTeamList();
+            renderGroups();
+            renderPlayoffs();
+        }
+
+        // ===== INIT =====
+        function init() {
+            loadState();
+            document.getElementById('tournamentName').value = state.tournamentName;
+            document.getElementById('numGroups').value = state.numGroups;
+            document.getElementById('advancePerGroup').value = state.advancePerGroup;
+            document.getElementById('elimType').value = state.elimType;
+            renderAll();
+        }
+
+        init();
+    </script>
+</body>
+</html>

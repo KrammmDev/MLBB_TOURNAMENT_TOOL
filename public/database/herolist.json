@@ -1,0 +1,667 @@
+[
+  {
+    "name": "Aamon",
+    "img": "/Assets/HeroPick/aamon.gif",
+    "voice": "/Assets/Voicelines/aamon.ogg"
+  },
+  {
+    "name": "Akai",
+    "img": "/Assets/HeroPick/akai.gif",
+    "voice": "/Assets/Voicelines/akai.ogg"
+  },
+  {
+    "name": "Aldous",
+    "img": "/Assets/HeroPick/aldous.gif",
+    "voice": "/Assets/Voicelines/aldous.ogg"
+  },
+  {
+    "name": "Alice",
+    "img": "/Assets/HeroPick/alice.gif",
+    "voice": "/Assets/Voicelines/alice.ogg"
+  },
+  {
+    "name": "Alpha",
+    "img": "/Assets/HeroPick/alpha.gif",
+    "voice": "/Assets/Voicelines/alpha.ogg"
+  },
+  {
+    "name": "Alucard",
+    "img": "/Assets/HeroPick/alucard.gif",
+    "voice": "/Assets/Voicelines/alucard.ogg"
+  },
+  {
+    "name": "Angela",
+    "img": "/Assets/HeroPick/angela.gif",
+    "voice": "/Assets/Voicelines/angela.ogg"
+  },
+  {
+    "name": "Argus",
+    "img": "/Assets/HeroPick/argus.gif",
+    "voice": "/Assets/Voicelines/argus.ogg"
+  },
+  {
+    "name": "Arlot",
+    "img": "/Assets/HeroPick/arlot.gif",
+    "voice": "/Assets/Voicelines/arlot.ogg"
+  },
+  {
+    "name": "Atlas",
+    "img": "/Assets/HeroPick/atlas.gif",
+    "voice": "/Assets/Voicelines/atlas.ogg"
+  },
+  {
+    "name": "Aulus",
+    "img": "/Assets/HeroPick/aulus.gif",
+    "voice": "/Assets/Voicelines/aulus.ogg"
+  },
+  {
+    "name": "Aurora",
+    "img": "/Assets/HeroPick/aurora.gif",
+    "voice": "/Assets/Voicelines/aurora.ogg"
+  },
+  {
+    "name": "Badang",
+    "img": "/Assets/HeroPick/badang.gif",
+    "voice": "/Assets/Voicelines/badang.ogg"
+  },
+  {
+    "name": "Balmond",
+    "img": "/Assets/HeroPick/balmond.gif",
+    "voice": "/Assets/Voicelines/balmond.ogg"
+  },
+  {
+    "name": "Bane",
+    "img": "/Assets/HeroPick/bane.gif",
+    "voice": "/Assets/Voicelines/bane.ogg"
+  },
+  {
+    "name": "Barats",
+    "img": "/Assets/HeroPick/barats.gif",
+    "voice": "/Assets/Voicelines/barats.ogg"
+  },
+  {
+    "name": "Baxia",
+    "img": "/Assets/HeroPick/baxia.gif",
+    "voice": "/Assets/Voicelines/baxia.ogg"
+  },
+  {
+    "name": "Beatrix",
+    "img": "/Assets/HeroPick/beatrix.gif",
+    "voice": "/Assets/Voicelines/beatrix.ogg"
+  },
+  {
+    "name": "Beleric",
+    "img": "/Assets/HeroPick/beleric.gif",
+    "voice": "/Assets/Voicelines/beleric.ogg"
+  },
+  {
+    "name": "Benedetta",
+    "img": "/Assets/HeroPick/benedetta.gif",
+    "voice": "/Assets/Voicelines/benedetta.ogg"
+  },
+  {
+    "name": "Brody",
+    "img": "/Assets/HeroPick/brody.gif",
+    "voice": "/Assets/Voicelines/brody.ogg"
+  },
+  {
+    "name": "Bruno",
+    "img": "/Assets/HeroPick/bruno.gif",
+    "voice": "/Assets/Voicelines/bruno.ogg"
+  },
+  {
+    "name": "Carmila",
+    "img": "/Assets/HeroPick/carmila.gif",
+    "voice": "/Assets/Voicelines/carmila.ogg"
+  },
+  {
+    "name": "Cecilion",
+    "img": "/Assets/HeroPick/cecilion.gif",
+    "voice": "/Assets/Voicelines/cecilion.ogg"
+  },
+  {
+    "name": "Chang'e",
+    "img": "/Assets/HeroPick/chang_e.gif",
+    "voice": "/Assets/Voicelines/change.ogg"
+  },
+  {
+    "name": "Chip",
+    "img": "/Assets/HeroPick/chip.gif",
+    "voice": "/Assets/Voicelines/chip.ogg"
+  },
+  {
+    "name": "Chou",
+    "img": "/Assets/HeroPick/chou.gif",
+    "voice": "/Assets/Voicelines/chou.ogg"
+  },
+  {
+    "name": "Cici",
+    "img": "/Assets/HeroPick/cici.gif",
+    "voice": "/Assets/Voicelines/cici.ogg"
+  },
+  {
+    "name": "Claude",
+    "img": "/Assets/HeroPick/claude.gif",
+    "voice": "/Assets/Voicelines/claude.ogg"
+  },
+  {
+    "name": "Clint",
+    "img": "/Assets/HeroPick/clint.gif",
+    "voice": "/Assets/Voicelines/clint.ogg"
+  },
+  {
+    "name": "Cyclops",
+    "img": "/Assets/HeroPick/cyclops.gif",
+    "voice": "/Assets/Voicelines/cyclops.ogg"
+  },
+  {
+    "name": "Diggie",
+    "img": "/Assets/HeroPick/diggie.gif",
+    "voice": "/Assets/Voicelines/diggie.ogg"
+  },
+  {
+    "name": "Dyroth",
+    "img": "/Assets/HeroPick/dyroth.gif",
+    "voice": "/Assets/Voicelines/dyroth.ogg"
+  },
+  {
+    "name": "Edith",
+    "img": "/Assets/HeroPick/edith.gif",
+    "voice": "/Assets/Voicelines/edith.ogg"
+  },
+  {
+    "name": "Esmeralda",
+    "img": "/Assets/HeroPick/esmeralda.gif",
+    "voice": "/Assets/Voicelines/esmeralda.ogg"
+  },
+  {
+    "name": "Estes",
+    "img": "/Assets/HeroPick/estes.gif",
+    "voice": "/Assets/Voicelines/estes.ogg"
+  },
+  {
+    "name": "Eudora",
+    "img": "/Assets/HeroPick/eudora.gif",
+    "voice": "/Assets/Voicelines/eudora.ogg"
+  },
+  {
+    "name": "Fanny",
+    "img": "/Assets/HeroPick/fanny.gif",
+    "voice": "/Assets/Voicelines/fanny.ogg"
+  },
+  {
+    "name": "Faramis",
+    "img": "/Assets/HeroPick/faramis.gif",
+    "voice": "/Assets/Voicelines/faramis.ogg"
+  },
+  {
+    "name": "Floryn",
+    "img": "/Assets/HeroPick/floryn.gif",
+    "voice": "/Assets/Voicelines/floryn.ogg"
+  },
+  {
+    "name": "Franco",
+    "img": "/Assets/HeroPick/franco.gif",
+    "voice": "/Assets/Voicelines/franco.ogg"
+  },
+  {
+    "name": "Fredrin",
+    "img": "/Assets/HeroPick/fredrin.gif",
+    "voice": "/Assets/Voicelines/fredrin.ogg"
+  },
+  {
+    "name": "Freya",
+    "img": "/Assets/HeroPick/freya.gif",
+    "voice": "/Assets/Voicelines/freya.ogg"
+  },
+  {
+    "name": "Gatotkaca",
+    "img": "/Assets/HeroPick/gatotkaca.gif",
+    "voice": "/Assets/Voicelines/gatotkaca.ogg"
+  },
+  {
+    "name": "Gloo",
+    "img": "/Assets/HeroPick/gloo.gif",
+    "voice": "/Assets/Voicelines/gloo.ogg"
+  },
+  {
+    "name": "Gord",
+    "img": "/Assets/HeroPick/gord.gif",
+    "voice": "/Assets/Voicelines/gord.ogg"
+  },
+  {
+    "name": "Granger",
+    "img": "/Assets/HeroPick/granger.gif",
+    "voice": "/Assets/Voicelines/granger.ogg"
+  },
+  {
+    "name": "Grock",
+    "img": "/Assets/HeroPick/grock.gif",
+    "voice": "/Assets/Voicelines/grock.ogg"
+  },
+  {
+    "name": "Guinevere",
+    "img": "/Assets/HeroPick/guinevere.gif",
+    "voice": "/Assets/Voicelines/guinevere.ogg"
+  },
+  {
+    "name": "Gusion",
+    "img": "/Assets/HeroPick/gusion.gif",
+    "voice": "/Assets/Voicelines/gusion.ogg"
+  },
+  {
+    "name": "Hanabi",
+    "img": "/Assets/HeroPick/hanabi.gif",
+    "voice": "/Assets/Voicelines/hanabi.ogg"
+  },
+  {
+    "name": "Hanzo",
+    "img": "/Assets/HeroPick/hanzo.gif",
+    "voice": "/Assets/Voicelines/hanzo.ogg"
+  },
+  {
+    "name": "Harith",
+    "img": "/Assets/HeroPick/harith.gif",
+    "voice": "/Assets/Voicelines/harith.ogg"
+  },
+  {
+    "name": "Harley",
+    "img": "/Assets/HeroPick/harley.gif",
+    "voice": "/Assets/Voicelines/harley.ogg"
+  },
+  {
+    "name": "Hayabusa",
+    "img": "/Assets/HeroPick/hayabusa.gif",
+    "voice": "/Assets/Voicelines/hayabusa.ogg"
+  },
+  {
+    "name": "Helcurt",
+    "img": "/Assets/HeroPick/helcurt.gif",
+    "voice": "/Assets/Voicelines/helcurt.ogg"
+  },
+  {
+    "name": "Hilda",
+    "img": "/Assets/HeroPick/hilda.gif",
+    "voice": "/Assets/Voicelines/hilda.ogg"
+  },
+  {
+    "name": "Hylos",
+    "img": "/Assets/HeroPick/hylos.gif",
+    "voice": "/Assets/Voicelines/hylos.ogg"
+  },
+  {
+    "name": "Irithel",
+    "img": "/Assets/HeroPick/irithel.gif",
+    "voice": "/Assets/Voicelines/irithel.ogg"
+  },
+  {
+    "name": "Ixia",
+    "img": "/Assets/HeroPick/ixia.gif",
+    "voice": "/Assets/Voicelines/ixia.ogg"
+  },
+  {
+    "name": "Jawhead",
+    "img": "/Assets/HeroPick/jawhead.gif",
+    "voice": "/Assets/Voicelines/jawhead.ogg"
+  },
+  {
+    "name": "Johnson",
+    "img": "/Assets/HeroPick/johnson.gif",
+    "voice": "/Assets/Voicelines/johnson.ogg"
+  },
+  {
+    "name": "Joy",
+    "img": "/Assets/HeroPick/joy.gif",
+    "voice": "/Assets/Voicelines/joy.ogg"
+  },
+  {
+    "name": "Julian",
+    "img": "/Assets/HeroPick/julian.gif",
+    "voice": "/Assets/Voicelines/julian.ogg"
+  },
+  {
+    "name": "Kadita",
+    "img": "/Assets/HeroPick/kadita.gif",
+    "voice": "/Assets/Voicelines/kadita.ogg"
+  },
+  {
+    "name": "Kagura",
+    "img": "/Assets/HeroPick/kagura.gif",
+    "voice": "/Assets/Voicelines/kagura.ogg"
+  },
+  {
+    "name": "Kaja",
+    "img": "/Assets/HeroPick/kaja.gif",
+    "voice": "/Assets/Voicelines/kaja.ogg"
+  },
+  {
+    "name": "Kalea",
+    "img": "/Assets/HeroPick/kalea.gif",
+    "voice": "/Assets/Voicelines/kalea.ogg"
+  },
+  {
+    "name": "Karina",
+    "img": "/Assets/HeroPick/karina.gif",
+    "voice": "/Assets/Voicelines/karina.ogg"
+  },
+  {
+    "name": "Karrie",
+    "img": "/Assets/HeroPick/karrie.gif",
+    "voice": "/Assets/Voicelines/karrie.ogg"
+  },
+  {
+    "name": "Khaleed",
+    "img": "/Assets/HeroPick/khaleed.gif",
+    "voice": "/Assets/Voicelines/khaleed.ogg"
+  },
+  {
+    "name": "Khufra",
+    "img": "/Assets/HeroPick/khufra.gif",
+    "voice": "/Assets/Voicelines/khufra.ogg"
+  },
+  {
+    "name": "Kimmy",
+    "img": "/Assets/HeroPick/kimmy.gif",
+    "voice": "/Assets/Voicelines/kimmy.ogg"
+  },
+  {
+    "name": "Lancelot",
+    "img": "/Assets/HeroPick/lancelot.gif",
+    "voice": "/Assets/Voicelines/lancelot.ogg"
+  },
+  {
+    "name": "Lukas",
+    "img": "/Assets/HeroPick/lukas.gif",
+    "voice": "/Assets/Voicelines/lukas.ogg"
+  },
+  {
+    "name": "Lapu Lapu",
+    "img": "/Assets/HeroPick/lapulapu.gif",
+    "voice": "/Assets/Voicelines/lapulapu.ogg"
+  },
+  {
+    "name": "Layla",
+    "img": "/Assets/HeroPick/layla.gif",
+    "voice": "/Assets/Voicelines/layla.ogg"
+  },
+  {
+    "name": "Leomord",
+    "img": "/Assets/HeroPick/leomord.gif",
+    "voice": "/Assets/Voicelines/leomord.ogg"
+  },
+  {
+    "name": "Lesley",
+    "img": "/Assets/HeroPick/lesley.gif",
+    "voice": "/Assets/Voicelines/lesley.ogg"
+  },
+  {
+    "name": "Ling",
+    "img": "/Assets/HeroPick/ling.gif",
+    "voice": "/Assets/Voicelines/ling.ogg"
+  },
+  {
+    "name": "Lolita",
+    "img": "/Assets/HeroPick/lolita.gif",
+    "voice": "/Assets/Voicelines/lolita.ogg"
+  },
+  {
+    "name": "Lunox",
+    "img": "/Assets/HeroPick/lunox.gif",
+    "voice": "/Assets/Voicelines/lunox.ogg"
+  },
+  {
+    "name": "Luo Yi",
+    "img": "/Assets/HeroPick/luoyi.gif",
+    "voice": "/Assets/Voicelines/luoyi.ogg"
+  },
+  {
+    "name": "Lylia",
+    "img": "/Assets/HeroPick/lylia.gif",
+    "voice": "/Assets/Voicelines/lylia.ogg"
+  },
+  {
+    "name": "Martis",
+    "img": "/Assets/HeroPick/martis.gif",
+    "voice": "/Assets/Voicelines/martis.ogg"
+  },
+  {
+    "name": "Masha",
+    "img": "/Assets/HeroPick/masha.gif",
+    "voice": "/Assets/Voicelines/masha.ogg"
+  },
+  {
+    "name": "Mathilda",
+    "img": "/Assets/HeroPick/mathilda.gif",
+    "voice": "/Assets/Voicelines/mathilda.ogg"
+  },
+  {
+    "name": "Melissa",
+    "img": "/Assets/HeroPick/melissa.gif",
+    "voice": "/Assets/Voicelines/melissa.ogg"
+  },
+  {
+    "name": "Minotaur",
+    "img": "/Assets/HeroPick/minotaur.gif",
+    "voice": "/Assets/Voicelines/minotaur.ogg"
+  },
+  {
+    "name": "Minsitthar",
+    "img": "/Assets/HeroPick/minsitthar.gif",
+    "voice": "/Assets/Voicelines/minsitthar.ogg"
+  },
+  {
+    "name": "Miya",
+    "img": "/Assets/HeroPick/miya.gif",
+    "voice": "/Assets/Voicelines/miya.ogg"
+  },
+  {
+    "name": "Moskov",
+    "img": "/Assets/HeroPick/moskov.gif",
+    "voice": "/Assets/Voicelines/moskov.ogg"
+  },
+  {
+    "name": "Nana",
+    "img": "/Assets/HeroPick/nana.gif",
+    "voice": "/Assets/Voicelines/nana.ogg"
+  },
+  {
+    "name": "Natalia",
+    "img": "/Assets/HeroPick/natalia.gif",
+    "voice": "/Assets/Voicelines/natalia.ogg"
+  },
+  {
+    "name": "Natan",
+    "img": "/Assets/HeroPick/natan.gif",
+    "voice": "/Assets/Voicelines/natan.ogg"
+  },
+  {
+    "name": "Nolan",
+    "img": "/Assets/HeroPick/nolan.gif",
+    "voice": "/Assets/Voicelines/nolan.ogg"
+  },
+  {
+    "name": "Novaria",
+    "img": "/Assets/HeroPick/novaria.gif",
+    "voice": "/Assets/Voicelines/novaria.ogg"
+  },
+  {
+    "name": "Obsidia",
+    "img": "/Assets/HeroPick/obsidia.png",
+    "voice": "/Assets/Voicelines/obsidia.ogg"
+  },
+  {
+    "name": "Odette",
+    "img": "/Assets/HeroPick/odette.gif",
+    "voice": "/Assets/Voicelines/odette.ogg"
+  },
+  {
+    "name": "Paquito",
+    "img": "/Assets/HeroPick/paquito.gif",
+    "voice": "/Assets/Voicelines/paquito.ogg"
+  },
+  {
+    "name": "Pharsa",
+    "img": "/Assets/HeroPick/pharsa.gif",
+    "voice": "/Assets/Voicelines/parsha.ogg"
+  },
+  {
+    "name": "Phoveus",
+    "img": "/Assets/HeroPick/phoveus.gif",
+    "voice": "/Assets/Voicelines/phoveus.ogg"
+  },
+  {
+    "name": "Popol and Kupa",
+    "img": "/Assets/HeroPick/popolandkupa.gif",
+    "voice": "/Assets/Voicelines/popolandkupa.ogg"
+  },
+  {
+    "name": "Rafaela",
+    "img": "/Assets/HeroPick/rafaela.gif",
+    "voice": "/Assets/Voicelines/rafaela.ogg"
+  },
+  {
+    "name": "Roger",
+    "img": "/Assets/HeroPick/roger.gif",
+    "voice": "/Assets/Voicelines/roger.ogg"
+  },
+  {
+    "name": "Ruby",
+    "img": "/Assets/HeroPick/ruby.gif",
+    "voice": "/Assets/Voicelines/ruby.ogg"
+  },
+  {
+    "name": "Saber",
+    "img": "/Assets/HeroPick/saber.gif",
+    "voice": "/Assets/Voicelines/saber.ogg"
+  },
+  {
+    "name": "Selena",
+    "img": "/Assets/HeroPick/selena.gif",
+    "voice": "/Assets/Voicelines/selena.ogg"
+  },
+  {
+    "name": "Silvanna",
+    "img": "/Assets/HeroPick/silvanna.gif",
+    "voice": "/Assets/Voicelines/silvanna.ogg"
+  },
+  {
+    "name": "Sun",
+    "img": "/Assets/HeroPick/sun.gif",
+    "voice": "/Assets/Voicelines/sun.ogg"
+  },
+  {
+    "name": "Suyou",
+    "img": "/Assets/HeroPick/suyou.gif",
+    "voice": "/Assets/Voicelines/suyou.ogg"
+  },
+  {
+    "name": "Terizla",
+    "img": "/Assets/HeroPick/terizla.gif",
+    "voice": "/Assets/Voicelines/terizla.ogg"
+  },
+  {
+    "name": "Thamuz",
+    "img": "/Assets/HeroPick/thamuz.gif",
+    "voice": "/Assets/Voicelines/thamuz.ogg"
+  },
+  {
+    "name": "Tigreal",
+    "img": "/Assets/HeroPick/tigreal.gif",
+    "voice": "/Assets/Voicelines/tigreal.ogg"
+  },
+  {
+    "name": "Uranus",
+    "img": "/Assets/HeroPick/uranus.gif",
+    "voice": "/Assets/Voicelines/uranus.ogg"
+  },
+  {
+    "name": "Vale",
+    "img": "/Assets/HeroPick/vale.gif",
+    "voice": "/Assets/Voicelines/vale.ogg"
+  },
+  {
+    "name": "Valentina",
+    "img": "/Assets/HeroPick/valentina.gif",
+    "voice": "/Assets/Voicelines/valentina.ogg"
+  },
+  {
+    "name": "Valir",
+    "img": "/Assets/HeroPick/valir.gif",
+    "voice": "/Assets/Voicelines/valir.ogg"
+  },
+  {
+    "name": "Vexana",
+    "img": "/Assets/HeroPick/vexana.gif",
+    "voice": "/Assets/Voicelines/vexana.ogg"
+  },
+  {
+    "name": "Wanwan",
+    "img": "/Assets/HeroPick/wanwan.gif",
+    "voice": "/Assets/Voicelines/wanwan.ogg"
+  },
+  {
+    "name": "Xavier",
+    "img": "/Assets/HeroPick/xavier.gif",
+    "voice": "/Assets/Voicelines/xavier.ogg"
+  },
+  {
+    "name": "Xborg",
+    "img": "/Assets/HeroPick/xborg.gif",
+    "voice": "/Assets/Voicelines/xborg.ogg"
+  },
+  {
+    "name": "Yin",
+    "img": "/Assets/HeroPick/yin.gif",
+    "voice": "/Assets/Voicelines/yin.ogg"
+  },
+  {
+    "name": "Yisunshin",
+    "img": "/Assets/HeroPick/yisunshin.gif",
+    "voice": "/Assets/Voicelines/yisunshin.ogg"
+  },
+  {
+    "name": "Yuzhong",
+    "img": "/Assets/HeroPick/yuzhong.gif",
+    "voice": "/Assets/Voicelines/yuzhong.ogg"
+  },
+  {
+    "name": "Yve",
+    "img": "/Assets/HeroPick/yve.gif",
+    "voice": "/Assets/Voicelines/yve.ogg"
+  },
+  {
+    "name": "Zhask",
+    "img": "/Assets/HeroPick/zhask.gif",
+    "voice": "/Assets/Voicelines/zhask.ogg"
+  },
+  {
+    "name": "Zhuxin",
+    "img": "/Assets/HeroPick/zhuxin.gif",
+    "voice": "/Assets/Voicelines/zhuxin.ogg"
+  },
+  {
+    "name": "Zilong",
+    "img": "/Assets/HeroPick/zilong.gif",
+    "voice": "/Assets/Voicelines/zilong.ogg"
+  },
+  {
+    "name": "Zetian",
+    "img": "/Assets/HeroPick/zetian.gif",
+    "voice": "/Assets/Voicelines/zetian.ogg"
+  },
+  {
+    "name": "Sora",
+    "img": "/Assets/HeroPick/sora.gif",
+    "voice": "/Assets/Voicelines/sora.ogg"
+  },
+  {
+    "name": "Marcel",
+    "img": "/Assets/HeroPick/marcel.gif",
+    "voice": "/Assets/Voicelines/marcel.ogg"
+  },
+  {
+    "name": "Hirara",
+    "img": "/Assets/HeroPick/hirara.gif",
+    "voice": "/Assets/Voicelines/hirara.ogg"
+  }
+]

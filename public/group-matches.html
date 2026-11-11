@@ -1,0 +1,847 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Group Matches</title>
+    <style>
+      @font-face {
+        font-family: "Big Noodle Titling";
+        src: url("Assets/Font/big_noodle_titling.ttf") format("truetype");
+        font-display: swap;
+      }
+      :root {
+        /* ===== LAYOUT SPACING — dito mo i-adjust ===== */
+        --list-top: 230px; /* space sa pagitan ng taas at ng unang row (may controls) */
+        --list-top-clean: 30px; /* same, pero kapag ?controls=0 */
+        --list-side: 280px; /* kaliwa/kanang margin */
+        --list-bottom: 20px; /* baba */
+        --col-gap: 28px; /* space sa pagitan ng columns */
+        --row-gap: 8px; /* space sa pagitan ng rows */
+        --row-h: 62px; /* taas ng bawat row */
+        --orange: #ff7200;
+        --red: #ff0101;
+        --grad: linear-gradient(90deg, #ff7200 0%, #ff0101 100%);
+        --grey: #292929;
+        --ink: #2b2b2b;
+        --card: #ffffff;
+        --font:
+          "Bahnschrift SemiCondensed", "Bahnschrift", "Segoe UI", Inter,
+          system-ui, sans-serif;
+        --font-display:
+          "Big Noodle Titling", "Bahnschrift SemiCondensed", sans-serif;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        background: transparent; /* transparent para sa overlay / OBS */
+        overflow: hidden;
+      }
+      body {
+        font-family: var(--font);
+        -webkit-font-smoothing: antialiased;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* ===== 1920x1080 STAGE (transparent) ===== */
+      #stage {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 1920px;
+        height: 1080px;
+        transform-origin: center center;
+        background: transparent;
+        overflow: hidden;
+      }
+
+      /* ===== CONTROLS (fade kapag hindi naka-hover; ?controls=0 para itago) ===== */
+      .controls {
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        background: rgba(15, 18, 25, 0.88);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 4px;
+        opacity: 0.25;
+        transition: opacity 0.2s;
+        z-index: 10;
+      }
+      .controls:hover,
+      .controls:focus-within {
+        opacity: 1;
+      }
+      body.no-controls .controls {
+        display: none;
+      }
+      .chip {
+        min-width: 96px;
+        height: 38px;
+        padding: 0 16px;
+        background: #222a38;
+        border: 1px solid #38425a;
+        border-radius: 2px;
+        color: #aab3c5;
+        font-family: var(--font);
+        font-size: 0.95rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+      .chip:hover {
+        color: #fff;
+        background: #2c3647;
+      }
+      .chip.active {
+        background: #f2c200;
+        border-color: #f2c200;
+        color: #000;
+      }
+      .chip.all {
+        border-style: dashed;
+      }
+      .chip.rd {
+        min-width: 60px;
+        padding: 0 12px;
+      }
+      .chip.rd.all {
+        min-width: 100px;
+      }
+      .ctl-sep {
+        width: 1px;
+        height: 26px;
+        background: #38425a;
+        margin: 0 6px;
+      }
+      .ctl-field {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #8b95a9;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .ctl-field input {
+        height: 38px;
+        width: 130px;
+        padding: 0 8px;
+        background: #0e1218;
+        border: 1px solid #252c3a;
+        border-radius: 2px;
+        color: #e4e8ef;
+        font-family: var(--font);
+        font-size: 0.95rem;
+        text-align: center;
+        color-scheme: dark;
+      }
+      .ctl-field input[type="number"] {
+        width: 64px;
+      }
+
+      /* ===== SCHEDULE LIST ===== */
+      .list {
+        position: absolute;
+        top: var(--list-top);
+        left: var(--list-side);
+        right: var(--list-side);
+        bottom: var(--list-bottom);
+        display: grid;
+        grid-auto-flow: column;
+        column-gap: var(--col-gap);
+        row-gap: var(--row-gap);
+        align-content: start;
+      }
+      .row {
+        height: var(--row-h);
+        display: grid;
+        grid-template-columns: var(--gw, 140px) var(--tw, 150px) minmax(0, 1fr);
+        background: var(--card);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+        overflow: hidden;
+      }
+      .r-group {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--grey);
+        color: #fff;
+        font-size: 1.15rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+        padding-right: 8px;
+      }
+      .r-time {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: var(--grad);
+        color: #fff;
+        margin-left: -12px;
+        padding-left: 12px;
+        clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+        line-height: 1.05;
+      }
+      .r-time .t {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+      .r-time .z {
+        font-size: 0.66rem;
+        font-weight: 600;
+        opacity: 0.9;
+      }
+      body.no-controls .list {
+        top: var(--list-top-clean);
+      }
+      .row.brk .r-group {
+        background: #3a3f4b;
+      }
+      .r-brk {
+        grid-column: 2 / 4;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: var(--grad);
+        color: #fff;
+        margin-left: -12px;
+        padding-left: 12px;
+        clip-path: polygon(12px 0, 100% 0, 100% 100%, 0 100%);
+        line-height: 1.05;
+      }
+      .r-brk .t {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+      .r-brk .z {
+        font-size: 0.66rem;
+        font-weight: 600;
+        opacity: 0.9;
+      }
+      .list.dense .r-brk .t {
+        font-size: 1.1rem;
+      }
+      .controls {
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: 1840px;
+      }
+      .r-match {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 100px minmax(0, 1fr);
+        align-items: center;
+        gap: 12px;
+        padding: 0 20px 0 10px;
+        min-width: 0;
+      }
+      .team {
+        font-size: var(--team-fs, 1.45rem);
+        font-weight: 700;
+        color: var(--ink);
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .team.l {
+        text-align: right;
+      }
+      .team.r {
+        text-align: left;
+      }
+      .team.lose {
+        color: #9aa0ac;
+        font-weight: 600;
+      }
+      /* kapag 3+ columns: paliitin ang group/time boxes para kasya ang pangalan */
+      .list.dense {
+        --gw: 104px;
+        --tw: 118px;
+        --team-fs: 1.15rem;
+      }
+      .list.dense .r-group {
+        font-size: 0.9rem;
+      }
+      .list.dense .r-time .t {
+        font-size: 1.2rem;
+      }
+      .list.dense .r-match {
+        grid-template-columns: minmax(0, 1fr) 72px minmax(0, 1fr);
+        gap: 8px;
+        padding: 0 14px 0 6px;
+      }
+      .list.dense .vs {
+        font-size: 1.05rem;
+      }
+      .list.dense .vs.score {
+        font-size: 1.25rem;
+      }
+      .vs {
+        text-align: center;
+        color: var(--red);
+        font-size: 1.35rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+      }
+      .vs.score {
+        font-size: 1.6rem;
+        letter-spacing: 0.02em;
+      }
+
+      /* ===== SWITCH ANIMATION (kapag nagpalit ng group / round) ===== */
+      .list.leaving .row {
+        opacity: 0;
+        transform: translateX(40px);
+        transition:
+          opacity 0.2s ease-in,
+          transform 0.2s ease-in;
+      }
+      .list.enter .row {
+        animation: rowIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        animation-delay: calc(min(var(--i, 0), 12) * 45ms);
+      }
+      @keyframes rowIn {
+        from {
+          opacity: 0;
+          transform: translateX(-60px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .empty {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 0 40px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1.4rem;
+        text-shadow: 0 1px 4px #000;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage">
+      <div class="controls" id="controls"></div>
+      <div class="list" id="list"></div>
+    </div>
+
+    <script>
+      const params = new URLSearchParams(location.search);
+
+      /* ---------- SERVER URL ----------
+         Gumagana na ito kahit:
+         - binuksan via http://localhost:PORT/... (normal)
+         - binuksan bilang Local file sa OBS (file:///...) -> gagamitin ang
+           ?server=http://localhost:3000 (palitan ang port kung iba)
+         Halimbawa: group-matches.html?server=http://localhost:3000&controls=0 */
+      const DEFAULT_SERVER = "http://localhost:3000";
+      let SERVER = params.get("server") || "";
+      if (!SERVER) {
+        SERVER =
+          location.protocol === "http:" || location.protocol === "https:"
+            ? location.origin
+            : DEFAULT_SERVER;
+      }
+      SERVER = SERVER.replace(/\/+$/, "");
+      const API_URL = SERVER + "/api/tournament";
+      const WS_URL = SERVER.replace(/^http/, "ws");
+      const LS_KEY = "groupMatchesPrefs";
+
+      /* ---------- PREFS SYNC ----------
+         Para pareho ang nakikita sa browser at OBS, sa server.js
+         sini-save ang settings (group, round, start, min/game, break). */
+      const PREFS_URL = SERVER + "/api/group-matches-prefs";
+
+      let state = { groups: {}, groupMatches: [] };
+      let loadError = "";
+      let prefs = {
+        ts: 0,
+        selected: [],
+        rounds: [],
+        start: "10:00",
+        gap: 45,
+        breakFrom: "",
+        breakTo: "",
+      };
+      try {
+        const p = JSON.parse(localStorage.getItem(LS_KEY) || "null");
+        if (p) prefs = { ...prefs, ...p };
+      } catch (e) {}
+
+      // URL overrides, e.g. ?group=A,B&start=09:00&gap=40&controls=0
+      if (params.get("group")) {
+        prefs.selected = params
+          .get("group")
+          .split(",")
+          .map(
+            (g) =>
+              "Group " +
+              g
+                .trim()
+                .toUpperCase()
+                .replace(/^GROUP\s*/, ""),
+          );
+      }
+      if (params.get("round")) {
+        prefs.rounds = params
+          .get("round")
+          .split(",")
+          .map((r) => parseInt(r))
+          .filter((r) => r > 0);
+      }
+      if (params.get("breakfrom")) prefs.breakFrom = params.get("breakfrom");
+      if (params.get("breakto")) prefs.breakTo = params.get("breakto");
+      if (params.get("start")) prefs.start = params.get("start");
+      if (params.get("gap"))
+        prefs.gap = parseInt(params.get("gap")) || prefs.gap;
+      if (params.get("controls") === "0")
+        document.body.classList.add("no-controls");
+
+      const selected = () => new Set(prefs.selected);
+      function storeLocal() {
+        try {
+          localStorage.setItem(LS_KEY, JSON.stringify(prefs));
+        } catch (e) {}
+      }
+      // Tinatawag kapag may binago ang user sa controller: i-save local + i-push sa prefs server
+      function savePrefs() {
+        prefs.ts = Date.now();
+        storeLocal();
+        pushPrefs();
+      }
+      function pushPrefs() {
+        try {
+          fetch(PREFS_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(prefs),
+          }).catch(() => {});
+        } catch (e) {}
+      }
+      // Kunin ang pinakabagong settings mula sa server (hal. binago sa browser, susunod ang OBS)
+      async function pullPrefs() {
+        try {
+          const res = await fetch(`${PREFS_URL}?_=${Date.now()}`, {
+            cache: "no-store",
+          });
+          if (!res.ok) return;
+          const remote = await res.json();
+          if (!remote || typeof remote !== "object") return;
+          if ((remote.ts || 0) > (prefs.ts || 0)) {
+            prefs = { ...prefs, ...remote };
+            storeLocal();
+            lastSig = ""; // pilitin ang re-render
+            render();
+          } else if ((prefs.ts || 0) > (remote.ts || 0)) {
+            pushPrefs(); // mas bago ang local, i-sync sa server
+          }
+        } catch (e) {}
+      }
+
+      function esc(s) {
+        const d = document.createElement("div");
+        d.textContent = s == null ? "" : s;
+        return d.innerHTML;
+      }
+
+      function fit() {
+        const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+        document.getElementById("stage").style.transform =
+          `translate(-50%, -50%) scale(${s})`;
+      }
+      addEventListener("resize", fit);
+      fit();
+
+      function fmtTime(totalMins) {
+        const m = ((totalMins % 1440) + 1440) % 1440;
+        let h = Math.floor(m / 60);
+        const mm = String(m % 60).padStart(2, "0");
+        const ap = h >= 12 ? "PM" : "AM";
+        h = h % 12 || 12;
+        return `${h}:${mm} ${ap}`;
+      }
+
+      function gmtLabel() {
+        const off = -new Date().getTimezoneOffset() / 60;
+        return "GMT" + (off >= 0 ? "+" : "") + off;
+      }
+
+      /* ---------- data ---------- */
+      let lastSig = "";
+      // I-apply lang kapag may nagbago, para hindi nagfi-flicker at hindi nawawala ang focus sa controls.
+      function applyState(data) {
+        if (!data || typeof data !== "object") return;
+        // Buong data ang ikinukumpara (hindi lang tatlong field) para
+        // walang nalalampasang pagbabago.
+        const sig = JSON.stringify(data);
+        if (sig === lastSig && !loadError) return;
+        lastSig = sig;
+        loadError = "";
+        state = { ...state, ...data };
+        render();
+      }
+
+      async function load() {
+        try {
+          const ctrl = new AbortController();
+          const to = setTimeout(() => ctrl.abort(), 5000);
+          // cache-buster para hindi magamit ng OBS/CEF ang lumang response
+          const res = await fetch(`${API_URL}?_=${Date.now()}`, {
+            cache: "no-store",
+            signal: ctrl.signal,
+          });
+          clearTimeout(to);
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          applyState(await res.json());
+        } catch (e) {
+          console.warn("Load failed:", e);
+          const msg = `Hindi maabot ang server: ${API_URL}`;
+          if (loadError !== msg && (state.groupMatches || []).length === 0) {
+            loadError = msg;
+            render();
+          }
+        }
+      }
+
+      // Instant update via WebSocket (kapag available) + polling bilang backup,
+      // kaya kahit hindi mag-broadcast ang server, kusa pa ring mag-a-update.
+      function connectWS() {
+        let ws;
+        try {
+          ws = new WebSocket(WS_URL);
+        } catch (e) {
+          setTimeout(connectWS, 2000);
+          return;
+        }
+        ws.onmessage = (ev) => {
+          try {
+            const msg = JSON.parse(ev.data);
+            const data =
+              msg &&
+              (msg.data ||
+                msg.tournament ||
+                msg.state ||
+                (msg.groupMatches ? msg : null));
+            if (data && data.groupMatches) applyState(data);
+            else load();
+          } catch (e) {
+            load();
+          }
+        };
+        ws.onerror = () => {
+          try {
+            ws.close();
+          } catch (e) {}
+        };
+        ws.onclose = () => setTimeout(connectWS, 2000);
+      }
+
+      /* ---------- controls ---------- */
+      function toggleGroup(name) {
+        // isa lang ang pwedeng naka-select: palitan ang dating napili
+        prefs.selected = name === "ALL" ? [] : [name];
+        savePrefs();
+        render();
+      }
+      function maxRound() {
+        return Math.max(
+          0,
+          ...(state.groupMatches || []).map((m) => m.round || 1),
+        );
+      }
+      function toggleRound(r) {
+        // isa lang ang pwedeng naka-select: palitan ang dating napili
+        prefs.rounds = r === 0 ? [] : [r];
+        savePrefs();
+        render();
+      }
+      function setBreak(which, v) {
+        prefs[which] = v || "";
+        savePrefs();
+        render();
+      }
+      function clearBreak() {
+        prefs.breakFrom = "";
+        prefs.breakTo = "";
+        savePrefs();
+        const el = document.getElementById("controls");
+        el.innerHTML = ""; // pilitin ang re-render ng inputs
+        render();
+      }
+
+      function toMins(v) {
+        if (!v) return null;
+        const [h, m] = String(v).split(":").map(Number);
+        return isNaN(h) || isNaN(m) ? null : h * 60 + m;
+      }
+      // Round N = Start + (N-1) * gap. Kapag hindi na matatapos ang round bago mag-break
+      // (o papasok sa break), ililipat ito pagkatapos ng break.
+      function buildSchedule(maxR) {
+        const start = toMins(prefs.start);
+        let t = start === null ? 600 : start;
+        const bf = toMins(prefs.breakFrom);
+        const bt = toMins(prefs.breakTo);
+        const hasBreak = bf !== null && bt !== null && bt > bf;
+        const rounds = {};
+        let used = false;
+        for (let r = 1; r <= maxR; r++) {
+          let after = false;
+          if (hasBreak && !used && t < bt && t + prefs.gap > bf) {
+            t = Math.max(t, bt);
+            after = true;
+            used = true;
+          }
+          rounds[r] = { t, after };
+          t += prefs.gap;
+        }
+        return { rounds, hasBreak, bf, bt };
+      }
+      function setStart(v) {
+        if (v) {
+          prefs.start = v;
+          savePrefs();
+          render();
+        }
+      }
+      function setGap(v) {
+        const n = parseInt(v);
+        if (n > 0) {
+          prefs.gap = n;
+          savePrefs();
+          render();
+        }
+      }
+
+      function renderControls(names) {
+        const sel = selected();
+        const isAll = sel.size === 0;
+        const rsel = new Set(prefs.rounds || []);
+        const rAll = rsel.size === 0;
+        const mr = maxRound();
+        let html = `<button class="chip all ${isAll ? "active" : ""}" data-k="g:ALL" onclick="toggleGroup('ALL')">All</button>`;
+        names.forEach((n) => {
+          html += `<button class="chip ${sel.has(n) ? "active" : ""}" data-k="g:${n}" onclick="toggleGroup('${n}')">${esc(n)}</button>`;
+        });
+        html += `<span class="ctl-sep"></span>`;
+        html += `<button class="chip all rd ${rAll ? "active" : ""}" data-k="r:0" onclick="toggleRound(0)">All Rounds</button>`;
+        for (let r = 1; r <= mr; r++) {
+          html += `<button class="chip rd ${rsel.has(r) ? "active" : ""}" data-k="r:${r}" onclick="toggleRound(${r})">R${r}</button>`;
+        }
+        html += `<span class="ctl-sep"></span>
+          <label class="ctl-field">Start
+            <input type="time" value="${esc(prefs.start)}" onchange="setStart(this.value)">
+          </label>
+          <label class="ctl-field">Min/Game
+            <input type="number" min="1" max="240" value="${prefs.gap}" onchange="setGap(this.value)">
+          </label>
+          <label class="ctl-field">Break
+            <input type="time" value="${esc(prefs.breakFrom)}" onchange="setBreak('breakFrom', this.value)">
+          </label>
+          <label class="ctl-field">To
+            <input type="time" value="${esc(prefs.breakTo)}" onchange="setBreak('breakTo', this.value)">
+          </label>
+          <button class="chip rd" style="min-width:56px" onclick="clearBreak()" title="Alisin ang break">&times;</button>`;
+        const el = document.getElementById("controls");
+        // iwasang mawala ang focus habang nagta-type
+        const have = [...el.querySelectorAll(".chip[data-k]")]
+          .map((c) => c.dataset.k)
+          .join("|");
+        const want = [
+          "g:ALL",
+          ...names.map((n) => "g:" + n),
+          "r:0",
+          ...Array.from({ length: mr }, (_, i) => "r:" + (i + 1)),
+        ].join("|");
+        // i-rebuild lang kapag nagbago ang bilang ng groups/rounds o wala sa loob ng controls ang focus
+        if (have !== want || !el.contains(document.activeElement))
+          el.innerHTML = html;
+        else {
+          el.querySelectorAll(".chip[data-k]").forEach((c) => {
+            const [t, v] = c.dataset.k.split(":");
+            let on = false;
+            if (t === "g") on = v === "ALL" ? isAll : sel.has(v);
+            else on = v === "0" ? rAll : rsel.has(parseInt(v));
+            c.classList.toggle("active", on);
+          });
+        }
+      }
+
+      /* ---------- render ---------- */
+      function rowHtml(m, timeLabel) {
+        const done = !!m.resolved;
+        const w1 = done && m.winner === m.team1;
+        const w2 = done && m.winner === m.team2;
+        const mid = done
+          ? `<span class="vs score">${m.score1} - ${m.score2}</span>`
+          : `<span class="vs">VS</span>`;
+        return `
+          <div class="row">
+            <div class="r-group">${esc(m.group)}</div>
+            <div class="r-time"><span class="t">${timeLabel}</span><span class="z">${gmtLabel()}</span></div>
+            <div class="r-match">
+              <span class="team l ${done && !w1 ? "lose" : ""}">${esc(m.team1)}</span>
+              ${mid}
+              <span class="team r ${done && !w2 ? "lose" : ""}">${esc(m.team2)}</span>
+            </div>
+          </div>`;
+      }
+
+      function breakRowHtml(from, to) {
+        return `
+          <div class="row brk">
+            <div class="r-group">Break</div>
+            <div class="r-brk"><span class="t">${from} – ${to}</span><span class="z">${gmtLabel()}</span></div>
+          </div>`;
+      }
+
+      function render() {
+        const names = Object.keys(state.groups || {});
+        renderControls(names);
+
+        const list = document.getElementById("list");
+        const all = (state.groupMatches || []).slice();
+        if (names.length === 0 || all.length === 0) {
+          list.innerHTML = `<div class="empty">${
+            loadError ? esc(loadError) : "Wala pang group matches."
+          }</div>`;
+          return;
+        }
+
+        // Schedule order: by round, then group, then id. Time slots stay stable kahit naka-filter.
+        all.sort(
+          (a, b) =>
+            (a.round || 1) - (b.round || 1) ||
+            a.group.localeCompare(b.group) ||
+            a.id - b.id,
+        );
+        const sched = buildSchedule(maxRound());
+
+        // Sabay-sabay ang lahat ng groups sa iisang round: iisang oras per round.
+        // Round N = Start + (N - 1) * Min/Game
+        const sel = selected();
+        const rsel = new Set(prefs.rounds || []);
+        const show = all
+          .map((m) => {
+            const info = sched.rounds[m.round || 1];
+            return { m, time: fmtTime(info.t), afterBreak: info.after };
+          })
+          .filter(
+            (x) =>
+              (sel.size === 0 || sel.has(x.m.group)) &&
+              (rsel.size === 0 || rsel.has(x.m.round || 1)),
+          );
+
+        const cs = getComputedStyle(list);
+        const rowH =
+          parseFloat(
+            getComputedStyle(document.documentElement).getPropertyValue(
+              "--row-h",
+            ),
+          ) || 62;
+        const rowGap = parseFloat(cs.rowGap) || 8;
+        const perCol = Math.max(
+          1,
+          Math.floor((list.clientHeight + rowGap) / (rowH + rowGap)),
+        );
+        // ilagay ang BREAK row bago ang unang laban na nailipat pagkatapos ng break
+        const items = [];
+        let brkDone = false;
+        show.forEach((x) => {
+          if (x.afterBreak && !brkDone && sched.hasBreak) {
+            items.push({ brk: true });
+            brkDone = true;
+          }
+          items.push(x);
+        });
+        const cols = Math.max(1, Math.ceil(items.length / perCol));
+        const rows = Math.ceil(items.length / cols);
+        const html = items
+          .map((x) =>
+            x.brk
+              ? breakRowHtml(fmtTime(sched.bf), fmtTime(sched.bt))
+              : rowHtml(x.m, x.time),
+          )
+          .join("");
+
+        // Ilapat ang bagong list; kapag "animate", may stagger na pasok ng rows
+        const apply = (animate) => {
+          list.classList.remove("leaving", "enter");
+          list.classList.toggle("dense", cols >= 3);
+          list.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+          list.style.gridTemplateRows = `repeat(${rows}, var(--row-h))`;
+          list.innerHTML = html;
+          if (animate) {
+            list
+              .querySelectorAll(".row")
+              .forEach((r, i) => r.style.setProperty("--i", i));
+            void list.offsetWidth; // i-restart ang animation
+            list.classList.add("enter");
+            clearTimeout(enterT);
+            enterT = setTimeout(() => list.classList.remove("enter"), 1400);
+          }
+        };
+
+        // Animation lang kapag nagbago ang napiling group/round (hindi kapag
+        // data/score lang ang nag-update, para hindi nagfi-flicker).
+        const key = JSON.stringify([prefs.selected, prefs.rounds]);
+        const switched = key !== lastViewKey;
+        lastViewKey = key;
+        const hasRows = !!list.querySelector(".row");
+
+        if (swapT) {
+          // may nakabinbing paglipat: palitan lang ang laman nito ng pinakabago
+          pendingApply = apply;
+        } else if (switched && hasRows) {
+          list.classList.add("leaving"); // lalabas muna ang lumang rows
+          pendingApply = apply;
+          swapT = setTimeout(() => {
+            swapT = null;
+            const fn = pendingApply;
+            pendingApply = null;
+            if (fn) fn(true);
+          }, 220);
+        } else {
+          apply(switched);
+        }
+      }
+      let lastViewKey = null;
+      let swapT = null;
+      let pendingApply = null;
+      let enterT = null;
+
+      // Unang render agad (para may lumabas kahit hindi pa nakakakonekta)
+      render();
+      load();
+      pullPrefs();
+      connectWS();
+      setInterval(load, 2000);
+      setInterval(pullPrefs, 1000);
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) load();
+      });
+    </script>
+  </body>
+</html>

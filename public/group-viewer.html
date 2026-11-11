@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Group Stage — SPS Style (Orange)</title>
+    <style>
+      @font-face {
+        font-family: "Big Noodle Titling";
+        src: url("Assets/Font/big_noodle_titling.ttf") format("truetype");
+        font-display: swap;
+      }
+      :root {
+        --teal: #ff7200;
+        --teal-hi: #ff8c00;
+        --mint: #ffb380;
+        --lime: #ffb380;
+        --muted: #ffcc99;
+        --dim: #cc5a00;
+        --display:
+          "Big Noodle Titling", "Bahnschrift SemiCondensed", "Arial Narrow",
+          sans-serif;
+        --ui:
+          "Bahnschrift SemiCondensed", "Bahnschrift", "Segoe UI", Arial,
+          sans-serif;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: transparent;
+        font-family: var(--ui);
+        color: #fff;
+      }
+      #stage {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        transform-origin: 0 0;
+        background: transparent;
+      }
+      #board {
+        position: absolute;
+        inset: 0;
+      }
+
+      .groups-grid {
+        position: absolute;
+        inset: 30px 40px;
+        display: grid;
+        align-content: center;
+        gap: 36px 40px;
+        --cols: 64px 1fr 96px 96px 120px;
+        --row-h: 84px;
+        --title-h: 84px;
+      }
+      .groups-grid.g2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .groups-grid.g4 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .groups-grid.g8 {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 36px 24px;
+        --cols: 44px 1fr 62px 68px 84px;
+      }
+
+      .group-card {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      .group-name {
+        height: var(--title-h);
+        display: flex;
+        align-items: flex-end;
+        font-family: var(--display);
+        font-size: calc(var(--title-h) * 0.8);
+        line-height: 0.9;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 0 6px 8px;
+        transform: skewX(-8deg);
+        transform-origin: left bottom;
+      }
+
+      .table {
+        background: #2a0a00;
+        border-top: 4px solid var(--mint);
+        clip-path: polygon(
+          0 0,
+          calc(100% - 22px) 0,
+          100% 22px,
+          100% 100%,
+          22px 100%,
+          0 calc(100% - 22px)
+        );
+      }
+      .labels {
+        height: 38px;
+        display: grid;
+        grid-template-columns: var(--cols);
+        background: var(--teal);
+      }
+      .col-label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .col-label.teams {
+        grid-column: 1 / 3;
+        justify-content: flex-start;
+        padding-left: 20px;
+      }
+      .col-label.points {
+        color: #2a0a00;
+        background: var(--lime);
+      }
+
+      .team-row {
+        height: var(--row-h);
+        display: grid;
+        grid-template-columns: var(--cols);
+        background: #2a0a00;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .team-row:nth-child(odd) {
+        background: #1a0500;
+      }
+      .team-row.cut {
+        box-shadow: inset 0 2px 0 var(--mint);
+      }
+
+      .rank {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--display);
+        font-size: calc(var(--row-h) * 0.42);
+        background: var(--teal-hi);
+        color: #fff;
+      }
+      .team-row.out .rank {
+        background: #2a0a00;
+        color: var(--dim);
+      }
+      .team-row.out .team-name {
+        color: var(--muted);
+      }
+
+      .team-info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 0 18px;
+        min-width: 0;
+      }
+      .team-name {
+        font-size: calc(var(--row-h) * 0.29);
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .stat-cell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--display);
+        font-size: calc(var(--row-h) * 0.36);
+        letter-spacing: 1px;
+      }
+      .stat-cell .sep {
+        color: var(--dim);
+        margin: 0 4px;
+      }
+      .stat-cell .l {
+        color: var(--muted);
+      }
+      .stat-cell.points {
+        background: rgba(0, 0, 0, 0.25);
+        color: var(--lime);
+        font-size: calc(var(--row-h) * 0.42);
+      }
+      .team-row.fresh .stat-cell,
+      .team-row.fresh .stat-cell .l {
+        color: var(--dim);
+      }
+
+      .empty-msg {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-size: 26px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--dim);
+      }
+      .empty-msg .sub {
+        font-size: 15px;
+        letter-spacing: 0.04em;
+        text-transform: none;
+        color: #cc5a00;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage">
+      <div id="board"></div>
+    </div>
+
+    <script>
+      const API_URL = "/api/tournament";
+      const WS_URL = `ws://${location.host}`;
+
+      /* 1 point per match win (SPS MLBB standard) */
+      const POINTS_PER_WIN = 1;
+
+      let state = {
+        tournamentName: "My Tournament",
+        tournamentFormat: "single",
+        elimType: "single",
+        numGroups: 4,
+        teams: [],
+        groups: {},
+        groupMatches: [],
+        playoffMatches: [],
+        currentStage: "setup",
+        champion: null,
+      };
+
+      /* ===== DYNAMIC ADVANCE RULE =====
+         Base sa laki ng group, awtomatikong tinutukoy kung ilan ang advance.
+         • 5+ teams  → Top 3
+         • 4 teams   → Top 2
+         • 3 teams   → Top 1
+         • 2 teams   → Top 1
+      */
+      function getAdvanceCount(groupSize) {
+        if (groupSize >= 5) return 3;
+        if (groupSize === 4) return 2;
+        if (groupSize === 3) return 1;
+        if (groupSize === 2) return 1;
+        return 1;
+      }
+
+      function loadState() {
+        return fetch(API_URL)
+          .then((r) => r.json())
+          .then((data) => {
+            if (data && data.teams) {
+              state = { ...state, ...data };
+              return true;
+            }
+            return false;
+          })
+          .catch((e) => {
+            console.warn("Load state failed:", e);
+            return false;
+          });
+      }
+
+      function escapeHtml(str) {
+        const d = document.createElement("div");
+        d.textContent = str;
+        return d.innerHTML;
+      }
+
+      /* ---------- standings ---------- */
+      function getGroupStandings(groupName) {
+        const teams = state.groups[groupName] || [];
+        const stats = {};
+        teams.forEach(
+          (t) =>
+            (stats[t] = {
+              name: t,
+              wins: 0,
+              losses: 0,
+              gameWins: 0,
+              gameLosses: 0,
+              points: 0,
+            }),
+        );
+
+        state.groupMatches
+          .filter((m) => m.group === groupName && m.resolved)
+          .forEach((m) => {
+            const s1 = m.score1 || 0;
+            const s2 = m.score2 || 0;
+
+            if (stats[m.team1]) {
+              stats[m.team1].gameWins += s1;
+              stats[m.team1].gameLosses += s2;
+              if (m.winner === m.team1) {
+                stats[m.team1].wins++;
+                stats[m.team1].points += POINTS_PER_WIN;
+              } else {
+                stats[m.team1].losses++;
+              }
+            }
+            if (stats[m.team2]) {
+              stats[m.team2].gameWins += s2;
+              stats[m.team2].gameLosses += s1;
+              if (m.winner === m.team2) {
+                stats[m.team2].wins++;
+                stats[m.team2].points += POINTS_PER_WIN;
+              } else {
+                stats[m.team2].losses++;
+              }
+            }
+          });
+
+        return Object.values(stats).sort((a, b) => {
+          if (b.points !== a.points) return b.points - a.points;
+          const dA = a.gameWins - a.gameLosses;
+          const dB = b.gameWins - b.gameLosses;
+          if (dB !== dA) return dB - dA;
+          return b.gameWins - a.gameWins;
+        });
+      }
+
+      /* ---------- render ---------- */
+      function render() {
+        const board = document.getElementById("board");
+        const groupNames = Object.keys(state.groups || {});
+
+        if (groupNames.length === 0) {
+          board.innerHTML = `
+            <div class="empty-msg">
+              <div>Waiting for Group Stage</div>
+              <div class="sub">Buksan ang controller at i-generate ang groups.</div>
+            </div>`;
+          return;
+        }
+
+        const gridClass =
+          groupNames.length <= 2 ? "g2" : groupNames.length <= 4 ? "g4" : "g8";
+        const gridRows = gridClass === "g2" ? 1 : 2;
+        const titleH = gridClass === "g8" ? 64 : 84;
+        const cardH = (1020 - (gridRows - 1) * 36) / gridRows;
+        const maxTeams = Math.max(
+          1,
+          ...groupNames.map((g) => (state.groups[g] || []).length),
+        );
+        const rowH = Math.max(
+          36,
+          Math.min(100, Math.floor((cardH - titleH - 42) / maxTeams)),
+        );
+
+        let html = `<div class="groups-grid ${gridClass}" style="--row-h:${rowH}px;--title-h:${titleH}px">`;
+
+        groupNames.forEach((groupName) => {
+          const standings = getGroupStandings(groupName);
+          const groupSize = (state.groups[groupName] || []).length;
+          const advCount = getAdvanceCount(groupSize);
+
+          html += `
+            <div class="group-card">
+              <div class="group-name">${escapeHtml(groupName)}</div>
+              <div class="table">
+                <div class="labels">
+                  <div class="col-label teams">Teams</div>
+                  <div class="col-label">Match</div>
+                  <div class="col-label">Game</div>
+                  <div class="col-label points">Points</div>
+                </div>`;
+
+          standings.forEach((t, i) => {
+            const qualified = i < advCount;
+            const cut = i === advCount;
+            const played = t.wins + t.losses;
+
+            html += `
+                <div class="team-row ${qualified ? "" : "out"} ${cut ? "cut" : ""} ${played ? "" : "fresh"}">
+                  <div class="rank">${i + 1}</div>
+                  <div class="team-info">
+                    <div class="team-name">${escapeHtml(t.name)}</div>
+                  </div>
+                  <div class="stat-cell">${played}</div>
+                  <div class="stat-cell">
+                    <span>${t.gameWins}</span><span class="sep">-</span><span class="l">${t.gameLosses}</span>
+                  </div>
+                  <div class="stat-cell points">${t.points}</div>
+                </div>`;
+          });
+
+          html += `</div></div>`;
+        });
+
+        html += `</div>`;
+
+        board.innerHTML = html;
+      }
+
+      /* ---------- fit ---------- */
+      function fit() {
+        const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+        document.getElementById("stage").style.transform =
+          `translate(${(innerWidth - 1920 * s) / 2}px, ${(innerHeight - 1080 * s) / 2}px) scale(${s})`;
+      }
+      addEventListener("resize", fit);
+
+      /* ---------- WS ---------- */
+      let socket = null;
+      function connectWS() {
+        socket = new WebSocket(WS_URL);
+        socket.onopen = () => console.log("🔌 Group viewer connected");
+        socket.onmessage = (e) => {
+          try {
+            const msg = JSON.parse(e.data);
+            if (msg.type === "tournament_update" && msg.data) {
+              state = { ...state, ...msg.data };
+              render();
+            }
+          } catch (err) {
+            console.warn("WS error:", err);
+          }
+        };
+        socket.onclose = () => setTimeout(connectWS, 2000);
+        socket.onerror = (e) => console.warn("WS error:", e);
+      }
+
+      fit();
+      loadState().then(render);
+      connectWS();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1617 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+    <title>Control Panel · 6 Bans + BO1</title>
+    <link rel="stylesheet" href="control.css" />
+    <style>
+      /* ===== NOTIF CONTROL STYLES ===== */
+      @font-face {
+        font-family: "Big Noodle Titling";
+        src: url("Assets/Font/big_noodle_titling.ttf") format("truetype");
+      }
+
+      .notif-section {
+        margin-top: 30px;
+        width: 100%;
+      }
+
+      .notif-main-container {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+
+      .notif-panel {
+        background-color: rgba(26, 28, 32, 0.25);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(63, 63, 70, 0.6);
+        overflow: hidden;
+      }
+
+      .notif-status-bar {
+        background-color: rgba(0, 0, 0, 0.3);
+        text-align: center;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(63, 63, 70, 0.6);
+      }
+
+      #notif-status {
+        font-family: "Big Noodle Titling", sans-serif;
+        font-size: 2em;
+        color: #eaeaea;
+        font-style: oblique;
+      }
+
+      .notif-controls-body {
+        display: flex;
+        padding: 15px;
+        gap: 15px;
+      }
+
+      .notif-separator {
+        width: 20px;
+        background-color: rgba(234, 234, 234, 0.15);
+      }
+
+      .notif-objective-column {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .notif-sub-buttons {
+        display: flex;
+        gap: 8px;
+      }
+
+      .notif-sub-buttons button {
+        flex: 1;
+        height: 120px;
+      }
+
+      .notif-panel button {
+        font-family: "Big Noodle Titling", sans-serif;
+        font-size: 1.1em;
+        padding: 12px 8px;
+        border: 2px solid #3f3f46;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #eaeaea;
+        border-radius: 0;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        width: 100%;
+      }
+
+      .notif-panel button:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+        border-color: #a855f7;
+        background-color: rgba(168, 85, 247, 0.2);
+      }
+
+      .notif-blue-btn {
+        border-color: #00afff !important;
+      }
+      .notif-blue-btn:hover {
+        background-color: rgba(0, 175, 255, 0.2) !important;
+        box-shadow: 0 0 15px rgba(0, 175, 255, 0.5) !important;
+      }
+
+      .notif-red-btn {
+        border-color: #f94868 !important;
+      }
+      .notif-red-btn:hover {
+        background-color: rgba(249, 72, 104, 0.2) !important;
+        box-shadow: 0 0 15px rgba(249, 72, 104, 0.5) !important;
+      }
+
+      .notif-objective-panel {
+        flex: 0 0 360px;
+      }
+
+      .notif-kill-panel {
+        flex: 1;
+        min-width: 300px;
+      }
+
+      .notif-kill-header {
+        font-family: "Big Noodle Titling", sans-serif;
+        background-color: rgba(0, 0, 0, 0.4);
+        font-size: 3em;
+        text-align: center;
+        padding: 5px 0;
+        font-style: oblique;
+        border-bottom: 1px solid rgba(63, 63, 70, 0.6);
+        color: #eaeaea;
+      }
+
+      .notif-kill-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        padding: 15px;
+        flex-wrap: wrap;
+      }
+
+      .notif-kill-buttons button {
+        font-family: "Big Noodle Titling", sans-serif;
+        flex: 1 1 calc(33% - 10px);
+        min-width: 100px;
+        height: 80px;
+        background-color: rgba(234, 234, 234, 0.85);
+        color: #111;
+        border: 3px solid rgba(255, 255, 255, 0.5);
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .notif-kill-buttons button:hover {
+        border-color: #00ff8c;
+        box-shadow: 0 0 20px #00ff8c;
+        background-color: #fff;
+      }
+
+      @media (max-width: 900px) {
+        .notif-main-container {
+          flex-direction: column;
+        }
+        .notif-objective-panel {
+          flex: unset;
+          width: 100%;
+        }
+        .notif-controls-body {
+          flex-direction: column;
+        }
+        .notif-separator {
+          display: none;
+        }
+        .notif-sub-buttons button {
+          height: 80px;
+        }
+      }
+
+      /* FIXED: Better input styles */
+      .match-input-group input {
+        padding: 8px 12px;
+        font-size: 16px;
+        border: 1px solid #3f3f46;
+        background-color: white;
+        color: black;
+        border-radius: 4px;
+      }
+
+      .match-input-group label {
+        font-weight: bold;
+        color: #eaeaea;
+      }
+
+      .match-input-group button {
+        padding: 8px 16px;
+        background-color: #00afff;
+        border: none;
+        color: white;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+
+      .match-input-group button:hover {
+        background-color: #0088cc;
+      }
+
+      /* FIXED: Game # input specific styles */
+      #game-number {
+        background-color: white !important;
+        color: black !important;
+        padding: 8px !important;
+        border-radius: 4px !important;
+        border: 1px solid #3f3f46 !important;
+      }
+
+      #game-number:focus {
+        outline: none !important;
+        border-color: #00afff !important;
+        box-shadow: 0 0 5px rgba(0, 175, 255, 0.5) !important;
+      }
+
+      /* Active format highlight */
+      .format-control button.active-format {
+        border-color: #ffcc00;
+        background-color: rgba(255, 204, 0, 0.25);
+        box-shadow: 0 0 12px rgba(255, 204, 0, 0.5);
+        transform: scale(1.02);
+      }
+
+      /* Auto-save status indicators (copied from original) */
+      .team-name-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .team-name-row input {
+        flex: 1;
+        padding: 8px 12px;
+        font-size: 16px;
+        border: 1px solid #3f3f46;
+        background-color: white;
+        color: black;
+        border-radius: 4px;
+        transition: all 0.3s;
+      }
+
+      .team-name-row input:focus {
+        outline: none;
+        border-color: #00afff;
+        box-shadow: 0 0 10px rgba(0, 175, 255, 0.3);
+      }
+
+      .team-name-row input.saving {
+        border-color: #ffcc00;
+        background-color: #fff8e1;
+      }
+
+      .team-name-row input.saved {
+        border-color: #00ff8c;
+        background-color: #e8f5e9;
+      }
+
+      .status-indicator {
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        min-width: 60px;
+        text-align: center;
+      }
+
+      .status-indicator.idle {
+        color: #888;
+      }
+      .status-indicator.saving {
+        color: #ffcc00;
+        animation: pulse 1s infinite;
+      }
+      .status-indicator.saved {
+        color: #00ff8c;
+      }
+      .status-indicator.error {
+        color: #ff4444;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="content-wrapper">
+      <h1>Control Panel · 6 Bans</h1>
+
+      <div class="button">
+        <button onclick="safeResetNames()">Reset Nick</button>
+        <button onclick="safeResetImages()">Reset Team Logo</button>
+        <button onclick="safeSwitchNames()">Switch Team Nickname</button>
+        <button onclick="safeSwitchImages()">Switch Team Logo</button>
+      </div>
+
+      <!-- MATCH INFO SECTION -->
+      <div class="match-info-control">
+        <h2>MATCH INFORMATION</h2>
+        <div class="match-input-group">
+          <label>Match:</label>
+          <input
+            type="text"
+            id="match-number"
+            placeholder="Match 1"
+            value="Match 1"
+          />
+          <label>Game:</label>
+          <input
+            type="text"
+            id="game-number-text"
+            placeholder="Game 1"
+            value="Game 1"
+          />
+          <button onclick="manualSaveMatchInfo()">Update Display</button>
+        </div>
+
+        <!-- GAME NUMBER & WINNER -->
+        <div
+          class="match-input-group"
+          style="margin-top: 15px; align-items: center; gap: 20px"
+        >
+          <label>Game #:</label>
+          <input
+            type="number"
+            id="game-number"
+            placeholder="0"
+            style="width: 80px"
+          />
+
+          <div style="display: flex; gap: 10px; margin-left: 10px">
+            <button
+              id="btn-win-blue"
+              onclick="setWinner('blue')"
+              style="
+                border-color: #00afff;
+                color: #00afff;
+                min-width: 130px;
+                transition: all 0.3s;
+              "
+            >
+              BLUE WIN
+            </button>
+            <button
+              id="btn-win-red"
+              onclick="setWinner('red')"
+              style="
+                border-color: #f94868;
+                color: #f94868;
+                min-width: 130px;
+                transition: all 0.3s;
+              "
+            >
+              RED WIN
+            </button>
+          </div>
+        </div>
+
+        <div class="match-input-group" style="margin-top: 15px">
+          <label>Lower Third Title:</label>
+          <input
+            type="text"
+            id="lowerthird-title-input"
+            placeholder="Lorem Ipsum Dolor"
+            value="Lorem Ipsum Dolor"
+          />
+          <button onclick="updateLowerThirdTitle()">Update Title</button>
+        </div>
+      </div>
+
+      <audio id="hero-voice" hidden></audio>
+
+      <div class="mainbox">
+        <div class="blueside">
+          <div class="section-card">
+            <div class="namebox">BLUESIDE AND LOGO</div>
+            <!-- AUTO-SAVE TEAM NAME -->
+            <div class="team-name-row">
+              <input
+                type="text"
+                id="name-input-1"
+                placeholder="Nama Tim Biru"
+                oninput="autoSaveTeamName('blue', this)"
+              />
+              <span class="status-indicator idle" id="blue-status">Idle</span>
+            </div>
+            <div class="name-box">
+              <div class="score-control">
+                <span id="blue-score-control">0</span>
+                <button onclick="addWinQueued('blue')">+ Win</button>
+                <button onclick="minusWinQueued('blue')">-</button>
+              </div>
+            </div>
+            <div class="container">
+              <label>Upload Logo Biru:</label>
+              <input type="file" id="file1" accept="image/*" />
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="namebox">NICKNAME</div>
+            <div class="name-box">
+              <input type="text" id="name-input-3" placeholder="Nickname P1" />
+              <select id="lane-select-3" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-3" onclick="handleSwapClick(3, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+            <div class="name-box">
+              <input type="text" id="name-input-4" placeholder="Nickname P2" />
+              <select id="lane-select-4" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-4" onclick="handleSwapClick(4, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+            <div class="name-box">
+              <input type="text" id="name-input-5" placeholder="Nickname P3" />
+              <select id="lane-select-5" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-5" onclick="handleSwapClick(5, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+            <div class="name-box">
+              <input type="text" id="name-input-6" placeholder="Nickname P4" />
+              <select id="lane-select-6" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-6" onclick="handleSwapClick(6, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+            <div class="name-box">
+              <input type="text" id="name-input-7" placeholder="Nickname P5" />
+              <select id="lane-select-7" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-7" onclick="handleSwapClick(7, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="namebox">HEROPICK</div>
+            <div id="dropdowns-1" class="dropdown-container">
+              <input
+                type="text"
+                id="search-1"
+                placeholder="Pick 1"
+                oninput="filterDropdown(1)"
+              />
+              <button class="swap-button" onclick="selectDropdown(1)">
+                Swap
+              </button>
+              <div id="dropdown-items-1" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-2" class="dropdown-container">
+              <input
+                type="text"
+                id="search-2"
+                placeholder="Pick 2"
+                oninput="filterDropdown(2)"
+              />
+              <button class="swap-button" onclick="selectDropdown(2)">
+                Swap
+              </button>
+              <div id="dropdown-items-2" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-3" class="dropdown-container">
+              <input
+                type="text"
+                id="search-3"
+                placeholder="Pick 3"
+                oninput="filterDropdown(3)"
+              />
+              <button class="swap-button" onclick="selectDropdown(3)">
+                Swap
+              </button>
+              <div id="dropdown-items-3" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-4" class="dropdown-container">
+              <input
+                type="text"
+                id="search-4"
+                placeholder="Pick 4"
+                oninput="filterDropdown(4)"
+              />
+              <button class="swap-button" onclick="selectDropdown(4)">
+                Swap
+              </button>
+              <div id="dropdown-items-4" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-5" class="dropdown-container">
+              <input
+                type="text"
+                id="search-5"
+                placeholder="Pick 5"
+                oninput="filterDropdown(5)"
+              />
+              <button class="swap-button" onclick="selectDropdown(5)">
+                Swap
+              </button>
+              <div id="dropdown-items-5" class="dropdown-items"></div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="namebox">BANNING</div>
+            <div id="dropdowns-11" class="dropdown-container">
+              <input
+                type="text"
+                id="search-11"
+                placeholder="Ban 1"
+                oninput="filterDropdown(11)"
+              />
+              <button class="swap-button" onclick="selectDropdown(11)">
+                Swap
+              </button>
+              <div id="dropdown-items-11" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-12" class="dropdown-container">
+              <input
+                type="text"
+                id="search-12"
+                placeholder="Ban 2"
+                oninput="filterDropdown(12)"
+              />
+              <button class="swap-button" onclick="selectDropdown(12)">
+                Swap
+              </button>
+              <div id="dropdown-items-12" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-13" class="dropdown-container">
+              <input
+                type="text"
+                id="search-13"
+                placeholder="Ban 3"
+                oninput="filterDropdown(13)"
+              />
+              <button class="swap-button" onclick="selectDropdown(13)">
+                Swap
+              </button>
+              <div id="dropdown-items-13" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-14" class="dropdown-container">
+              <input
+                type="text"
+                id="search-14"
+                placeholder="Ban 4"
+                oninput="filterDropdown(14)"
+              />
+              <button class="swap-button" onclick="selectDropdown(14)">
+                Swap
+              </button>
+              <div id="dropdown-items-14" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-15" class="dropdown-container">
+              <input
+                type="text"
+                id="search-15"
+                placeholder="Ban 5"
+                oninput="filterDropdown(15)"
+              />
+              <button class="swap-button" onclick="selectDropdown(15)">
+                Swap
+              </button>
+              <div id="dropdown-items-15" class="dropdown-items"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="redside">
+          <div class="section-card">
+            <div class="namebox">REDSIDE AND LOGO</div>
+            <!-- AUTO-SAVE TEAM NAME -->
+            <div class="team-name-row">
+              <input
+                type="text"
+                id="name-input-8"
+                placeholder="Nama Tim Merah"
+                oninput="autoSaveTeamName('red', this)"
+              />
+              <span class="status-indicator idle" id="red-status">Idle</span>
+            </div>
+            <div class="name-box">
+              <div class="score-control">
+                <span id="red-score-control">0</span>
+                <button onclick="addWinQueued('red')">+ Win</button>
+                <button onclick="minusWinQueued('red')">-</button>
+              </div>
+            </div>
+            <div class="container">
+              <label>Upload Logo Merah:</label>
+              <input type="file" id="file2" accept="image/*" />
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="namebox">NICKNAME</div>
+            <div class="name-box">
+              <input type="text" id="name-input-10" placeholder="Nickname P1" />
+              <select id="lane-select-10" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-10" onclick="handleSwapClick(10, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+            <div class="name-box">
+              <input type="text" id="name-input-11" placeholder="Nickname P2" />
+              <select id="lane-select-11" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-11" onclick="handleSwapClick(11, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+            <div class="name-box">
+              <input type="text" id="name-input-12" placeholder="Nickname P3" />
+              <select id="lane-select-12" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-12" onclick="handleSwapClick(12, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+            <div class="name-box">
+              <input type="text" id="name-input-13" placeholder="Nickname P4" />
+              <select id="lane-select-13" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-13" onclick="handleSwapClick(13, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+            <div class="name-box">
+              <input type="text" id="name-input-14" placeholder="Nickname P5" />
+              <select id="lane-select-14" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-14" onclick="handleSwapClick(14, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="namebox">HEROPICK</div>
+            <div id="dropdowns-6" class="dropdown-container">
+              <input
+                type="text"
+                id="search-6"
+                placeholder="Pick 1"
+                oninput="filterDropdown(6)"
+              />
+              <button class="swap-button" onclick="selectDropdown(6)">
+                Swap
+              </button>
+              <div id="dropdown-items-6" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-7" class="dropdown-container">
+              <input
+                type="text"
+                id="search-7"
+                placeholder="Pick 2"
+                oninput="filterDropdown(7)"
+              />
+              <button class="swap-button" onclick="selectDropdown(7)">
+                Swap
+              </button>
+              <div id="dropdown-items-7" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-8" class="dropdown-container">
+              <input
+                type="text"
+                id="search-8"
+                placeholder="Pick 3"
+                oninput="filterDropdown(8)"
+              />
+              <button class="swap-button" onclick="selectDropdown(8)">
+                Swap
+              </button>
+              <div id="dropdown-items-8" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-9" class="dropdown-container">
+              <input
+                type="text"
+                id="search-9"
+                placeholder="Pick 4"
+                oninput="filterDropdown(9)"
+              />
+              <button class="swap-button" onclick="selectDropdown(9)">
+                Swap
+              </button>
+              <div id="dropdown-items-9" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-10" class="dropdown-container">
+              <input
+                type="text"
+                id="search-10"
+                placeholder="Pick 5"
+                oninput="filterDropdown(10)"
+              />
+              <button class="swap-button" onclick="selectDropdown(10)">
+                Swap
+              </button>
+              <div id="dropdown-items-10" class="dropdown-items"></div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="namebox">BANNING</div>
+            <div id="dropdowns-16" class="dropdown-container">
+              <input
+                type="text"
+                id="search-16"
+                placeholder="Ban 1"
+                oninput="filterDropdown(16)"
+              />
+              <button class="swap-button" onclick="selectDropdown(16)">
+                Swap
+              </button>
+              <div id="dropdown-items-16" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-17" class="dropdown-container">
+              <input
+                type="text"
+                id="search-17"
+                placeholder="Ban 2"
+                oninput="filterDropdown(17)"
+              />
+              <button class="swap-button" onclick="selectDropdown(17)">
+                Swap
+              </button>
+              <div id="dropdown-items-17" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-18" class="dropdown-container">
+              <input
+                type="text"
+                id="search-18"
+                placeholder="Ban 3"
+                oninput="filterDropdown(18)"
+              />
+              <button class="swap-button" onclick="selectDropdown(18)">
+                Swap
+              </button>
+              <div id="dropdown-items-18" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-19" class="dropdown-container">
+              <input
+                type="text"
+                id="search-19"
+                placeholder="Ban 4"
+                oninput="filterDropdown(19)"
+              />
+              <button class="swap-button" onclick="selectDropdown(19)">
+                Swap
+              </button>
+              <div id="dropdown-items-19" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-20" class="dropdown-container">
+              <input
+                type="text"
+                id="search-20"
+                placeholder="Ban 5"
+                oninput="filterDropdown(20)"
+              />
+              <button class="swap-button" onclick="selectDropdown(20)">
+                Swap
+              </button>
+              <div id="dropdown-items-20" class="dropdown-items"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2>DRAFT CONTROL</h2>
+      <div class="timercontrol">
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+        <button id="nextPhase">Force Next Phase</button>
+        <button id="reset">Reset Draft</button>
+        <button id="correction">Correction</button>
+      </div>
+
+      <!-- FORMAT CONTROL WITH BO1 ADDED -->
+      <div class="format-control">
+        <button onclick="setFormat(1)">BO1</button>
+        <button onclick="setFormat(3)">BO3</button>
+        <button onclick="setFormat(5)">BO5</button>
+        <button onclick="setFormat(7)">BO7</button>
+      </div>
+
+      <h2>ANALYZER & HISTORY</h2>
+      <div class="timercontrol" style="flex-wrap: wrap">
+        <button
+          onclick="handleSaveDraft(this)"
+          style="
+            border-color: #00ff8c;
+            color: #00ff8c;
+            width: 200px;
+            transition: all 0.2s;
+          "
+        >
+          SAVE TO PREVIOUS
+        </button>
+        <button onclick="controlAnalyzer('switch_camp')">
+          Switch Camp Position
+        </button>
+        <button onclick="controlAnalyzer('switch_data')">
+          Switch Data Source
+        </button>
+        <button
+          onclick="handleDeleteAllRecords(this)"
+          style="
+            border-color: #ff2828;
+            color: #ff2828;
+            width: 200px;
+            transition: all 0.2s;
+          "
+        >
+          DELETE ALL RECORDS
+        </button>
+      </div>
+
+      <!-- NOTIFICATION CONTROL -->
+      <div class="notif-section">
+        <h2>NOTIFICATION CONTROL</h2>
+        <div class="notif-main-container">
+          <div class="notif-panel notif-objective-panel">
+            <div class="notif-status-bar">
+              <div id="notif-status">Standby</div>
+            </div>
+            <div class="notif-controls-body">
+              <div class="notif-objective-column">
+                <button onclick="setVideo('videoPlayer1')">Turtle Spawn</button>
+                <div class="notif-sub-buttons">
+                  <button
+                    class="notif-blue-btn"
+                    onclick="setVideo('videoPlayer2')"
+                  >
+                    Blue Turtle Slain
+                  </button>
+                  <button
+                    class="notif-red-btn"
+                    onclick="setVideo('videoPlayer3')"
+                  >
+                    Red Turtle Slain
+                  </button>
+                </div>
+              </div>
+              <div class="notif-separator"></div>
+              <div class="notif-objective-column">
+                <button onclick="setVideo('videoPlayer4')">Lord Spawn</button>
+                <div class="notif-sub-buttons">
+                  <button
+                    class="notif-blue-btn"
+                    onclick="setVideo('videoPlayer5')"
+                  >
+                    Blue Lord Slain
+                  </button>
+                  <button
+                    class="notif-red-btn"
+                    onclick="setVideo('videoPlayer6')"
+                  >
+                    Red Lord Slain
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="notif-panel notif-kill-panel">
+            <div class="notif-kill-header">KILL NOTIFIER</div>
+            <div class="notif-kill-buttons">
+              <button onclick="setVideo('videoPlayer7')">First Blood</button>
+              <button onclick="setVideo('videoPlayer8')">Double Kill</button>
+              <button onclick="setVideo('videoPlayer9')">Triple Kill</button>
+              <button onclick="setVideo('videoPlayer10')">Maniac</button>
+              <button onclick="setVideo('videoPlayer11')">Savage</button>
+              <button onclick="setVideo('videoPlayer12')">Wipe Out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hide">
+        <div>
+          <button id="swap-btn-1" onclick="handleSwapClick(1, this)">
+            Swap
+          </button>
+        </div>
+        <div>
+          <button id="swap-btn-2" onclick="handleSwapClick(2, this)">
+            Swap
+          </button>
+        </div>
+        <div>
+          <button id="swap-btn-8" onclick="handleSwapClick(8, this)">
+            Swap
+          </button>
+        </div>
+        <div>
+          <button id="swap-btn-9" onclick="handleSwapClick(9, this)">
+            Swap
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/script/controlnicknamelogo.js"></script>
+    <script src="script/herodropdownban6.js"></script>
+    <script src="script/previousdraft.js"></script>
+    <script src="script/matchrecorder.js"></script>
+
+    <script>
+      var blueScore = 0;
+      var redScore = 0;
+      let operationQueue = Promise.resolve();
+      let syncInterval = null;
+      let isEditingMatchInfo = false;
+      let isEditingTitle = false;
+      let saveTimeout = null;
+
+      function queueOperation(operation) {
+        operationQueue = operationQueue.then(() => operation());
+        return operationQueue;
+      }
+
+      // ===== FIXED AUTO-SAVE TEAM NAME =====
+      async function autoSaveTeamName(team, inputElement) {
+        const name = inputElement.value.trim();
+        const statusEl = document.getElementById(
+          team === "blue" ? "blue-status" : "red-status",
+        );
+
+        if (!name) {
+          console.log(`⚠️ ${team} team name is empty`);
+        }
+
+        inputElement.classList.add("saving");
+        statusEl.textContent = "Saving...";
+        statusEl.className = "status-indicator saving";
+
+        if (saveTimeout) clearTimeout(saveTimeout);
+
+        saveTimeout = setTimeout(async () => {
+          try {
+            const response = await fetch("/api/matchdata");
+            let data = await response.json();
+
+            console.log("📥 Current data:", JSON.stringify(data, null, 2));
+
+            if (!data) data = {};
+            if (!data.teamdata) data.teamdata = {};
+            if (!data.teamdata.blueteam) data.teamdata.blueteam = {};
+            if (!data.teamdata.redteam) data.teamdata.redteam = {};
+
+            if (team === "blue") {
+              data.teamdata.blueteam.name = name;
+            } else {
+              data.teamdata.redteam.name = name;
+            }
+
+            console.log(`📤 Saving ${team} name: "${name}"`);
+
+            const saveResponse = await fetch("/api/matchdata", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(data),
+            });
+
+            if (saveResponse.ok) {
+              console.log(`✅ ${team} team name saved: "${name}"`);
+              inputElement.classList.remove("saving");
+              inputElement.classList.add("saved");
+              statusEl.textContent = "✓ Saved";
+              statusEl.className = "status-indicator saved";
+
+              setTimeout(() => {
+                inputElement.classList.remove("saved");
+                statusEl.textContent = "Idle";
+                statusEl.className = "status-indicator idle";
+              }, 2000);
+
+              await forceUpdateDisplay();
+            } else {
+              console.error("❌ Save failed with status:", saveResponse.status);
+              statusEl.textContent = "❌ Error";
+              statusEl.className = "status-indicator error";
+            }
+          } catch (e) {
+            console.error(`❌ Failed to save ${team} team name:`, e);
+            statusEl.textContent = "❌ Error";
+            statusEl.className = "status-indicator error";
+            inputElement.classList.remove("saving");
+          }
+        }, 500);
+      }
+
+      // ===== FORCE UPDATE DISPLAY =====
+      async function forceUpdateDisplay() {
+        try {
+          const response = await fetch("/api/matchdata");
+          const data = await response.json();
+          console.log(
+            "📊 Latest data on server:",
+            JSON.stringify(data, null, 2),
+          );
+
+          if (window.opener && !window.opener.closed) {
+            if (typeof window.opener.updateDisplay === "function") {
+              await window.opener.updateDisplay();
+              console.log("✅ Display updated via window.opener");
+            }
+          }
+        } catch (e) {
+          console.error("❌ Failed to force update display:", e);
+        }
+      }
+
+      // ===== LOAD EXISTING TEAM NAMES =====
+      async function loadTeamNames() {
+        try {
+          const response = await fetch("/api/matchdata");
+          const data = await response.json();
+
+          if (data && data.teamdata) {
+            const blueName = data.teamdata.blueteam?.name || "";
+            const redName = data.teamdata.redteam?.name || "";
+
+            document.getElementById("name-input-1").value = blueName;
+            document.getElementById("name-input-8").value = redName;
+
+            console.log(
+              `📥 Loaded team names - Blue: "${blueName}", Red: "${redName}"`,
+            );
+          }
+        } catch (e) {
+          console.error("Failed to load team names:", e);
+        }
+      }
+
+      // ===== EXISTING FUNCTIONS =====
+      async function loadScoreOnly() {
+        try {
+          const response = await fetch("/api/matchdata");
+          const data = await response.json();
+          blueScore = data.teamdata.blueteam.score || 0;
+          redScore = data.teamdata.redteam.score || 0;
+          document.getElementById("blue-score-control").textContent = blueScore;
+          document.getElementById("red-score-control").textContent = redScore;
+          updateScoreDots();
+        } catch (e) {
+          console.error("Failed to load score:", e);
+        }
+      }
+
+      async function loadScore() {
+        try {
+          const response = await fetch("/api/matchdata");
+          const data = await response.json();
+          blueScore = data.teamdata.blueteam.score || 0;
+          redScore = data.teamdata.redteam.score || 0;
+          document.getElementById("blue-score-control").textContent = blueScore;
+          document.getElementById("red-score-control").textContent = redScore;
+
+          if (!isEditingMatchInfo) {
+            if (data.matchInfo) {
+              if (data.matchInfo.match) {
+                document.getElementById("match-number").value =
+                  data.matchInfo.match;
+              }
+              if (data.matchInfo.game) {
+                document.getElementById("game-number-text").value =
+                  data.matchInfo.game;
+              }
+            }
+          }
+
+          if (!isEditingTitle) {
+            const titleInput = document.getElementById(
+              "lowerthird-title-input",
+            );
+            if (titleInput && data.title) {
+              titleInput.value = data.title;
+            }
+          }
+
+          updateScoreDots();
+        } catch (e) {
+          console.error("Failed to load score:", e);
+        }
+      }
+
+      async function saveScoreToServer() {
+        try {
+          const getResponse = await fetch("/api/matchdata");
+          let fullData = await getResponse.json();
+          fullData.teamdata.blueteam.score = blueScore;
+          fullData.teamdata.redteam.score = redScore;
+          fullData.matchFormat =
+            parseInt(localStorage.getItem("matchFormat")) || 3;
+          await fetch("/api/matchdata", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fullData),
+          });
+        } catch (e) {
+          console.error("Failed to save score:", e);
+        }
+      }
+
+      async function addWinQueued(team) {
+        await queueOperation(async () => {
+          if (team === "blue") blueScore++;
+          else redScore++;
+          document.getElementById(`${team}-score-control`).textContent =
+            team === "blue" ? blueScore : redScore;
+          await saveScoreToServer();
+          updateScoreDots();
+        });
+      }
+
+      async function minusWinQueued(team) {
+        await queueOperation(async () => {
+          if (team === "blue") blueScore = Math.max(0, blueScore - 1);
+          else redScore = Math.max(0, redScore - 1);
+          document.getElementById(`${team}-score-control`).textContent =
+            team === "blue" ? blueScore : redScore;
+          await saveScoreToServer();
+          updateScoreDots();
+        });
+      }
+
+      async function resetScore() {
+        blueScore = 0;
+        redScore = 0;
+        document.getElementById("blue-score-control").textContent = 0;
+        document.getElementById("red-score-control").textContent = 0;
+        await saveScoreToServer();
+        updateScoreDots();
+      }
+
+      // ========== BO1 INTEGRATION (UPDATED setFormat) ==========
+      async function setFormat(format) {
+        localStorage.setItem("matchFormat", format);
+        try {
+          const getResponse = await fetch("/api/matchdata");
+          let fullData = await getResponse.json();
+          fullData.matchFormat = format;
+          await fetch("/api/matchdata", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fullData),
+          });
+        } catch (e) {
+          console.error("Failed to save format:", e);
+        }
+        await resetScore();
+        highlightActiveFormat(format);
+      }
+
+      function highlightActiveFormat(activeFormat) {
+        const formatBtns = document.querySelectorAll(".format-control button");
+        formatBtns.forEach((btn) => {
+          const btnFormat = parseInt(btn.innerText.replace("BO", ""));
+          if (btnFormat === activeFormat) btn.classList.add("active-format");
+          else btn.classList.remove("active-format");
+        });
+      }
+
+      function createDots(containerId, total) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = "";
+        for (let i = 0; i < total; i++) {
+          const dot = document.createElement("span");
+          dot.classList.add("dot");
+          container.appendChild(dot);
+        }
+      }
+
+      function getWinsNeeded(format) {
+        if (format === 1) return 1; // BO1 = 1 win
+        if (format === 3) return 2;
+        if (format === 5) return 3;
+        if (format === 7) return 4;
+        return 2;
+      }
+
+      function updateScoreDots() {
+        const format = parseInt(localStorage.getItem("matchFormat")) || 3;
+        const winsNeeded = getWinsNeeded(format);
+        createDots("blue-score-display", winsNeeded);
+        createDots("red-score-display", winsNeeded);
+        document
+          .querySelectorAll("#blue-score-display .dot")
+          .forEach((dot, i) => {
+            dot.classList.toggle("active", i < blueScore);
+          });
+        document
+          .querySelectorAll("#red-score-display .dot")
+          .forEach((dot, i) => {
+            dot.classList.toggle("active", i < redScore);
+          });
+      }
+
+      async function safeOperation(originalFunction, ...args) {
+        await queueOperation(async () => {
+          if (typeof originalFunction === "function")
+            await originalFunction(...args);
+          await loadScore();
+          await loadGameState();
+        });
+      }
+
+      async function safeResetNames() {
+        if (typeof resetNames === "function") await safeOperation(resetNames);
+        else await loadScore();
+      }
+      async function safeResetImages() {
+        if (typeof resetImages === "function") await safeOperation(resetImages);
+        else await loadScore();
+      }
+      async function safeSwitchNames() {
+        if (typeof switchNames === "function") await safeOperation(switchNames);
+        else await loadScore();
+      }
+      async function safeSwitchImages() {
+        if (typeof switchImages === "function")
+          await safeOperation(switchImages);
+        else await loadScore();
+      }
+
+      function startAutoSync() {
+        if (syncInterval) clearInterval(syncInterval);
+        syncInterval = setInterval(async () => {
+          await loadScoreOnly();
+          await loadGameState();
+        }, 1000);
+      }
+
+      function stopAutoSync() {
+        if (syncInterval) {
+          clearInterval(syncInterval);
+          syncInterval = null;
+        }
+      }
+
+      async function manualSaveMatchInfo() {
+        const match =
+          document.getElementById("match-number").value.trim() || "Match 1";
+        const game =
+          document.getElementById("game-number-text").value.trim() || "Game 1";
+        const matchText = `${match} ${game}`;
+
+        console.log("Saving match info:", match, game);
+
+        try {
+          const getResponse = await fetch("/api/matchdata");
+          let fullData = await getResponse.json();
+          fullData.matchInfo = { match, game, text: matchText };
+          await fetch("/api/matchdata", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fullData),
+          });
+          console.log("Match info saved successfully!");
+
+          const btn = document.querySelector(
+            ".match-input-group button:last-child",
+          );
+          if (btn) {
+            const originalText = btn.textContent;
+            btn.textContent = "✓ SAVED!";
+            btn.style.background = "#00ff8c";
+            btn.style.color = "#111";
+            setTimeout(() => {
+              btn.textContent = originalText;
+              btn.style.background = "#00afff";
+              btn.style.color = "white";
+            }, 1500);
+          }
+        } catch (e) {
+          console.error("Failed to save match info:", e);
+          alert("Error saving match info: " + e.message);
+        }
+
+        if (window.opener && !window.opener.closed) {
+          const matchElement =
+            window.opener.document.getElementById("match-display");
+          if (matchElement) matchElement.textContent = matchText.toUpperCase();
+        }
+      }
+
+      async function updateLowerThirdTitle() {
+        const title =
+          document.getElementById("lowerthird-title-input").value.trim() ||
+          "Lorem Ipsum Dolor";
+
+        console.log("Saving lower third title:", title);
+
+        try {
+          const getResponse = await fetch("/api/matchdata");
+          let fullData = await getResponse.json();
+          fullData.title = title;
+          await fetch("/api/matchdata", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fullData),
+          });
+          console.log("Lower third title saved successfully!");
+
+          const btn = document.querySelector(
+            '[onclick="updateLowerThirdTitle()"]',
+          );
+          if (btn) {
+            const originalText = btn.textContent;
+            btn.textContent = "✓ SAVED!";
+            btn.style.background = "#00ff8c";
+            btn.style.color = "#111";
+            setTimeout(() => {
+              btn.textContent = originalText;
+              btn.style.background = "#00afff";
+              btn.style.color = "white";
+            }, 1500);
+          }
+        } catch (e) {
+          console.error("Failed to save lower third title:", e);
+          alert("Error saving title: " + e.message);
+        }
+      }
+
+      async function setVideo(playerId) {
+        updateNotifStatus(`SENDING ${playerId.replace("videoPlayer", "")}...`);
+        try {
+          const response = await fetch("/api/notification", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ videoId: playerId }),
+          });
+          if (response.ok) {
+            updateNotifStatus(
+              `PLAYING M${playerId.replace("videoPlayer", "")}`,
+            );
+            setTimeout(() => updateNotifStatus("Standby"), 3000);
+          } else {
+            updateNotifStatus("ERROR SENDING");
+          }
+        } catch (error) {
+          console.error("Connection Error:", error);
+          updateNotifStatus("SERVER ERROR");
+        }
+      }
+
+      function updateNotifStatus(message) {
+        const statusEl = document.getElementById("notif-status");
+        if (statusEl) statusEl.textContent = message;
+      }
+
+      async function updateGameInfo(field, value) {
+        try {
+          const getResponse = await fetch("/api/matchdata");
+          let fullData = await getResponse.json();
+          fullData[field] = value;
+          await fetch("/api/matchdata", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fullData),
+          });
+        } catch (e) {
+          console.error("Failed to update game info:", e);
+        }
+      }
+
+      async function setWinner(side) {
+        const btnBlue = document.getElementById("btn-win-blue");
+        const btnRed = document.getElementById("btn-win-red");
+        btnBlue.style.background =
+          side === "blue" ? "rgba(0,175,255,0.3)" : "rgba(0,175,255,0.1)";
+        btnBlue.style.boxShadow =
+          side === "blue" ? "0 0 15px rgba(0,175,255,0.5)" : "";
+        btnRed.style.background =
+          side === "red" ? "rgba(249,72,104,0.3)" : "rgba(249,72,104,0.1)";
+        btnRed.style.boxShadow =
+          side === "red" ? "0 0 15px rgba(249,72,104,0.5)" : "";
+        try {
+          const getResponse = await fetch("/api/matchdata");
+          let fullData = await getResponse.json();
+          fullData.winmatches = side;
+          await fetch("/api/matchdata", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fullData),
+          });
+        } catch (e) {
+          console.error("Failed to set winner:", e);
+        }
+      }
+
+      async function loadGameState() {
+        try {
+          const response = await fetch("/api/matchdata");
+          const data = await response.json();
+          const gameNumberInput = document.getElementById("game-number");
+          if (
+            data.game_number !== undefined &&
+            !gameNumberInput.hasAttribute("data-editing")
+          ) {
+            gameNumberInput.value = data.game_number;
+          }
+          if (data.winmatches) {
+            const btnBlue = document.getElementById("btn-win-blue");
+            const btnRed = document.getElementById("btn-win-red");
+            if (data.winmatches === "blue") {
+              btnBlue.style.background = "rgba(0,175,255,0.3)";
+              btnBlue.style.boxShadow = "0 0 15px rgba(0,175,255,0.5)";
+            } else if (data.winmatches === "red") {
+              btnRed.style.background = "rgba(249,72,104,0.3)";
+              btnRed.style.boxShadow = "0 0 15px rgba(249,72,104,0.5)";
+            }
+          }
+          const savedFormat =
+            data.matchFormat ||
+            parseInt(localStorage.getItem("matchFormat")) ||
+            3;
+          if (savedFormat) {
+            localStorage.setItem("matchFormat", savedFormat);
+            highlightActiveFormat(savedFormat);
+          }
+        } catch (e) {
+          console.error("Failed to load game state:", e);
+        }
+      }
+
+      function onMatchInputFocus() {
+        isEditingMatchInfo = true;
+      }
+      function onMatchInputBlur() {
+        isEditingMatchInfo = false;
+        manualSaveMatchInfo();
+      }
+      function onTitleInputFocus() {
+        isEditingTitle = true;
+      }
+      function onTitleInputBlur() {
+        isEditingTitle = false;
+      }
+
+      document.addEventListener("keydown", (event) => {
+        const keys = {
+          w: "videoPlayer1",
+          a: "videoPlayer2",
+          s: "videoPlayer3",
+          r: "videoPlayer4",
+          d: "videoPlayer5",
+          f: "videoPlayer6",
+          1: "videoPlayer7",
+          2: "videoPlayer8",
+          3: "videoPlayer9",
+          4: "videoPlayer10",
+          5: "videoPlayer11",
+          6: "videoPlayer12",
+        };
+        if (
+          keys[event.key] &&
+          event.target.tagName !== "INPUT" &&
+          event.target.tagName !== "TEXTAREA"
+        ) {
+          event.preventDefault();
+          setVideo(keys[event.key]);
+        }
+      });
+
+      window.addEventListener("load", async () => {
+        console.log("6 bans panel loaded — BO1 support added!");
+        await loadTeamNames();
+        await loadScore();
+        await loadGameState();
+        startAutoSync();
+
+        const matchInput = document.getElementById("match-number");
+        const gameInput = document.getElementById("game-number-text");
+        const gameNumberInput = document.getElementById("game-number");
+        const titleInput = document.getElementById("lowerthird-title-input");
+
+        if (matchInput) {
+          matchInput.addEventListener("focus", onMatchInputFocus);
+          matchInput.addEventListener("blur", onMatchInputBlur);
+        }
+        if (gameInput) {
+          gameInput.addEventListener("focus", onMatchInputFocus);
+          gameInput.addEventListener("blur", onMatchInputBlur);
+        }
+        if (titleInput) {
+          titleInput.addEventListener("focus", onTitleInputFocus);
+          titleInput.addEventListener("blur", onTitleInputBlur);
+        }
+        if (gameNumberInput) {
+          gameNumberInput.addEventListener("focus", function () {
+            this.setAttribute("data-editing", "true");
+          });
+          gameNumberInput.addEventListener("blur", function () {
+            this.removeAttribute("data-editing");
+            const value = parseInt(this.value);
+            if (!isNaN(value)) updateGameInfo("game_number", value);
+          });
+          gameNumberInput.addEventListener("input", function () {
+            this.setAttribute("data-editing", "true");
+          });
+        }
+
+        const currentFormat =
+          parseInt(localStorage.getItem("matchFormat")) || 3;
+        highlightActiveFormat(currentFormat);
+      });
+
+      window.addEventListener("beforeunload", () => {
+        stopAutoSync();
+      });
+    </script>
+  </body>
+</html>

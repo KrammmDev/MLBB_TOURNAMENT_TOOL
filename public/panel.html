@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Broadcast Lower Third</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: transparent !important;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        min-height: 100vh;
+        font-family: "Oswald", sans-serif;
+      }
+      .frame {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: transparent !important;
+      }
+      .bar {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 200px;
+
+        display: flex;
+        align-items: center; /* Vertical center */
+      }
+      .badge {
+        position: absolute;
+        left: 28px;
+        bottom: -12px;
+        width: 192px;
+        height: 220px;
+        z-index: 5;
+      }
+      .title {
+        position: absolute;
+        left: 230px;
+        right: 340px;
+
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding-left: 32px;
+
+        height: 100%; /* Para centered sa buong bar */
+
+        color: #0f0f0f;
+        font-family: "Anton", sans-serif;
+        font-size: 84px;
+        line-height: 1;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .divider {
+        position: absolute;
+        right: 296px;
+        bottom: 0;
+        width: 36px;
+        height: 176px;
+        /* background: linear-gradient(
+          115deg,
+          #ffffff 0%,
+          #d8d8d8 30%,
+          #f5f5f5 55%,
+          #c9c9c9 75%,
+          #ffffff 100%
+        ); */
+        clip-path: polygon(40% 0, 100% 0, 60% 100%, 0% 100%);
+        /* box-shadow: 0 0 14px rgba(255, 255, 255, 0.25); */
+      }
+      .score {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        width: 296px;
+        height: 170px;
+        display: flex;
+        flex-direction: column;
+        clip-path: polygon(14% 0, 100% 0, 100% 100%, 0% 100%);
+      }
+      .row {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 0 0 36px;
+      }
+      .row.tlph {
+        /* background: #1d57a8; */
+      }
+      .row.flcn {
+        /* background: #d6a417; */
+      }
+      .team {
+        font-family: "Anton", sans-serif;
+        color: #fff;
+        font-size: 38px;
+        letter-spacing: 1px;
+        min-width: 80px;
+        text-align: left;
+      }
+      .num {
+        height: 100%;
+        width: 92px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Anton", sans-serif;
+        font-size: 52px;
+        color: #fff;
+      }
+      .row.tlph .num {
+        /* background: #143f80; */
+      }
+      .row.flcn .num {
+        /* background: #a87f10; */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <div class="bar">
+        <div class="title" id="lowerthird-title">LOREM IPSUM</div>
+        <div class="divider"></div>
+
+        <div class="score">
+          <div class="row tlph">
+            <span class="team" id="blue-team-name">--</span>
+            <span class="num" id="blue-team-score">0</span>
+          </div>
+          <div class="row flcn">
+            <span class="team" id="red-team-name">--</span>
+            <span class="num" id="red-team-score">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // =============================================
+      // FIXED: DIRECT FETCH WITH PROPER PROPERTY NAMES
+      // =============================================
+
+      // Make function globally accessible
+      window.updateLowerThird = function () {
+        return fetch("/api/matchdata")
+          .then((res) => res.json())
+          .then((data) => {
+            console.log("📊 PANEL DATA:", JSON.stringify(data, null, 2));
+
+            let blueName = "--";
+            let redName = "--";
+            let blueScore = 0;
+            let redScore = 0;
+
+            // Try all possible property names
+            if (data.teamdata) {
+              const blue = data.teamdata.blueteam || {};
+              const red = data.teamdata.redteam || {};
+
+              // Try: name, teamname, teamName
+              blueName = blue.name || blue.teamname || blue.teamName || "--";
+              redName = red.name || red.teamname || red.teamName || "--";
+
+              blueScore = blue.score || 0;
+              redScore = red.score || 0;
+            }
+
+            // Update display
+            const blueNameEl = document.getElementById("blue-team-name");
+            const redNameEl = document.getElementById("red-team-name");
+            const blueScoreEl = document.getElementById("blue-team-score");
+            const redScoreEl = document.getElementById("red-team-score");
+
+            if (blueNameEl) blueNameEl.textContent = blueName;
+            if (redNameEl) redNameEl.textContent = redName;
+            if (blueScoreEl) blueScoreEl.textContent = blueScore;
+            if (redScoreEl) redScoreEl.textContent = redScore;
+
+            // Update title
+            const titleEl = document.getElementById("lowerthird-title");
+            if (titleEl && data.title) {
+              titleEl.textContent = data.title;
+              fitTitle();
+            }
+
+            console.log(`🔵 Blue: "${blueName}" | 🔴 Red: "${redName}"`);
+            return data;
+          })
+          .catch((err) => {
+            console.error("❌ Error fetching data:", err);
+          });
+      };
+
+      function fitTitle() {
+        const title = document.getElementById("lowerthird-title");
+
+        const MAX_SIZE = 84;
+        const MIN_SIZE = 32;
+
+        let size = MAX_SIZE;
+
+        title.style.fontSize = size + "px";
+
+        while (title.scrollWidth > title.clientWidth && size > MIN_SIZE) {
+          size--;
+          title.style.fontSize = size + "px";
+        }
+      }
+
+      // Auto-update every 500ms
+      setInterval(window.updateLowerThird, 500);
+
+      // Initial load
+      window.updateLowerThird();
+
+      console.log("🎯 Panel Display Ready - Listening for updates");
+    </script>
+  </body>
+</html>

@@ -1,0 +1,2924 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tournament Controller</title>
+    <link rel="stylesheet" href="controller.css" />
+  </head>
+  <body>
+    <div class="top-nav">
+      <h1>Tournament Controller</h1>
+      <div class="nav-actions">
+        <span class="stage-badge setup" id="stageBadge">Setup</span>
+        <span class="status-badge idle" id="liveStatus">Not Live</span>
+        <span class="status-badge ws-off" id="wsStatus">WS Off</span>
+        <button class="btn btn-secondary btn-sm" onclick="openViewer()">
+          Open Stage Viewer
+        </button>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="controller-tabs">
+        <button class="ctab active" onclick="switchCPanel('setup', event)">
+          Setup
+        </button>
+        <button class="ctab" onclick="switchCPanel('teams', event)">
+          Teams
+        </button>
+        <button
+          class="ctab"
+          id="tabAssignBtn"
+          onclick="switchCPanel('assign', event)"
+        >
+          Group Assignment
+        </button>
+        <button
+          class="ctab"
+          id="tabGroupsBtn"
+          onclick="switchCPanel('groups', event)"
+        >
+          Groups
+        </button>
+        <button
+          class="ctab"
+          id="tabSeedingBtn"
+          onclick="switchCPanel('seeding', event)"
+        >
+          Seeding
+        </button>
+        <button
+          class="ctab"
+          id="tabPlayoffsBtn"
+          onclick="switchCPanel('playoffs', event)"
+        >
+          Bracket
+        </button>
+      </div>
+
+      <!-- SETUP -->
+      <div id="cpanel-setup" class="cpanel active">
+        <div class="card">
+          <h2>Tournament Settings</h2>
+          <div class="form-group">
+            <label>Tournament Name</label>
+            <input
+              type="text"
+              id="tournamentName"
+              placeholder="e.g., MLBB Championship 2024"
+              value="My Tournament"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Tournament Format</label>
+            <div class="format-selector">
+              <div
+                class="format-option selected"
+                id="fmt-single"
+                onclick="selectFormat('single')"
+              >
+                <div class="check"></div>
+                <div class="title">Single Stage</div>
+                <div class="desc">
+                  Diretso bracket agad<br />(walang group stage)
+                </div>
+              </div>
+              <div
+                class="format-option"
+                id="fmt-double"
+                onclick="selectFormat('double')"
+              >
+                <div class="check"></div>
+                <div class="title">Double Stage</div>
+                <div class="desc">
+                  Group Stage + Playoffs<br />(2 stage tournament)
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="conditional-section" id="singleStageOptions">
+            <div class="form-group">
+              <label>Elimination Type</label>
+              <select id="singleElimType">
+                <option value="single" selected>Single Elimination</option>
+                <option value="double">Double Elimination</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="thirdPlaceMatch" />
+                Include 3rd Place Match (Single Elim only)
+              </label>
+            </div>
+          </div>
+
+          <div class="conditional-section hidden" id="doubleStageOptions">
+            <div class="form-group">
+              <label>Number of Groups (Stage 1)</label>
+              <input
+                type="number"
+                id="numGroups"
+                min="2"
+                max="32"
+                step="1"
+                value="3"
+                placeholder="e.g., 3"
+              />
+              <div class="section-hint" style="margin-top: 8px">
+                Ang teams ay hahatiin nang pantay-pantay sa bawat group
+                (halimbawa: 14 teams sa 3 groups = 5-5-4). I-drag manually sa
+                Group Assignment tab para i-assign.
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Advance Rule (Automatic)</label>
+              <div class="section-hint">
+                Ang bilang ng mag-a-advance sa playoffs ay awtomatikong nakabase
+                sa laki ng bawat group:
+                <br />- <strong>5+ teams</strong> sa group:
+                <strong>3 advance</strong> <br />- <strong>4 teams</strong> sa
+                group: <strong>2 advance</strong> <br />-
+                <strong>3 teams</strong> sa group: <strong>1 advance</strong>
+                <br />- <strong>2 teams</strong> sa group:
+                <strong>1 advance</strong>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Group Distribution Preview</label>
+              <div class="group-preview-box" id="groupPreviewBox">
+                <div class="hint-muted">
+                  I-add ang teams para makita ang preview.
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Playoff Elimination Type (Stage 2)</label>
+              <select id="doubleElimType">
+                <option value="single" selected>Single Elimination</option>
+                <option value="double">Double Elimination</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="thirdPlaceMatchDouble" />
+                Include 3rd Place Match (Single Elim only)
+              </label>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <button class="btn btn-primary btn-block" onclick="applySettings()">
+              Apply Settings
+            </button>
+          </div>
+          <div class="btn-group spaced">
+            <button
+              class="btn btn-danger btn-block"
+              onclick="resetTournament()"
+            >
+              Reset Tournament
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>⏱ Estimated Time Analyzer</h2>
+          <div class="section-hint">
+            Base sa <strong>single round robin</strong> (isang laban lang per
+            pair) at <strong>simultaneous play</strong> (sabay-sabay ang
+            groups). Ang overall time ay base sa
+            <strong>pinakamahabang group</strong>.
+          </div>
+
+          <div class="form-group">
+            <label>Minutes per Game</label>
+            <input
+              type="number"
+              id="minsPerGame"
+              value="45"
+              min="1"
+              max="240"
+              step="1"
+            />
+          </div>
+
+          <div id="timeAnalyzerBox">
+            <div
+              class="hint-muted"
+              style="padding: 20px; text-align: center; color: var(--text-dim)"
+            >
+              Mag-add ng teams para makita ang estimate.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Tournament Flow</h2>
+          <div id="flowPreview"></div>
+        </div>
+      </div>
+
+      <!-- TEAMS -->
+      <div id="cpanel-teams" class="cpanel">
+        <div class="card">
+          <h2>Add Teams</h2>
+          <div class="form-group">
+            <label>Team Name</label>
+            <div class="input-row">
+              <input
+                type="text"
+                id="teamInput"
+                placeholder="Team name..."
+                onkeydown="if (event.key === 'Enter') addTeam();"
+              />
+              <button class="btn btn-primary" onclick="addTeam()">Add</button>
+            </div>
+          </div>
+          <div class="btn-group">
+            <button
+              class="btn btn-secondary btn-sm"
+              onclick="addSampleTeams(4)"
+            >
+              Sample (4)
+            </button>
+            <button
+              class="btn btn-secondary btn-sm"
+              onclick="addSampleTeams(8)"
+            >
+              Sample (8)
+            </button>
+            <button
+              class="btn btn-secondary btn-sm"
+              onclick="addSampleTeams(16)"
+            >
+              Sample (16)
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="clearTeams()">
+              Clear All
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Registered Teams (<span id="teamCount">0</span>)</h2>
+          <div id="teamList" class="team-list">
+            <div class="empty-msg">No teams yet.</div>
+          </div>
+          <div class="btn-group spaced">
+            <button
+              class="btn btn-success btn-block"
+              id="generateBtn"
+              onclick="generateTournament()"
+            >
+              Generate Bracket
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- GROUP ASSIGNMENT -->
+      <div id="cpanel-assign" class="cpanel">
+        <div class="card full-width">
+          <h2>Group Assignment</h2>
+          <div class="ga-toolbar">
+            <div class="ga-toolbar-info">
+              I-drag ang teams mula sa <strong>Team Pool</strong> papunta sa mga
+              <strong>Group</strong> boxes. Puwede ring i-drag pabalik sa pool o
+              sa ibang group.
+            </div>
+            <div class="btn-group" style="margin-top: 0">
+              <button
+                class="btn btn-secondary btn-sm"
+                onclick="autoAssignGroups()"
+              >
+                Auto Assign
+              </button>
+              <button
+                class="btn btn-secondary btn-sm"
+                onclick="clearAssignment()"
+              >
+                Clear All
+              </button>
+            </div>
+          </div>
+          <div
+            id="assignmentPreviewInfo"
+            class="section-hint"
+            style="margin-bottom: 16px"
+          >
+            <!-- Dynamic: show total counts -->
+          </div>
+          <div id="assignTimeEstimate" style="margin-bottom: 16px"></div>
+
+          <div class="ga-layout">
+            <div class="ga-pool" id="gaPool">
+              <!-- Dynamic team pool -->
+            </div>
+            <div class="ga-groups" id="gaGroups">
+              <!-- Dynamic group boxes -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GROUPS -->
+      <div id="cpanel-groups" class="cpanel">
+        <div id="groupsContainer">
+          <div class="empty-msg">
+            Group stage not active. Pumili ng "Double Stage" sa Setup.
+          </div>
+        </div>
+      </div>
+
+      <!-- SEEDING -->
+      <div id="cpanel-seeding" class="cpanel">
+        <div id="seedingContainer">
+          <div class="empty-msg">
+            Seeding available kapag tapos na ang lahat ng group matches.
+          </div>
+        </div>
+      </div>
+
+      <!-- PLAYOFFS -->
+      <div id="cpanel-playoffs" class="cpanel">
+        <div id="playoffsContainer">
+          <div class="empty-msg">
+            Bracket not generated yet. Add teams first.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ===== SERVER-BASED PERSISTENCE =====
+      const API_URL = "/api/tournament";
+      const WS_URL = `ws://${location.host}`;
+      let socket = null;
+      let wsConnected = false;
+
+      let state = {
+        tournamentName: "My Tournament",
+        tournamentFormat: "single",
+        elimType: "single",
+        numGroups: 3,
+        teams: [],
+        groups: {},
+        groupMatches: [],
+        playoffMatches: [],
+        currentStage: "setup",
+        champion: null,
+        grandFinalId: null,
+        grandFinalResetId: null,
+        thirdPlaceMatch: false,
+        groupRankOverrides: {},
+        manualGroupAssignment: {},
+        manualSeeding: null,
+      };
+
+      // ===== DYNAMIC ADVANCE RULE =====
+      function getAdvanceCount(groupSize) {
+        if (groupSize >= 5) return 3;
+        if (groupSize === 4) return 2;
+        if (groupSize === 3) return 1;
+        if (groupSize === 2) return 1;
+        return 1;
+      }
+
+      function distributeTeamsToGroups(totalTeams, numGroups) {
+        const base = Math.floor(totalTeams / numGroups);
+        const remainder = totalTeams % numGroups;
+        const sizes = [];
+        for (let i = 0; i < numGroups; i++) {
+          sizes.push(base + (i < remainder ? 1 : 0));
+        }
+        return sizes;
+      }
+
+      // ===== SERVER SYNC =====
+      let saveTimeout = null;
+      function saveState() {
+        if (saveTimeout) clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+          fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(state),
+          }).catch((e) => console.warn("Save failed:", e));
+        }, 150);
+      }
+
+      function saveStateNow() {
+        if (saveTimeout) clearTimeout(saveTimeout);
+        fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(state),
+        }).catch((e) => console.warn("Save failed:", e));
+      }
+
+      function loadState() {
+        return fetch(API_URL)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data && data.teams) {
+              state = { ...state, ...data };
+              delete state.advancePerGroup;
+              if (!state.manualGroupAssignment)
+                state.manualGroupAssignment = {};
+              if (!state.groupRankOverrides) state.groupRankOverrides = {};
+              if (state.manualSeeding === undefined) state.manualSeeding = null;
+              return true;
+            }
+            return false;
+          })
+          .catch((e) => {
+            console.warn("Load state failed:", e);
+            return false;
+          });
+      }
+
+      function updateWSBadge() {
+        const el = document.getElementById("wsStatus");
+        if (wsConnected) {
+          el.className = "status-badge ws-ok";
+          el.textContent = "WS OK";
+        } else {
+          el.className = "status-badge ws-off";
+          el.textContent = "WS Off";
+        }
+      }
+
+      function connectWS() {
+        socket = new WebSocket(WS_URL);
+        socket.onopen = () => {
+          wsConnected = true;
+          updateWSBadge();
+        };
+        socket.onmessage = (event) => {
+          try {
+            const msg = JSON.parse(event.data);
+            if (msg.type === "tournament_update" && msg.data) {
+              const incoming = JSON.stringify(msg.data);
+              if (incoming === JSON.stringify(state)) return;
+              state = { ...state, ...msg.data };
+              if (!state.manualGroupAssignment)
+                state.manualGroupAssignment = {};
+              if (state.manualSeeding === undefined) state.manualSeeding = null;
+              renderAll();
+            }
+          } catch (e) {
+            console.warn("WS message error:", e);
+          }
+        };
+        socket.onclose = () => {
+          wsConnected = false;
+          updateWSBadge();
+          setTimeout(connectWS, 2000);
+        };
+        socket.onerror = (e) => console.warn("WS error:", e);
+      }
+
+      // ===== NOTIFY =====
+      function notify(msg, type = "info") {
+        const n = document.createElement("div");
+        n.className = `notification ${type}`;
+        n.textContent = msg;
+        document.body.appendChild(n);
+        setTimeout(() => {
+          n.style.transition = "all 0.3s";
+          n.style.opacity = "0";
+          n.style.transform = "translateX(100%)";
+          setTimeout(() => n.remove(), 300);
+        }, 2500);
+      }
+
+      // ===== TABS =====
+      function switchCPanel(panel, event) {
+        if (panel === "groups" && state.tournamentFormat === "single") {
+          notify("Single Stage tournament — walang group stage.", "info");
+          return;
+        }
+        if (panel === "assign" && state.tournamentFormat === "single") {
+          notify("Group Assignment — para lang sa Double Stage.", "info");
+          return;
+        }
+        if (panel === "seeding" && state.tournamentFormat === "single") {
+          notify("Seeding — para lang sa Double Stage.", "info");
+          return;
+        }
+        document
+          .querySelectorAll(".cpanel")
+          .forEach((p) => p.classList.remove("active"));
+        document
+          .querySelectorAll(".ctab")
+          .forEach((t) => t.classList.remove("active"));
+        document.getElementById(`cpanel-${panel}`).classList.add("active");
+        event.target.classList.add("active");
+        if (panel === "assign") renderAssignment();
+        if (panel === "seeding") renderSeeding();
+      }
+
+      function openViewer() {
+        window.open(
+          "stage-viewer.html",
+          "StageViewer",
+          "width=1400,height=900",
+        );
+      }
+
+      // ===== FORMAT SELECTOR =====
+      function selectFormat(fmt) {
+        if (state.teams.length > 0 && state.currentStage !== "setup") {
+          if (
+            !confirm("Changing format will reset groups and matches. Continue?")
+          )
+            return;
+        }
+        state.tournamentFormat = fmt;
+
+        document
+          .querySelectorAll(".format-option")
+          .forEach((o) => o.classList.remove("selected"));
+        document.getElementById(`fmt-${fmt}`).classList.add("selected");
+
+        document
+          .getElementById("singleStageOptions")
+          .classList.toggle("hidden", fmt !== "single");
+        document
+          .getElementById("doubleStageOptions")
+          .classList.toggle("hidden", fmt !== "double");
+
+        const groupsTab = document.getElementById("tabGroupsBtn");
+        groupsTab.disabled = fmt === "single";
+        groupsTab.style.opacity = fmt === "single" ? "0.3" : "1";
+
+        const assignTab = document.getElementById("tabAssignBtn");
+        assignTab.disabled = fmt === "single";
+        assignTab.style.opacity = fmt === "single" ? "0.3" : "1";
+
+        const seedingTab = document.getElementById("tabSeedingBtn");
+        seedingTab.disabled = fmt === "single";
+        seedingTab.style.opacity = fmt === "single" ? "0.3" : "1";
+
+        updateGroupPreview();
+        updateFlowPreview();
+        updateGenerateButton();
+        renderTimeAnalyzer();
+      }
+
+      // ===== GROUP PREVIEW =====
+      function updateGroupPreview() {
+        const box = document.getElementById("groupPreviewBox");
+        if (!box) return;
+        const numGroups =
+          parseInt(document.getElementById("numGroups").value) || 0;
+        const totalTeams = state.teams.length;
+
+        if (numGroups < 2 || totalTeams < 2) {
+          box.innerHTML =
+            '<div class="hint-muted">I-add ang teams at groups para makita ang preview.</div>';
+          return;
+        }
+
+        const sizes = distributeTeamsToGroups(totalTeams, numGroups);
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        let totalPlayoff = 0;
+        let html = "";
+
+        sizes.forEach((size, i) => {
+          const adv = getAdvanceCount(size);
+          totalPlayoff += adv;
+          html += `
+            <div class="gp-row">
+              <span><span class="gp-name">Group ${letters[i]}</span> <span class="gp-size">(${size} teams)</span></span>
+              <span class="gp-advance">Top ${adv} advance</span>
+            </div>
+          `;
+        });
+
+        const validPlayoff = [2, 4, 8, 16, 32].includes(totalPlayoff);
+        html += `
+          <div class="gp-total">
+            Total Playoff Teams: <span class="${validPlayoff ? "ok" : "warn"}">${totalPlayoff}</span>
+            ${validPlayoff ? "" : '<span class="warn">(dapat 2/4/8/16/32 — adjust groups)</span>'}
+          </div>
+        `;
+
+        box.innerHTML = html;
+      }
+
+      function updateFlowPreview() {
+        const el = document.getElementById("flowPreview");
+        if (state.tournamentFormat === "single") {
+          el.innerHTML = `
+            <div class="flow-list">
+              <div class="flow-row"><span class="stage-badge playoff">Single Stage</span><span>Diretso bracket</span></div>
+              <div class="flow-note">
+                <strong>Flow:</strong><br>
+                Teams, Generate Bracket, Input Scores, Champion
+              </div>
+            </div>
+          `;
+        } else {
+          const numGroups =
+            parseInt(document.getElementById("numGroups").value) || 0;
+          const sizes = distributeTeamsToGroups(
+            state.teams.length || 12,
+            numGroups,
+          );
+          let totalPlayoff = 0;
+          sizes.forEach((s) => (totalPlayoff += getAdvanceCount(s)));
+
+          el.innerHTML = `
+            <div class="flow-list">
+              <div class="flow-row"><span class="stage-badge group">Stage 1</span><span>Group Stage — Round Robin</span></div>
+              <div class="flow-row"><span class="stage-badge playoff">Stage 2</span><span>Seeding → Playoffs — ${totalPlayoff} teams bracket</span></div>
+              <div class="flow-note">
+                <strong>Auto Advance Rule:</strong><br>
+                5+ teams group: Top 3 · 4 teams group: Top 2 · 3 teams group: Top 1
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      function updateGenerateButton() {
+        const btn = document.getElementById("generateBtn");
+        if (state.tournamentFormat === "single") {
+          btn.textContent = "Generate Bracket";
+        } else {
+          btn.textContent = "Generate Groups and Start Group Stage";
+        }
+      }
+
+      // ===== SETUP =====
+      function applySettings() {
+        const name = document.getElementById("tournamentName").value.trim();
+        if (!name) {
+          notify("Enter tournament name", "error");
+          return;
+        }
+        if (state.teams.length > 0 && state.currentStage !== "setup") {
+          if (
+            !confirm(
+              "Changing settings will reset groups and matches. Continue?",
+            )
+          )
+            return;
+        }
+        state.tournamentName = name;
+
+        if (state.tournamentFormat === "single") {
+          state.elimType = document.getElementById("singleElimType").value;
+          state.thirdPlaceMatch =
+            document.getElementById("thirdPlaceMatch").checked;
+        } else {
+          const numGroupsInput = parseInt(
+            document.getElementById("numGroups").value,
+          );
+          if (!numGroupsInput || numGroupsInput < 2) {
+            notify("Number of groups must be at least 2", "error");
+            return;
+          }
+          if (numGroupsInput > 32) {
+            notify("Max 32 groups", "error");
+            return;
+          }
+          state.numGroups = numGroupsInput;
+          state.elimType = document.getElementById("doubleElimType").value;
+          state.thirdPlaceMatch = document.getElementById(
+            "thirdPlaceMatchDouble",
+          ).checked;
+        }
+
+        saveStateNow();
+        updateStageBadge();
+        updateFlowPreview();
+        updateGenerateButton();
+        updateGroupPreview();
+        renderTimeAnalyzer();
+        notify("Settings applied", "success");
+      }
+
+      function resetTournament() {
+        if (
+          !confirm(
+            "Reset the ENTIRE tournament? All teams, groups, and matches will be deleted.",
+          )
+        )
+          return;
+        fetch("/api/tournament/reset", { method: "POST" })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.ok && data.tournament) {
+              state = { ...state, ...data.tournament };
+              state.groupRankOverrides =
+                data.tournament.groupRankOverrides || {};
+              state.manualGroupAssignment =
+                data.tournament.manualGroupAssignment || {};
+              state.manualSeeding = null;
+              rankEditGroup = null;
+              document.getElementById("tournamentName").value =
+                state.tournamentName;
+              document.getElementById("singleElimType").value = state.elimType;
+              document.getElementById("numGroups").value = state.numGroups;
+              document.getElementById("doubleElimType").value = state.elimType;
+              renderAll();
+              updateGroupPreview();
+              notify("Tournament reset", "info");
+            }
+          })
+          .catch((e) => {
+            console.warn("Reset failed:", e);
+            notify("Reset failed — check server", "error");
+          });
+      }
+
+      // ===== TEAMS =====
+      function addTeam() {
+        const input = document.getElementById("teamInput");
+        const name = input.value.trim();
+        if (!name) {
+          notify("Enter team name", "error");
+          return;
+        }
+        if (state.teams.some((t) => t.toLowerCase() === name.toLowerCase())) {
+          notify("Team already exists", "error");
+          return;
+        }
+        if (state.currentStage !== "setup") {
+          notify("Cannot add teams after bracket/groups generated", "error");
+          return;
+        }
+        state.teams.push(name);
+        input.value = "";
+        input.focus();
+        saveStateNow();
+        renderTeamList();
+        updateGroupPreview();
+        renderTimeAnalyzer();
+        notify(`"${name}" added`, "success");
+      }
+
+      function removeTeam(index) {
+        if (state.currentStage !== "setup") {
+          notify("Cannot remove after generation", "error");
+          return;
+        }
+        const team = state.teams[index];
+        state.teams.splice(index, 1);
+        if (state.manualGroupAssignment[team]) {
+          delete state.manualGroupAssignment[team];
+        }
+        saveStateNow();
+        renderTeamList();
+        updateGroupPreview();
+        renderTimeAnalyzer();
+      }
+
+      function clearTeams() {
+        if (state.currentStage !== "setup") {
+          notify("Cannot clear after generation", "error");
+          return;
+        }
+        if (state.teams.length === 0) return;
+        if (!confirm("Clear all teams?")) return;
+        state.teams = [];
+        state.manualGroupAssignment = {};
+        saveStateNow();
+        renderTeamList();
+        updateGroupPreview();
+        renderTimeAnalyzer();
+      }
+
+      function addSampleTeams(count) {
+        if (state.currentStage !== "setup") {
+          notify("Cannot add after generation", "error");
+          return;
+        }
+        const pool = [
+          "Team Liquid",
+          "Fnatic",
+          "G2 Esports",
+          "T1",
+          "Gen.G",
+          "DRX",
+          "Cloud9",
+          "TSM",
+          "NaVi",
+          "Vitality",
+          "FaZe",
+          "Astralis",
+          "Heroic",
+          "NIP",
+          "OG",
+          "BIG",
+        ];
+        for (let i = 0; i < count && i < pool.length; i++) {
+          if (
+            !state.teams.some((t) => t.toLowerCase() === pool[i].toLowerCase())
+          ) {
+            state.teams.push(pool[i]);
+          }
+        }
+        saveStateNow();
+        renderTeamList();
+        updateGroupPreview();
+        renderTimeAnalyzer();
+        notify(`${count} sample teams added`, "success");
+      }
+
+      function renderTeamList() {
+        const container = document.getElementById("teamList");
+        document.getElementById("teamCount").textContent = state.teams.length;
+        if (state.teams.length === 0) {
+          container.innerHTML = '<div class="empty-msg">No teams yet.</div>';
+          return;
+        }
+        container.innerHTML = state.teams
+          .map(
+            (team, i) => `
+              <div class="team-item">
+                <span><span class="seed-num">#${i + 1}</span>${escapeHtml(team)}</span>
+                ${state.currentStage === "setup" ? `<button class="btn btn-danger btn-sm" onclick="removeTeam(${i})">Remove</button>` : ""}
+              </div>
+            `,
+          )
+          .join("");
+      }
+
+      function escapeHtml(str) {
+        const div = document.createElement("div");
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      // ===== TIME ANALYZER =====
+      function formatMins(mins) {
+        const h = Math.floor(mins / 60);
+        const m = mins % 60;
+        if (h === 0) return `${m}m`;
+        if (m === 0) return `${h}h`;
+        return `${h}h ${m}m`;
+      }
+
+      function analyzeTournamentTime(
+        totalTeams,
+        numGroups,
+        minutesPerGame,
+        format,
+      ) {
+        if (format === "single") {
+          if (totalTeams < 2) {
+            return { error: "Need at least 2 teams." };
+          }
+          const size = nextPowerOf2(totalTeams);
+          const rounds = Math.log2(size);
+          const isDoubleElim = state.elimType === "double";
+          const totalMatches = isDoubleElim
+            ? (totalTeams - 1) * 2 - 1
+            : totalTeams - 1;
+          const totalTime = isDoubleElim
+            ? rounds * 2 * minutesPerGame
+            : rounds * minutesPerGame;
+
+          return {
+            mode: "single",
+            totalTeams,
+            matches: totalMatches,
+            rounds,
+            timeMins: totalTime,
+            timeFormatted: formatMins(totalTime),
+            label: isDoubleElim ? "Double Elimination" : "Single Elimination",
+          };
+        }
+
+        if (totalTeams < numGroups * 2) {
+          return {
+            error: `Kulang ang teams. Need at least ${numGroups * 2} (2 per group).`,
+          };
+        }
+
+        const base = Math.floor(totalTeams / numGroups);
+        const remainder = totalTeams % numGroups;
+        const sizes = [];
+        for (let i = 0; i < numGroups; i++) {
+          sizes.push(base + (i < remainder ? 1 : 0));
+        }
+
+        const groupData = sizes.map((size, i) => {
+          const matches = (size * (size - 1)) / 2;
+          const time = matches * minutesPerGame;
+          const adv = getAdvanceCount(size);
+          return {
+            group: `Group ${String.fromCharCode(65 + i)}`,
+            teams: size,
+            matches,
+            timeMins: time,
+            timeFormatted: formatMins(time),
+            advance: adv,
+          };
+        });
+
+        const totalMatches = groupData.reduce((s, g) => s + g.matches, 0);
+        const maxTime = Math.max(...groupData.map((g) => g.timeMins));
+        const bottleneck = groupData.find((g) => g.timeMins === maxTime);
+
+        const playoffTeams = groupData.reduce((s, g) => s + g.advance, 0);
+        const bracketSize = nextPowerOf2(playoffTeams);
+        const playoffRounds = Math.log2(bracketSize);
+        const isDoubleElim = state.elimType === "double";
+        const playoffMatches = isDoubleElim
+          ? (bracketSize - 1) * 2 - 1
+          : bracketSize - 1;
+        const playoffTime = isDoubleElim
+          ? playoffRounds * 2 * minutesPerGame
+          : playoffRounds * minutesPerGame;
+
+        return {
+          mode: "double",
+          groupData,
+          totalTeams,
+          numGroups,
+          totalGroupMatches: totalMatches,
+          groupStageTime: maxTime,
+          groupStageFormatted: formatMins(maxTime),
+          bottleneck: bottleneck.group,
+          bottleneckTime: bottleneck.timeFormatted,
+          playoffTeams,
+          bracketSize,
+          playoffRounds,
+          playoffMatches,
+          playoffTimeMins: playoffTime,
+          playoffTimeFormatted: formatMins(playoffTime),
+          grandTotalMins: maxTime + playoffTime,
+          grandTotal: formatMins(maxTime + playoffTime),
+          isDoubleElim,
+        };
+      }
+
+      function renderTimeAnalyzer() {
+        const box = document.getElementById("timeAnalyzerBox");
+        if (!box) return;
+
+        const minsInput = document.getElementById("minsPerGame");
+        const minsPerGame = minsInput ? parseInt(minsInput.value) || 45 : 45;
+        const result = analyzeTournamentTime(
+          state.teams.length,
+          state.numGroups,
+          minsPerGame,
+          state.tournamentFormat,
+        );
+
+        if (result.error) {
+          box.innerHTML = `<div class="hint-muted" style="padding: 20px; text-align: center; color: var(--text-dim);">${result.error}</div>`;
+          return;
+        }
+
+        if (result.mode === "single") {
+          box.innerHTML = `
+            <div class="ta-grid">
+              <div class="ta-stat accent">
+                <div class="ta-label">Format</div>
+                <div class="ta-value" style="font-size: 14px;">${result.label}</div>
+                <div class="ta-sub">${result.totalTeams} teams · ${result.rounds} rounds</div>
+              </div>
+              <div class="ta-stat">
+                <div class="ta-label">Total Matches</div>
+                <div class="ta-value">${result.matches}</div>
+                <div class="ta-sub">@ ${minsPerGame} mins each</div>
+              </div>
+              <div class="ta-stat success">
+                <div class="ta-label">Estimated Time</div>
+                <div class="ta-value">${result.timeFormatted}</div>
+                <div class="ta-sub">${result.timeMins} mins total</div>
+              </div>
+            </div>
+            <div class="ta-bottleneck">
+              <strong>Note:</strong> Sequential ito — isa-isa lang ang laban.
+              ${state.elimType === "double" ? " Kasama na ang loser bracket estimate (2x)." : ""}
+            </div>
+          `;
+          return;
+        }
+
+        const bottleneckRow = result.bottleneck;
+
+        let groupRows = "";
+        result.groupData.forEach((g) => {
+          const isBottleneck = g.group === bottleneckRow;
+          groupRows += `
+            <tr class="${isBottleneck ? "ta-bottleneck-row" : ""}">
+              <td><span class="ta-gname">${g.group}</span></td>
+              <td>${g.teams} teams</td>
+              <td>${g.matches} matches</td>
+              <td>Top ${g.advance}</td>
+              <td class="${isBottleneck ? "ta-warn" : "ta-ok"}">${g.timeFormatted}</td>
+            </tr>
+          `;
+        });
+
+        box.innerHTML = `
+          <div class="ta-grid">
+            <div class="ta-stat accent">
+              <div class="ta-label">Group Stage</div>
+              <div class="ta-value">${result.groupStageFormatted}</div>
+              <div class="ta-sub">${result.totalGroupMatches} matches total</div>
+            </div>
+            <div class="ta-stat">
+              <div class="ta-label">Playoffs (${result.bracketSize}-bracket)</div>
+              <div class="ta-value">${result.playoffTimeFormatted}</div>
+              <div class="ta-sub">${result.playoffMatches} matches · ${result.isDoubleElim ? "Double Elim" : "Single Elim"}</div>
+            </div>
+            <div class="ta-stat success">
+              <div class="ta-label">Grand Total</div>
+              <div class="ta-value">${result.grandTotal}</div>
+              <div class="ta-sub">${result.grandTotalMins} mins total</div>
+            </div>
+          </div>
+
+          <div class="ta-bottleneck">
+            <strong>Bottleneck:</strong> ${result.bottleneck} — ${result.bottleneckTime}
+            (ito ang pinakamahabang group, sabay-sabay kaya ito ang basehan).
+            <br><strong>Qualified sa playoffs:</strong> ${result.playoffTeams} teams
+            → ${result.bracketSize}-bracket.
+          </div>
+
+          <table class="ta-group-table">
+            <thead>
+              <tr>
+                <th>Group</th>
+                <th>Teams</th>
+                <th>Matches</th>
+                <th>Advance</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${groupRows}
+            </tbody>
+          </table>
+        `;
+      }
+
+      // ===== GROUP ASSIGNMENT =====
+      let draggingTeam = null;
+
+      function renderAssignment() {
+        const pool = document.getElementById("gaPool");
+        const groupsContainer = document.getElementById("gaGroups");
+        const info = document.getElementById("assignmentPreviewInfo");
+
+        if (state.tournamentFormat === "single") {
+          pool.innerHTML =
+            '<div class="ga-drop-hint">Single Stage — walang groups.</div>';
+          groupsContainer.innerHTML = "";
+          return;
+        }
+
+        const numGroups = state.numGroups || 3;
+        const groupNames = getGroupNames(numGroups);
+
+        const groupTeams = {};
+        groupNames.forEach((g) => (groupTeams[g] = []));
+        const unassigned = [];
+
+        state.teams.forEach((team) => {
+          const assignedGroup = state.manualGroupAssignment[team];
+          if (assignedGroup && groupNames.includes(assignedGroup)) {
+            groupTeams[assignedGroup].push(team);
+          } else {
+            unassigned.push(team);
+          }
+        });
+
+        const totalAssigned = state.teams.length - unassigned.length;
+        info.innerHTML = `
+          <strong>${totalAssigned}</strong> / <strong>${state.teams.length}</strong> teams assigned ·
+          <strong>${unassigned.length}</strong> nasa pool pa.
+          ${unassigned.length > 0 ? '<span style="color: var(--warning);"> I-drag sila sa groups bago mag-generate.</span>' : '<span style="color: var(--success);"> Ready na i-generate!</span>'}
+        `;
+
+        pool.innerHTML = `
+          <div class="ga-pool-head">
+            <span class="ga-pool-title">Team Pool</span>
+            <span class="ga-pool-count">${unassigned.length}</span>
+          </div>
+          ${
+            unassigned.length === 0
+              ? '<div class="ga-drop-hint">Lahat ng teams assigned na.</div>'
+              : unassigned
+                  .map(
+                    (team) => `
+                <div class="ga-team" draggable="true" data-team="${escapeHtml(team)}">
+                  <span>${escapeHtml(team)}</span>
+                  <span class="ga-team-seed">#${state.teams.indexOf(team) + 1}</span>
+                </div>
+              `,
+                  )
+                  .join("")
+          }
+        `;
+
+        groupsContainer.innerHTML = groupNames
+          .map((g) => {
+            const teams = groupTeams[g];
+            const isFull =
+              teams.length >= Math.ceil(state.teams.length / numGroups);
+            return `
+              <div class="ga-group ${isFull ? "full" : ""}" data-group="${g}">
+                <div class="ga-group-head">
+                  <span class="ga-group-name">${g}</span>
+                  <span class="ga-group-count">${teams.length} team${teams.length === 1 ? "" : "s"}</span>
+                </div>
+                ${
+                  teams.length === 0
+                    ? '<div class="ga-drop-hint">I-drag ang teams dito</div>'
+                    : teams
+                        .map(
+                          (team) => `
+                    <div class="ga-slot-team" draggable="true" data-team="${escapeHtml(team)}">
+                      <span>${escapeHtml(team)}</span>
+                      <button class="ga-remove" onclick="event.stopPropagation(); unassignTeam('${escapeHtml(team).replace(/'/g, "\\'")}')" title="Remove from group">×</button>
+                    </div>
+                  `,
+                        )
+                        .join("")
+                }
+              </div>
+            `;
+          })
+          .join("");
+
+        const assignBox = document.getElementById("assignTimeEstimate");
+        if (assignBox) {
+          const minsInput = document.getElementById("minsPerGame");
+          const minsPerGame = minsInput ? parseInt(minsInput.value) || 45 : 45;
+          const result = analyzeTournamentTime(
+            state.teams.length,
+            numGroups,
+            minsPerGame,
+            "double",
+          );
+          if (!result.error) {
+            assignBox.innerHTML = `
+              <div class="ta-bottleneck" style="border-left-color: var(--accent); background: var(--accent-soft); margin-top: 0;">
+                <strong>⏱ Estimated Group Stage:</strong> ${result.groupStageFormatted}
+                (bottleneck: ${result.bottleneck}) ·
+                <strong>Playoffs:</strong> ${result.playoffTimeFormatted} ·
+                <strong>Grand Total:</strong> ${result.grandTotal}
+              </div>
+            `;
+          } else {
+            assignBox.innerHTML = "";
+          }
+        }
+
+        attachDragListeners();
+      }
+
+      function attachDragListeners() {
+        document
+          .querySelectorAll(".ga-team[draggable], .ga-slot-team[draggable]")
+          .forEach((el) => {
+            el.addEventListener("dragstart", (e) => {
+              draggingTeam = el.dataset.team;
+              el.classList.add("dragging");
+              e.dataTransfer.effectAllowed = "move";
+              e.dataTransfer.setData("text/plain", draggingTeam);
+            });
+            el.addEventListener("dragend", () => {
+              el.classList.remove("dragging");
+              draggingTeam = null;
+              document
+                .querySelectorAll(".ga-group.drag-over")
+                .forEach((g) => g.classList.remove("drag-over"));
+            });
+          });
+
+        document.querySelectorAll(".ga-group").forEach((el) => {
+          el.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move";
+            el.classList.add("drag-over");
+          });
+          el.addEventListener("dragleave", (e) => {
+            if (!el.contains(e.relatedTarget)) {
+              el.classList.remove("drag-over");
+            }
+          });
+          el.addEventListener("drop", (e) => {
+            e.preventDefault();
+            el.classList.remove("drag-over");
+            const team = e.dataTransfer.getData("text/plain") || draggingTeam;
+            const groupName = el.dataset.group;
+            if (team && groupName) {
+              assignTeamToGroup(team, groupName);
+            }
+          });
+        });
+
+        const pool = document.getElementById("gaPool");
+        if (pool) {
+          pool.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move";
+          });
+          pool.addEventListener("drop", (e) => {
+            e.preventDefault();
+            const team = e.dataTransfer.getData("text/plain") || draggingTeam;
+            if (team) {
+              unassignTeam(team);
+            }
+          });
+        }
+      }
+
+      function assignTeamToGroup(team, groupName) {
+        if (state.currentStage !== "setup") {
+          notify("Cannot change assignment after generation", "error");
+          return;
+        }
+        if (!state.teams.includes(team)) return;
+        if (!state.manualGroupAssignment) state.manualGroupAssignment = {};
+        state.manualGroupAssignment[team] = groupName;
+        saveStateNow();
+        renderAssignment();
+        notify(`"${team}" → ${groupName}`, "success");
+      }
+
+      function unassignTeam(team) {
+        if (state.currentStage !== "setup") {
+          notify("Cannot change assignment after generation", "error");
+          return;
+        }
+        if (state.manualGroupAssignment && state.manualGroupAssignment[team]) {
+          delete state.manualGroupAssignment[team];
+          saveStateNow();
+          renderAssignment();
+          notify(`"${team}" removed from group`, "info");
+        }
+      }
+
+      function clearAssignment() {
+        if (state.currentStage !== "setup") {
+          notify("Cannot clear after generation", "error");
+          return;
+        }
+        if (!confirm("Clear all group assignments?")) return;
+        state.manualGroupAssignment = {};
+        saveStateNow();
+        renderAssignment();
+        notify("Assignment cleared", "info");
+      }
+
+      function autoAssignGroups() {
+        if (state.currentStage !== "setup") {
+          notify("Cannot auto-assign after generation", "error");
+          return;
+        }
+        const numGroups = state.numGroups || 3;
+        const groupNames = getGroupNames(numGroups);
+        const sizes = distributeTeamsToGroups(state.teams.length, numGroups);
+        const shuffled = shuffleArray(state.teams);
+
+        state.manualGroupAssignment = {};
+        let idx = 0;
+        groupNames.forEach((g, gi) => {
+          const size = sizes[gi];
+          for (let i = 0; i < size; i++) {
+            state.manualGroupAssignment[shuffled[idx++]] = g;
+          }
+        });
+        saveStateNow();
+        renderAssignment();
+        notify("Auto-assigned teams to groups", "success");
+      }
+
+      // ===== MAIN GENERATE =====
+      function generateTournament() {
+        if (state.teams.length < 2) {
+          notify("Need at least 2 teams", "error");
+          return;
+        }
+        if (state.tournamentFormat === "single") {
+          generateSingleStageTournament();
+        } else {
+          generateGroups();
+        }
+      }
+
+      // ===== STANDARD SEEDING =====
+      function generateSeedOrder(size) {
+        let seeds = [1, 2];
+        while (seeds.length < size) {
+          const next = [];
+          const sum = seeds.length * 2 + 1;
+          for (const s of seeds) {
+            next.push(s);
+            next.push(sum - s);
+          }
+          seeds = next;
+        }
+        return seeds;
+      }
+
+      function seedTeams(teams, size) {
+        const seedOrder = generateSeedOrder(size);
+        const seeded = new Array(size).fill(null);
+        const ranked = [...teams];
+        seedOrder.forEach((seedNum, index) => {
+          if (seedNum <= ranked.length) {
+            seeded[index] = ranked[seedNum - 1];
+          }
+        });
+        return seeded;
+      }
+
+      // ===== SINGLE STAGE =====
+      function generateSingleStageTournament() {
+        const shuffled = shuffleArray(state.teams);
+        const size = nextPowerOf2(shuffled.length);
+
+        state.groups = {};
+        state.groupMatches = [];
+        state.playoffMatches = [];
+        state.currentStage = "playoff";
+        state.champion = null;
+        state.grandFinalId = null;
+        state.grandFinalResetId = null;
+
+        if (state.elimType === "single") {
+          generateSingleElim(shuffled, size);
+        } else {
+          generateDoubleElim(shuffled, size);
+        }
+
+        propagateByes();
+        autoAdvanceAll();
+        saveStateNow();
+        renderAll();
+        notify(`Bracket generated with ${state.teams.length} teams`, "success");
+      }
+
+      // ===== ROUND ROBIN SCHEDULER (Circle Method) =====
+      function buildRoundRobinRounds(teams) {
+        const list = [...teams];
+        const isOdd = list.length % 2 !== 0;
+        if (isOdd) list.push(null);
+
+        const n = list.length;
+        const totalRounds = n - 1;
+        const half = n / 2;
+        const rounds = [];
+
+        let arr = [...list];
+        for (let r = 0; r < totalRounds; r++) {
+          const matches = [];
+          for (let i = 0; i < half; i++) {
+            const t1 = arr[i];
+            const t2 = arr[n - 1 - i];
+            if (t1 !== null && t2 !== null) {
+              matches.push({ team1: t1, team2: t2 });
+            }
+          }
+          rounds.push(matches);
+
+          const fixed = arr[0];
+          const rest = arr.slice(1);
+          rest.unshift(rest.pop());
+          arr = [fixed, ...rest];
+        }
+
+        return rounds;
+      }
+
+      // ===== AUTO-MIGRATE OLD DATA =====
+      function migrateGroupMatches() {
+        if (
+          !state.groups ||
+          Object.keys(state.groups).length === 0 ||
+          !state.groupMatches ||
+          state.groupMatches.length === 0
+        ) {
+          return false;
+        }
+
+        const hasRounds = state.groupMatches.some(
+          (m) => m.round != null && m.round > 0,
+        );
+        if (hasRounds) return false;
+
+        let expectedTotal = 0;
+        let actualTotal = state.groupMatches.length;
+        Object.values(state.groups).forEach((teams) => {
+          expectedTotal += (teams.length * (teams.length - 1)) / 2;
+        });
+        if (actualTotal !== expectedTotal) return false;
+
+        console.log("[Migration] Rebuilding groupMatches with rounds...");
+
+        const newMatches = [];
+        let matchId = 0;
+
+        Object.keys(state.groups).forEach((groupName) => {
+          const teams = state.groups[groupName];
+          const rounds = buildRoundRobinRounds(teams);
+
+          const oldMatches = state.groupMatches.filter(
+            (m) => m.group === groupName,
+          );
+
+          rounds.forEach((roundMatches, roundIdx) => {
+            roundMatches.forEach((pair) => {
+              const existing = oldMatches.find(
+                (mm) =>
+                  (mm.team1 === pair.team1 && mm.team2 === pair.team2) ||
+                  (mm.team1 === pair.team2 && mm.team2 === pair.team1),
+              );
+              newMatches.push({
+                id: matchId++,
+                group: groupName,
+                round: roundIdx + 1,
+                team1: pair.team1,
+                team2: pair.team2,
+                score1: existing ? existing.score1 : null,
+                score2: existing ? existing.score2 : null,
+                winner: existing ? existing.winner : null,
+                loser: existing ? existing.loser : null,
+                resolved: existing ? existing.resolved : false,
+              });
+            });
+          });
+        });
+
+        state.groupMatches = newMatches;
+        console.log(
+          `[Migration] Done. ${newMatches.length} matches rebuilt with rounds.`,
+        );
+        return true;
+      }
+
+      // ===== DOUBLE STAGE — WITH MANUAL ASSIGNMENT =====
+      function generateGroups() {
+        const numGroups = state.numGroups;
+        const totalTeams = state.teams.length;
+
+        if (totalTeams < numGroups * 2) {
+          notify(
+            `Need at least ${numGroups * 2} teams for ${numGroups} groups (2 per group minimum).`,
+            "error",
+          );
+          return;
+        }
+
+        const groupNames = getGroupNames(numGroups);
+
+        const manual = state.manualGroupAssignment || {};
+        const hasManualAssignment = Object.keys(manual).length > 0;
+
+        let groups = {};
+        groupNames.forEach((name) => (groups[name] = []));
+
+        if (hasManualAssignment) {
+          const unassigned = state.teams.filter((t) => !manual[t]);
+          if (unassigned.length > 0) {
+            notify(
+              `${unassigned.length} team(s) pa ang walang group assignment. Pumunta sa Group Assignment tab at i-drag sila sa groups.`,
+              "error",
+            );
+            return;
+          }
+
+          state.teams.forEach((team) => {
+            const groupName = manual[team];
+            if (groups[groupName]) {
+              groups[groupName].push(team);
+            } else {
+              groups[groupNames[0]].push(team);
+            }
+          });
+        } else {
+          const groupSizes = distributeTeamsToGroups(totalTeams, numGroups);
+          const shuffled = shuffleArray(state.teams);
+          let idx = 0;
+          groupNames.forEach((groupName, gi) => {
+            const size = groupSizes[gi];
+            for (let i = 0; i < size; i++) {
+              groups[groupName].push(shuffled[idx++]);
+            }
+          });
+        }
+
+        let totalPlayoff = 0;
+        groupNames.forEach((g) => {
+          totalPlayoff += getAdvanceCount(groups[g].length);
+        });
+
+        if (totalPlayoff < 2) {
+          notify(`Total playoff teams (${totalPlayoff}) is too few.`, "error");
+          return;
+        }
+
+        state.groups = groups;
+        state.groupRankOverrides = {};
+        state.currentStage = "group";
+        state.champion = null;
+        state.playoffMatches = [];
+        state.grandFinalId = null;
+        state.grandFinalResetId = null;
+        state.manualSeeding = null;
+
+        state.groupMatches = [];
+        let matchId = 0;
+        groupNames.forEach((groupName) => {
+          const teams = groups[groupName];
+          const rounds = buildRoundRobinRounds(teams);
+          rounds.forEach((roundMatches, roundIdx) => {
+            roundMatches.forEach((pair) => {
+              state.groupMatches.push({
+                id: matchId++,
+                group: groupName,
+                round: roundIdx + 1,
+                team1: pair.team1,
+                team2: pair.team2,
+                score1: null,
+                score2: null,
+                winner: null,
+                loser: null,
+                resolved: false,
+              });
+            });
+          });
+        });
+
+        saveStateNow();
+        renderAll();
+
+        const sizes = groupNames.map((g) => groups[g].length);
+        notify(
+          `Groups generated. Sizes: ${sizes.join("-")} | ${state.groupMatches.length} matches | ${totalPlayoff} playoff slots.`,
+          "success",
+        );
+      }
+
+      function getGroupNames(n) {
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const names = [];
+        for (let i = 0; i < n; i++) names.push(`Group ${letters[i]}`);
+        return names;
+      }
+
+      function shuffleArray(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      // ===== GROUP STANDINGS =====
+      function getGroupStandings(groupName) {
+        const teams = state.groups[groupName] || [];
+        const stats = {};
+        teams.forEach(
+          (t) =>
+            (stats[t] = {
+              name: t,
+              wins: 0,
+              losses: 0,
+              pointsFor: 0,
+              pointsAgainst: 0,
+            }),
+        );
+
+        state.groupMatches
+          .filter((m) => m.group === groupName && m.resolved)
+          .forEach((m) => {
+            if (stats[m.team1]) {
+              stats[m.team1].pointsFor += m.score1 || 0;
+              stats[m.team1].pointsAgainst += m.score2 || 0;
+              if (m.winner === m.team1) stats[m.team1].wins++;
+              else stats[m.team1].losses++;
+            }
+            if (stats[m.team2]) {
+              stats[m.team2].pointsFor += m.score2 || 0;
+              stats[m.team2].pointsAgainst += m.score1 || 0;
+              if (m.winner === m.team2) stats[m.team2].wins++;
+              else stats[m.team2].losses++;
+            }
+          });
+
+        if (hasManualRank(groupName)) {
+          return state.groupRankOverrides[groupName].map((n) => stats[n]);
+        }
+
+        return Object.values(stats).sort((a, b) => {
+          if (b.wins !== a.wins) return b.wins - a.wins;
+          const diffA = a.pointsFor - a.pointsAgainst;
+          const diffB = b.pointsFor - b.pointsAgainst;
+          if (diffB !== diffA) return diffB - diffA;
+          return b.pointsFor - a.pointsFor;
+        });
+      }
+
+      function isGroupComplete(groupName) {
+        return state.groupMatches
+          .filter((m) => m.group === groupName)
+          .every((m) => m.resolved);
+      }
+
+      function allGroupsComplete() {
+        return Object.keys(state.groups).every((g) => isGroupComplete(g));
+      }
+
+      // ===== GROUP MATCHES =====
+      function setGroupScore(matchId, slot, value) {
+        const m = state.groupMatches.find((x) => x.id === matchId);
+        if (!m) return;
+        const score = value === "" ? null : parseInt(value);
+        if (score !== null && (isNaN(score) || score < 0)) return;
+        if (slot === 1) m.score1 = score;
+        else m.score2 = score;
+        saveState();
+      }
+
+      function resolveGroupMatch(matchId) {
+        const m = state.groupMatches.find((x) => x.id === matchId);
+        if (!m) return;
+        if (!m.team1 || !m.team2) {
+          notify("Both teams required", "error");
+          return;
+        }
+        if (m.score1 === null || m.score2 === null) {
+          notify("Enter both scores", "error");
+          return;
+        }
+        if (m.score1 === m.score2) {
+          notify("Cannot tie", "error");
+          return;
+        }
+
+        m.winner = m.score1 > m.score2 ? m.team1 : m.team2;
+        m.loser = m.score1 > m.score2 ? m.team2 : m.team1;
+        m.resolved = true;
+
+        saveStateNow();
+        renderAll();
+        notify(`Winner: ${m.winner}`, "success");
+        if (allGroupsComplete())
+          notify("All groups complete. Ready to start playoffs.", "info");
+      }
+
+      function editGroupMatch(matchId) {
+        const m = state.groupMatches.find((x) => x.id === matchId);
+        if (!m || !m.resolved) return;
+        if (!confirm(`Re-open this match?`)) return;
+        m.winner = null;
+        m.loser = null;
+        m.resolved = false;
+        saveStateNow();
+        renderAll();
+        notify("Match re-opened", "info");
+      }
+
+      // ===== MANUAL GROUP RANKING =====
+      let rankEditGroup = null;
+
+      function hasManualRank(groupName) {
+        const o = (state.groupRankOverrides || {})[groupName];
+        if (!Array.isArray(o)) return false;
+        const teams = state.groups[groupName] || [];
+        return o.length === teams.length && teams.every((t) => o.includes(t));
+      }
+
+      function toggleRankEdit(groupName) {
+        if (rankEditGroup !== groupName && state.currentStage !== "group") {
+          notify("Playoffs already started. Ranking is locked.", "error");
+          return;
+        }
+        rankEditGroup = rankEditGroup === groupName ? null : groupName;
+        renderGroups();
+      }
+
+      function moveRank(groupName, index, dir) {
+        if (state.currentStage !== "group") {
+          notify("Playoffs already started. Ranking is locked.", "error");
+          return;
+        }
+        const order = getGroupStandings(groupName).map((s) => s.name);
+        const target = index + dir;
+        if (target < 0 || target >= order.length) return;
+        [order[index], order[target]] = [order[target], order[index]];
+        if (!state.groupRankOverrides) state.groupRankOverrides = {};
+        state.groupRankOverrides[groupName] = order;
+        saveStateNow();
+        renderGroups();
+      }
+
+      function resetRank(groupName) {
+        if (state.currentStage !== "group") {
+          notify("Playoffs already started. Ranking is locked.", "error");
+          return;
+        }
+        if (!hasManualRank(groupName)) {
+          notify("Already using automatic ranking", "info");
+          return;
+        }
+        if (!confirm(`Reset ${groupName} to automatic ranking?`)) return;
+        delete state.groupRankOverrides[groupName];
+        saveStateNow();
+        renderGroups();
+        notify(`${groupName} ranking reset`, "info");
+      }
+
+      // ===== SEEDING HELPERS =====
+      function getQualifiedTeams() {
+        const groupNames = Object.keys(state.groups);
+        const advancers = {};
+        const qualified = [];
+
+        groupNames.forEach((groupName) => {
+          const groupSize = (state.groups[groupName] || []).length;
+          const advCount = getAdvanceCount(groupSize);
+          const standings = getGroupStandings(groupName);
+          advancers[groupName] = [];
+          standings.slice(0, advCount).forEach((t, i) => {
+            const entry = {
+              name: t.name,
+              seed: i + 1,
+              groupName,
+            };
+            advancers[groupName].push(entry);
+            qualified.push(entry);
+          });
+        });
+
+        return { qualified, advancers, groupNames };
+      }
+
+      function buildDefaultSeedingPairs(qualified, groupNames, advancers) {
+        const size = nextPowerOf2(qualified.length);
+        const groupSizes = groupNames.map(
+          (g) => (state.groups[g] || []).length,
+        );
+        const isSpecial3Group =
+          groupNames.length === 3 &&
+          groupSizes[0] === 5 &&
+          groupSizes[1] === 5 &&
+          groupSizes[2] === 4;
+
+        if (isSpecial3Group) {
+          const A = advancers[groupNames[0]].map((t) => t.name);
+          const B = advancers[groupNames[1]].map((t) => t.name);
+          const C = advancers[groupNames[2]].map((t) => t.name);
+          return [
+            [A[0], B[2]],
+            [A[2], C[0]],
+            [B[0], C[1]],
+            [A[1], B[1]],
+          ];
+        }
+
+        const seeded = seedTeams(
+          qualified.map((q) => q.name),
+          size,
+        );
+        const pairs = [];
+        for (let i = 0; i < size; i += 2) {
+          pairs.push([seeded[i], seeded[i + 1]]);
+        }
+        return pairs;
+      }
+
+      // ===== GET CURRENT SEEDING PAIRS =====
+      // Returns manual seeding kung valid, otherwise default.
+      // IMPORTANT: hindi ito nagbabalik sa default kapag partial lang yung manual.
+      function getCurrentSeedingPairs() {
+        const { qualified, advancers, groupNames } = getQualifiedTeams();
+        if (qualified.length < 2) return null;
+
+        const defaultPairs = buildDefaultSeedingPairs(
+          qualified,
+          groupNames,
+          advancers,
+        );
+
+        // If manual seeding exists and has the correct shape, use it
+        if (
+          state.manualSeeding &&
+          Array.isArray(state.manualSeeding) &&
+          state.manualSeeding.length === defaultPairs.length
+        ) {
+          const qualifiedNames = qualified.map((q) => q.name);
+          // Validate: lahat ng non-empty teams ay qualified
+          const allValid = state.manualSeeding
+            .flat()
+            .filter(Boolean)
+            .every((t) => qualifiedNames.includes(t));
+
+          if (allValid) {
+            return {
+              pairs: state.manualSeeding.map((p) => [...p]),
+              qualified,
+              advancers,
+              groupNames,
+              isDefault: false,
+            };
+          }
+        }
+
+        return {
+          pairs: defaultPairs.map((p) => [...p]),
+          qualified,
+          advancers,
+          groupNames,
+          isDefault: true,
+        };
+      }
+
+      // ===== SEEDING RENDER =====
+      function renderSeeding() {
+        const container = document.getElementById("seedingContainer");
+        if (!container) return;
+
+        if (state.tournamentFormat !== "double") {
+          container.innerHTML =
+            '<div class="empty-msg">Seeding — para lang sa Double Stage tournaments.</div>';
+          return;
+        }
+
+        if (
+          state.currentStage !== "group" ||
+          Object.keys(state.groups).length === 0
+        ) {
+          container.innerHTML =
+            '<div class="empty-msg">Wala pang groups. Generate groups muna sa Teams tab.</div>';
+          return;
+        }
+
+        if (!allGroupsComplete()) {
+          container.innerHTML =
+            '<div class="empty-msg">Hindi pa tapos ang lahat ng group matches. I-complete muna bago mag-seeding.</div>';
+          return;
+        }
+
+        const result = getCurrentSeedingPairs();
+        if (!result) {
+          container.innerHTML =
+            '<div class="empty-msg">Hindi pa enough ang qualified teams.</div>';
+          return;
+        }
+
+        const { pairs, qualified, advancers, groupNames, isDefault } = result;
+        const qualifiedNames = qualified.map((q) => q.name);
+
+        // Legend chips — fade out kung hindi pa naka-assign
+        const usedNames = pairs.flat().filter(Boolean);
+        let legendHtml = "";
+        groupNames.forEach((g) => {
+          advancers[g].forEach((entry) => {
+            const isUsed = usedNames.includes(entry.name);
+            legendHtml += `
+              <span class="sg-chip" style="${isUsed ? "border-color: var(--success);" : "opacity: 0.5;"}">
+                <span class="sg-tag">${g.replace("Group ", "")}#${entry.seed}</span>
+                ${escapeHtml(entry.name)}
+              </span>
+            `;
+          });
+        });
+
+        // Matchup cards
+        let matchupsHtml = "";
+        pairs.forEach((pair, i) => {
+          const t1 = pair[0] || "";
+          const t2 = pair[1] || "";
+
+          const buildOptions = (selected) => {
+            let opts = '<option value="">— Select team —</option>';
+            qualifiedNames.forEach((name) => {
+              const entry = qualified.find((q) => q.name === name);
+              const label = `${name} (${entry.groupName.replace("Group ", "")}#${entry.seed})`;
+              const sel = name === selected ? " selected" : "";
+              opts += `<option value="${escapeHtml(name)}"${sel}>${escapeHtml(label)}</option>`;
+            });
+            return opts;
+          };
+
+          // Duplicate check: ito bang team ay ginagamit na sa ibang slot?
+          const isDup1 =
+            t1 &&
+            pairs.some((p, pi) => pi !== i && (p[0] === t1 || p[1] === t1));
+          const isDup2 =
+            t2 &&
+            pairs.some((p, pi) => pi !== i && (p[0] === t2 || p[1] === t2));
+
+          const info1 = t1 ? qualified.find((q) => q.name === t1) : null;
+          const info2 = t2 ? qualified.find((q) => q.name === t2) : null;
+
+          matchupsHtml += `
+            <div class="sm-card">
+              <div class="sm-head">
+                <span class="sm-label">Match ${i + 1}</span>
+                <span class="sm-vs">BO1</span>
+              </div>
+              <div class="sm-slot">
+                <label>Team 1</label>
+                <select
+                  onchange="updateSeedingSlot(${i}, 0, this.value)"
+                  class="${isDup1 ? "duplicate" : ""}"
+                >
+                  ${buildOptions(t1)}
+                </select>
+                ${
+                  info1
+                    ? `<span class="sm-source from-group">From ${info1.groupName} · Seed #${info1.seed}</span>`
+                    : ""
+                }
+              </div>
+              <div class="sm-slot">
+                <label>Team 2</label>
+                <select
+                  onchange="updateSeedingSlot(${i}, 1, this.value)"
+                  class="${isDup2 ? "duplicate" : ""}"
+                >
+                  ${buildOptions(t2)}
+                </select>
+                ${
+                  info2
+                    ? `<span class="sm-source from-group">From ${info2.groupName} · Seed #${info2.seed}</span>`
+                    : ""
+                }
+              </div>
+            </div>
+          `;
+        });
+
+        // Check duplicates and completeness
+        const duplicates = usedNames.filter(
+          (n, i) => usedNames.indexOf(n) !== i,
+        );
+        const hasDuplicates = duplicates.length > 0;
+        const totalTeams = qualified.length;
+        const assignedTeams = usedNames.length;
+        const hasEmptySlot = assignedTeams < totalTeams;
+
+        let warningHtml = "";
+        if (hasDuplicates) {
+          warningHtml = `
+            <div class="seeding-warning">
+              <strong>⚠ Duplicate teams:</strong> May mga teams na lumalabas nang higit sa isang beses:
+              <strong>${[...new Set(duplicates)].map(escapeHtml).join(", ")}</strong>.
+              Ayusin bago mag-start ng playoffs.
+            </div>
+          `;
+        } else if (hasEmptySlot) {
+          warningHtml = `
+            <div class="seeding-warning">
+              <strong>⚠ Hindi kumpleto:</strong> ${assignedTeams} / ${totalTeams} teams pa lang ang naka-assign.
+            </div>
+          `;
+        }
+
+        container.innerHTML = `
+          <div class="card full-width">
+            <h2>Playoff Seeding</h2>
+            <div class="section-hint" style="margin-bottom: 14px;">
+              Piliin kung sino ang maglalaban sa bawat Round 1 matchup.
+              Ang mga pagpipilian ay <strong>qualified teams lang</strong> (mga nag-advance mula sa group stage).
+            </div>
+
+            ${warningHtml}
+
+            <div class="seeding-legend">
+              ${legendHtml}
+            </div>
+
+            <div class="seeding-matchups">
+              ${matchupsHtml}
+            </div>
+
+            <div class="seeding-actions">
+              <button
+                class="btn btn-secondary"
+                onclick="resetSeedingToDefault()"
+                ${isDefault ? "disabled" : ""}
+              >
+                Reset to Default
+              </button>
+              <button
+                class="btn btn-secondary"
+                onclick="clearSeeding()"
+              >
+                Clear All Slots
+              </button>
+              <button
+                class="btn btn-success"
+                onclick="confirmSeedingAndStartPlayoffs()"
+                ${hasDuplicates || hasEmptySlot ? "disabled" : ""}
+              >
+                ✓ Start Playoffs
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      // ===== SEEDING ACTIONS =====
+      function updateSeedingSlot(matchIdx, slot, teamName) {
+        const result = getCurrentSeedingPairs();
+        if (!result) return;
+
+        const pairs = result.pairs.map((p) => [...p]);
+        if (!pairs[matchIdx]) pairs[matchIdx] = ["", ""];
+        pairs[matchIdx][slot] = teamName || "";
+
+        state.manualSeeding = pairs;
+        saveStateNow();
+        renderSeeding();
+      }
+
+      function resetSeedingToDefault() {
+        if (!confirm("Reset seeding sa default?")) return;
+        state.manualSeeding = null;
+        saveStateNow();
+        renderSeeding();
+        notify("Seeding reset to default", "info");
+      }
+
+      function clearSeeding() {
+        if (!confirm("Alisin lahat ng laman ng slots?")) return;
+        const result = getCurrentSeedingPairs();
+        if (!result) return;
+        const emptyPairs = result.pairs.map(() => ["", ""]);
+        state.manualSeeding = emptyPairs;
+        saveStateNow();
+        renderSeeding();
+        notify("All slots cleared", "info");
+      }
+
+      function confirmSeedingAndStartPlayoffs() {
+        const result = getCurrentSeedingPairs();
+        if (!result) {
+          notify("Cannot start playoffs — walang teams.", "error");
+          return;
+        }
+
+        const pairs = result.pairs;
+        const flat = pairs.flat().filter(Boolean);
+        const qualifiedNames = result.qualified.map((q) => q.name);
+
+        const allValid = flat.every((t) => qualifiedNames.includes(t));
+        const allPresent =
+          flat.length === qualifiedNames.length &&
+          qualifiedNames.every((t) => flat.includes(t));
+
+        if (!allValid || !allPresent) {
+          notify(
+            "Hindi kumpleto o may duplicate ang seeding. Ayusin muna.",
+            "error",
+          );
+          return;
+        }
+
+        startPlayoffsWithPairs(pairs);
+      }
+
+      // ===== PLAYOFFS =====
+      function startPlayoffsWithPairs(customPairs) {
+        const { qualified } = getQualifiedTeams();
+        if (qualified.length < 2) {
+          notify("Not enough qualified teams for playoffs.", "error");
+          return;
+        }
+        const size = nextPowerOf2(qualified.length);
+
+        state.playoffMatches = [];
+        state.currentStage = "playoff";
+        state.champion = null;
+        state.grandFinalId = null;
+        state.grandFinalResetId = null;
+
+        const qualifiedNames = qualified.map((q) => q.name);
+        if (state.elimType === "single")
+          generateSingleElim(qualifiedNames, size, customPairs);
+        else generateDoubleElim(qualifiedNames, size, customPairs);
+
+        propagateByes();
+        autoAdvanceAll();
+        saveStateNow();
+        renderAll();
+        notify(
+          `Playoffs started. ${qualified.length} teams qualified (${size}-bracket).`,
+          "success",
+        );
+
+        setTimeout(() => {
+          const btn = document.getElementById("tabPlayoffsBtn");
+          btn.click();
+        }, 100);
+      }
+
+      function generatePlayoffs() {
+        const result = getCurrentSeedingPairs();
+        if (!result || !allGroupsComplete()) {
+          notify("Complete all group matches first", "error");
+          return;
+        }
+        startPlayoffsWithPairs(result.pairs);
+      }
+
+      function nextPowerOf2(n) {
+        let p = 1;
+        while (p < n) p *= 2;
+        return p;
+      }
+
+      function createMatch(id, round, bracket, position, team1, team2) {
+        return {
+          id,
+          round,
+          bracket,
+          position,
+          team1,
+          team2,
+          score1: null,
+          score2: null,
+          winner: null,
+          loser: null,
+          nextMatchId: null,
+          nextSlot: null,
+          loserNextMatchId: null,
+          loserNextSlot: null,
+          resolved: false,
+          isBye: false,
+        };
+      }
+
+      function generateSingleElim(teams, size, customPairs) {
+        const seeded = customPairs
+          ? customPairs.flat()
+          : seedTeams(teams, size);
+        const totalRounds = Math.log2(size);
+        let matchId = 0;
+
+        const round1 = [];
+        for (let i = 0; i < size; i += 2) {
+          const m = createMatch(
+            matchId++,
+            1,
+            "W",
+            i / 2,
+            seeded[i],
+            seeded[i + 1],
+          );
+          state.playoffMatches.push(m);
+          round1.push(m);
+        }
+
+        let prevRound = round1;
+        for (let r = 2; r <= totalRounds; r++) {
+          const count = size / Math.pow(2, r);
+          const current = [];
+          for (let i = 0; i < count; i++) {
+            const m = createMatch(matchId++, r, "W", i, null, null);
+            state.playoffMatches.push(m);
+            current.push(m);
+            const m1 = prevRound[i * 2];
+            const m2 = prevRound[i * 2 + 1];
+            if (m1) {
+              m1.nextMatchId = m.id;
+              m1.nextSlot = 1;
+            }
+            if (m2) {
+              m2.nextMatchId = m.id;
+              m2.nextSlot = 2;
+            }
+          }
+          prevRound = current;
+        }
+
+        if (state.thirdPlaceMatch && size >= 4) {
+          const semifinals = state.playoffMatches.filter(
+            (m) => m.bracket === "W" && m.round === totalRounds - 1,
+          );
+          if (semifinals.length === 2) {
+            const tp = createMatch(matchId++, totalRounds, "TP", 0, null, null);
+            state.playoffMatches.push(tp);
+            semifinals[0].loserNextMatchId = tp.id;
+            semifinals[0].loserNextSlot = 1;
+            semifinals[1].loserNextMatchId = tp.id;
+            semifinals[1].loserNextSlot = 2;
+          }
+        }
+      }
+
+      function generateDoubleElim(teams, size, customPairs) {
+        const seeded = customPairs
+          ? customPairs.flat()
+          : seedTeams(teams, size);
+        const totalRounds = Math.log2(size);
+        let matchId = 0;
+
+        const wbR1 = [];
+        for (let i = 0; i < size; i += 2) {
+          const m = createMatch(
+            matchId++,
+            1,
+            "W",
+            i / 2,
+            seeded[i],
+            seeded[i + 1],
+          );
+          state.playoffMatches.push(m);
+          wbR1.push(m);
+        }
+
+        let prevWB = wbR1;
+        const wbRounds = [wbR1];
+        for (let r = 2; r <= totalRounds; r++) {
+          const count = size / Math.pow(2, r);
+          const current = [];
+          for (let i = 0; i < count; i++) {
+            const m = createMatch(matchId++, r, "W", i, null, null);
+            state.playoffMatches.push(m);
+            current.push(m);
+            const m1 = prevWB[i * 2];
+            const m2 = prevWB[i * 2 + 1];
+            if (m1) {
+              m1.nextMatchId = m.id;
+              m1.nextSlot = 1;
+            }
+            if (m2) {
+              m2.nextMatchId = m.id;
+              m2.nextSlot = 2;
+            }
+          }
+          prevWB = current;
+          wbRounds.push(current);
+        }
+
+        const lbRounds = [];
+        const lbR1 = [];
+        for (let i = 0; i < wbR1.length; i += 2) {
+          const m = createMatch(matchId++, 1, "L", i / 2, null, null);
+          state.playoffMatches.push(m);
+          lbR1.push(m);
+          if (wbR1[i]) {
+            wbR1[i].loserNextMatchId = m.id;
+            wbR1[i].loserNextSlot = 1;
+          }
+          if (wbR1[i + 1]) {
+            wbR1[i + 1].loserNextMatchId = m.id;
+            wbR1[i + 1].loserNextSlot = 2;
+          }
+        }
+        lbRounds.push(lbR1);
+        let prevLB = lbR1;
+
+        for (let r = 2; r < totalRounds * 2 - 1; r++) {
+          const currentLB = [];
+          const isEven = r % 2 === 0;
+          if (isEven) {
+            const wbRoundIdx = r / 2;
+            const wbRound = wbRounds[wbRoundIdx];
+            const count = wbRound
+              ? wbRound.length
+              : Math.floor(prevLB.length / 2);
+            for (let i = 0; i < count; i++) {
+              const m = createMatch(matchId++, r, "L", i, null, null);
+              state.playoffMatches.push(m);
+              currentLB.push(m);
+              if (prevLB[i]) {
+                prevLB[i].nextMatchId = m.id;
+                prevLB[i].nextSlot = 1;
+              }
+              if (wbRound && wbRound[i]) {
+                wbRound[i].loserNextMatchId = m.id;
+                wbRound[i].loserNextSlot = 2;
+              }
+            }
+          } else {
+            const count = Math.floor(prevLB.length / 2);
+            for (let i = 0; i < count; i++) {
+              const m = createMatch(matchId++, r, "L", i, null, null);
+              state.playoffMatches.push(m);
+              currentLB.push(m);
+              if (prevLB[i * 2]) {
+                prevLB[i * 2].nextMatchId = m.id;
+                prevLB[i * 2].nextSlot = 1;
+              }
+              if (prevLB[i * 2 + 1]) {
+                prevLB[i * 2 + 1].nextMatchId = m.id;
+                prevLB[i * 2 + 1].nextSlot = 2;
+              }
+            }
+          }
+          prevLB = currentLB;
+          lbRounds.push(currentLB);
+        }
+
+        const wbFinal = wbRounds[wbRounds.length - 1][0];
+        const lbFinal = lbRounds[lbRounds.length - 1][0];
+        const gf = createMatch(matchId++, totalRounds + 1, "GF", 0, null, null);
+        state.playoffMatches.push(gf);
+        state.grandFinalId = gf.id;
+        if (wbFinal) {
+          wbFinal.nextMatchId = gf.id;
+          wbFinal.nextSlot = 1;
+        }
+        if (lbFinal) {
+          lbFinal.nextMatchId = gf.id;
+          lbFinal.nextSlot = 2;
+        }
+        state.grandFinalResetId = null;
+      }
+
+      function propagateByes() {
+        let changed = true,
+          iter = 0;
+        while (changed && iter < 50) {
+          changed = false;
+          iter++;
+          state.playoffMatches.forEach((m) => {
+            if (m.resolved) return;
+            if (m.bracket === "W") {
+              const hasTeam1 = m.team1 !== null && m.team1 !== undefined;
+              const hasTeam2 = m.team2 !== null && m.team2 !== undefined;
+              if (hasTeam1 && !hasTeam2) {
+                m.winner = m.team1;
+                m.score1 = 0;
+                m.score2 = 0;
+                m.isBye = true;
+                m.resolved = true;
+                changed = true;
+              } else if (!hasTeam1 && hasTeam2) {
+                m.winner = m.team2;
+                m.score1 = 0;
+                m.score2 = 0;
+                m.isBye = true;
+                m.resolved = true;
+                changed = true;
+              }
+            }
+          });
+          if (changed) autoAdvanceAll();
+        }
+      }
+
+      function autoAdvanceAll() {
+        let changed = true,
+          iter = 0;
+        while (changed && iter < 100) {
+          changed = false;
+          iter++;
+          state.playoffMatches.forEach((m) => {
+            if (!m.winner) return;
+            if (m.nextMatchId !== null) {
+              const next = state.playoffMatches.find(
+                (x) => x.id === m.nextMatchId,
+              );
+              if (next) {
+                if (m.nextSlot === 1 && next.team1 === null) {
+                  next.team1 = m.winner;
+                  changed = true;
+                } else if (m.nextSlot === 2 && next.team2 === null) {
+                  next.team2 = m.winner;
+                  changed = true;
+                }
+              }
+            }
+            if (m.loserNextMatchId !== null && m.loser) {
+              const lbNext = state.playoffMatches.find(
+                (x) => x.id === m.loserNextMatchId,
+              );
+              if (lbNext) {
+                if (m.loserNextSlot === 1 && lbNext.team1 === null) {
+                  lbNext.team1 = m.loser;
+                  changed = true;
+                } else if (m.loserNextSlot === 2 && lbNext.team2 === null) {
+                  lbNext.team2 = m.loser;
+                  changed = true;
+                }
+              }
+            }
+          });
+        }
+        checkChampion();
+      }
+
+      function checkChampion() {
+        if (state.elimType === "single") {
+          const wMatches = state.playoffMatches.filter(
+            (m) => m.bracket === "W",
+          );
+          if (wMatches.length === 0) return;
+          const maxRound = Math.max(...wMatches.map((m) => m.round));
+          const finals = wMatches.filter((m) => m.round === maxRound);
+          if (finals.length === 1 && finals[0].winner) {
+            state.champion = finals[0].winner;
+            state.currentStage = "done";
+          }
+        } else {
+          const gf = state.playoffMatches.find((m) => m.bracket === "GF");
+          if (gf && gf.winner) {
+            state.champion = gf.winner;
+            state.currentStage = "done";
+          }
+        }
+      }
+
+      // ===== PLAYOFF MATCHES =====
+      function setPlayoffScore(matchId, slot, value) {
+        const m = state.playoffMatches.find((x) => x.id === matchId);
+        if (!m) return;
+        const score = value === "" ? null : parseInt(value);
+        if (score !== null && (isNaN(score) || score < 0)) return;
+        if (slot === 1) m.score1 = score;
+        else m.score2 = score;
+        saveState();
+      }
+
+      function resolvePlayoffMatch(matchId) {
+        const m = state.playoffMatches.find((x) => x.id === matchId);
+        if (!m) return;
+        if (!m.team1 || !m.team2) {
+          notify("Both teams required", "error");
+          return;
+        }
+        if (m.score1 === null || m.score2 === null) {
+          notify("Enter both scores", "error");
+          return;
+        }
+        if (m.score1 === m.score2) {
+          notify("Cannot tie", "error");
+          return;
+        }
+
+        const winner = m.score1 > m.score2 ? m.team1 : m.team2;
+        const loser = m.score1 > m.score2 ? m.team2 : m.team1;
+        m.winner = winner;
+        m.loser = loser;
+        m.resolved = true;
+
+        if (m.bracket === "GF") state.champion = winner;
+
+        autoAdvanceAll();
+        saveStateNow();
+        renderAll();
+        notify(
+          state.champion ? `Champion: ${state.champion}` : `Winner: ${winner}`,
+          "success",
+        );
+      }
+
+      function editPlayoffMatch(matchId) {
+        const m = state.playoffMatches.find((x) => x.id === matchId);
+        if (!m || !m.resolved) return;
+        if (!confirm(`Re-open this match?`)) return;
+        m.winner = null;
+        m.loser = null;
+        m.resolved = false;
+        m.score1 = null;
+        m.score2 = null;
+        if (m.nextMatchId !== null) {
+          const next = state.playoffMatches.find((x) => x.id === m.nextMatchId);
+          if (next) {
+            if (m.nextSlot === 1) next.team1 = null;
+            if (m.nextSlot === 2) next.team2 = null;
+          }
+        }
+        if (m.loserNextMatchId !== null) {
+          const lbNext = state.playoffMatches.find(
+            (x) => x.id === m.loserNextMatchId,
+          );
+          if (lbNext) {
+            if (m.loserNextSlot === 1) lbNext.team1 = null;
+            if (m.loserNextSlot === 2) lbNext.team2 = null;
+          }
+        }
+        state.champion = null;
+        saveStateNow();
+        renderAll();
+        notify("Match re-opened", "info");
+      }
+
+      // ===== RENDERING =====
+      function updateStageBadge() {
+        const badge = document.getElementById("stageBadge");
+        const statusEl = document.getElementById("liveStatus");
+
+        if (state.currentStage === "setup") {
+          badge.className = "stage-badge setup";
+          badge.textContent = "Setup";
+        } else if (state.currentStage === "group") {
+          badge.className = "stage-badge group";
+          badge.textContent = "Stage 1: Group";
+        } else if (state.currentStage === "playoff") {
+          badge.className = "stage-badge playoff";
+          badge.textContent =
+            state.tournamentFormat === "single"
+              ? "Bracket"
+              : "Stage 2: Playoffs";
+        } else {
+          badge.className = "stage-badge playoff";
+          badge.textContent = "Complete";
+        }
+
+        if (state.currentStage !== "setup") {
+          statusEl.className = "status-badge live";
+          statusEl.textContent = "Live";
+        } else {
+          statusEl.className = "status-badge idle";
+          statusEl.textContent = "Not Live";
+        }
+      }
+
+      function renderGroupMatchRow(m) {
+        const canEdit = !m.resolved;
+        const dis = canEdit ? "" : "disabled";
+        const enter = (slot) =>
+          `onkeydown="if(event.key==='Enter'){setGroupScore(${m.id},${slot},this.value);resolveGroupMatch(${m.id});}"`;
+        return `
+          <div class="gm-row ${m.resolved ? "done" : ""}">
+            <span class="gm-team gm-left ${m.winner && m.winner === m.team1 ? "winner" : ""}">${escapeHtml(m.team1)}</span>
+            <input class="gm-score" type="number" min="0" inputmode="numeric"
+              value="${m.score1 !== null ? m.score1 : ""}" placeholder="0" ${dis}
+              onchange="setGroupScore(${m.id}, 1, this.value)" ${enter(1)}>
+            <input class="gm-score" type="number" min="0" inputmode="numeric"
+              value="${m.score2 !== null ? m.score2 : ""}" placeholder="0" ${dis}
+              onchange="setGroupScore(${m.id}, 2, this.value)" ${enter(2)}>
+            <span class="gm-team gm-right ${m.winner && m.winner === m.team2 ? "winner" : ""}">${escapeHtml(m.team2)}</span>
+            <div class="gm-action">
+              ${
+                canEdit
+                  ? `<button class="btn btn-primary btn-sm btn-block" onclick="resolveGroupMatch(${m.id})">Submit</button>`
+                  : `<button class="btn btn-secondary btn-sm btn-block" onclick="editGroupMatch(${m.id})">Edit</button>`
+              }
+            </div>
+          </div>
+        `;
+      }
+
+      function renderGroups() {
+        const container = document.getElementById("groupsContainer");
+        if (state.tournamentFormat === "single") {
+          container.innerHTML =
+            '<div class="empty-msg">Single Stage tournament — walang group stage. Tingnan ang Bracket tab.</div>';
+          return;
+        }
+        if (
+          state.currentStage === "setup" ||
+          Object.keys(state.groups).length === 0
+        ) {
+          container.innerHTML =
+            '<div class="empty-msg">No groups yet. Add teams and generate groups first.</div>';
+          return;
+        }
+
+        const groupNames = Object.keys(state.groups);
+        const totalMatches = state.groupMatches.length;
+        const completedMatches = state.groupMatches.filter(
+          (m) => m.resolved,
+        ).length;
+        const progress =
+          totalMatches > 0 ? (completedMatches / totalMatches) * 100 : 0;
+
+        let totalPlayoff = 0;
+        groupNames.forEach((g) => {
+          totalPlayoff += getAdvanceCount((state.groups[g] || []).length);
+        });
+
+        const allDone = allGroupsComplete();
+
+        let html = `
+          <div class="card full-width">
+            <h2>Group Stage Progress</h2>
+            <div class="progress-row">
+              <div class="progress-info">
+                <div class="progress-meta">
+                  <span>${completedMatches} / ${totalMatches} matches completed</span>
+                  <span>Total playoff slots: <strong>${totalPlayoff}</strong></span>
+                </div>
+                <div class="progress-bar"><div class="fill" style="width:${progress}%"></div></div>
+              </div>
+              ${
+                allDone && state.currentStage === "group"
+                  ? `<button class="btn btn-primary" onclick="switchCPanel('seeding', {target: document.getElementById('tabSeedingBtn')})">Go to Seeding →</button>`
+                  : ""
+              }
+            </div>
+          </div>
+
+          <div class="groups-grid">
+        `;
+
+        groupNames.forEach((groupName) => {
+          const standings = getGroupStandings(groupName);
+          const complete = isGroupComplete(groupName);
+          const groupSize = (state.groups[groupName] || []).length;
+          const advCount = getAdvanceCount(groupSize);
+          const matches = state.groupMatches.filter(
+            (m) => m.group === groupName,
+          );
+          const editing = rankEditGroup === groupName;
+          const manual = hasManualRank(groupName);
+
+          const totalRounds = groupSize % 2 === 0 ? groupSize - 1 : groupSize;
+          const rounds = {};
+          matches.forEach((m) => {
+            const r = m.round || 1;
+            if (!rounds[r]) rounds[r] = [];
+            rounds[r].push(m);
+          });
+
+          html += `
+            <div class="group-card">
+              <div class="group-head">
+                <h3>${groupName}</h3>
+                <div class="group-head-meta">
+                  <span class="group-meta">${groupSize} teams · ${totalRounds} rounds · Top ${advCount} advance</span>
+                  ${manual ? '<span class="group-state manual">Manual ranking</span>' : ""}
+                  <span class="group-state ${complete ? "complete" : ""}">${complete ? "Complete" : "In progress"}</span>
+                  <button class="btn btn-secondary btn-sm" onclick="toggleRankEdit('${groupName}')">${editing ? "Done" : "Edit Ranking"}</button>
+                </div>
+              </div>
+
+              <table class="standings-table">
+                <thead>
+                  <tr>
+                    <th>#</th><th>Team</th><th>W</th><th>L</th><th>+/-</th>
+                    ${editing ? "<th>Move</th>" : ""}
+                  </tr>
+                </thead>
+                <tbody>
+          `;
+
+          standings.forEach((t, i) => {
+            const qualified = i < advCount;
+            const diff = t.pointsFor - t.pointsAgainst;
+            const tied =
+              complete &&
+              !manual &&
+              standings.filter((s) => s.wins === t.wins).length > 1;
+            html += `
+                  <tr class="${qualified ? "qualified" : "eliminated"}">
+                    <td>${i + 1}</td>
+                    <td class="team-cell">${escapeHtml(t.name)}${tied ? ' <span class="tie-tag">Tied</span>' : ""}</td>
+                    <td class="wins">${t.wins}</td>
+                    <td class="losses">${t.losses}</td>
+                    <td>${diff > 0 ? "+" : ""}${diff}</td>
+                    ${
+                      editing
+                        ? `<td class="move-cell">
+                          <button class="btn btn-secondary btn-sm" ${i === 0 ? "disabled" : ""} onclick="moveRank('${groupName}', ${i}, -1)">Up</button>
+                          <button class="btn btn-secondary btn-sm" ${i === standings.length - 1 ? "disabled" : ""} onclick="moveRank('${groupName}', ${i}, 1)">Down</button>
+                        </td>`
+                        : ""
+                    }
+                  </tr>
+            `;
+          });
+
+          html += `
+                </tbody>
+              </table>
+
+              ${
+                editing
+                  ? `<div class="rank-actions">
+                    <span class="rank-hint">Gamitin ang Up / Down para itakda ang final placement. Ito rin ang magiging basehan kung sino ang mag-a-advance sa playoffs.</span>
+                    <button class="btn btn-secondary btn-sm" onclick="resetRank('${groupName}')">Reset to Auto</button>
+                  </div>`
+                  : ""
+              }
+          `;
+
+          html += `<div class="rounds-wrap">`;
+
+          for (let r = 1; r <= totalRounds; r++) {
+            const roundMatches = rounds[r] || [];
+            const roundDone = roundMatches.filter((m) => m.resolved).length;
+            const roundComplete =
+              roundMatches.length > 0 && roundDone === roundMatches.length;
+
+            const teamsInRound = new Set();
+            roundMatches.forEach((m) => {
+              teamsInRound.add(m.team1);
+              teamsInRound.add(m.team2);
+            });
+            const allGroupTeams = state.groups[groupName] || [];
+            const byeTeams = allGroupTeams.filter((t) => !teamsInRound.has(t));
+
+            html += `
+              <div class="round-block ${roundComplete ? "round-complete" : ""}">
+                <div class="round-header">
+                  <div class="round-title">
+                    <span class="round-badge">R${r}</span>
+                    <span class="round-label">Round ${r}</span>
+                  </div>
+                  <div class="round-meta">
+                    <span class="round-count">${roundDone} / ${roundMatches.length} done</span>
+                    ${
+                      roundComplete
+                        ? '<span class="round-status done">✓ Complete</span>'
+                        : '<span class="round-status pending">Pending</span>'
+                    }
+                  </div>
+                </div>
+                <div class="round-matches">
+                  ${
+                    roundMatches.length === 0
+                      ? '<div class="empty-msg" style="padding: 12px;">No matches this round.</div>'
+                      : roundMatches.map(renderGroupMatchRow).join("")
+                  }
+                </div>
+                ${
+                  byeTeams.length > 0
+                    ? `<div class="bye-row">
+                      <span class="bye-label">BYE:</span>
+                      ${byeTeams
+                        .map(
+                          (t) =>
+                            `<span class="bye-team">${escapeHtml(t)}</span>`,
+                        )
+                        .join("")}
+                    </div>`
+                    : ""
+                }
+              </div>
+            `;
+          }
+
+          html += `</div></div>`;
+        });
+
+        html += `</div>`;
+        container.innerHTML = html;
+      }
+
+      function getMatchLabel(m) {
+        if (m.bracket === "GF") return "Grand Finals";
+        if (m.bracket === "TP") return "Third Place";
+        if (m.bracket === "L") return `Losers R${m.round}`;
+        return `Winners R${m.round}`;
+      }
+
+      function renderPlayoffs() {
+        const container = document.getElementById("playoffsContainer");
+        if (state.playoffMatches.length === 0) {
+          if (state.tournamentFormat === "single") {
+            container.innerHTML =
+              '<div class="empty-msg">Bracket not generated yet. Add teams at i-click ang "Generate Bracket".</div>';
+          } else {
+            container.innerHTML =
+              '<div class="empty-msg">Playoffs not started. Complete group stage at pumunta sa Seeding tab.</div>';
+          }
+          return;
+        }
+
+        const playable = state.playoffMatches.filter((m) => !m.isBye);
+        let html = "";
+
+        if (state.champion) {
+          html += `
+            <div class="card champion-card">
+              <div class="champion-label">Tournament Champion</div>
+              <div class="champion-name">${escapeHtml(state.champion)}</div>
+            </div>
+          `;
+        }
+
+        html += `<div class="card"><h2>${state.tournamentFormat === "single" ? "Bracket" : "Playoff"} Matches</h2><div class="match-list">`;
+
+        if (playable.length === 0) {
+          html += '<div class="empty-msg">No matches.</div>';
+        } else {
+          playable.sort((a, b) => {
+            const aReady = a.team1 && a.team2 && !a.resolved;
+            const bReady = b.team1 && b.team2 && !b.resolved;
+            if (aReady && !bReady) return -1;
+            if (!aReady && bReady) return 1;
+            const bo = { W: 0, L: 1, TP: 2, GF: 3 };
+            if (bo[a.bracket] !== bo[b.bracket])
+              return bo[a.bracket] - bo[b.bracket];
+            return a.round - b.round || a.position - b.position;
+          });
+
+          playable.forEach((m) => {
+            const t1 = m.team1 || "TBD";
+            const t2 = m.team2 || "TBD";
+            const canEdit = m.team1 && m.team2 && !m.resolved;
+            const cardClass = m.resolved
+              ? "completed"
+              : canEdit
+                ? "ready"
+                : "waiting";
+            html += `
+              <div class="match-card ${cardClass}">
+                <div class="match-card-header">
+                  <span class="match-round">${getMatchLabel(m)}</span>
+                  <span class="match-status ${m.resolved ? "done" : canEdit ? "live" : "pending"}">${m.resolved ? "Done" : canEdit ? "Ready" : "Waiting"}</span>
+                </div>
+                <div class="match-score-row">
+                  <span class="team-name ${m.winner === m.team1 && m.team1 ? "winner" : ""}">${escapeHtml(t1)}</span>
+                  <input type="number" min="0" value="${m.score1 !== null ? m.score1 : ""}" placeholder="0" ${!canEdit ? "disabled" : ""} onchange="setPlayoffScore(${m.id}, 1, this.value)">
+                </div>
+                <div class="match-score-row">
+                  <span class="team-name ${m.winner === m.team2 && m.team2 ? "winner" : ""}">${escapeHtml(t2)}</span>
+                  <input type="number" min="0" value="${m.score2 !== null ? m.score2 : ""}" placeholder="0" ${!canEdit ? "disabled" : ""} onchange="setPlayoffScore(${m.id}, 2, this.value)">
+                </div>
+                <div class="match-card-actions">
+                  ${canEdit ? `<button class="btn btn-primary btn-sm" onclick="resolvePlayoffMatch(${m.id})">Submit</button>` : ""}
+                  ${m.resolved ? `<button class="btn btn-secondary btn-sm" onclick="editPlayoffMatch(${m.id})">Re-open</button>` : ""}
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        html += "</div></div>";
+        container.innerHTML = html;
+      }
+
+      function renderAll() {
+        updateStageBadge();
+        renderTeamList();
+        renderGroups();
+        renderSeeding();
+        renderPlayoffs();
+        updateGroupPreview();
+        renderTimeAnalyzer();
+        if (
+          document.getElementById("cpanel-assign").classList.contains("active")
+        ) {
+          renderAssignment();
+        }
+      }
+
+      // ===== INIT =====
+      async function init() {
+        await loadState();
+
+        if (state.manualSeeding === undefined) state.manualSeeding = null;
+
+        const migrated = migrateGroupMatches();
+        if (migrated) {
+          saveStateNow();
+          notify(
+            "Group matches auto-fixed with proper rounds structure.",
+            "success",
+          );
+        }
+
+        document.getElementById("tournamentName").value = state.tournamentName;
+        document.getElementById("singleElimType").value = state.elimType;
+        document.getElementById("numGroups").value = state.numGroups;
+        document.getElementById("doubleElimType").value = state.elimType;
+        document.getElementById("thirdPlaceMatch").checked =
+          state.thirdPlaceMatch || false;
+        document.getElementById("thirdPlaceMatchDouble").checked =
+          state.thirdPlaceMatch || false;
+
+        selectFormat(state.tournamentFormat);
+        renderTimeAnalyzer();
+        renderAll();
+        connectWS();
+      }
+
+      document.addEventListener("input", (e) => {
+        if (e.target.id === "numGroups") {
+          updateGroupPreview();
+          updateFlowPreview();
+          renderTimeAnalyzer();
+          if (
+            document
+              .getElementById("cpanel-assign")
+              .classList.contains("active")
+          ) {
+            renderAssignment();
+          }
+        }
+        if (e.target.id === "minsPerGame") {
+          renderTimeAnalyzer();
+          if (
+            document
+              .getElementById("cpanel-assign")
+              .classList.contains("active")
+          ) {
+            renderAssignment();
+          }
+        }
+      });
+
+      init();
+    </script>
+  </body>
+</html>

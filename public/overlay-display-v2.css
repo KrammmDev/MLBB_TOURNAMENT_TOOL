@@ -1,0 +1,529 @@
+/* ============================================================
+   overlay-display-v2.css
+   Same HTML structure / IDs / classes as overlay-display.html + JS,
+   restyled to the "Grand Final" 3-column look:
+   [ player ]  [ center info column ]  [ player ]
+   ============================================================ */
+
+:root {
+  --gold: #ffb380;
+  --gold-light: #ffe0c4;
+  --orange: #ff7200;
+  --dark: #0d0000;
+  --font-display: "Bebas Neue", "Oswald", "Impact", "Arial Narrow", sans-serif;
+  --font-body: "Oswald", "Arial Narrow", sans-serif;
+  --edge-text: "WORLD CHAMPIONSHIP";
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+  font-family: var(--font-display);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ---------- STAGE ---------- */
+.overlay-stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: top left;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* ---------- BACKGROUND: removed (fully transparent) ---------- */
+.bg-base {
+  display: none;
+}
+
+/* vertical edge text on both sides of the center column */
+.overlay-stage::before,
+.overlay-stage::after {
+  content: var(--edge-text) "   ·   " var(--edge-text) "   ·   "
+    var(--edge-text);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 7;
+  width: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  writing-mode: vertical-rl;
+  white-space: pre;
+  overflow: hidden;
+  color: rgba(255, 179, 128, 0.6);
+  font-family: var(--font-body);
+  font-size: 22px;
+  letter-spacing: 4px;
+  pointer-events: none;
+}
+.overlay-stage::before {
+  left: 648px;
+  transform: rotate(180deg);
+}
+.overlay-stage::after {
+  left: 1238px;
+}
+
+/* ---------- PLAYER SLIDESHOW ---------- */
+.player-slideshow {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    #000 0,
+    #000 640px,
+    transparent 640px,
+    transparent 1280px,
+    #000 1280px,
+    #000 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    #000 0,
+    #000 640px,
+    transparent 640px,
+    transparent 1280px,
+    #000 1280px,
+    #000 100%
+  );
+}
+
+:root {
+  --swipe-ms: 1300ms;
+  --swipe-ease: cubic-bezier(0.65, 0, 0.35, 1);
+}
+.player-slide {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+}
+.player-slide.active,
+.player-slide.leaving {
+  visibility: visible;
+}
+
+.player-card {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 640px;
+  opacity: 0;
+  transition:
+    transform var(--swipe-ms) var(--swipe-ease),
+    opacity calc(var(--swipe-ms) * 0.8) ease;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+.player-card.blue {
+  left: 0;
+  transform: translate3d(-105%, 0, 0);
+}
+.player-card.red {
+  right: 0;
+  transform: translate3d(105%, 0, 0);
+}
+
+.player-slide.active .player-card {
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+}
+.player-slide.leaving .player-card.blue {
+  transform: translate3d(35%, 0, 0);
+  opacity: 0;
+}
+.player-slide.leaving .player-card.red {
+  transform: translate3d(-35%, 0, 0);
+  opacity: 0;
+}
+
+/* ============================================================
+   STATIC NAMEPLATE BACKGROUNDS (FIXED)
+   - Left side (blue/red team) = dark RED gradient → tuloy sa red panel
+   - Right side (red/orange team) = dark ORANGE gradient → tuloy sa orange panel
+   ============================================================ */
+.player-slideshow::before,
+.player-slideshow::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 140px;
+  width: 640px;
+  z-index: 0;
+}
+
+/* LEFT — dark red gradient (tuloy-tuloy sa red player panel) */
+.player-slideshow::before {
+  left: 0;
+  background: linear-gradient(90deg, #3a0000 0%, #6b0000 50%, #8b0000 100%);
+}
+
+/* RIGHT — dark orange gradient (tuloy-tuloy sa orange player panel) */
+.player-slideshow::after {
+  right: 0;
+  background: linear-gradient(270deg, #3a1200 0%, #6b2800 50%, #8b3a00 100%);
+}
+
+.player-slide {
+  z-index: 1;
+}
+.player-card.solo.blue {
+  left: 0;
+}
+.player-card.solo.red {
+  right: 0;
+}
+
+:root {
+  --player-zoom: 1.3;
+  --player-focus-y: 8%;
+  --player-offset-y: 90px;
+}
+.player-image-wrapper {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 140px;
+  clip-path: inset(0 -400px 0 -400px);
+}
+.player-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center var(--player-focus-y);
+  transform: translateY(var(--player-offset-y)) scale(var(--player-zoom));
+  transform-origin: center top;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.45));
+}
+
+/* Nameplate text */
+.player-name-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+  background: transparent;
+}
+.player-card.red .player-name-bar {
+  justify-content: flex-end;
+}
+.player-name-box {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  max-width: 100%;
+}
+.player-card.red .player-name-box {
+  flex-direction: row-reverse;
+}
+.player-name-text {
+  color: #ffffff;
+  font-size: 84px;
+  line-height: 1;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.95),
+    0 0 12px rgba(0, 0, 0, 0.6);
+}
+.player-slideshow .player-lane-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0;
+  flex: none;
+}
+
+.player-slideshow .empty-state {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 640px;
+  bottom: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 179, 128, 0.35);
+  font-size: 40px;
+  letter-spacing: 4px;
+}
+
+/* ---------- CENTER COLUMN CONTENT ---------- */
+
+.badge-block {
+  position: absolute;
+  left: 640px;
+  width: 640px;
+  top: 50px;
+  z-index: 5;
+  text-align: center;
+}
+.badge-block span {
+  display: inline-block;
+  font-size: 110px;
+  line-height: 1;
+  letter-spacing: 4px;
+  color: var(--gold);
+  text-shadow: 0 0 30px rgba(255, 114, 0, 0.35);
+}
+
+.tournament-block {
+  position: absolute;
+  left: 640px;
+  width: 640px;
+  top: 185px;
+  z-index: 5;
+  text-align: center;
+  padding: 0 50px;
+}
+.tournament-title {
+  font-weight: normal;
+  font-size: 104px;
+  line-height: 0.95;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.tournament-subtitle {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 6px 26px;
+  font-family: var(--font-body);
+  font-size: 24px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 179, 128, 0.5);
+  border-radius: 999px;
+  background: rgba(255, 179, 128, 0.08);
+}
+
+/* Scoreboard */
+.scoreboard {
+  position: absolute;
+  left: 640px;
+  width: 640px;
+  top: 440px;
+  z-index: 5;
+  padding: 0 55px;
+}
+.match-info-bar {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 10px;
+  color: #ffffff;
+  font-size: 32px;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+.match-info-bar .mi-time {
+  font-family: var(--font-body);
+  font-size: 20px;
+  opacity: 0.8;
+  margin-left: 10px;
+}
+
+.teams-versus {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.team-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 130px;
+}
+.team-logo-box {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.team-logo-box img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.team-code {
+  color: #ffffff;
+  font-size: 46px;
+  letter-spacing: 1px;
+  line-height: 1;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
+}
+
+.score-col {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+.score-num {
+  font-size: 170px;
+  line-height: 1;
+  color: #ffffff;
+  min-width: 80px;
+  text-align: center;
+  text-shadow:
+    0 0 30px rgba(255, 179, 128, 0.5),
+    0 4px 8px rgba(0, 0, 0, 0.9);
+}
+.vs-text {
+  font-family: var(--font-body);
+  font-size: 22px;
+  color: rgba(255, 179, 128, 0.6);
+  letter-spacing: 2px;
+}
+
+/* Countdown */
+.countdown-block {
+  position: absolute;
+  left: 640px;
+  width: 640px;
+  top: 700px;
+  z-index: 5;
+  text-align: center;
+}
+.countdown-label {
+  display: inline-block;
+  transform: rotate(-4deg);
+  font-family: "Brush Script MT", "Segoe Script", cursive;
+  font-style: italic;
+  font-size: 56px;
+  color: var(--orange);
+  text-shadow: 0 0 18px rgba(255, 114, 0, 0.35);
+  text-transform: none;
+}
+.countdown-timer {
+  font-size: 180px;
+  line-height: 0.9;
+  letter-spacing: 3px;
+  color: var(--gold-light);
+  text-shadow: 0 0 40px rgba(255, 179, 128, 0.4);
+}
+
+/* Sponsor */
+.sponsor-block {
+  position: absolute;
+  left: 640px;
+  width: 640px;
+  bottom: 100px;
+  z-index: 5;
+  text-align: center;
+}
+.sponsor-label {
+  font-family: var(--font-body);
+  font-size: 20px;
+  letter-spacing: 3px;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+.sponsor-name {
+  margin-top: 4px;
+  font-size: 44px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+.sponsor-name img {
+  max-height: 70px;
+  max-width: 220px;
+  object-fit: contain;
+}
+
+/* Bottom banner */
+.bottom-banner {
+  position: absolute;
+  left: 640px;
+  width: 640px;
+  bottom: 22px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.bottom-logo {
+  font-size: 34px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+.bottom-text {
+  font-family: var(--font-body);
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+/* Coaches */
+.coach-block {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 150px;
+  z-index: 6;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 40px;
+}
+.coach-item {
+  display: flex;
+  flex-direction: column;
+}
+.coach-label {
+  font-family: var(--font-body);
+  font-size: 18px;
+  letter-spacing: 3px;
+  color: var(--gold);
+}
+.coach-name {
+  font-size: 44px;
+  color: #ffffff;
+  line-height: 1;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
+}
+
+/* ============================================================
+   HIDDEN ELEMENTS
+   ============================================================ */
+.overlay-stage::before,
+.overlay-stage::after,
+.badge-block,
+.tournament-title,
+.bottom-banner,
+.countdown-block {
+  display: none !important;
+}

@@ -1,0 +1,2388 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <title>MLBB Control Panel</title>
+    <link rel="stylesheet" href="control.css" />
+    <style>
+      /* ===== SCORE BOX (Score lang) ===== */
+      .score-turtle-box {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px;
+        background: var(--background-color-2);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+      }
+
+      .score-control {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .score-control span {
+        min-width: 40px;
+        text-align: center;
+        font-family: var(--font-display);
+        font-size: 2rem;
+        line-height: 1;
+        color: var(--font-color);
+      }
+
+      .score-control button {
+        min-height: 32px;
+        padding: 0 14px;
+        font-size: 0.75rem;
+      }
+
+      /* ===== TURTLE CONTROL BOX (Hiwalay na linya) ===== */
+      .turtle-control-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 6px 10px;
+        margin-top: 6px;
+        background: var(--background-color-2);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+      }
+
+      .turtle-control-box .turtle-label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--font-dim);
+        white-space: nowrap;
+      }
+
+      .turtle-control-box .turtle-count {
+        min-width: 28px;
+        text-align: center;
+        font-family: var(--font-mono);
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--font-color);
+        background: var(--background-color);
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius);
+        padding: 2px 6px;
+      }
+
+      .turtle-control-box button {
+        min-height: 30px;
+        width: 30px;
+        padding: 0;
+        font-size: 1rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Blue side turtle buttons */
+      .blueside .btn-turtle-add {
+        background: var(--blue-side-accent);
+        border-color: var(--blue-side-accent);
+        color: #001420;
+      }
+      .blueside .btn-turtle-add:hover {
+        background: #5cb3ff;
+      }
+      .blueside .btn-turtle-minus {
+        background: var(--raise);
+        border-color: var(--border-strong);
+        color: var(--font-color);
+      }
+      .blueside .btn-turtle-minus:hover {
+        background: var(--raise-hover);
+      }
+
+      /* Red side turtle buttons */
+      .redside .btn-turtle-add {
+        background: var(--red-side-accent);
+        border-color: var(--red-side-accent);
+        color: #1a0004;
+      }
+      .redside .btn-turtle-add:hover {
+        background: #ff6b7e;
+      }
+      .redside .btn-turtle-minus {
+        background: var(--raise);
+        border-color: var(--border-strong);
+        color: var(--font-color);
+      }
+      .redside .btn-turtle-minus:hover {
+        background: var(--raise-hover);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="content-wrapper">
+      <h1>MLBB Control Panel</h1>
+
+      <div class="button">
+        <button onclick="safeResetNames()">Reset Nick</button>
+        <button onclick="safeResetImages()">Reset Team Logo</button>
+        <button onclick="safeSwitchNames()">Switch Team Nickname</button>
+        <button onclick="safeSwitchImages()">Switch Team Logo</button>
+      </div>
+
+      <!-- MATCH INFO SECTION -->
+      <div class="match-info-control">
+        <h2>MATCH INFORMATION</h2>
+
+        <div class="match-input-group" style="margin-bottom: 15px">
+          <label>Stage:</label>
+          <input
+            type="text"
+            id="match-stage"
+            placeholder="Group Stage"
+            value="Group Stage"
+          />
+          <label>Group / Day:</label>
+          <input
+            type="text"
+            id="match-group"
+            placeholder="Group A"
+            value="Group A"
+          />
+        </div>
+
+        <div class="match-input-group">
+          <label>Match:</label>
+          <input
+            type="text"
+            id="match-number"
+            placeholder="Match 1"
+            value="Match 1"
+          />
+          <label>Game:</label>
+          <input
+            type="text"
+            id="game-number-text"
+            placeholder="Game 1"
+            value="Game 1"
+          />
+          <button onclick="manualSaveMatchInfo()">Update Display</button>
+        </div>
+
+        <div
+          class="match-input-group"
+          style="margin-top: 15px; align-items: center; gap: 20px"
+        >
+          <label>Game #:</label>
+          <input type="number" id="game-number" placeholder="0" />
+
+          <div style="display: flex; gap: 10px; margin-left: 10px">
+            <button id="btn-win-blue" onclick="setWinner('blue')">
+              BLUE WIN
+            </button>
+            <button id="btn-win-red" onclick="setWinner('red')">RED WIN</button>
+          </div>
+        </div>
+
+        <div class="match-input-group" style="margin-top: 15px">
+          <label>Lower Third Title:</label>
+          <input
+            type="text"
+            id="lowerthird-title-input"
+            placeholder="Lorem Ipsum Dolor"
+            value="Lorem Ipsum Dolor"
+          />
+          <button onclick="updateLowerThirdTitle()">Update Title</button>
+        </div>
+      </div>
+
+      <audio id="hero-voice" hidden></audio>
+
+      <div class="mainbox">
+        <div class="blueside">
+          <div class="section-card">
+            <div class="namebox">BLUESIDE AND LOGO</div>
+            <div class="team-name-row">
+              <input
+                type="text"
+                id="name-input-1"
+                placeholder="Name Team Blue"
+                oninput="autoSaveTeamName('blue', this)"
+              />
+              <span class="status-indicator idle" id="blue-status">Idle</span>
+            </div>
+            <div class="team-name-row">
+              <label>Coach:</label>
+              <input
+                type="text"
+                id="coach-input-blue"
+                placeholder="Coach Name Blue"
+                oninput="autoSaveCoachName('blue', this)"
+              />
+              <span class="status-indicator idle" id="blue-coach-status"
+                >Idle</span
+              >
+            </div>
+            <div class="team-name-row">
+              <label>Full Name:</label>
+              <input
+                type="text"
+                id="fullname-input-blue"
+                placeholder="Full Team Name Blue"
+                oninput="autoSaveFullName('blue', this)"
+              />
+              <span class="status-indicator idle" id="blue-fullname-status"
+                >Idle</span
+              >
+            </div>
+
+            <!-- SCORE CONTROL BOX -->
+            <div class="name-box score-turtle-box">
+              <div class="score-control">
+                <span id="blue-score-control">0</span>
+                <button onclick="addWinQueued('blue')">+ Win</button>
+                <button onclick="minusWinQueued('blue')">-</button>
+              </div>
+            </div>
+
+            <!-- TURTLE CONTROL BOX (Hiwalay) -->
+            <div class="name-box turtle-control-box">
+              <span class="turtle-label">Turtle:</span>
+              <button class="btn-turtle-add" onclick="adjustTurtle('blue', 1)">
+                +
+              </button>
+              <span id="blue-turtle-ctrl" class="turtle-count">0</span>
+              <button
+                class="btn-turtle-minus"
+                onclick="adjustTurtle('blue', -1)"
+              >
+                -
+              </button>
+            </div>
+
+            <div class="score-dots" id="blue-score-display"></div>
+            <div class="container">
+              <label>Upload Logo Blue:</label>
+              <input type="file" id="file1" accept="image/*" />
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="namebox">NICKNAME</div>
+            <div class="name-box">
+              <input
+                type="text"
+                id="name-input-3"
+                placeholder="Nickname P1"
+                autocomplete="off"
+              />
+              <img id="avatar-3" class="player-avatar" alt="" />
+              <select id="lane-select-3" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-3" onclick="handleSwapClick(3, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+            <div class="name-box">
+              <input
+                type="text"
+                id="name-input-4"
+                placeholder="Nickname P2"
+                autocomplete="off"
+              />
+              <img id="avatar-4" class="player-avatar" alt="" />
+              <select id="lane-select-4" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-4" onclick="handleSwapClick(4, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+            <div class="name-box">
+              <input
+                type="text"
+                id="name-input-5"
+                placeholder="Nickname P3"
+                autocomplete="off"
+              />
+              <img id="avatar-5" class="player-avatar" alt="" />
+              <select id="lane-select-5" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-5" onclick="handleSwapClick(5, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+            <div class="name-box">
+              <input
+                type="text"
+                id="name-input-6"
+                placeholder="Nickname P4"
+                autocomplete="off"
+              />
+              <img id="avatar-6" class="player-avatar" alt="" />
+              <select id="lane-select-6" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-6" onclick="handleSwapClick(6, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+            <div class="name-box">
+              <input
+                type="text"
+                id="name-input-7"
+                placeholder="Nickname P5"
+                autocomplete="off"
+              />
+              <img id="avatar-7" class="player-avatar" alt="" />
+              <select id="lane-select-7" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-7" onclick="handleSwapClick(7, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="namebox">HEROPICK</div>
+            <div id="dropdowns-1" class="dropdown-container">
+              <input
+                type="text"
+                id="search-1"
+                placeholder="Pick 1"
+                oninput="filterDropdown(1)"
+              />
+              <button class="swap-button" onclick="selectDropdown(1)">
+                Swap
+              </button>
+              <div id="dropdown-items-1" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-2" class="dropdown-container">
+              <input
+                type="text"
+                id="search-2"
+                placeholder="Pick 2"
+                oninput="filterDropdown(2)"
+              />
+              <button class="swap-button" onclick="selectDropdown(2)">
+                Swap
+              </button>
+              <div id="dropdown-items-2" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-3" class="dropdown-container">
+              <input
+                type="text"
+                id="search-3"
+                placeholder="Pick 3"
+                oninput="filterDropdown(3)"
+              />
+              <button class="swap-button" onclick="selectDropdown(3)">
+                Swap
+              </button>
+              <div id="dropdown-items-3" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-4" class="dropdown-container">
+              <input
+                type="text"
+                id="search-4"
+                placeholder="Pick 4"
+                oninput="filterDropdown(4)"
+              />
+              <button class="swap-button" onclick="selectDropdown(4)">
+                Swap
+              </button>
+              <div id="dropdown-items-4" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-5" class="dropdown-container">
+              <input
+                type="text"
+                id="search-5"
+                placeholder="Pick 5"
+                oninput="filterDropdown(5)"
+              />
+              <button class="swap-button" onclick="selectDropdown(5)">
+                Swap
+              </button>
+              <div id="dropdown-items-5" class="dropdown-items"></div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="namebox">BANNING</div>
+            <div id="dropdowns-11" class="dropdown-container">
+              <input
+                type="text"
+                id="search-11"
+                placeholder="Ban 1"
+                oninput="filterDropdown(11)"
+              />
+              <button class="swap-button" onclick="selectDropdown(11)">
+                Swap
+              </button>
+              <div id="dropdown-items-11" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-12" class="dropdown-container">
+              <input
+                type="text"
+                id="search-12"
+                placeholder="Ban 2"
+                oninput="filterDropdown(12)"
+              />
+              <button class="swap-button" onclick="selectDropdown(12)">
+                Swap
+              </button>
+              <div id="dropdown-items-12" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-13" class="dropdown-container">
+              <input
+                type="text"
+                id="search-13"
+                placeholder="Ban 3"
+                oninput="filterDropdown(13)"
+              />
+              <button class="swap-button" onclick="selectDropdown(13)">
+                Swap
+              </button>
+              <div id="dropdown-items-13" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-14" class="dropdown-container">
+              <input
+                type="text"
+                id="search-14"
+                placeholder="Ban 4"
+                oninput="filterDropdown(14)"
+              />
+              <button class="swap-button" onclick="selectDropdown(14)">
+                Swap
+              </button>
+              <div id="dropdown-items-14" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-15" class="dropdown-container">
+              <input
+                type="text"
+                id="search-15"
+                placeholder="Ban 5"
+                oninput="filterDropdown(15)"
+              />
+              <button class="swap-button" onclick="selectDropdown(15)">
+                Swap
+              </button>
+              <div id="dropdown-items-15" class="dropdown-items"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="redside">
+          <div class="section-card">
+            <div class="namebox">REDSIDE AND LOGO</div>
+            <div class="team-name-row">
+              <input
+                type="text"
+                id="name-input-8"
+                placeholder="Name Team Red"
+                oninput="autoSaveTeamName('red', this)"
+              />
+              <span class="status-indicator idle" id="red-status">Idle</span>
+            </div>
+            <div class="team-name-row">
+              <label>Coach:</label>
+              <input
+                type="text"
+                id="coach-input-red"
+                placeholder="Coach Name Red"
+                oninput="autoSaveCoachName('red', this)"
+              />
+              <span class="status-indicator idle" id="red-coach-status"
+                >Idle</span
+              >
+            </div>
+            <div class="team-name-row">
+              <label>Full Name:</label>
+              <input
+                type="text"
+                id="fullname-input-red"
+                placeholder="Full Team Name Red"
+                oninput="autoSaveFullName('red', this)"
+              />
+              <span class="status-indicator idle" id="red-fullname-status"
+                >Idle</span
+              >
+            </div>
+
+            <!-- SCORE CONTROL BOX -->
+            <div class="name-box score-turtle-box">
+              <div class="score-control">
+                <span id="red-score-control">0</span>
+                <button onclick="addWinQueued('red')">+ Win</button>
+                <button onclick="minusWinQueued('red')">-</button>
+              </div>
+            </div>
+
+            <!-- TURTLE CONTROL BOX (Hiwalay) -->
+            <div class="name-box turtle-control-box">
+              <span class="turtle-label">Turtle:</span>
+              <button class="btn-turtle-add" onclick="adjustTurtle('red', 1)">
+                +
+              </button>
+              <span id="red-turtle-ctrl" class="turtle-count">0</span>
+              <button
+                class="btn-turtle-minus"
+                onclick="adjustTurtle('red', -1)"
+              >
+                -
+              </button>
+            </div>
+
+            <div class="score-dots" id="red-score-display"></div>
+            <div class="container">
+              <label>Upload Logo Red:</label>
+              <input type="file" id="file2" accept="image/*" />
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="namebox">NICKNAME</div>
+            <div class="name-box">
+              <input
+                type="text"
+                id="name-input-10"
+                placeholder="Nickname P1"
+                autocomplete="off"
+              />
+              <img id="avatar-10" class="player-avatar" alt="" />
+              <select id="lane-select-10" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-10" onclick="handleSwapClick(10, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+            <div class="name-box">
+              <input
+                type="text"
+                id="name-input-11"
+                placeholder="Nickname P2"
+                autocomplete="off"
+              />
+              <img id="avatar-11" class="player-avatar" alt="" />
+              <select id="lane-select-11" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-11" onclick="handleSwapClick(11, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+            <div class="name-box">
+              <input
+                type="text"
+                id="name-input-12"
+                placeholder="Nickname P3"
+                autocomplete="off"
+              />
+              <img id="avatar-12" class="player-avatar" alt="" />
+              <select id="lane-select-12" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-12" onclick="handleSwapClick(12, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+            <div class="name-box">
+              <input
+                type="text"
+                id="name-input-13"
+                placeholder="Nickname P4"
+                autocomplete="off"
+              />
+              <img id="avatar-13" class="player-avatar" alt="" />
+              <select id="lane-select-13" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-13" onclick="handleSwapClick(13, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+            <div class="name-box">
+              <input
+                type="text"
+                id="name-input-14"
+                placeholder="Nickname P5"
+                autocomplete="off"
+              />
+              <img id="avatar-14" class="player-avatar" alt="" />
+              <select id="lane-select-14" class="lane-dropdown">
+                <option value="none">None</option>
+                <option value="gold">Gold</option>
+                <option value="junggle">Junggle</option>
+                <option value="mid">Mid</option>
+                <option value="roam">Roam</option>
+                <option value="exp">Exp</option>
+              </select>
+              <div>
+                <button id="swap-btn-14" onclick="handleSwapClick(14, this)">
+                  Swap
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="namebox">HEROPICK</div>
+            <div id="dropdowns-6" class="dropdown-container">
+              <input
+                type="text"
+                id="search-6"
+                placeholder="Pick 1"
+                oninput="filterDropdown(6)"
+              />
+              <button class="swap-button" onclick="selectDropdown(6)">
+                Swap
+              </button>
+              <div id="dropdown-items-6" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-7" class="dropdown-container">
+              <input
+                type="text"
+                id="search-7"
+                placeholder="Pick 2"
+                oninput="filterDropdown(7)"
+              />
+              <button class="swap-button" onclick="selectDropdown(7)">
+                Swap
+              </button>
+              <div id="dropdown-items-7" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-8" class="dropdown-container">
+              <input
+                type="text"
+                id="search-8"
+                placeholder="Pick 3"
+                oninput="filterDropdown(8)"
+              />
+              <button class="swap-button" onclick="selectDropdown(8)">
+                Swap
+              </button>
+              <div id="dropdown-items-8" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-9" class="dropdown-container">
+              <input
+                type="text"
+                id="search-9"
+                placeholder="Pick 4"
+                oninput="filterDropdown(9)"
+              />
+              <button class="swap-button" onclick="selectDropdown(9)">
+                Swap
+              </button>
+              <div id="dropdown-items-9" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-10" class="dropdown-container">
+              <input
+                type="text"
+                id="search-10"
+                placeholder="Pick 5"
+                oninput="filterDropdown(10)"
+              />
+              <button class="swap-button" onclick="selectDropdown(10)">
+                Swap
+              </button>
+              <div id="dropdown-items-10" class="dropdown-items"></div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="namebox">BANNING</div>
+            <div id="dropdowns-16" class="dropdown-container">
+              <input
+                type="text"
+                id="search-16"
+                placeholder="Ban 1"
+                oninput="filterDropdown(16)"
+              />
+              <button class="swap-button" onclick="selectDropdown(16)">
+                Swap
+              </button>
+              <div id="dropdown-items-16" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-17" class="dropdown-container">
+              <input
+                type="text"
+                id="search-17"
+                placeholder="Ban 2"
+                oninput="filterDropdown(17)"
+              />
+              <button class="swap-button" onclick="selectDropdown(17)">
+                Swap
+              </button>
+              <div id="dropdown-items-17" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-18" class="dropdown-container">
+              <input
+                type="text"
+                id="search-18"
+                placeholder="Ban 3"
+                oninput="filterDropdown(18)"
+              />
+              <button class="swap-button" onclick="selectDropdown(18)">
+                Swap
+              </button>
+              <div id="dropdown-items-18" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-19" class="dropdown-container">
+              <input
+                type="text"
+                id="search-19"
+                placeholder="Ban 4"
+                oninput="filterDropdown(19)"
+              />
+              <button class="swap-button" onclick="selectDropdown(19)">
+                Swap
+              </button>
+              <div id="dropdown-items-19" class="dropdown-items"></div>
+            </div>
+            <div id="dropdowns-20" class="dropdown-container">
+              <input
+                type="text"
+                id="search-20"
+                placeholder="Ban 5"
+                oninput="filterDropdown(20)"
+              />
+              <button class="swap-button" onclick="selectDropdown(20)">
+                Swap
+              </button>
+              <div id="dropdown-items-20" class="dropdown-items"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2>DRAFT CONTROL</h2>
+      <div class="timercontrol">
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+        <button id="nextPhase">Force Next Phase</button>
+        <button id="reset">Reset Draft</button>
+        <button id="correction">Correction</button>
+      </div>
+
+      <div class="format-control">
+        <button onclick="setFormat(1)">BO1</button>
+        <button onclick="setFormat(3)">BO3</button>
+        <button onclick="setFormat(5)">BO5</button>
+        <button onclick="setFormat(7)">BO7</button>
+      </div>
+
+      <!-- ===== DRAW CONTROL DECK ===== -->
+      <div class="draw-container">
+        <h2>DRAW CONTROL DECK</h2>
+        <div class="draw-mode-row">
+          <input
+            type="radio"
+            id="draw-mode-random"
+            name="draw-mode"
+            value="random"
+            checked
+          />
+          <label for="draw-mode-random">RANDOM</label>
+          <input
+            type="radio"
+            id="draw-mode-fixed"
+            name="draw-mode"
+            value="fixed"
+          />
+          <label for="draw-mode-fixed">FIXED DRAW</label>
+        </div>
+
+        <div
+          id="draw-fixed-options"
+          class="draw-fixed-grid"
+          style="display: none"
+        >
+          <input
+            type="radio"
+            id="draw-map1"
+            name="fixed-map"
+            value="HealingTurtle"
+          />
+          <label for="draw-map1">Healing Turtle</label>
+
+          <input
+            type="radio"
+            id="draw-map2"
+            name="fixed-map"
+            value="GoldenTurret"
+          />
+          <label for="draw-map2">Golden Turret</label>
+
+          <input
+            type="radio"
+            id="draw-map3"
+            name="fixed-map"
+            value="RevealingWisps"
+          />
+          <label for="draw-map3">Revealing Wisps</label>
+
+          <input
+            type="radio"
+            id="draw-map4"
+            name="fixed-map"
+            value="FlyingClouds"
+          />
+          <label for="draw-map4">Flying Cloud</label>
+        </div>
+
+        <div class="draw-buttons">
+          <button id="start-draw-btn">START DRAW</button>
+          <button id="reset-draw-btn">RESET</button>
+        </div>
+        <p id="draw-status-message"></p>
+      </div>
+
+      <h2>ANALYZER & HISTORY</h2>
+      <div class="timercontrol" style="flex-wrap: wrap">
+        <button onclick="handleSaveDraft(this)">SAVE TO PREVIOUS</button>
+        <button onclick="controlAnalyzer('switch_camp')">
+          Switch Camp Position
+        </button>
+        <button onclick="controlAnalyzer('switch_data')">
+          Switch Data Source
+        </button>
+        <button onclick="handleDeleteAllRecords(this)">
+          DELETE ALL RECORDS
+        </button>
+        <button onclick="handleResetHeroStats(this)">
+          RESET HERO STATS (PICK/BAN/WIN)
+        </button>
+      </div>
+      <!-- ===== IMPORT HERO STATS (NON-LIVE MATCHES) ===== -->
+      <div class="import-section">
+        <h2>IMPORT HERO STATS (NON-LIVE MATCHES)</h2>
+
+        <div class="import-box">
+          <label>CSV File:</label>
+          <input type="file" id="herostats-file" accept=".csv,.txt" />
+
+          <label>Games Played (idadagdag):</label>
+          <input
+            type="number"
+            id="import-games-played"
+            placeholder="0"
+            min="0"
+            value="0"
+            style="width: 80px"
+          />
+
+          <button id="import-herostats-btn" onclick="importHeroStatsCSV()">
+            IMPORT & ADD
+          </button>
+          <button onclick="downloadHeroStatsTemplate()">
+            ⬇ Download Template
+          </button>
+        </div>
+
+        <div id="import-report" class="import-report"></div>
+      </div>
+      <!-- NOTIFICATION CONTROL SECTION -->
+      <div class="notif-section">
+        <h2>NOTIFICATION CONTROL</h2>
+        <div class="notif-main-container">
+          <div class="notif-panel notif-objective-panel">
+            <div class="notif-status-bar">
+              <div id="notif-status">Standby</div>
+            </div>
+            <div class="notif-controls-body">
+              <div class="notif-objective-column">
+                <button onclick="setVideo('videoPlayer1')">Turtle Spawn</button>
+                <div class="notif-sub-buttons">
+                  <button
+                    class="notif-blue-btn"
+                    onclick="setVideo('videoPlayer2')"
+                  >
+                    Blue Turtle Slain
+                  </button>
+                  <button
+                    class="notif-red-btn"
+                    onclick="setVideo('videoPlayer3')"
+                  >
+                    Red Turtle Slain
+                  </button>
+                </div>
+              </div>
+              <div class="notif-separator"></div>
+              <div class="notif-objective-column">
+                <button onclick="setVideo('videoPlayer4')">Lord Spawn</button>
+                <div class="notif-sub-buttons">
+                  <button
+                    class="notif-blue-btn"
+                    onclick="setVideo('videoPlayer5')"
+                  >
+                    Blue Lord Slain
+                  </button>
+                  <button
+                    class="notif-red-btn"
+                    onclick="setVideo('videoPlayer6')"
+                  >
+                    Red Lord Slain
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="notif-panel notif-kill-panel">
+            <div class="notif-kill-header">KILL NOTIFIER</div>
+            <div class="notif-kill-buttons">
+              <button onclick="setVideo('videoPlayer7')">First Blood</button>
+              <button onclick="setVideo('videoPlayer8')">Double Kill</button>
+              <button onclick="setVideo('videoPlayer9')">Triple Kill</button>
+              <button onclick="setVideo('videoPlayer10')">Maniac</button>
+              <button onclick="setVideo('videoPlayer11')">Savage</button>
+              <button onclick="setVideo('videoPlayer12')">Wipe Out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hide">
+        <div>
+          <button id="swap-btn-1" onclick="handleSwapClick(1, this)">
+            Swap
+          </button>
+        </div>
+        <div>
+          <button id="swap-btn-2" onclick="handleSwapClick(2, this)">
+            Swap
+          </button>
+        </div>
+        <div>
+          <button id="swap-btn-8" onclick="handleSwapClick(8, this)">
+            Swap
+          </button>
+        </div>
+        <div>
+          <button id="swap-btn-9" onclick="handleSwapClick(9, this)">
+            Swap
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/script/controlnicknamelogo.js"></script>
+    <script src="/script/herodropdown.js"></script>
+    <script src="script/previousdraft.js"></script>
+    <script src="script/matchrecorder.js"></script>
+
+    <script>
+      var blueScore = 0;
+      var redScore = 0;
+      let operationQueue = Promise.resolve();
+      let syncInterval = null;
+      let isEditingMatchInfo = false;
+      let isEditingTitle = false;
+      let saveTimeout = null;
+      let coachSaveTimeout = null;
+      let fullNameSaveTimeout = null;
+
+      // ===== PLAYER AUTOCOMPLETE SYSTEM =====
+      let PLAYER_LIST = [];
+      let playerListLoaded = false;
+
+      async function loadPlayerList() {
+        if (playerListLoaded) return;
+        try {
+          const res = await fetch("/api/players");
+          PLAYER_LIST = await res.json();
+          playerListLoaded = true;
+          console.log(
+            `👥 Loaded ${PLAYER_LIST.length} players from /api/players`,
+          );
+        } catch (e) {
+          console.error("❌ Failed to load player list:", e);
+        }
+      }
+
+      function attachPlayerAutocomplete(inputId, avatarId) {
+        const input = document.getElementById(inputId);
+        const avatar = document.getElementById(avatarId);
+        if (!input) return;
+
+        const box = document.createElement("div");
+        box.className = "player-suggestion-box";
+        box.style.display = "none";
+        input.parentNode.style.position = "relative";
+        input.parentNode.appendChild(box);
+
+        let activeIndex = -1;
+        let currentMatches = [];
+
+        function renderMatches(matches) {
+          currentMatches = matches;
+          activeIndex = -1;
+          if (!matches.length) {
+            box.style.display = "none";
+            return;
+          }
+          box.innerHTML = matches
+            .map(
+              (p, i) => `
+              <div class="ps-item" data-index="${i}" data-name="${p.name}">
+                <img src="${p.image}" alt="${p.name}" onerror="this.style.opacity=0.3" />
+                <strong>${p.name}</strong>
+              </div>
+            `,
+            )
+            .join("");
+          box.style.display = "block";
+
+          box.querySelectorAll(".ps-item").forEach((el) => {
+            el.addEventListener("mousedown", (e) => {
+              e.preventDefault();
+              selectPlayer(el.dataset.name);
+            });
+          });
+        }
+
+        function selectPlayer(name) {
+          const player = PLAYER_LIST.find((p) => p.name === name);
+          if (!player) return;
+          input.value = player.name;
+          if (avatar) {
+            avatar.src = player.image;
+          }
+          box.style.display = "none";
+
+          // Trigger events para sa ibang listeners (e.g. auto-save)
+          input.dispatchEvent(new Event("input", { bubbles: true }));
+          input.dispatchEvent(new Event("change", { bubbles: true }));
+
+          if (typeof forceUpdateDisplay === "function") forceUpdateDisplay();
+        }
+
+        function updateMatches() {
+          const q = input.value.toLowerCase().trim();
+          if (q.length < 1) {
+            box.style.display = "none";
+            return;
+          }
+          const matches = PLAYER_LIST.filter((p) =>
+            p.name.toLowerCase().includes(q),
+          )
+            .sort((a, b) => {
+              const aStarts = a.name.toLowerCase().startsWith(q);
+              const bStarts = b.name.toLowerCase().startsWith(q);
+              if (aStarts && !bStarts) return -1;
+              if (!aStarts && bStarts) return 1;
+              return a.name.localeCompare(b.name);
+            })
+            .slice(0, 8);
+          renderMatches(matches);
+        }
+
+        input.addEventListener("input", updateMatches);
+        input.addEventListener("focus", () => {
+          if (input.value.trim()) updateMatches();
+        });
+        input.addEventListener("blur", () => {
+          const exact = PLAYER_LIST.find(
+            (p) => p.name.toLowerCase() === input.value.trim().toLowerCase(),
+          );
+          if (exact && avatar) {
+            avatar.src = exact.image;
+          } else if (avatar && !input.value.trim()) {
+            avatar.src = "";
+          }
+          setTimeout(() => {
+            box.style.display = "none";
+          }, 150);
+        });
+
+        input.addEventListener("keydown", (e) => {
+          if (box.style.display === "none") return;
+          const items = box.querySelectorAll(".ps-item");
+          if (!items.length) return;
+
+          if (e.key === "ArrowDown") {
+            e.preventDefault();
+            activeIndex = (activeIndex + 1) % items.length;
+            highlightItem(items);
+          } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            activeIndex = (activeIndex - 1 + items.length) % items.length;
+            highlightItem(items);
+          } else if (e.key === "Enter" && activeIndex >= 0) {
+            e.preventDefault();
+            selectPlayer(items[activeIndex].dataset.name);
+          } else if (e.key === "Escape") {
+            box.style.display = "none";
+          }
+        });
+
+        function highlightItem(items) {
+          items.forEach((el, i) =>
+            el.classList.toggle("active", i === activeIndex),
+          );
+          if (items[activeIndex]) {
+            items[activeIndex].scrollIntoView({ block: "nearest" });
+          }
+        }
+      }
+
+      async function initPlayerAutocomplete() {
+        await loadPlayerList();
+        const slots = [3, 4, 5, 6, 7, 10, 11, 12, 13, 14];
+        slots.forEach((num) => {
+          attachPlayerAutocomplete(`name-input-${num}`, `avatar-${num}`);
+        });
+        console.log(
+          "✅ Player autocomplete initialized for",
+          slots.length,
+          "inputs",
+        );
+      }
+
+      // ===== DRAW CONTROL FUNCTIONS =====
+      const drawMaps = [
+        "HealingTurtle",
+        "GoldenTurret",
+        "RevealingWisps",
+        "FlyingClouds",
+      ];
+
+      async function updateDrawServer(data) {
+        try {
+          await fetch("/api/mapdraw", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ drawdata: data }),
+          });
+        } catch (err) {
+          console.error("Failed to update draw server:", err);
+        }
+      }
+
+      function queueOperation(operation) {
+        operationQueue = operationQueue.then(() => operation());
+        return operationQueue;
+      }
+
+      async function adjustTurtle(team, amount) {
+        try {
+          const getResponse = await fetch("/api/matchdata");
+          let fullData = await getResponse.json();
+
+          if (!fullData.teamdata) fullData.teamdata = {};
+          if (!fullData.teamdata.blueteam) fullData.teamdata.blueteam = {};
+          if (!fullData.teamdata.redteam) fullData.teamdata.redteam = {};
+
+          if (team === "blue") {
+            let current = fullData.teamdata.blueteam.turtles || 0;
+            current = Math.max(0, current + amount);
+            fullData.teamdata.blueteam.turtles = current;
+            document.getElementById("blue-turtle-ctrl").textContent = current;
+          } else {
+            let current = fullData.teamdata.redteam.turtles || 0;
+            current = Math.max(0, current + amount);
+            fullData.teamdata.redteam.turtles = current;
+            document.getElementById("red-turtle-ctrl").textContent = current;
+          }
+
+          await fetch("/api/matchdata", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fullData),
+          });
+
+          console.log(`✅ Turtle updated for ${team}`);
+
+          // I-update lang ang turtle counters sa scoreboard, hindi ang buong match info bar
+          if (window.opener && !window.opener.closed) {
+            if (typeof window.opener.updateTurtleCounters === "function") {
+              window.opener.updateTurtleCounters();
+            }
+          }
+        } catch (e) {
+          console.error("Failed to adjust turtle:", e);
+        }
+      }
+
+      // ===== FIXED AUTO-SAVE TEAM NAME =====
+      async function autoSaveTeamName(team, inputElement) {
+        const name = inputElement.value.trim();
+        const statusEl = document.getElementById(
+          team === "blue" ? "blue-status" : "red-status",
+        );
+
+        if (!name) {
+          console.log(`⚠️ ${team} team name is empty`);
+        }
+
+        inputElement.classList.add("saving");
+        statusEl.textContent = "Saving...";
+        statusEl.className = "status-indicator saving";
+
+        if (saveTimeout) clearTimeout(saveTimeout);
+
+        saveTimeout = setTimeout(async () => {
+          try {
+            const response = await fetch("/api/matchdata");
+            let data = await response.json();
+
+            console.log("📥 Current data:", JSON.stringify(data, null, 2));
+
+            if (!data) data = {};
+            if (!data.teamdata) data.teamdata = {};
+            if (!data.teamdata.blueteam) data.teamdata.blueteam = {};
+            if (!data.teamdata.redteam) data.teamdata.redteam = {};
+
+            if (team === "blue") {
+              data.teamdata.blueteam.name = name;
+            } else {
+              data.teamdata.redteam.name = name;
+            }
+
+            console.log(`📤 Saving ${team} name: "${name}"`);
+
+            const saveResponse = await fetch("/api/matchdata", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(data),
+            });
+
+            if (saveResponse.ok) {
+              console.log(`✅ ${team} team name saved: "${name}"`);
+
+              inputElement.classList.remove("saving");
+              inputElement.classList.add("saved");
+              statusEl.textContent = "✓ Saved";
+              statusEl.className = "status-indicator saved";
+
+              setTimeout(() => {
+                inputElement.classList.remove("saved");
+                statusEl.textContent = "Idle";
+                statusEl.className = "status-indicator idle";
+              }, 2000);
+
+              await forceUpdateDisplay();
+            } else {
+              console.error("❌ Save failed with status:", saveResponse.status);
+              statusEl.textContent = "❌ Error";
+              statusEl.className = "status-indicator error";
+            }
+          } catch (e) {
+            console.error(`❌ Failed to save ${team} team name:`, e);
+            statusEl.textContent = "❌ Error";
+            statusEl.className = "status-indicator error";
+            inputElement.classList.remove("saving");
+          }
+        }, 500);
+      }
+
+      // ===== AUTO-SAVE COACH NAME =====
+      async function autoSaveCoachName(team, inputElement) {
+        const coachName = inputElement.value.trim();
+        const statusEl = document.getElementById(
+          team === "blue" ? "blue-coach-status" : "red-coach-status",
+        );
+
+        inputElement.classList.add("saving");
+        statusEl.textContent = "Saving...";
+        statusEl.className = "status-indicator saving";
+
+        if (coachSaveTimeout) clearTimeout(coachSaveTimeout);
+
+        coachSaveTimeout = setTimeout(async () => {
+          try {
+            const response = await fetch("/api/matchdata");
+            let data = await response.json();
+
+            if (!data) data = {};
+            if (!data.teamdata) data.teamdata = {};
+            if (!data.teamdata.blueteam) data.teamdata.blueteam = {};
+            if (!data.teamdata.redteam) data.teamdata.redteam = {};
+
+            if (team === "blue") {
+              data.teamdata.blueteam.coach = coachName;
+            } else {
+              data.teamdata.redteam.coach = coachName;
+            }
+
+            console.log(`📤 Saving ${team} coach: "${coachName}"`);
+
+            const saveResponse = await fetch("/api/matchdata", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(data),
+            });
+
+            if (saveResponse.ok) {
+              console.log(`✅ ${team} coach name saved: "${coachName}"`);
+
+              inputElement.classList.remove("saving");
+              inputElement.classList.add("saved");
+              statusEl.textContent = "✓ Saved";
+              statusEl.className = "status-indicator saved";
+
+              setTimeout(() => {
+                inputElement.classList.remove("saved");
+                statusEl.textContent = "Idle";
+                statusEl.className = "status-indicator idle";
+              }, 2000);
+
+              await forceUpdateDisplay();
+            } else {
+              console.error(
+                "❌ Coach save failed with status:",
+                saveResponse.status,
+              );
+              statusEl.textContent = "❌ Error";
+              statusEl.className = "status-indicator error";
+            }
+          } catch (e) {
+            console.error(`❌ Failed to save ${team} coach name:`, e);
+            statusEl.textContent = "❌ Error";
+            statusEl.className = "status-indicator error";
+            inputElement.classList.remove("saving");
+          }
+        }, 500);
+      }
+
+      // ===== AUTO-SAVE FULL TEAM NAME =====
+      async function autoSaveFullName(team, inputElement) {
+        const fullName = inputElement.value.trim();
+        const statusEl = document.getElementById(
+          team === "blue" ? "blue-fullname-status" : "red-fullname-status",
+        );
+
+        inputElement.classList.add("saving");
+        statusEl.textContent = "Saving...";
+        statusEl.className = "status-indicator saving";
+
+        if (fullNameSaveTimeout) clearTimeout(fullNameSaveTimeout);
+
+        fullNameSaveTimeout = setTimeout(async () => {
+          try {
+            const response = await fetch("/api/matchdata");
+            let data = await response.json();
+
+            if (!data) data = {};
+            if (!data.teamdata) data.teamdata = {};
+            if (!data.teamdata.blueteam) data.teamdata.blueteam = {};
+            if (!data.teamdata.redteam) data.teamdata.redteam = {};
+
+            if (team === "blue") {
+              data.teamdata.blueteam.fullname = fullName;
+            } else {
+              data.teamdata.redteam.fullname = fullName;
+            }
+
+            console.log(`📤 Saving ${team} full name: "${fullName}"`);
+
+            const saveResponse = await fetch("/api/matchdata", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(data),
+            });
+
+            if (saveResponse.ok) {
+              console.log(`✅ ${team} full name saved: "${fullName}"`);
+
+              inputElement.classList.remove("saving");
+              inputElement.classList.add("saved");
+              statusEl.textContent = "✓ Saved";
+              statusEl.className = "status-indicator saved";
+
+              setTimeout(() => {
+                inputElement.classList.remove("saved");
+                statusEl.textContent = "Idle";
+                statusEl.className = "status-indicator idle";
+              }, 2000);
+
+              await forceUpdateDisplay();
+            } else {
+              console.error(
+                "❌ Full name save failed with status:",
+                saveResponse.status,
+              );
+              statusEl.textContent = "❌ Error";
+              statusEl.className = "status-indicator error";
+            }
+          } catch (e) {
+            console.error(`❌ Failed to save ${team} full name:`, e);
+            statusEl.textContent = "❌ Error";
+            statusEl.className = "status-indicator error";
+            inputElement.classList.remove("saving");
+          }
+        }, 500);
+      }
+
+      // ===== FORCE UPDATE DISPLAY =====
+      async function forceUpdateDisplay() {
+        try {
+          const response = await fetch("/api/matchdata");
+          const data = await response.json();
+          console.log(
+            "📊 Latest data on server:",
+            JSON.stringify(data, null, 2),
+          );
+
+          if (window.opener && !window.opener.closed) {
+            if (typeof window.opener.updateDisplay === "function") {
+              await window.opener.updateDisplay();
+              console.log("✅ Display updated via window.opener");
+            }
+          }
+        } catch (e) {
+          console.error("❌ Failed to force update display:", e);
+        }
+      }
+
+      // ===== LOAD EXISTING TEAM NAMES + COACH NAMES + FULL NAMES =====
+      async function loadTeamNames() {
+        try {
+          const response = await fetch("/api/matchdata");
+          const data = await response.json();
+
+          if (data && data.teamdata) {
+            const blueName = data.teamdata.blueteam?.name || "";
+            const redName = data.teamdata.redteam?.name || "";
+            const blueCoach = data.teamdata.blueteam?.coach || "";
+            const redCoach = data.teamdata.redteam?.coach || "";
+            const blueFullName = data.teamdata.blueteam?.fullname || "";
+            const redFullName = data.teamdata.redteam?.fullname || "";
+
+            document.getElementById("name-input-1").value = blueName;
+            document.getElementById("name-input-8").value = redName;
+            document.getElementById("coach-input-blue").value = blueCoach;
+            document.getElementById("coach-input-red").value = redCoach;
+            document.getElementById("fullname-input-blue").value = blueFullName;
+            document.getElementById("fullname-input-red").value = redFullName;
+
+            console.log(
+              `📥 Loaded team names - Blue: "${blueName}", Red: "${redName}" | Coaches - Blue: "${blueCoach}", Red: "${redCoach}" | Full Names - Blue: "${blueFullName}", Red: "${redFullName}"`,
+            );
+          }
+        } catch (e) {
+          console.error("Failed to load team names:", e);
+        }
+      }
+
+      // ===== EXISTING FUNCTIONS =====
+      async function loadScoreOnly() {
+        try {
+          const response = await fetch("/api/matchdata");
+          const data = await response.json();
+          blueScore = data.teamdata.blueteam.score || 0;
+          redScore = data.teamdata.redteam.score || 0;
+          document.getElementById("blue-score-control").textContent = blueScore;
+          document.getElementById("red-score-control").textContent = redScore;
+          updateScoreDots();
+        } catch (e) {
+          console.error("Failed to load score:", e);
+        }
+      }
+
+      async function loadScore() {
+        try {
+          const response = await fetch("/api/matchdata");
+          const data = await response.json();
+          blueScore = data.teamdata.blueteam.score || 0;
+          redScore = data.teamdata.redteam.score || 0;
+          document.getElementById("blue-score-control").textContent = blueScore;
+          document.getElementById("red-score-control").textContent = redScore;
+
+          // I-load ang Turtle Counts
+          if (data.teamdata.blueteam.turtles !== undefined) {
+            document.getElementById("blue-turtle-ctrl").textContent =
+              data.teamdata.blueteam.turtles;
+          }
+          if (data.teamdata.redteam.turtles !== undefined) {
+            document.getElementById("red-turtle-ctrl").textContent =
+              data.teamdata.redteam.turtles;
+          }
+
+          if (!isEditingMatchInfo) {
+            if (data.matchInfo) {
+              if (data.matchInfo.stage) {
+                document.getElementById("match-stage").value =
+                  data.matchInfo.stage;
+              }
+              if (data.matchInfo.group) {
+                document.getElementById("match-group").value =
+                  data.matchInfo.group;
+              }
+              if (data.matchInfo.match) {
+                document.getElementById("match-number").value =
+                  data.matchInfo.match;
+              }
+              if (data.matchInfo.game) {
+                document.getElementById("game-number-text").value =
+                  data.matchInfo.game;
+              }
+            }
+          }
+
+          if (!isEditingTitle) {
+            const titleInput = document.getElementById(
+              "lowerthird-title-input",
+            );
+            if (titleInput && data.title) {
+              titleInput.value = data.title;
+            }
+          }
+
+          updateScoreDots();
+        } catch (e) {
+          console.error("Failed to load score:", e);
+        }
+      }
+
+      async function saveScoreToServer() {
+        try {
+          const getResponse = await fetch("/api/matchdata");
+          let fullData = await getResponse.json();
+          fullData.teamdata.blueteam.score = blueScore;
+          fullData.teamdata.redteam.score = redScore;
+          fullData.matchFormat =
+            parseInt(localStorage.getItem("matchFormat")) || 3;
+          await fetch("/api/matchdata", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fullData),
+          });
+        } catch (e) {
+          console.error("Failed to save score:", e);
+        }
+      }
+
+      // ===== RECORD HERO STATS =====
+      async function recordHeroStats(winnerTeam) {
+        try {
+          const res = await fetch("/api/record-hero-stats", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ winner: winnerTeam }),
+          });
+          const result = await res.json();
+          if (res.ok) {
+            console.log(
+              `✅ Hero stats recorded (winner: ${winnerTeam}) - resolved: ${result.resolvedCount}, unresolved: ${result.unresolvedCount}`,
+            );
+            if (result.unresolvedCount > 0) {
+              console.warn(
+                `⚠️ May ${result.unresolvedCount} hero na hindi na-match sa herolist.json — check yung HEROLIST_CANDIDATES path sa server.js`,
+              );
+            }
+          } else {
+            console.error("❌ Failed to record hero stats:", result.message);
+          }
+        } catch (e) {
+          console.error("❌ Error recording hero stats:", e);
+        }
+      }
+
+      // ===== RESET HERO STATS =====
+      async function handleResetHeroStats(btn) {
+        const confirmed = confirm(
+          "Sigurado ka bang gusto mong i-RESET ang LAHAT ng hero pick/ban/win stats?\n\nHindi na ito mababawi. Gamitin lang ito bago magsimula ng bagong tournament o season.",
+        );
+        if (!confirmed) return;
+
+        const originalText = btn.textContent;
+        btn.textContent = "Resetting...";
+        btn.disabled = true;
+
+        try {
+          const res = await fetch("/api/reset-hero-stats", {
+            method: "POST",
+          });
+          const result = await res.json();
+          if (res.ok) {
+            btn.textContent = "✓ RESET DONE";
+            console.log("✅ Hero stats reset:", result.message);
+          } else {
+            btn.textContent = "❌ ERROR";
+            console.error("Failed to reset hero stats:", result.message);
+          }
+        } catch (e) {
+          btn.textContent = "❌ ERROR";
+          console.error("Error resetting hero stats:", e);
+        }
+
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.disabled = false;
+        }, 2000);
+      }
+
+      // ===== IMPORT HERO STATS (ADD MODE) =====
+      async function importHeroStatsCSV() {
+        const fileInput = document.getElementById("herostats-file");
+        const gamesInput = document.getElementById("import-games-played");
+        const reportEl = document.getElementById("import-report");
+        const btn = document.getElementById("import-herostats-btn");
+
+        if (!fileInput.files.length) {
+          alert("⚠️ Pumili muna ng CSV file.");
+          return;
+        }
+
+        const confirmed = confirm(
+          "⚠️ IMPORT STATS (ADD MODE)\n\n" +
+            "Idadagdag lang sa current herostats.json.\n" +
+            "Hindi mag-o-overwrite ng existing data.\n" +
+            "May automatic backup bago mag-import.\n\n" +
+            "Tuloy?",
+        );
+        if (!confirmed) return;
+
+        const file = fileInput.files[0];
+        const csvText = await file.text();
+
+        const originalText = btn.textContent;
+        btn.textContent = "IMPORTING...";
+        btn.disabled = true;
+        reportEl.innerHTML = "";
+
+        try {
+          const res = await fetch("/api/import-herostats", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              csvText: csvText,
+              gamesPlayed: Number(gamesInput.value) || 0,
+            }),
+          });
+          const result = await res.json();
+
+          if (result.ok) {
+            const r = result.report;
+            reportEl.innerHTML = `
+        <div class="import-success">
+          <h3>✅ IMPORT SUCCESSFUL (ADD MODE)</h3>
+          <p><strong>Updated heroes:</strong> ${r.updated.length}</p>
+          <p><strong>New heroes added:</strong> ${r.added.length}</p>
+          <p><strong>Skipped (not in herolist):</strong> ${r.skipped.length}</p>
+          <p><strong>Games played added:</strong> ${r.gamesPlayedImported}</p>
+          <p style="font-size:11px;opacity:0.7;">
+            Backup: ${result.backup.split("\\").pop()}
+          </p>
+          ${
+            r.skipped.length
+              ? `
+            <details style="margin-top:10px;">
+              <summary style="cursor:pointer;color:#ff6b6b;">
+                ⚠️ Skipped Heroes (${r.skipped.length})
+              </summary>
+              <ul style="font-size:12px;margin-top:5px;">
+                ${r.skipped.map((s) => `<li>${s.input} — ${s.reason}</li>`).join("")}
+              </ul>
+            </details>`
+              : ""
+          }
+          ${
+            r.updated.length
+              ? `
+            <details style="margin-top:10px;">
+              <summary style="cursor:pointer;color:#00ff8c;">
+                📊 Updated Heroes (${r.updated.length})
+              </summary>
+              <ul style="font-size:12px;margin-top:5px;">
+                ${r.updated
+                  .map(
+                    (u) =>
+                      `<li>${u.hero}: +${u.addedPicks}p/+${u.addedBans}b/+${u.addedWins}w → (${u.newTotals.picks}p, ${u.newTotals.bans}b, ${u.newTotals.wins}w)</li>`,
+                  )
+                  .join("")}
+              </ul>
+            </details>`
+              : ""
+          }
+        </div>
+      `;
+            fileInput.value = "";
+            gamesInput.value = 0;
+          } else {
+            reportEl.innerHTML = `<div class="import-error">❌ ERROR: ${result.message}</div>`;
+          }
+        } catch (e) {
+          console.error("Import failed:", e);
+          reportEl.innerHTML = `<div class="import-error">❌ Network error: ${e.message}</div>`;
+        }
+
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+
+      // ===== DOWNLOAD CSV TEMPLATE =====
+      async function downloadHeroStatsTemplate() {
+        const mode = confirm(
+          "📋 HERO STATS TEMPLATE (ALL HEROES from herolist.json)\n\n" +
+            "Pumili ng mode:\n\n" +
+            "OK = ZERO mode (lahat ng 133 heroes, picks/bans/wins = 0)\n" +
+            "Cancel = CURRENT mode (kasama yung existing values sa herostats.json, para reference)",
+        )
+          ? "zero"
+          : "current";
+
+        const btn = document.querySelector(
+          'button[onclick="downloadHeroStatsTemplate()"]',
+        );
+        const originalText = btn ? btn.textContent : "";
+
+        if (btn) {
+          btn.textContent = "GENERATING...";
+          btn.disabled = true;
+        }
+
+        try {
+          const res = await fetch(`/api/herostats-template?mode=${mode}`);
+
+          if (!res.ok) {
+            alert("❌ Hindi ma-generate yung template.");
+            return;
+          }
+
+          const csv = await res.text();
+          const lineCount = csv.split("\n").filter((l) => l.trim()).length - 1;
+
+          const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `herostats_template_${mode}_${lineCount}heroes.csv`;
+          a.click();
+          URL.revokeObjectURL(url);
+
+          console.log(
+            `✅ Template downloaded (${mode} mode) — ${lineCount} heroes total`,
+          );
+
+          if (btn) {
+            btn.textContent = `✓ ${lineCount} HEROES`;
+            setTimeout(() => {
+              btn.textContent = originalText;
+              btn.disabled = false;
+            }, 2000);
+          }
+        } catch (e) {
+          console.error("Template download failed:", e);
+          alert("❌ Network error: " + e.message);
+          if (btn) {
+            btn.textContent = originalText;
+            btn.disabled = false;
+          }
+        }
+      }
+
+      async function addWinQueued(team) {
+        await queueOperation(async () => {
+          if (team === "blue") blueScore++;
+          else redScore++;
+          document.getElementById(`${team}-score-control`).textContent =
+            team === "blue" ? blueScore : redScore;
+          await saveScoreToServer();
+          await recordHeroStats(team);
+          updateScoreDots();
+        });
+      }
+
+      async function minusWinQueued(team) {
+        await queueOperation(async () => {
+          if (team === "blue") blueScore = Math.max(0, blueScore - 1);
+          else redScore = Math.max(0, redScore - 1);
+          document.getElementById(`${team}-score-control`).textContent =
+            team === "blue" ? blueScore : redScore;
+          await saveScoreToServer();
+          updateScoreDots();
+        });
+      }
+
+      async function resetScore() {
+        blueScore = 0;
+        redScore = 0;
+        document.getElementById("blue-score-control").textContent = 0;
+        document.getElementById("red-score-control").textContent = 0;
+
+        // Reset Turtle counts din
+        document.getElementById("blue-turtle-ctrl").textContent = 0;
+        document.getElementById("red-turtle-ctrl").textContent = 0;
+
+        await saveScoreToServer();
+        updateScoreDots();
+      }
+
+      async function setFormat(format) {
+        localStorage.setItem("matchFormat", format);
+        try {
+          const getResponse = await fetch("/api/matchdata");
+          let fullData = await getResponse.json();
+          fullData.matchFormat = format;
+          await fetch("/api/matchdata", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fullData),
+          });
+        } catch (e) {
+          console.error("Failed to save format:", e);
+        }
+        await resetScore();
+        highlightActiveFormat(format);
+      }
+
+      function highlightActiveFormat(activeFormat) {
+        const formatBtns = document.querySelectorAll(".format-control button");
+        formatBtns.forEach((btn) => {
+          const btnFormat = parseInt(btn.innerText.replace("BO", ""));
+          if (btnFormat === activeFormat) {
+            btn.classList.add("active-format");
+          } else {
+            btn.classList.remove("active-format");
+          }
+        });
+      }
+
+      function createDots(containerId, total) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = "";
+        for (let i = 0; i < total; i++) {
+          const dot = document.createElement("span");
+          dot.classList.add("dot");
+          container.appendChild(dot);
+        }
+      }
+
+      function getWinsNeeded(format) {
+        if (format === 1) return 1;
+        if (format === 3) return 2;
+        if (format === 5) return 3;
+        if (format === 7) return 4;
+        return 2;
+      }
+
+      function updateScoreDots() {
+        const format = parseInt(localStorage.getItem("matchFormat")) || 3;
+        const winsNeeded = getWinsNeeded(format);
+        createDots("blue-score-display", winsNeeded);
+        createDots("red-score-display", winsNeeded);
+        document
+          .querySelectorAll("#blue-score-display .dot")
+          .forEach((dot, i) => {
+            dot.classList.toggle("active", i < blueScore);
+          });
+        document
+          .querySelectorAll("#red-score-display .dot")
+          .forEach((dot, i) => {
+            dot.classList.toggle("active", i < redScore);
+          });
+      }
+
+      async function safeOperation(originalFunction, ...args) {
+        await queueOperation(async () => {
+          if (typeof originalFunction === "function") {
+            await originalFunction(...args);
+          }
+          await loadScore();
+          await loadGameState();
+        });
+      }
+
+      async function safeResetNames() {
+        if (typeof resetNames === "function") {
+          await safeOperation(resetNames);
+        } else {
+          console.warn("resetNames function not found");
+          await loadScore();
+        }
+      }
+
+      async function safeResetImages() {
+        if (typeof resetImages === "function") {
+          await safeOperation(resetImages);
+        } else {
+          console.warn("resetImages function not found");
+          await loadScore();
+        }
+      }
+
+      async function safeSwitchNames() {
+        if (typeof switchNames === "function") {
+          await safeOperation(switchNames);
+        } else {
+          console.warn("switchNames function not found");
+          await loadScore();
+        }
+      }
+
+      async function safeSwitchImages() {
+        if (typeof switchImages === "function") {
+          await safeOperation(switchImages);
+        } else {
+          console.warn("switchImages function not found");
+          await loadScore();
+        }
+      }
+
+      function startAutoSync() {
+        if (syncInterval) clearInterval(syncInterval);
+        syncInterval = setInterval(async () => {
+          await loadScoreOnly();
+          await loadGameState();
+        }, 1000);
+      }
+
+      function stopAutoSync() {
+        if (syncInterval) {
+          clearInterval(syncInterval);
+          syncInterval = null;
+        }
+      }
+
+      // ===== SAVE MATCH INFO (Stage / Group / Match / Game) =====
+      async function manualSaveMatchInfo() {
+        const stage =
+          document.getElementById("match-stage").value.trim() || "Group Stage";
+        const group =
+          document.getElementById("match-group").value.trim() || "Group A";
+        const match =
+          document.getElementById("match-number").value.trim() || "Match 1";
+        const game =
+          document.getElementById("game-number-text").value.trim() || "Game 1";
+        const matchText = `${match} ${game}`;
+
+        console.log("Saving match info:", stage, group, match, game);
+
+        try {
+          const getResponse = await fetch("/api/matchdata");
+          let fullData = await getResponse.json();
+          fullData.matchInfo = { stage, group, match, game, text: matchText };
+          await fetch("/api/matchdata", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fullData),
+          });
+          console.log("Match info saved successfully!");
+
+          const btn = document.querySelector(
+            ".match-input-group button:last-child",
+          );
+          if (btn) {
+            const originalText = btn.textContent;
+            btn.textContent = "✓ SAVED!";
+            btn.style.background = "#00ff8c";
+            btn.style.color = "#111";
+            setTimeout(() => {
+              btn.textContent = originalText;
+              btn.style.background = "#00afff";
+              btn.style.color = "white";
+            }, 1500);
+          }
+        } catch (e) {
+          console.error("Failed to save match info:", e);
+          alert("Error saving match info: " + e.message);
+        }
+
+        if (window.opener && !window.opener.closed) {
+          const displayDoc = window.opener.document;
+          const matchElement = displayDoc.getElementById("match-display");
+          if (matchElement) matchElement.textContent = matchText.toUpperCase();
+
+          const mainEl = displayDoc.getElementById("matchinfo-main");
+          if (mainEl) mainEl.textContent = stage;
+          const dayEl = displayDoc.getElementById("matchinfo-day");
+          if (dayEl) dayEl.textContent = group;
+          const matchInfoEl = displayDoc.getElementById("matchinfo-match");
+          if (matchInfoEl) matchInfoEl.textContent = matchText;
+        }
+      }
+
+      async function updateLowerThirdTitle() {
+        const title =
+          document.getElementById("lowerthird-title-input").value.trim() ||
+          "Lorem Ipsum Dolor";
+
+        console.log("Saving lower third title:", title);
+
+        try {
+          const getResponse = await fetch("/api/matchdata");
+          let fullData = await getResponse.json();
+          fullData.title = title;
+          await fetch("/api/matchdata", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fullData),
+          });
+          console.log("Lower third title saved successfully!");
+
+          const btn = document.querySelector(
+            '[onclick="updateLowerThirdTitle()"]',
+          );
+          if (btn) {
+            const originalText = btn.textContent;
+            btn.textContent = "✓ SAVED!";
+            btn.style.background = "#00ff8c";
+            btn.style.color = "#111";
+            setTimeout(() => {
+              btn.textContent = originalText;
+              btn.style.background = "#00afff";
+              btn.style.color = "white";
+            }, 1500);
+          }
+        } catch (e) {
+          console.error("Failed to save lower third title:", e);
+          alert("Error saving title: " + e.message);
+        }
+      }
+
+      async function setVideo(playerId) {
+        updateNotifStatus(`SENDING ${playerId.replace("videoPlayer", "")}...`);
+        try {
+          const response = await fetch("/api/notification", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ videoId: playerId }),
+          });
+          if (response.ok) {
+            updateNotifStatus(
+              `PLAYING M${playerId.replace("videoPlayer", "")}`,
+            );
+            setTimeout(() => updateNotifStatus("Standby"), 3000);
+          } else {
+            updateNotifStatus("ERROR SENDING");
+          }
+        } catch (error) {
+          console.error("Connection Error:", error);
+          updateNotifStatus("SERVER ERROR");
+        }
+      }
+
+      function updateNotifStatus(message) {
+        const statusEl = document.getElementById("notif-status");
+        if (statusEl) statusEl.textContent = message;
+      }
+
+      async function updateGameInfo(field, value) {
+        try {
+          const getResponse = await fetch("/api/matchdata");
+          let fullData = await getResponse.json();
+          fullData[field] = value;
+          await fetch("/api/matchdata", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fullData),
+          });
+          console.log(`Updated ${field} to ${value}`);
+        } catch (e) {
+          console.error("Failed to update game info:", e);
+        }
+      }
+
+      async function setWinner(side) {
+        const btnBlue = document.getElementById("btn-win-blue");
+        const btnRed = document.getElementById("btn-win-red");
+        btnBlue.style.background =
+          side === "blue" ? "rgba(0,175,255,0.3)" : "rgba(0,175,255,0.1)";
+        btnBlue.style.boxShadow =
+          side === "blue" ? "0 0 15px rgba(0,175,255,0.5)" : "";
+        btnRed.style.background =
+          side === "red" ? "rgba(249,72,104,0.3)" : "rgba(249,72,104,0.1)";
+        btnRed.style.boxShadow =
+          side === "red" ? "0 0 15px rgba(249,72,104,0.5)" : "";
+
+        try {
+          const getResponse = await fetch("/api/matchdata");
+          let fullData = await getResponse.json();
+          fullData.winmatches = side;
+          await fetch("/api/matchdata", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fullData),
+          });
+          console.log(`Winner set to ${side}`);
+        } catch (e) {
+          console.error("Failed to set winner:", e);
+        }
+      }
+
+      async function loadGameState() {
+        try {
+          const response = await fetch("/api/matchdata");
+          const data = await response.json();
+
+          const gameNumberInput = document.getElementById("game-number");
+          if (
+            data.game_number !== undefined &&
+            !gameNumberInput.hasAttribute("data-editing")
+          ) {
+            gameNumberInput.value = data.game_number;
+          }
+
+          if (data.winmatches) {
+            const btnBlue = document.getElementById("btn-win-blue");
+            const btnRed = document.getElementById("btn-win-red");
+            if (data.winmatches === "blue") {
+              btnBlue.style.background = "rgba(0,175,255,0.3)";
+              btnBlue.style.boxShadow = "0 0 15px rgba(0,175,255,0.5)";
+            } else if (data.winmatches === "red") {
+              btnRed.style.background = "rgba(249,72,104,0.3)";
+              btnRed.style.boxShadow = "0 0 15px rgba(249,72,104,0.5)";
+            }
+          }
+
+          const savedFormat =
+            data.matchFormat ||
+            parseInt(localStorage.getItem("matchFormat")) ||
+            3;
+          if (savedFormat) {
+            localStorage.setItem("matchFormat", savedFormat);
+            highlightActiveFormat(savedFormat);
+          }
+        } catch (e) {
+          console.error("Failed to load game state:", e);
+        }
+      }
+
+      function onMatchInputFocus() {
+        isEditingMatchInfo = true;
+      }
+
+      function onMatchInputBlur() {
+        isEditingMatchInfo = false;
+        manualSaveMatchInfo();
+      }
+
+      function onTitleInputFocus() {
+        isEditingTitle = true;
+      }
+
+      function onTitleInputBlur() {
+        isEditingTitle = false;
+      }
+
+      document.addEventListener("keydown", (event) => {
+        const keys = {
+          w: "videoPlayer1",
+          a: "videoPlayer2",
+          s: "videoPlayer3",
+          r: "videoPlayer4",
+          d: "videoPlayer5",
+          f: "videoPlayer6",
+          1: "videoPlayer7",
+          2: "videoPlayer8",
+          3: "videoPlayer9",
+          4: "videoPlayer10",
+          5: "videoPlayer11",
+          6: "videoPlayer12",
+        };
+        if (
+          keys[event.key] &&
+          event.target.tagName !== "INPUT" &&
+          event.target.tagName !== "TEXTAREA"
+        ) {
+          event.preventDefault();
+          setVideo(keys[event.key]);
+        }
+      });
+
+      // ===== DRAW CONTROL EVENT LISTENERS =====
+      function initDrawControl() {
+        const fixedOptions = document.getElementById("draw-fixed-options");
+        const startButton = document.getElementById("start-draw-btn");
+        const resetButton = document.getElementById("reset-draw-btn");
+        const statusMessage = document.getElementById("draw-status-message");
+
+        document
+          .querySelectorAll('input[name="draw-mode"]')
+          .forEach((radio) => {
+            radio.addEventListener("change", (event) => {
+              fixedOptions.style.display =
+                event.target.value === "fixed" ? "grid" : "none";
+            });
+          });
+
+        startButton.addEventListener("click", async () => {
+          const selectedMode = document.querySelector(
+            'input[name="draw-mode"]:checked',
+          ).value;
+          let result = null;
+
+          if (selectedMode === "fixed") {
+            const selectedMap = document.querySelector(
+              'input[name="fixed-map"]:checked',
+            );
+            if (!selectedMap) {
+              statusMessage.textContent = "⚠️ PUMILI NG MAP!";
+              setTimeout(() => (statusMessage.textContent = ""), 2000);
+              return;
+            }
+            result = selectedMap.value;
+          } else {
+            const randomIndex = Math.floor(Math.random() * drawMaps.length);
+            result = drawMaps[randomIndex];
+          }
+
+          const drawState = {
+            status: "drawing",
+            mode: selectedMode,
+            fixedChoice: selectedMode === "fixed" ? result : null,
+            result: result,
+            timestamp: new Date().getTime(),
+          };
+
+          statusMessage.textContent = `🎯 ${result}`;
+          await updateDrawServer(drawState);
+          setTimeout(() => (statusMessage.textContent = ""), 3000);
+        });
+
+        resetButton.addEventListener("click", async () => {
+          const resetState = {
+            status: "idle",
+            mode: "random",
+            fixedChoice: null,
+            result: null,
+            timestamp: 0,
+          };
+          statusMessage.textContent = "🔄 RESET";
+          await updateDrawServer(resetState);
+          setTimeout(() => (statusMessage.textContent = ""), 2000);
+        });
+
+        if (document.getElementById("draw-mode-fixed").checked) {
+          fixedOptions.style.display = "grid";
+        }
+      }
+
+      // ===== WINDOW LOAD =====
+      window.addEventListener("load", async () => {
+        console.log("🎮 Control Panel Loaded - Auto-Save Mode + Draw Control");
+        await loadTeamNames();
+        await loadScore();
+        await loadGameState();
+        startAutoSync();
+
+        const stageInput = document.getElementById("match-stage");
+        const groupInput = document.getElementById("match-group");
+        const matchInput = document.getElementById("match-number");
+        const gameInput = document.getElementById("game-number-text");
+        const gameNumberInput = document.getElementById("game-number");
+        const titleInput = document.getElementById("lowerthird-title-input");
+
+        // Stage, Group, Match, Game: auto-save on blur
+        [stageInput, groupInput, matchInput, gameInput].forEach((el) => {
+          if (el) {
+            el.addEventListener("focus", onMatchInputFocus);
+            el.addEventListener("blur", onMatchInputBlur);
+          }
+        });
+
+        if (titleInput) {
+          titleInput.addEventListener("focus", onTitleInputFocus);
+          titleInput.addEventListener("blur", onTitleInputBlur);
+        }
+
+        if (gameNumberInput) {
+          gameNumberInput.addEventListener("focus", function () {
+            this.setAttribute("data-editing", "true");
+          });
+          gameNumberInput.addEventListener("blur", function () {
+            this.removeAttribute("data-editing");
+            const value = parseInt(this.value);
+            if (!isNaN(value)) {
+              updateGameInfo("game_number", value);
+            }
+          });
+          gameNumberInput.addEventListener("input", function () {
+            this.setAttribute("data-editing", "true");
+          });
+        }
+
+        const currentFormat =
+          parseInt(localStorage.getItem("matchFormat")) || 3;
+        highlightActiveFormat(currentFormat);
+
+        // Initialize Draw Control
+        initDrawControl();
+
+        // Initialize Player Autocomplete
+        await initPlayerAutocomplete();
+      });
+
+      window.addEventListener("beforeunload", () => {
+        stopAutoSync();
+      });
+    </script>
+  </body>
+</html>

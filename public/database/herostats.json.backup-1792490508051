@@ -1,0 +1,672 @@
+{
+  "_meta": {
+    "gamesPlayed": 0
+  },
+  "heroes": {
+    "Aamon": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Akai": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Aldous": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Alice": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Alpha": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Alucard": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Angela": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Argus": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Arlot": {
+      "picks": 6,
+      "bans": 0,
+      "wins": 3
+    },
+    "Atlas": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Aulus": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Aurora": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Badang": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Balmond": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Bane": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Barats": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Baxia": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Beatrix": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Beleric": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Benedetta": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Brody": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Bruno": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Carmila": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Cecilion": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Chang'e": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Chip": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Chou": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Cici": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Claude": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Clint": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Cyclops": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Diggie": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Dyroth": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Edith": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Esmeralda": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Estes": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Eudora": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Fanny": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Faramis": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Floryn": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Franco": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Fredrin": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Freya": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Gatotkaca": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Gloo": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Gord": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Granger": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Grock": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Guinevere": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Gusion": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Hanabi": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Hanzo": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Harith": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Harley": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Hayabusa": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Helcurt": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Hilda": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Hirara": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Hylos": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Irithel": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Ixia": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Jawhead": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Johnson": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Joy": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Julian": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Kadita": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Kagura": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Kaja": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Kalea": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Karina": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Karrie": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Khaleed": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Khufra": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Kimmy": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Lancelot": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Lapu Lapu": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Layla": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Leomord": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Lesley": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Ling": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Lolita": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Lukas": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Lunox": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Luo Yi": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Lylia": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Marcel": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Martis": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Masha": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Mathilda": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Melissa": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Minotaur": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Minsitthar": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Miya": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Moskov": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Nana": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Natalia": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Natan": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Nolan": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Novaria": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Obsidia": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Odette": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Paquito": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Pharsa": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Phoveus": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Popol and Kupa": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Rafaela": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Roger": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Ruby": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Saber": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Selena": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Silvanna": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Sora": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Sun": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Suyou": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Terizla": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Thamuz": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Tigreal": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Uranus": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Vale": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Valentina": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Valir": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Vexana": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Wanwan": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Xavier": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Xborg": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Yin": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Yisunshin": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Yuzhong": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Yve": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Zetian": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Zhask": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Zhuxin": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    },
+    "Zilong": {
+      "picks": 0,
+      "bans": 0,
+      "wins": 0
+    }
+  }
+}

@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Previous Draft Analyzer</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Rajdhani:wght@700&display=swap");
+
+      @font-face {
+        font-family: "Arial Narrow", "Arial", sans-serif;
+
+        src: url("Assets/Font/big_noodle_titling.ttf") format("truetype");
+        /* font-weight: normal; */
+        font-style: normal;
+      }
+
+      :root {
+        --c-repick: #ff7200;
+        --c-stolen: #ff8800;
+        --c-banned: #ff0101;
+        --c-rebanned: #8b0000;
+        --c-picked-now: #ff7200;
+        --card-border: rgba(160, 20, 20, 0.85);
+        --card-bg: #111111;
+        --blue-header: linear-gradient(
+          135deg,
+          #ffb380 0%,
+          #ff8c00 25%,
+          #ff7200 60%,
+          #cc5a00 100%
+        );
+
+        --red-header: linear-gradient(
+          135deg,
+          #ff8080 0%,
+          #ff4040 25%,
+          #ff0101 60%,
+          #cc0000 100%
+        );
+
+        /* overlay strength — tweak this if too strong/weak */
+        --overlay-opacity: 0.4;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Bebas Neue", sans-serif;
+        color: #ffffff;
+        width: 1920px;
+        height: 1080px;
+        /* overflow: hidden; */
+        background: transparent;
+        position: relative;
+      }
+
+      /* ====== PANEL ====== */
+      .panel {
+        position: absolute;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .panel.blue {
+        left: 0;
+      }
+      .panel.red {
+        right: 0;
+      }
+
+      /* Header */
+      .panel-header {
+        display: flex;
+        align-items: center;
+        padding: 0 18px;
+        font-size: 30px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        font-weight: bold;
+        height: 52px;
+      }
+      .panel.blue .panel-header {
+        background: var(--blue-header);
+      }
+      .panel.red .panel-header {
+        background: var(--red-header);
+        justify-content: flex-end;
+      }
+
+      /* ====== PICKS ROW ====== */
+      .picks {
+        display: flex;
+        flex-direction: row;
+        background: #0a0a0a;
+      }
+
+      .pick-card {
+        width: 110px;
+        height: 160px;
+        position: relative;
+        overflow: hidden;
+        background: var(--card-bg);
+        border-right: 2px solid #2a2a2a;
+        flex-shrink: 0;
+        transition:
+          border-color 0.3s,
+          box-shadow 0.3s;
+      }
+      /* Last pick card — no right border */
+      .pick-card:last-child {
+        border-right: none;
+      }
+
+      .pick-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top center;
+        display: block;
+        transition: transform 0.4s;
+        position: relative;
+        z-index: 0;
+      }
+
+      /* Full-card color overlay (transparent, sits above image) */
+      .pick-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        opacity: 0;
+        background-color: transparent;
+        transition:
+          opacity 0.3s,
+          background-color 0.3s;
+        pointer-events: none;
+      }
+
+      .pick-card .status-label {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 16px;
+        letter-spacing: 2px;
+        padding: 3px 0 4px;
+        font-weight: bold;
+        opacity: 0;
+        transform: translateY(100%);
+        transition:
+          opacity 0.3s,
+          transform 0.3s;
+        z-index: 2;
+      }
+
+      /* ====== BANS ROW ====== */
+      .bans {
+        display: flex;
+        flex-direction: row;
+      }
+
+      .ban-card {
+        width: 110px;
+        height: 88px;
+        position: relative;
+        overflow: hidden;
+        background: var(--card-bg);
+        border: 2px solid var(--card-border);
+        flex-shrink: 0;
+        transition:
+          border-color 0.3s,
+          box-shadow 0.3s;
+      }
+      /* Remove double borders between cards */
+      .ban-card + .ban-card {
+        border-left: none;
+      }
+
+      .ban-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top center;
+        display: block;
+        filter: grayscale(85%) brightness(0.55);
+        transition:
+          filter 0.3s,
+          transform 0.3s;
+        position: relative;
+        z-index: 0;
+      }
+
+      /* Full-card color overlay (transparent, sits above image) */
+      .ban-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        opacity: 0;
+        background-color: transparent;
+        transition:
+          opacity 0.3s,
+          background-color 0.3s;
+        pointer-events: none;
+      }
+
+      .ban-card .status-label {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 15px;
+        letter-spacing: 1.5px;
+        padding: 2px 0 3px;
+        font-weight: bold;
+        opacity: 0;
+        transform: translateY(100%);
+        transition:
+          opacity 0.3s,
+          transform 0.3s;
+        z-index: 2;
+      }
+
+      /* ====== STATUS CLASSES ====== */
+      /* Re-picked — orange */
+      .pick-card.re-picked {
+        border-color: var(--c-repick) !important;
+        box-shadow: 0 0 18px var(--c-repick);
+      }
+      .pick-card.re-picked::before {
+        background-color: var(--c-repick);
+        opacity: var(--overlay-opacity);
+      }
+      .pick-card.re-picked img {
+        transform: scale(1.07);
+      }
+      .pick-card.re-picked .status-label {
+        background: var(--c-repick);
+        color: #000;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Stolen — orange */
+      .pick-card.stolen {
+        border-color: var(--c-stolen) !important;
+        box-shadow: 0 0 18px var(--c-stolen);
+      }
+      .pick-card.stolen::before {
+        background-color: var(--c-stolen);
+        opacity: var(--overlay-opacity);
+      }
+      .pick-card.stolen img {
+        transform: scale(1.07);
+      }
+      .pick-card.stolen .status-label {
+        background: var(--c-stolen);
+        color: #fff;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Banned now — red */
+      .pick-card.banned-now {
+        border-color: var(--c-banned) !important;
+        box-shadow: 0 0 18px var(--c-banned);
+      }
+      .pick-card.banned-now::before {
+        background-color: var(--c-banned);
+        opacity: var(--overlay-opacity);
+      }
+      .pick-card.banned-now img {
+        filter: grayscale(100%) brightness(0.4);
+      }
+      .pick-card.banned-now .status-label {
+        background: var(--c-banned);
+        color: #fff;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Re-banned — dark red */
+      .ban-card.re-banned {
+        border-color: var(--c-rebanned) !important;
+        box-shadow: 0 0 10px var(--c-rebanned);
+      }
+      .ban-card.re-banned::before {
+        background-color: var(--c-rebanned);
+        opacity: var(--overlay-opacity);
+      }
+      .ban-card.re-banned .status-label {
+        background: var(--c-rebanned);
+        color: #fff;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Picked now — orange */
+      .ban-card.picked-now {
+        border-color: var(--c-picked-now) !important;
+        box-shadow: 0 0 10px var(--c-picked-now);
+      }
+      .ban-card.picked-now::before {
+        background-color: var(--c-picked-now);
+        opacity: var(--overlay-opacity);
+      }
+      .ban-card.picked-now img {
+        filter: grayscale(0%) brightness(1) !important;
+        transform: scale(1.07);
+      }
+      .ban-card.picked-now .status-label {
+        background: var(--c-picked-now);
+        color: #000;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Ghost game number — orange tint */
+      #gameNumberCenter {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 90px;
+        color: rgba(255, 114, 0, 0.08);
+        letter-spacing: 14px;
+        pointer-events: none;
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="gameNumberCenter">G1</div>
+
+    <!-- LEFT (Blue) -->
+    <div class="panel blue">
+      <div class="panel-header">
+        DRAFT RECAP - &nbsp;<span id="gameLabel1">GAME 1</span>
+      </div>
+      <div class="picks" id="camp1-picks"></div>
+      <div class="bans" id="camp1-bans"></div>
+    </div>
+
+    <!-- RIGHT (Red) -->
+    <div class="panel red">
+      <div class="panel-header">
+        DRAFT RECAP - &nbsp;<span id="gameLabel2">GAME 1</span>
+      </div>
+      <div class="picks" id="camp2-picks"></div>
+      <div class="bans" id="camp2-bans"></div>
+    </div>
+
+    <script>
+      let previousDraft = null;
+      let currentDraft = null;
+      let refreshInterval = null;
+
+      async function updateGameNumber() {
+        try {
+          const r = await fetch("/api/matchdata");
+          const d = await r.json();
+          const n = d.game_number || 1;
+          document.getElementById("gameNumberCenter").textContent = `G${n}`;
+          document.getElementById("gameLabel1").textContent = `GAME ${n}`;
+          document.getElementById("gameLabel2").textContent = `GAME ${n}`;
+        } catch (e) {}
+      }
+
+      function parseTeamData(teamObj) {
+        if (!teamObj) return { name: "", picks: [], bans: [] };
+        const picks = [],
+          bans = [];
+        if (teamObj.playerlist && Array.isArray(teamObj.playerlist)) {
+          teamObj.playerlist.forEach((p) => {
+            picks.push({ hero: p.hero || null });
+            bans.push({ hero: p.banhero || null });
+          });
+        }
+        return { name: teamObj.teamname || "", picks, bans };
+      }
+
+      async function fetchAllData() {
+        try {
+          const r = await fetch("/database/savedmatch/matchdata1.json");
+          previousDraft = await r.json();
+          await fetchCurrentData();
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      async function fetchCurrentData() {
+        try {
+          const r = await fetch("/database/matchdatateam.json");
+          currentDraft = await r.json();
+          renderAll();
+          updateGameNumber();
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      function startAutoRefresh() {
+        if (refreshInterval) clearInterval(refreshInterval);
+        refreshInterval = setInterval(fetchCurrentData, 1000);
+      }
+      function stopAutoRefresh() {
+        if (refreshInterval) {
+          clearInterval(refreshInterval);
+          refreshInterval = null;
+        }
+      }
+
+      function isEmpty(h) {
+        return !h || h === "idle" || h === "";
+      }
+
+      function renderAll() {
+        if (!currentDraft?.teamdata || !previousDraft?.teamdata) return;
+        const curBlue = parseTeamData(currentDraft.teamdata.blueteam);
+        const curRed = parseTeamData(currentDraft.teamdata.redteam);
+        if (!curBlue || !curRed) return;
+
+        const prevBlue = parseTeamData(previousDraft.teamdata.blueteam);
+        const prevRed = parseTeamData(previousDraft.teamdata.redteam);
+
+        let displayLeft = prevBlue,
+          displayRight = prevRed,
+          needSwap = false;
+        if (prevBlue.name && curRed.name && prevBlue.name === curRed.name) {
+          displayLeft = prevRed;
+          displayRight = prevBlue;
+          needSwap = true;
+        } else if (
+          prevRed.name &&
+          curBlue.name &&
+          prevRed.name === curBlue.name
+        ) {
+          displayLeft = prevRed;
+          displayRight = prevBlue;
+          needSwap = true;
+        }
+
+        const cLP = curBlue.picks.map((h) => h.hero).filter((v) => !isEmpty(v));
+        const cRP = curRed.picks.map((h) => h.hero).filter((v) => !isEmpty(v));
+        const cAP = [...cLP, ...cRP];
+        const cAB = [
+          ...curBlue.bans.map((h) => h.hero),
+          ...curRed.bans.map((h) => h.hero),
+        ].filter((v) => !isEmpty(v));
+
+        buildPickRow("camp1-picks", displayLeft.picks, cLP, cRP, cAB);
+        buildBanRow("camp1-bans", displayLeft.bans, cAB, cAP);
+        buildPickRow("camp2-picks", displayRight.picks, cRP, cLP, cAB);
+        buildBanRow("camp2-bans", displayRight.bans, cAB, cAP);
+      }
+
+      function buildPickRow(id, heroList, listSelf, listOpp, listBanned) {
+        const container = document.getElementById(id);
+        if (!container) return;
+        const sClasses = ["re-picked", "stolen", "banned-now"];
+
+        let rebuild = false;
+        const ex = container.querySelectorAll(".pick-card");
+        if (ex.length !== heroList.length) rebuild = true;
+        else
+          heroList.forEach((s, i) => {
+            if (ex[i]?.dataset.hero !== (s?.hero || "")) rebuild = true;
+          });
+
+        if (rebuild) {
+          container.innerHTML = "";
+          heroList.forEach((slot) => {
+            const card = document.createElement("div");
+            card.className = "pick-card";
+            const h = slot?.hero;
+            card.dataset.hero = h || "";
+            if (!isEmpty(h)) {
+              const img = document.createElement("img");
+              img.src = `Assets/HeroPick/${h}.png`;
+              img.alt = h;
+              img.onerror = function () {
+                this.style.display = "none";
+              };
+              card.appendChild(img);
+            }
+            const lbl = document.createElement("span");
+            lbl.className = "status-label";
+            card.appendChild(lbl);
+            container.appendChild(card);
+          });
+        }
+
+        const cards = container.querySelectorAll(".pick-card");
+        heroList.forEach((slot, i) => {
+          const card = cards[i];
+          if (!card) return;
+          const h = slot?.hero;
+          if (isEmpty(h)) return;
+          let cls = "",
+            txt = "";
+          if (listSelf.includes(h)) {
+            cls = "re-picked";
+            txt = "REPICKED";
+          } else if (listOpp.includes(h)) {
+            cls = "stolen";
+            txt = "STOLEN";
+          } else if (listBanned.includes(h)) {
+            cls = "banned-now";
+            txt = "BANNED";
+          }
+          sClasses.forEach((c) => {
+            if (c !== cls) card.classList.remove(c);
+          });
+          if (cls && !card.classList.contains(cls)) card.classList.add(cls);
+          card.querySelector(".status-label").textContent = txt;
+        });
+      }
+
+      function buildBanRow(id, heroList, listBanned, listAllPicks) {
+        const container = document.getElementById(id);
+        if (!container) return;
+        const sClasses = ["re-banned", "picked-now"];
+
+        let rebuild = false;
+        const ex = container.querySelectorAll(".ban-card");
+        if (ex.length !== heroList.length) rebuild = true;
+        else
+          heroList.forEach((s, i) => {
+            if (ex[i]?.dataset.hero !== (s?.hero || "")) rebuild = true;
+          });
+
+        if (rebuild) {
+          container.innerHTML = "";
+          heroList.forEach((slot) => {
+            const card = document.createElement("div");
+            card.className = "ban-card";
+            const h = slot?.hero;
+            card.dataset.hero = h || "";
+            if (!isEmpty(h)) {
+              const img = document.createElement("img");
+              img.src = `Assets/HeroPick/${h}.png`;
+              img.alt = h;
+              img.onerror = function () {
+                this.style.display = "none";
+              };
+              card.appendChild(img);
+            }
+            const lbl = document.createElement("span");
+            lbl.className = "status-label";
+            card.appendChild(lbl);
+            container.appendChild(card);
+          });
+        }
+
+        const cards = container.querySelectorAll(".ban-card");
+        heroList.forEach((slot, i) => {
+          const card = cards[i];
+          if (!card) return;
+          const h = slot?.hero;
+          if (isEmpty(h)) return;
+          let cls = "",
+            txt = "";
+          if (listBanned.includes(h)) {
+            cls = "re-banned";
+            txt = "RE-BANNED";
+          } else if (listAllPicks.includes(h)) {
+            cls = "picked-now";
+            txt = "PICKED";
+          }
+          sClasses.forEach((c) => {
+            if (c !== cls) card.classList.remove(c);
+          });
+          if (cls && !card.classList.contains(cls)) card.classList.add(cls);
+          card.querySelector(".status-label").textContent = txt;
+        });
+      }
+
+      fetchAllData();
+      startAutoRefresh();
+      window.addEventListener("beforeunload", stopAutoRefresh);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MVP Display - MPL Card</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @font-face {
+        font-family: "MPLFont";
+        src:
+          url("Assets/Font/MPLFont.ttf") format("truetype"),
+          url("Assets/Font/MPLFont.otf") format("opentype");
+        font-weight: normal;
+      }
+
+      :root {
+        --bg1: #4a1200;
+        --bg2: #2a0a00;
+        --bg3: #0d0000;
+        --cyan: #ffb380;
+        --accent: #ff7200;
+        --accent-red: #ff0101;
+        --white: #ffffff;
+        --font: "Bebas Neue", "Oswald", "Impact", "Arial Narrow", sans-serif;
+        --font-body: "Oswald", "Arial Narrow", sans-serif;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: transparent;
+        font-family: var(--font);
+        font-weight: 400;
+        color: var(--white);
+      }
+
+      .card {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: none;
+        overflow: hidden;
+        background: transparent;
+      }
+
+      /* --- PRESENTED BY --- */
+      .presented {
+        position: absolute;
+        top: 56px;
+        left: 80px;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        font-size: 44px;
+        letter-spacing: 3px;
+        animation: fadeDown 0.7s both;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
+      }
+      .presented img {
+        height: 62px;
+        display: block;
+      }
+      .presented img[src=""],
+      .presented:not(.has-logo) img {
+        display: none;
+      }
+      #sponsor-name {
+        font-size: 54px;
+        letter-spacing: 2px;
+      }
+
+      /* --- BIG MVP — dark gradient para readable sa orange bg --- */
+      .mvp-text {
+        position: absolute;
+        left: 70px;
+        top: 60px;
+        z-index: 5;
+        font-size: 760px;
+        line-height: 1;
+        letter-spacing: 0;
+        transform: scaleY(1.2);
+        transform-origin: top left;
+        white-space: nowrap;
+        background: linear-gradient(
+          180deg,
+          #2a0a00 0%,
+          #1a0500 40%,
+          #4a0a00 70%,
+          #8b0000 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6))
+          drop-shadow(0 0 30px rgba(255, 114, 0, 0.15));
+        animation: mvpIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+        user-select: none;
+      }
+
+      /* --- PLAYER PHOTO --- */
+      .player {
+        position: absolute;
+        left: 70px;
+        bottom: 120px;
+        z-index: 10;
+        width: 640px;
+        height: 880px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        animation: floatY 4.5s ease-in-out 1.2s infinite;
+      }
+      #photo {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.65));
+        animation: riseIn 0.9s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      /* --- NAMEPLATE --- */
+      .nameplate {
+        position: absolute;
+        left: 70px;
+        bottom: 60px;
+        z-index: 15;
+        width: 640px;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        background: none;
+        filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.6))
+          drop-shadow(0 0 14px rgba(255, 114, 0, 0.35));
+        animation: slideLeft 0.8s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      /* angled dark body with cut corners */
+      .nameplate::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background: linear-gradient(
+          100deg,
+          #5a1600 0%,
+          #2a0a00 55%,
+          #1a0500 100%
+        );
+        clip-path: polygon(
+          0 0,
+          calc(100% - 34px) 0,
+          100% 34px,
+          100% 100%,
+          0 100%
+        );
+      }
+      /* orange-red accent bar on the left + glowing bottom line */
+      .nameplate::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background:
+          linear-gradient(180deg, #ff7200, #ff0101) left / 12px 100% no-repeat,
+          linear-gradient(90deg, #ff7200, #ff0101 60%, transparent) bottom /
+            100% 5px no-repeat;
+        clip-path: polygon(
+          0 0,
+          calc(100% - 34px) 0,
+          100% 34px,
+          100% 100%,
+          0 100%
+        );
+        pointer-events: none;
+      }
+      .nameplate > * {
+        position: relative;
+        z-index: 2;
+      }
+      .nameplate .tlogo {
+        width: 110px;
+        height: 100%;
+        flex: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 12px;
+        border-right: 2px solid rgba(255, 114, 0, 0.6);
+      }
+      .nameplate .tlogo img {
+        max-width: 80%;
+        max-height: 80%;
+        object-fit: contain;
+      }
+      .nameplate .tlogo img[src=""] {
+        display: none;
+      }
+      #team-tag {
+        font-size: 54px;
+        padding: 0 28px;
+        color: var(--cyan);
+        letter-spacing: 2px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+      }
+      #nickname {
+        flex: 1;
+        font-size: 92px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-left: 32px;
+        padding-right: 20px;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
+      }
+
+      /* --- HERO ART --- */
+      .hero-art {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 1050px;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+      }
+      #hero-splash {
+        height: 100%;
+        max-width: 100%;
+        object-fit: cover;
+        object-position: center top;
+        -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 35%);
+        mask-image: linear-gradient(90deg, transparent 0%, #000 35%);
+        animation: fadeIn 1.1s 0.15s both;
+      }
+      .hero-art.icon-mode {
+        align-items: center;
+        padding-right: 130px;
+      }
+      .hero-art.icon-mode #hero-splash {
+        height: 640px;
+        width: 640px;
+        max-width: none;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 6px solid var(--cyan);
+        box-shadow: 0 0 80px rgba(255, 114, 0, 0.45);
+        -webkit-mask-image: none;
+        mask-image: none;
+        image-rendering: auto;
+      }
+      .nameplate .tlogo.empty {
+        display: none;
+      }
+      .nameplate .role-icon {
+        width: 64px;
+        height: 64px;
+        flex: none;
+        margin-right: 48px;
+        object-fit: contain;
+        filter: brightness(0) invert(1)
+          drop-shadow(0 0 8px rgba(255, 114, 0, 0.9));
+      }
+      .nameplate .role-icon.empty {
+        display: none;
+      }
+      .hero-name {
+        position: absolute;
+        right: 40px;
+        bottom: 200px;
+        z-index: 12;
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        font-size: 64px;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        padding: 10px 6px;
+        background: rgba(74, 18, 0, 0.7);
+        border-left: 4px solid var(--cyan);
+        color: #ffffff;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
+      }
+      .team-corner {
+        position: absolute;
+        top: 40px;
+        right: 50px;
+        z-index: 20;
+        width: 130px;
+        height: 130px;
+        background: linear-gradient(135deg, #ff7200, #ff0101);
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeDown 0.7s 0.1s both;
+        box-shadow: 0 0 24px rgba(255, 114, 0, 0.4);
+      }
+      .team-corner img {
+        max-width: 80%;
+        max-height: 80%;
+        object-fit: contain;
+      }
+      .team-corner img[src=""] {
+        display: none;
+      }
+      .team-corner.empty {
+        display: none;
+      }
+
+      /* --- SPELL + ITEM BUILD --- */
+      .build {
+        position: absolute;
+        left: 800px;
+        bottom: 90px;
+        z-index: 15;
+        display: flex;
+        gap: 60px;
+        align-items: flex-end;
+        animation: riseIn 0.9s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      .block .label {
+        font-size: 36px;
+        letter-spacing: 3px;
+        margin-bottom: 8px;
+        padding-bottom: 4px;
+        border-bottom: 3px solid rgba(255, 255, 255, 0.85);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+      }
+      .slots {
+        display: flex;
+        gap: 14px;
+        padding-top: 12px;
+      }
+      .spell-slot {
+        width: 112px;
+        height: 112px;
+        border-radius: 50%;
+        background: transparent;
+        overflow: hidden;
+        border: none;
+      }
+      .spell-slot img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .item-slot {
+        width: 112px;
+        height: 112px;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .item-slot img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+
+      /* --- KDA --- */
+      .kda-block {
+        position: absolute;
+        left: 800px;
+        bottom: 310px;
+        z-index: 15;
+        animation: riseIn 0.9s 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      .kda-block .label {
+        display: inline-block;
+        font-size: 36px;
+        letter-spacing: 3px;
+        margin-bottom: 0;
+        padding-bottom: 4px;
+        border-bottom: 3px solid rgba(255, 255, 255, 0.85);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+      }
+      .kda-value {
+        font-size: 200px;
+        line-height: 1;
+        letter-spacing: 3px;
+        color: #ffffff;
+        text-shadow:
+          0 0 30px rgba(255, 114, 0, 0.55),
+          0 0 60px rgba(255, 1, 1, 0.3),
+          5px 5px 0 rgba(0, 0, 0, 0.45);
+      }
+
+      /* --- FOOTER TAG --- */
+      .footer-tag {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 14px;
+        z-index: 12;
+        text-align: center;
+        font-size: 22px;
+        letter-spacing: 6px;
+        color: rgba(255, 255, 255, 0.75);
+        text-transform: uppercase;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+      }
+
+      @keyframes floatY {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-14px);
+        }
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes fadeDown {
+        from {
+          opacity: 0;
+          transform: translateY(-40px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @keyframes riseIn {
+        from {
+          opacity: 0;
+          transform: translateY(80px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @keyframes slideLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-120px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @keyframes mvpIn {
+        from {
+          opacity: 0;
+          transform: translateX(-200px) scale(0.96);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card" id="main-display">
+      <div class="presented" id="presented">
+        <span>PRESENTED BY</span>
+        <img id="sponsor-logo" src="" alt="" />
+        <span id="sponsor-name"></span>
+      </div>
+
+      <div class="mvp-text">MVP</div>
+
+      <div class="hero-art">
+        <img id="hero-splash" src="" alt="Hero" />
+      </div>
+      <div class="hero-name" id="hero-name"></div>
+
+      <div class="team-corner empty" id="team-corner">
+        <img id="team-corner-img" src="" alt="" />
+      </div>
+
+      <div class="player">
+        <img id="photo" src="Assets/player/noplayer.png" alt="Player" />
+      </div>
+
+      <div class="nameplate">
+        <div class="tlogo"><img id="team-logo" src="" alt="" /></div>
+        <div id="team-tag"></div>
+        <div id="nickname">NICKNAME</div>
+        <img class="role-icon empty" id="role-icon" src="" alt="" />
+      </div>
+
+      <div class="kda-block">
+        <div class="label">K / D / A</div>
+        <div class="kda-value" id="kda">0/0/0</div>
+      </div>
+
+      <div class="build">
+        <div class="block">
+          <div class="label">SPELL</div>
+          <div class="slots"><div class="spell-slot" id="spell"></div></div>
+        </div>
+        <div class="block">
+          <div class="label">ITEM BUILD</div>
+          <div class="slots" id="items"></div>
+        </div>
+      </div>
+
+      <div class="footer-tag" id="footer-tag"></div>
+    </div>
+
+    <script>
+      // ---- CONFIG (palitan mo dito) ----
+      const SPONSOR_NAME = "";
+      const SPONSOR_LOGO = "";
+      const FOOTER_TEXT = "";
+
+      const LANE_ICONS = {
+        gold: "Assets/lane/gold.png",
+        junggle: "Assets/lane/junggle.png",
+        jungle: "Assets/lane/junggle.png",
+        mid: "Assets/lane/mid.png",
+        roam: "Assets/lane/roam.png",
+        exp: "Assets/lane/exp.png",
+      };
+
+      const display = document.getElementById("main-display");
+      const $ = (id) => document.getElementById(id);
+
+      $("sponsor-name").textContent = SPONSOR_NAME;
+      if (SPONSOR_LOGO) {
+        $("sponsor-logo").src = SPONSOR_LOGO;
+        $("presented").classList.add("has-logo");
+      }
+      if (!SPONSOR_NAME && !SPONSOR_LOGO) $("presented").style.display = "none";
+      $("footer-tag").textContent = FOOTER_TEXT;
+
+      function setRole(lane) {
+        const roleEl = $("role-icon");
+        roleEl.onerror = () => roleEl.classList.add("empty");
+        if (LANE_ICONS[lane]) {
+          roleEl.src = LANE_ICONS[lane];
+          roleEl.classList.remove("empty");
+        } else {
+          roleEl.classList.add("empty");
+        }
+      }
+
+      async function lookupLane(nickname) {
+        try {
+          const res = await fetch("/api/matchdata", { cache: "no-store" });
+          if (!res.ok) return "";
+          const data = await res.json();
+          const teams = data?.teamdata || {};
+          const target = String(nickname || "")
+            .trim()
+            .toLowerCase();
+          for (const key of Object.keys(teams)) {
+            const list = teams[key]?.playerlist || [];
+            const found = list.find(
+              (p) =>
+                String(p?.name || "")
+                  .trim()
+                  .toLowerCase() === target,
+            );
+            if (found)
+              return String(found.lane || "")
+                .toLowerCase()
+                .trim();
+          }
+        } catch (e) {
+          console.error("Lane lookup error:", e);
+        }
+        return "";
+      }
+
+      if (location.search.includes("bg")) {
+        document.body.style.background =
+          "linear-gradient(135deg,#4a1200,#0d0000)";
+      }
+
+      function fetchMvp() {
+        fetch("/api/mvp")
+          .then((r) => r.json())
+          .then((d) => update(d.mvp))
+          .catch((e) => console.error("Gagal load MVP:", e));
+      }
+
+      function update(m) {
+        if (!m) {
+          display.style.display = "none";
+          return;
+        }
+        display.style.display = "block";
+
+        const s = m.stats || {};
+        $("photo").src = m.playerPhoto || "Assets/player/noplayer.png";
+        $("nickname").textContent = m.nickname || "PLAYER";
+        $("kda").textContent = (m.stats && m.stats.KDA) || "0/0/0";
+
+        setRole(
+          String(m.lane || m.role || "")
+            .toLowerCase()
+            .trim(),
+        );
+        if (
+          !LANE_ICONS[
+            String(m.lane || m.role || "")
+              .toLowerCase()
+              .trim()
+          ]
+        ) {
+          lookupLane(m.nickname).then((lane) => setRole(lane));
+        }
+
+        $("hero-splash").src = m.heroSplash || m.heroImg || "";
+        $("hero-name").textContent = m.heroName || "";
+        $("hero-name").style.display = m.heroName ? "block" : "none";
+
+        $("team-tag").textContent = m.team || "";
+        $("team-tag").style.display = m.team ? "block" : "none";
+        $("team-logo").src = m.teamLogo || "";
+        document
+          .querySelector(".nameplate .tlogo")
+          .classList.toggle("empty", !m.teamLogo);
+        $("team-corner-img").src = m.teamLogo || "";
+        $("team-corner").classList.toggle("empty", !m.teamLogo);
+
+        const spell = $("spell");
+        spell.innerHTML = "";
+        if (s.SPELL) {
+          const img = new Image();
+          img.src = `Assets/itemandspell/${s.SPELL}.png`;
+          img.onerror = () => (img.style.display = "none");
+          spell.appendChild(img);
+        }
+
+        const items = $("items");
+        items.innerHTML = "";
+        for (let i = 1; i <= 6; i++) {
+          const box = document.createElement("div");
+          box.className = "item-slot";
+          const name = s[`ITEM ${i}`];
+          if (name) {
+            const img = new Image();
+            img.src = `Assets/itemandspell/${name}.png`;
+            img.onerror = () => (img.style.display = "none");
+            box.appendChild(img);
+          }
+          items.appendChild(box);
+        }
+      }
+
+      const socket = new WebSocket(`ws://${window.location.host}`);
+      socket.onopen = () => {
+        console.log("WS Connected");
+        fetchMvp();
+      };
+      socket.onmessage = (e) => {
+        const msg = JSON.parse(e.data);
+        if (msg.type === "mvp_update") update(msg.data);
+      };
+      socket.onclose = () => setTimeout(() => window.location.reload(), 3000);
+    </script>
+  </body>
+</html>

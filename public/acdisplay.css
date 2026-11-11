@@ -1,0 +1,378 @@
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Rajdhani:wght@700&display=swap");
+
+@font-face {
+  font-family: "myfonts";
+  src: url("Assets/Font/big_noodle_titling.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --primarycolor: #fff;
+  --fontcolor: #fff;
+  --green: 255, 114, 0;
+  --teal: 255, 1, 1;
+  --cut: 16px;
+  --anim-duration: 0.6s;
+  --anim-easing: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body {
+  font-family: "Bebas Neue", sans-serif;
+  color: var(--fontcolor);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1 {
+  text-align: center;
+  font-size: 1em;
+}
+
+/* ===========================
+   SCHEDULE CARD
+=========================== */
+.schedule {
+  position: relative;
+  width: 650px;
+  min-height: 190px;
+  display: flex;
+  flex-direction: column;
+  margin: 35px auto;
+  text-align: center;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse 45% 90% at 12% 55%,
+      rgba(var(--green), 0.2),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 45% 90% at 88% 55%,
+      rgba(var(--teal), 0.2),
+      transparent 70%
+    ),
+    linear-gradient(
+      90deg,
+      #2a0a00 0%,
+      #1a0500 38%,
+      #0a0100 50%,
+      #1a0000 62%,
+      #2a0000 100%
+    );
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity var(--anim-duration) var(--anim-easing),
+    transform var(--anim-duration) var(--anim-easing),
+    filter var(--anim-duration) ease;
+}
+
+.schedule::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgb(var(--green)),
+    rgb(var(--green)) 45%,
+    rgb(var(--teal)) 55%,
+    rgb(var(--teal))
+  );
+  box-shadow: 0 0 10px rgba(var(--teal), 0.6);
+}
+
+.schedule.hidden {
+  display: none;
+}
+
+.schedule.slide-in {
+  animation: scheduleSlideIn 0.45s cubic-bezier(0.2, 0.9, 0.4, 1.1) both;
+}
+
+@keyframes scheduleSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.schedule.slide-out {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+
+/* TITLE BAR */
+.schedule > :first-child:not(.team-container) {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  margin: 0;
+  padding: 0 var(--cut);
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  background: linear-gradient(
+    90deg,
+    #cc5a00 0%,
+    #ff8c00 30%,
+    #ff4040 70%,
+    #cc0000 100%
+  );
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 2px 12px rgba(var(--green), 0.25);
+}
+
+/* TEAM */
+.team-container {
+  position: relative;
+  z-index: 1;
+  width: 650px;
+  height: 150px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 25px;
+}
+
+.team {
+  flex: 1;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logoholder {
+  width: 100%;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoholder img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.18))
+    drop-shadow(0 3px 4px rgba(0, 0, 0, 0.6));
+  transition: transform 0.35s ease;
+}
+
+.schedule.slide-in .logoholder img {
+  animation: innerPan 0.4s ease-out both;
+}
+
+@keyframes innerPan {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* TEXT */
+.time {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  letter-spacing: 2px;
+  color: var(--fontcolor);
+  background: linear-gradient(
+    90deg,
+    rgba(var(--green), 0.16),
+    rgba(0, 0, 0, 0.45) 50%,
+    rgba(var(--teal), 0.16)
+  );
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.teamnameholder {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 30px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: white;
+  text-shadow:
+    0 0 10px rgba(255, 255, 255, 0.25),
+    0 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.schedule.slide-in .teamnameholder,
+.schedule.slide-in .time,
+.schedule.slide-in .scorebox {
+  animation: innerPan 0.4s ease-out both;
+}
+
+/* SCORE */
+.scorebox {
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.box {
+  width: 33.333px;
+  margin: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+p {
+  font-size: 100px;
+  color: #fff;
+  text-shadow:
+    0 0 18px rgba(var(--teal), 0.35),
+    0 3px 6px rgba(0, 0, 0, 0.7);
+}
+
+.scorebox .box:first-child p {
+  text-shadow:
+    0 0 18px rgba(var(--green), 0.45),
+    0 3px 6px rgba(0, 0, 0, 0.7);
+}
+
+.scorebox > :not(.box) {
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgb(var(--teal));
+  text-shadow: 0 0 8px rgba(var(--teal), 0.7);
+  transform: skewX(-12deg);
+}
+
+/* ===========================
+   CASTERS PAGE (same size as 4-match block)
+=========================== */
+.casters-page {
+  position: relative;
+  width: 650px; /* same width ng .schedule */
+  min-height: 190px; /* same min-height ng .schedule */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 35px auto; /* same margin ng .schedule */
+  padding: 0;
+  overflow: hidden;
+
+  /* Same dark background gradient */
+  background:
+    radial-gradient(
+      ellipse 45% 90% at 12% 55%,
+      rgba(var(--green), 0.2),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 45% 90% at 88% 55%,
+      rgba(var(--teal), 0.2),
+      transparent 70%
+    ),
+    linear-gradient(
+      90deg,
+      #2a0a00 0%,
+      #1a0500 38%,
+      #0a0100 50%,
+      #1a0000 62%,
+      #2a0000 100%
+    );
+
+  /* Same cut corners */
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity var(--anim-duration) var(--anim-easing),
+    transform var(--anim-duration) var(--anim-easing),
+    filter var(--anim-duration) ease;
+}
+
+/* Same neon line sa baba */
+.casters-page::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgb(var(--green)),
+    rgb(var(--green)) 45%,
+    rgb(var(--teal)) 55%,
+    rgb(var(--teal))
+  );
+  box-shadow: 0 0 10px rgba(var(--teal), 0.6);
+}
+
+.casters-page.hidden {
+  display: none !important;
+}
+
+/* SAME animation as schedule cards */
+.casters-page.slide-in {
+  animation: scheduleSlideIn 0.45s cubic-bezier(0.2, 0.9, 0.4, 1.1) both;
+}
+
+.casters-page.slide-out {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+
+.casters-page img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Fill ang buong container */
+  object-position: center top;
+  display: block;
+}

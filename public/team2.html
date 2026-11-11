@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Team 2 Line-Up</title>
+    <!-- Idinagdag na Font para kapareho ng TEAM LINE UP -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --glow: 224, 0, 0;
+        --logo-opacity: 0.18; /* opacity ng team logo sa likod (0 - 1) */
+        --fade-start: 74%; /* kung saan nagsisimulang mag-fade ang baba ng player */
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: transparent;
+        font-family: "Arial Black", "Impact", sans-serif;
+      }
+
+      .stage {
+        width: 1920px;
+        height: 1080px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform-origin: center center;
+        background: transparent;
+        overflow: hidden;
+      }
+
+      /* ---------- BACKGROUND LOGO ---------- */
+      .bg-logo {
+        position: absolute;
+        left: 50%;
+        top: calc(45% + 100px); /* sumabay sa pagbaba ng mga player */
+        transform: translate(-50%, -50%);
+        width: 850px;
+        height: 850px;
+        opacity: var(--logo-opacity);
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+      }
+
+      .bg-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      /* ---------- PLAYERS ROW ---------- */
+      .players-container {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 250px; /* nakababa para hindi matakpan ang TEAM LINE UP */
+        height: 850px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        z-index: 2;
+        isolation: isolate;
+      }
+
+      .player-card {
+        position: relative;
+        width: 440px;
+        height: 850px;
+        margin: 0 -60px;
+        flex-shrink: 0;
+      }
+
+      .player-image-wrapper {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 60px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        filter: drop-shadow(0 0 22px rgba(var(--glow), 0.45))
+          drop-shadow(0 8px 22px rgba(0, 0, 0, 0.35));
+        z-index: 1;
+      }
+
+      .player-card:nth-child(1) .player-image-wrapper,
+      .player-card:nth-child(5) .player-image-wrapper {
+        z-index: 1;
+      }
+      .player-card:nth-child(2) .player-image-wrapper,
+      .player-card:nth-child(4) .player-image-wrapper {
+        z-index: 3;
+      }
+      .player-card:nth-child(3) .player-image-wrapper {
+        z-index: 5;
+      }
+
+      .player-image {
+        width: 145%;
+        height: 145%;
+        object-fit: contain;
+        object-position: center bottom;
+        opacity: 1;
+        -webkit-mask-image: linear-gradient(
+          to bottom,
+          #000 0%,
+          #000 var(--fade-start),
+          rgba(0, 0, 0, 0.6) 88%,
+          rgba(0, 0, 0, 0.25) 95%,
+          transparent 100%
+        );
+        mask-image: linear-gradient(
+          to bottom,
+          #000 0%,
+          #000 var(--fade-start),
+          rgba(0, 0, 0, 0.6) 88%,
+          rgba(0, 0, 0, 0.25) 95%,
+          transparent 100%
+        );
+      }
+
+      .player-card:nth-child(1) .player-image-wrapper {
+        animation-delay: 0.1s;
+      }
+      .player-card:nth-child(2) .player-image-wrapper {
+        animation-delay: 0.2s;
+      }
+      .player-card:nth-child(3) .player-image-wrapper {
+        animation-delay: 0.3s;
+      }
+      .player-card:nth-child(4) .player-image-wrapper {
+        animation-delay: 0.4s;
+      }
+      .player-card:nth-child(5) .player-image-wrapper {
+        animation-delay: 0.5s;
+      }
+
+      /* ---------- NAME TAG (TOP LAYER) ---------- */
+      .tag {
+        position: absolute;
+        left: 50%;
+        width: 300px;
+        margin-left: -150px;
+        animation: popIn 0.5s ease-out both;
+        z-index: 100;
+      }
+
+      .player-card:nth-child(1) .tag {
+        top: 560px;
+        animation-delay: 0.7s;
+      }
+      .player-card:nth-child(2) .tag {
+        top: 600px;
+        animation-delay: 0.8s;
+      }
+      .player-card:nth-child(3) .tag {
+        top: 530px;
+        animation-delay: 0.9s;
+      }
+      .player-card:nth-child(4) .tag {
+        top: 600px;
+        animation-delay: 1s;
+      }
+      .player-card:nth-child(5) .tag {
+        top: 560px;
+        animation-delay: 1.1s;
+      }
+
+      .name-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        height: 56px;
+        background: linear-gradient(135deg, #e00000 0%, #a80000 100%);
+        transform: skewX(-15deg);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.35);
+        padding: 0 20px;
+        position: relative;
+      }
+      .name-text {
+        transform: skewX(15deg);
+        font-size: 28px;
+        color: #fff;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
+      }
+      .role-icon {
+        transform: skewX(15deg);
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
+        filter: brightness(0) invert(1);
+      }
+
+      /* ---------- FULL TEAM NAME (IDINAGDAG) ---------- */
+      .team-fullname {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 20px; /* Ibinalik sa mas mababa base sa request */
+        text-align: center;
+        font-family:
+          "Bebas Neue", "Oswald", "Impact", "Arial Black", sans-serif;
+        font-size: 100px; /* Pinalaki para kapantay ng TEAM LINE UP */
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: #fff;
+        /* text-shadow:
+          0 0 18px rgba(var(--glow), 0.7),
+          0 4px 14px rgba(0, 0, 0, 0.6); */
+        z-index: 50;
+        pointer-events: none;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 0 80px;
+      }
+
+      /* ---------- BOTTOM INFO BAR ---------- */
+      .bottom {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 30px;
+        height: 150px;
+        z-index: 20;
+      }
+      .info-bar {
+        position: absolute;
+        top: 50px;
+        height: 64px;
+        width: 700px;
+        color: #fff;
+        font-size: 30px;
+        letter-spacing: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        text-transform: uppercase;
+      }
+      .info-bar.left {
+        right: 50%;
+        margin-right: 110px;
+        transform-origin: right center;
+      }
+      .info-bar.right {
+        left: 50%;
+        margin-left: 110px;
+        transform-origin: left center;
+      }
+
+      /* ---------- LOOP ANIMATIONS ---------- */
+      .player-image {
+        animation: floatY 4s ease-in-out infinite;
+        animation-delay: 1s;
+      }
+      .player-card:nth-child(2) .player-image {
+        animation-delay: 1.5s;
+      }
+      .player-card:nth-child(3) .player-image {
+        animation-delay: 1.2s;
+      }
+      .player-card:nth-child(4) .player-image {
+        animation-delay: 1.7s;
+      }
+      .player-card:nth-child(5) .player-image {
+        animation-delay: 1.4s;
+      }
+
+      .name-row,
+      .info-bar {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .name-row::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -60%;
+        width: 35%;
+        background: linear-gradient(
+          100deg,
+          transparent,
+          rgba(255, 255, 255, 0.5),
+          transparent
+        );
+        transform: skewX(-20deg);
+        pointer-events: none;
+        animation: shine 3.6s ease-in-out infinite;
+        animation-delay: 1.6s;
+      }
+      .player-card:nth-child(2) .name-row::after {
+        animation-delay: 1.9s;
+      }
+      .player-card:nth-child(3) .name-row::after {
+        animation-delay: 2.2s;
+      }
+      .player-card:nth-child(4) .name-row::after {
+        animation-delay: 2.5s;
+      }
+      .player-card:nth-child(5) .name-row::after {
+        animation-delay: 2.8s;
+      }
+      .info-bar.right::after {
+        animation-delay: 2s;
+      }
+
+      @keyframes floatY {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+      @keyframes shine {
+        0% {
+          left: -60%;
+        }
+        45%,
+        100% {
+          left: 130%;
+        }
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(120px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes popIn {
+        from {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage" id="stage">
+      <div class="bg-logo">
+        <img id="bg-team-logo" src="" alt="" />
+      </div>
+
+      <div class="players-container" id="players"></div>
+
+      <!-- IDINAGDAG: DIV PARA SA FULL TEAM NAME -->
+      <div class="team-fullname" id="team-fullname"></div>
+
+      <div class="bottom">
+        <div class="info-bar left" id="info-left"></div>
+        <div class="info-bar right" id="info-right"></div>
+      </div>
+    </div>
+
+    <script>
+      const DEFAULT_IMG = "Assets/Other/transparent.png";
+      const PLAYER_DIR = "Assets/player/";
+
+      const LANE_ICONS = {
+        gold: "Assets/lane/gold.png",
+        junggle: "Assets/lane/junggle.png",
+        jungle: "Assets/lane/junggle.png",
+        mid: "Assets/lane/mid.png",
+        roam: "Assets/lane/roam.png",
+        exp: "Assets/lane/exp.png",
+        none: "Assets/lane/None.png",
+      };
+
+      function fitStage() {
+        const stage = document.getElementById("stage");
+        if (!stage) return;
+        const scale = Math.min(
+          window.innerWidth / 1920,
+          window.innerHeight / 1080,
+        );
+        stage.style.transform = `translate(-50%, -50%) scale(${scale})`;
+      }
+      window.addEventListener("resize", fitStage);
+
+      function pickImage(p) {
+        let c = p.image || p.photo || p.img || p.picture || p.playerImage || "";
+        if (typeof c !== "string") return DEFAULT_IMG;
+        c = c.trim().replace(/\\/g, "/");
+        if (!c) return DEFAULT_IMG;
+        if (/^(data:|https?:|blob:)/i.test(c)) return c;
+        if (/^\/?Assets\//i.test(c)) return c.replace(/^\//, "");
+        c = c.replace(/^\/?player\//i, "");
+        if (!/\.(png|jpe?g|webp|gif)$/i.test(c)) c += ".png";
+        return PLAYER_DIR + c;
+      }
+
+      function buildImageChain(p) {
+        const name = String(p.name || "").trim();
+        const field = pickImage(p);
+        const images = [];
+        if (field !== DEFAULT_IMG) images.push(field);
+        if (name) images.push(PLAYER_DIR + encodeURIComponent(name) + ".png");
+        images.push(PLAYER_DIR + "noplayer.png");
+        images.push(DEFAULT_IMG);
+        return images;
+      }
+
+      function imgFallback(el) {
+        let list = [];
+        try {
+          list = JSON.parse(el.dataset.fallbacks || "[]");
+        } catch (e) {}
+        const next = list.shift();
+        el.dataset.fallbacks = JSON.stringify(list);
+        if (next) el.src = next;
+        else el.onerror = null;
+      }
+      window.imgFallback = imgFallback;
+
+      function playerCardHtml(p) {
+        const images = buildImageChain(p);
+        const laneIcon = LANE_ICONS[p.lane] || LANE_ICONS.none;
+        const name = p.name || "";
+
+        return `
+          <div class="player-card">
+            <div class="player-image-wrapper">
+              <img class="player-image" src="${images[0]}" alt="${name}"
+                   data-fallbacks='${JSON.stringify(images.slice(1))}'
+                   onerror="imgFallback(this)" />
+            </div>
+            <div class="tag">
+              <div class="name-row">
+                <span class="name-text">${name}</span>
+                <img class="role-icon" src="${laneIcon}" alt="" />
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      let lastSnapshot = "";
+
+      async function updateDisplay() {
+        try {
+          const res = await fetch("/api/matchdata", { cache: "no-store" });
+          if (!res.ok) return;
+          const data = await res.json();
+
+          const team = data?.teamdata?.redteam;
+          if (!team) return;
+
+          const left = data?.matchinfo?.tournament || data?.tournament || "";
+          const right =
+            data?.matchinfo?.round || data?.round || data?.match || "";
+          const logo = (team.logo || "").trim();
+          const players = team.playerlist || [];
+
+          // Kukunin ang fullname
+          const fullName = (team.fullname || "").trim();
+
+          // Isasama sa snapshot para mag-update kapag nagbago
+          const snapshot = JSON.stringify({
+            left,
+            right,
+            logo,
+            players,
+            fullName,
+          });
+          if (snapshot === lastSnapshot) return;
+          lastSnapshot = snapshot;
+
+          document.getElementById("info-left").textContent = left;
+          document.getElementById("info-right").textContent = right;
+
+          // I-display ang fullname
+          const fullNameEl = document.getElementById("team-fullname");
+          if (fullNameEl) {
+            fullNameEl.textContent = fullName;
+            fullNameEl.style.display = fullName ? "block" : "none";
+          }
+
+          const bgLogoEl = document.getElementById("bg-team-logo");
+          if (logo) {
+            bgLogoEl.src = logo;
+            bgLogoEl.style.display = "block";
+          } else {
+            bgLogoEl.style.display = "none";
+          }
+
+          const html = [];
+          for (let i = 0; i < 5; i++) {
+            html.push(playerCardHtml(players[i] || { name: "", lane: "none" }));
+          }
+          document.getElementById("players").innerHTML = html.join("");
+        } catch (e) {
+          console.error("❌ Fetch error:", e);
+        }
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        fitStage();
+        updateDisplay();
+        setInterval(updateDisplay, 2000);
+      });
+    </script>
+  </body>
+</html>

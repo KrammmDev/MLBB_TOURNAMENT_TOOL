@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="postgame2.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mobile Legends Match Stats</title>
+  </head>
+
+  <body>
+    <div class="mainbox">
+      <div class="upper">
+        <!-- BLUE SIDE -->
+        <div class="upperleft">
+          <div class="blueredside blue-side">
+            <div class="score blue-score-box">
+              <div id="blue"></div>
+            </div>
+
+            <div class="logo">
+              <img id="displayImage1" src="" alt="" />
+            </div>
+
+            <div class="teamname">
+              <div id="name-box-1" class="name-box"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GAME INFO -->
+        <div class="uppermid">
+          <div class="game-info">
+            <div id="gamenumber" class="game-number"></div>
+
+            <div class="scoreline">
+              <div class="score-dots" id="blue-score-display"></div>
+
+              <div class="divider"></div>
+
+              <div class="score-dots" id="red-score-display"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RED SIDE -->
+        <div class="upperright">
+          <div class="blueredside red-side">
+            <div class="teamname">
+              <div id="name-box-8" class="name-box"></div>
+            </div>
+
+            <div class="logo">
+              <img id="displayImage2" src="" alt="" />
+            </div>
+
+            <div class="score red-score-box">
+              <div id="red"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lower">
+        <!-- CENTER GAME TIME -->
+        <div class="lowermid">
+          <div class="gameduration">
+            <div class="gametimetext"></div>
+            <div class="gamedur" id="gametime"></div>
+          </div>
+        </div>
+
+        <!-- TEAM 2 PLAYERS -->
+        <div class="lowerright">
+          <div id="team2"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script/postgame.js"></script>
+    <script src="script/displaynicknamelogo.js"></script>
+
+    <script>
+      function createDots(containerId, total) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        container.innerHTML = "";
+
+        for (let i = 0; i < total; i++) {
+          const dot = document.createElement("span");
+          dot.classList.add("dot");
+          container.appendChild(dot);
+        }
+      }
+
+      // FIXED: Added BO1 support (format = 1 needs 1 win)
+      function getWinsNeeded(format) {
+        if (format === 1) return 1;      // BO1 - isang panalo lang
+        if (format === 3) return 2;      // BO3 - kailangan 2 panalo
+        if (format === 5) return 3;      // BO5 - kailangan 3 panalo
+        if (format === 7) return 4;      // BO7 - kailangan 4 na panalo
+        return 2;                         // default BO3
+      }
+
+      async function updateScoreDots() {
+        try {
+          const response = await fetch("/api/matchdata");
+          const data = await response.json();
+
+          const blueScore = data.teamdata.blueteam.score || 0;
+          const redScore = data.teamdata.redteam.score || 0;
+          const format = data.matchFormat || 3;
+
+          const winsNeeded = getWinsNeeded(format);
+
+          createDots("blue-score-display", winsNeeded);
+          createDots("red-score-display", winsNeeded);
+
+          document
+            .querySelectorAll("#blue-score-display .dot")
+            .forEach((dot, i) => {
+              dot.classList.toggle("active", i < blueScore);
+            });
+
+          document
+            .querySelectorAll("#red-score-display .dot")
+            .forEach((dot, i) => {
+              dot.classList.toggle("active", i < redScore);
+            });
+
+          // Optional: Update game number display if available
+          if (data.game_number !== undefined) {
+            const gameNumEl = document.getElementById("gamenumber");
+            if (gameNumEl) {
+              gameNumEl.textContent = `GAME ${data.game_number}`;
+            }
+          }
+
+          // Optional: Update match info display
+          if (data.matchInfo) {
+            const matchEl = document.getElementById("match-display");
+            if (matchEl && data.matchInfo.text) {
+              matchEl.textContent = data.matchInfo.text.toUpperCase();
+            }
+          }
+        } catch (e) {
+          console.error("Scoreline error:", e);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        updateScoreDots();
+        // Poll every 2 seconds to stay in sync with control panel
+        setInterval(updateScoreDots, 2000);
+      });
+    </script>
+  </body>
+</html>

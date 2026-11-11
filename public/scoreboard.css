@@ -1,0 +1,385 @@
+@font-face {
+  font-family: "myfonts";
+  src: url("Assets/Font/big_noodle_titling.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "MPL";
+  src: url("Assets/Font/MPL.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "eSports";
+  src: url("Assets/Font/eSports.ttf") format("truetype");
+}
+
+body {
+  font-family: "Bebas Neue", sans-serif;
+}
+
+.scoreboard {
+  width: 1920px;
+  height: 1080px;
+  /* background-image: url(Assets/Other/scoreboardmain.png); */
+}
+
+.upper {
+  width: 1920px;
+  height: 94px;
+  display: flex;
+}
+
+.lower {
+  width: 1920px;
+  height: 30px;
+  display: flex;
+}
+
+.mapbox {
+  width: 341.75px;
+  height: 100%;
+}
+
+.gb1 {
+  width: 52.08px;
+}
+
+.teamname {
+  width: 616px;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  font-size: 30px;
+  color: #fff;
+  margin-top: -32px;
+}
+
+.morelower {
+  width: 1920px;
+  height: 30px;
+  margin-top: 11px;
+  display: flex;
+}
+
+.morebox {
+  width: 822.5px;
+}
+
+.score {
+  width: 48px;
+  height: auto;
+  height: 100%;
+  color: #350066;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+}
+
+.tn {
+  width: 302px;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.tn .name-box {
+  font-size: 38px;
+  color: #000000;
+  white-space: nowrap;
+  overflow: hidden;
+  transform-origin: center;
+  display: inline-block;
+  max-width: 100%;
+  font-weight: 300;
+}
+
+.midmorebox {
+  width: 142.45px;
+  height: auto;
+}
+
+.logo {
+  width: 114.67px;
+  height: 114.67px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo img {
+  width: 95px;
+  height: 95px;
+  object-fit: contain;
+}
+
+.uppermid {
+  width: 906.61px;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.midscorename {
+  width: 906.61px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.teamnamesc {
+  width: 310px;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin-top: -37px;
+}
+
+/* Blue team - name sa kaliwa, dots sa kanan */
+.teamnamesc:first-child {
+  justify-content: flex-start;
+}
+
+/* Red team - dots sa kaliwa, name sa kanan */
+.teamnamesc:last-child {
+  justify-content: flex-end;
+}
+
+.tn {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Blue team name - left aligned */
+.teamnamesc:first-child .tn {
+  justify-content: flex-start;
+}
+
+/* Red team name - right aligned */
+.teamnamesc:last-child .tn {
+  justify-content: flex-end;
+}
+
+.name-box {
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 38px;
+  color: #000000;
+  font-weight: 300;
+}
+
+.score-dots {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* LEFT SIDE (Blue) */
+#blue-score-display {
+  flex-direction: row;
+}
+
+#blue-score-display .dot {
+  width: 10px;
+  height: 32px;
+  background: rgba(82, 82, 82, 0.548);
+  /* border-radius: 2px; */
+  transform: skewX(15deg);
+  transition: all 0.3s ease;
+}
+
+/* RIGHT SIDE (Red) */
+#red-score-display {
+  flex-direction: row-reverse;
+}
+
+#red-score-display .dot {
+  width: 10px;
+  height: 32px;
+  background: rgba(82, 82, 82, 0.548);
+  /* border-radius: 2px; */
+  transform: skewX(-15deg);
+  transition: all 0.3s ease;
+}
+
+.dot.active {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #7ac9b0 25%,
+    #3d927d 55%,
+    #2c6d5d 100%
+  );
+  /* box-shadow: 0 0 8px rgba(61, 146, 125, 0.5); */
+}
+
+#blue-score-display .dot.active {
+  background: linear-gradient(
+    135deg,
+    #e0f5ee 0%,
+    #7ac9b0 20%,
+    #3d927d 50%,
+    #2c6d5d 80%,
+    #163c33 100%
+  );
+  opacity: 1;
+}
+
+#red-score-display .dot.active {
+  background: linear-gradient(
+    135deg,
+    #e0f5ee 0%,
+    #7ac9b0 20%,
+    #3d927d 50%,
+    #2c6d5d 80%,
+    #163c33 100%
+  );
+  opacity: 1;
+}
+
+.vs-text {
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.gb2 {
+  width: 166.61px;
+  height: 100%;
+}
+
+.hide {
+  width: 0px;
+  height: 0px;
+  opacity: 0;
+}
+
+/* ===================== */
+/* MATCH INFO - 3rd box  */
+/* ===================== */
+.match-info {
+  width: 390px !important;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  margin-top: 52px;
+  transform: translateX(50px); /* Adjust value */
+}
+
+.match-info .match-line {
+  font-family: "MPL", "eSports", "myfonts", sans-serif;
+  font-size: 22px !important;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #000000 !important;
+  text-align: center;
+  white-space: nowrap;
+  margin-left: 17%;
+  font-size: 100px;
+  font-weight: 900;
+  /* -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3); */
+  /* text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.2); */
+}
+
+/* ===== SCORE + TURTLE STACK ===== */
+.score-turtle-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.turtle-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.turtle-icon-img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  /* GAWING PUTI ANG ICON */
+  filter: brightness(0) invert(1) drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.6));
+}
+
+/* ===== SCORE + TURTLE STACK ===== */
+.score-turtle-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.turtle-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.turtle-icon-img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  /* GAWING PUTI ANG ICON */
+  filter: brightness(0) invert(1) drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.6));
+}
+/* ===== TURTLE COUNTER STYLES ===== */
+.teamnamesc {
+  position: relative; /* Basehan ng turtle container */
+}
+
+.turtle-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex-shrink: 0;
+  position: absolute;
+  bottom: -29px; /* Inibaba para nasa ilalim ng score dots */
+  z-index: 5;
+}
+
+/* Blue side - naka-align sa ilalim ng score dots */
+.blue-turtle {
+  right: -3px;
+}
+
+/* Red side - naka-align sa ilalim ng score dots */
+.red-turtle {
+  left: -3px;
+}
+
+.turtle-icon-img {
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
+  /* GAWING PUTI ANG ICON */
+  filter: brightness(0) invert(1) drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.6));
+}

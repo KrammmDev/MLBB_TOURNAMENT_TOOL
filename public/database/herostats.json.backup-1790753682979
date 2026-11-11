@@ -1,0 +1,232 @@
+{
+  "_meta": {
+    "gamesPlayed": 19
+  },
+  "heroes": {
+    "Lapu Lapu": {
+      "picks": 2,
+      "bans": 1,
+      "wins": 1
+    },
+    "Esmeralda": {
+      "picks": 17,
+      "bans": 0,
+      "wins": 9
+    },
+    "Rafaela": {
+      "picks": 2,
+      "bans": 0,
+      "wins": 1
+    },
+    "Leomord": {
+      "picks": 1,
+      "bans": 0,
+      "wins": 1
+    },
+    "Layla": {
+      "picks": 1,
+      "bans": 0,
+      "wins": 1
+    },
+    "Freya": {
+      "picks": 17,
+      "bans": 18,
+      "wins": 9
+    },
+    "Lancelot": {
+      "picks": 18,
+      "bans": 2,
+      "wins": 8
+    },
+    "Karrie": {
+      "picks": 0,
+      "bans": 1,
+      "wins": 0
+    },
+    "Gloo": {
+      "picks": 0,
+      "bans": 17,
+      "wins": 0
+    },
+    "Yisunshin": {
+      "picks": 0,
+      "bans": 1,
+      "wins": 0
+    },
+    "Hilda": {
+      "picks": 1,
+      "bans": 16,
+      "wins": 0
+    },
+    "Grock": {
+      "picks": 1,
+      "bans": 0,
+      "wins": 0
+    },
+    "Claude": {
+      "picks": 19,
+      "bans": 0,
+      "wins": 10
+    },
+    "Hayabusa": {
+      "picks": 2,
+      "bans": 0,
+      "wins": 1
+    },
+    "Faramis": {
+      "picks": 17,
+      "bans": 0,
+      "wins": 8
+    },
+    "Nolan": {
+      "picks": 2,
+      "bans": 1,
+      "wins": 1
+    },
+    "Fanny": {
+      "picks": 0,
+      "bans": 18,
+      "wins": 0
+    },
+    "Harith": {
+      "picks": 2,
+      "bans": 1,
+      "wins": 1
+    },
+    "Ling": {
+      "picks": 17,
+      "bans": 2,
+      "wins": 8
+    },
+    "Atlas": {
+      "picks": 0,
+      "bans": 17,
+      "wins": 0
+    },
+    "Angela": {
+      "picks": 1,
+      "bans": 0,
+      "wins": 0
+    },
+    "Johnson": {
+      "picks": 0,
+      "bans": 1,
+      "wins": 0
+    },
+    "Jawhead": {
+      "picks": 0,
+      "bans": 1,
+      "wins": 0
+    },
+    "Gatotkaca": {
+      "picks": 0,
+      "bans": 2,
+      "wins": 0
+    },
+    "Lylia": {
+      "picks": 17,
+      "bans": 1,
+      "wins": 8
+    },
+    "Eudora": {
+      "picks": 1,
+      "bans": 0,
+      "wins": 1
+    },
+    "Chou": {
+      "picks": 2,
+      "bans": 0,
+      "wins": 2
+    },
+    "Joy": {
+      "picks": 0,
+      "bans": 1,
+      "wins": 0
+    },
+    "Franco": {
+      "picks": 0,
+      "bans": 1,
+      "wins": 0
+    },
+    "Zhuxin": {
+      "picks": 0,
+      "bans": 1,
+      "wins": 0
+    },
+    "Moskov": {
+      "picks": 0,
+      "bans": 17,
+      "wins": 0
+    },
+    "Granger": {
+      "picks": 1,
+      "bans": 16,
+      "wins": 0
+    },
+    "Suyou": {
+      "picks": 1,
+      "bans": 0,
+      "wins": 0
+    },
+    "Sora": {
+      "picks": 0,
+      "bans": 1,
+      "wins": 0
+    },
+    "Marcel": {
+      "picks": 0,
+      "bans": 1,
+      "wins": 0
+    },
+    "Fredrin": {
+      "picks": 1,
+      "bans": 0,
+      "wins": 1
+    },
+    "Phoveus": {
+      "picks": 0,
+      "bans": 1,
+      "wins": 0
+    },
+    "Argus": {
+      "picks": 0,
+      "bans": 1,
+      "wins": 0
+    },
+    "Irithel": {
+      "picks": 0,
+      "bans": 1,
+      "wins": 0
+    },
+    "Lunox": {
+      "picks": 16,
+      "bans": 1,
+      "wins": 8
+    },
+    "Ixia": {
+      "picks": 16,
+      "bans": 0,
+      "wins": 8
+    },
+    "Tigreal": {
+      "picks": 16,
+      "bans": 0,
+      "wins": 8
+    },
+    "Khaleed": {
+      "picks": 0,
+      "bans": 16,
+      "wins": 0
+    },
+    "Beleric": {
+      "picks": 0,
+      "bans": 16,
+      "wins": 0
+    },
+    "Yve": {
+      "picks": 0,
+      "bans": 16,
+      "wins": 0
+    }
+  }
+}
