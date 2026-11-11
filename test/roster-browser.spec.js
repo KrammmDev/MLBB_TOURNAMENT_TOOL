@@ -50,7 +50,7 @@ test(
         JSON.stringify({
           type: "init",
           data: {
-            "tournament-title": "MLBB Test League",
+            "tournament-title": "Fixture League",
             "sponsor-name": "Fixture partner",
           },
         }),
@@ -132,7 +132,7 @@ test(
     );
     assert.equal(
       await active.locator("#tournament-title").innerText(),
-      "MLBB Test League",
+      "Fixture League",
     );
     assert.equal(
       await active.locator("#team1-logo").getAttribute("data-source"),
@@ -142,6 +142,7 @@ test(
       await active.locator(".player-name-text").first().textContent(),
       data.teamdata.blueteam.playerlist[0].name,
     );
+    assert.equal(await active.locator("#sponsor-label").textContent(), "");
     const admin = await page("/broadcast-themes.html"),
       stale = await page("/broadcast-themes.html");
     await admin.waitForFunction(
@@ -257,11 +258,24 @@ test(
     );
     const stage = await active.locator("#stage").boundingBox();
     assert.ok(stage.width <= 1441 && stage.height <= 1001);
-    // Preserve legacy default-title behavior for empty branding values.
-  broadcast({ type: "update", data: { "tournament-title": "" } });
-  await active.waitForFunction(() => document.getElementById("tournament-title").textContent === "MLBB");
-  broadcast({ type: "update", data: { "tournament-title": "MLBB Test League" } });
-  // Metadata updates render as text and do not require a match write.
+    broadcast({ type: "clear" });
+    await active.waitForFunction(
+      () => document.getElementById("tournament-title").textContent === "",
+    );
+    assert.doesNotMatch(
+      await active.locator("body").innerText(),
+      /MLBB|WORLD CHAMPIONSHIP|BROADCAST OVERLAY|SHOW STARTS IN/,
+    );
+    // Empty branding values stay empty, without authored brand/title defaults.
+    broadcast({ type: "update", data: { "tournament-title": "" } });
+    await active.waitForFunction(
+      () => document.getElementById("tournament-title").textContent === "",
+    );
+    broadcast({
+      type: "update",
+      data: { "tournament-title": "Fixture League" },
+    });
+    // Metadata updates render as text and do not require a match write.
     broadcast({ type: "update", data: { "sponsor-name": "Partner <name>" } });
     await active.waitForFunction(
       () =>

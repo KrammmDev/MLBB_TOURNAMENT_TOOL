@@ -1,15 +1,19 @@
-/* Stage all styles before swapping; keep the previous look on asset failure. */
+/* Shared staged CSS activation. Legacy roster events/API remain compatibility aliases. */
 (function (root) {
   "use strict";
   const catalog = root.RosterThemes;
   let generation = 0;
-  async function apply(id) {
+  async function apply(id, output = "roster") {
     const theme = catalog.themes.find((theme) => theme.id === id);
-    if (!theme) throw Error("Unknown roster theme");
-    const attempt = ++generation;
+    if (!theme || !theme.outputs.includes(output))
+      throw Error("Unknown broadcast theme/output");
+    const attempt = ++generation,
+      key = output + "Theme",
+      ready = output + "Ready",
+      errorKey = output + "Error";
     if (
-      document.body.dataset.rosterTheme === id &&
-      document.body.dataset.rosterReady === "true"
+      document.body.dataset[key] === id &&
+      document.body.dataset[ready] === "true"
     )
       return theme;
     const old = [
@@ -17,16 +21,43 @@
       ],
       staged = [],
       timers = [];
+    function notify(kind, message) {
+      const detail = {
+        id,
+        output,
+        format: document.body.dataset.draftFormat || null,
+        ...(message ? { message } : {}),
+      };
+      document.dispatchEvent(
+        new CustomEvent("broadcast-theme-" + kind, { detail }),
+      );
+      if (root.parent !== root)
+        root.parent.postMessage(
+          { type: "broadcast-theme-" + kind, ...detail },
+          location.origin,
+        );
+      if (output === "roster") {
+        document.dispatchEvent(
+          new CustomEvent("roster-theme-" + kind, { detail }),
+        );
+        if (root.parent !== root)
+          root.parent.postMessage(
+            { type: "roster-theme-" + kind, ...detail },
+            location.origin,
+          );
+      }
+    }
     try {
+      const styles = output === "draft" ? theme.draftStyles : theme.styles;
       await Promise.all(
-        theme.styles.map(
+        styles.map(
           (href) =>
             new Promise((resolve, reject) => {
-              const link = document.createElement("link");
-              const timer = setTimeout(
-                () => reject(Error("Theme stylesheet timed out")),
-                8000,
-              );
+              const link = document.createElement("link"),
+                timer = setTimeout(
+                  () => reject(Error("Theme stylesheet timed out")),
+                  8000,
+                );
               timers.push(timer);
               link.rel = "stylesheet";
               link.href = href;
@@ -38,9 +69,9 @@
               };
               link.onerror = () => {
                 clearTimeout(timer);
-                // Existing Classic CSS imports optional web fonts. A loaded outer sheet can use
-                // its declared system fallback even when that font import is unavailable.
+                // Classic's already loaded outer stylesheet can use system fonts when its optional import fails.
                 if (
+                  output === "roster" &&
                   id === "classic" &&
                   href === "/overlay-display.css" &&
                   link.sheet
@@ -49,7 +80,7 @@
                 else reject(Error("Theme stylesheet could not load"));
               };
               staged.push(link);
-              document.head.appendChild(link);
+              document.head.append(link);
             }),
         ),
       );
@@ -57,49 +88,32 @@
         staged.forEach((link) => link.remove());
         return null;
       }
-      // One synchronous style swap: do not remove the old CSS while downloading the replacement.
       staged.forEach((link) => {
         link.media = "all";
         link.dataset.rosterStyle = "active";
       });
       old.forEach((link) => link.remove());
-      document.body.dataset.rosterTheme = id;
-      document.body.dataset.rosterReady = "true";
-      delete document.body.dataset.rosterError;
-      document.querySelector(".vs-text").textContent = theme.separator;
-      document.dispatchEvent(
-        new CustomEvent("roster-theme-ready", { detail: { id } }),
-      );
-      if (root.parent !== root)
-        root.parent.postMessage(
-          { type: "roster-theme-ready", id },
-          location.origin,
-        );
+      document.body.dataset[key] = id;
+      document.body.dataset[ready] = "true";
+      delete document.body.dataset[errorKey];
+      const separator = document.querySelector(".vs-text");
+      if (separator) separator.textContent = theme.separator;
+      notify("ready");
       return theme;
     } catch (error) {
       staged.forEach((link) => link.remove());
       if (attempt === generation) {
-        document.body.dataset.rosterError = error.message;
-        if (root.parent !== root)
-          root.parent.postMessage(
-            { type: "roster-theme-error", id, message: error.message },
-            location.origin,
-          );
-        document.dispatchEvent(
-          new CustomEvent("roster-theme-error", {
-            detail: { id, message: error.message },
-          }),
-        );
+        document.body.dataset[errorKey] = error.message;
+        notify("error", error.message);
       }
       throw error;
     } finally {
       timers.forEach(clearTimeout);
     }
   }
-  root.RosterThemeClient = {
-    apply,
-    cancel: () => {
-      generation++;
-    },
+  const cancel = () => {
+    generation++;
   };
+  root.BroadcastThemeClient = { apply, cancel };
+  root.RosterThemeClient = { apply: (id) => apply(id, "roster"), cancel };
 })(window);

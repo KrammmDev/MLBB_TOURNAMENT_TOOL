@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Display - 6 Bans with BO1</title>
     <style>
-        
+
     </style>
 </head>
 <body>
-    
+
 <div class="mainbox">
 
     <div class="upper">
@@ -23,19 +23,19 @@
 
                 <div class="banhero">
                     <div id="image-box-11" class="image-box"><img id="image-display-11" src=""></div>
-                    <div id="ban-left-1" class="box ban0"></div>  
+                    <div id="ban-left-1" class="box ban0"></div>
                 </div>
                 <div class="banhero">
                     <div id="image-box-12" class="image-box"><img id="image-display-12" src=""></div>
-                    <div id="ban-left-2" class="box ban0"></div>  
+                    <div id="ban-left-2" class="box ban0"></div>
                 </div>
                 <div class="banhero">
                     <div id="image-box-13" class="image-box"><img id="image-display-13" src=""></div>
-                    <div id="ban-left-3" class="box ban0"></div>  
+                    <div id="ban-left-3" class="box ban0"></div>
                 </div>
-                
+
             </div>
-            
+
             <div class="teamnameholder1">
                 <div id="name-box-1" ></div>
             </div>
@@ -65,12 +65,12 @@
                     <div id="image-box-16" class="image-box"><img id="image-display-16" src=""></div>
                     <div id="ban-right-1" class="box ban0"></div>
                 </div>
-                
+
 
             </div>
 
             <div class="bantextbox"></div>
-            
+
         </div>
 
     </div>
@@ -148,12 +148,12 @@
 
         <div class="lowermid">
             <div class="match-info-display">
-                <div id="match-display">MATCH 1 GAME 1</div>
+                <div id="match-display"></div>
             </div>
             <div class="upperlowermid">
 
                 <div class="teamlogo">
-                    <img id="displayImage1" src="" alt="Logo 2 Tidak Ada">
+                    <img id="displayImage1" src="" alt="">
                 </div>
 
                 <div class="score">
@@ -163,7 +163,7 @@
                 <!-- TIMER SA TABI NG VS - PLAIN NUMBER LANG -->
                 <div class="vs-container">
                     <div class="countdown">
-                        <span id="timer">24</span>
+                        <span id="timer"></span>
                     </div>
                     <!-- <div class="vs">VS</div> -->
                 </div>
@@ -173,16 +173,16 @@
                 </div>
 
                 <div class="teamlogo">
-                    <img id="displayImage2" src="" alt="Logo 2 Tidak Ada">
+                    <img id="displayImage2" src="" alt="">
                 </div>
 
             </div>
 
             <div class="lowerlowermid">
-                
-               
+
+
                 <div class="arrow">
-                    <img id="arrow" src="" alt="Direction">
+                    <img id="arrow" src="" alt="">
                 </div>
 
             </div>
@@ -199,7 +199,7 @@
                     </div>
                     <div id="image-box-10" class="image-box"><img id="image-display-10" src=""></div>
                     <div class="name-image-box" id="name-image-box-14"></div>
-                    <div id="pick-right-5" class="box pick"></div> 
+                    <div id="pick-right-5" class="box pick"></div>
                 </div>
 
                 <div class="heropick">
@@ -210,7 +210,7 @@
                     <div class="name-image-box" id="name-image-box-13"></div>
                     <div id="pick-right-4" class="box pick"></div>
                 </div>
-                
+
                 <div class="heropick">
                     <div class="lanelogo redlane">
                         <img id="player-lane-3-red" class="lane-icon" src="Assets/lane/none.png" alt="">
@@ -267,115 +267,13 @@
 
 </div>
 
-<audio id="hero-voice"></audio>
-<button class="audiob" onclick="new Audio().play().catch(e => console.log('Audio unlocked'))">Enable Audio</button>
-
-
-
-       <div class="phasebox"> <h2 id="phase"></h2>
-        
-
-
-
-<div class="hide">
-    <div id="image-box-15" class="image-box"><img id="image-display-15" src=""></div>
-    <div id="ban-left-5" class="box ban0"></div>  
-
-    <div id="image-box-20" class="image-box"><img id="image-display-20" src=""></div>
-    <div id="ban-right-5" class="box ban0"></div>
-
-    <div class="banhero">
-                    <div id="image-box-20" class="image-box"><img id="image-display-20" src=""></div>
-                    <div id="ban-right-5" class="box ban0"></div>
-                </div>
-                <div class="banhero">
-                    <div id="image-box-19" class="image-box"><img id="image-display-19" src=""></div>
-                    <div id="ban-right-4" class="box ban0"></div>
-                </div>
-
-    <div class="banhero">
-                    <div id="image-box-14" class="image-box"><img id="image-display-14" src=""></div>
-                    <div id="ban-left-4" class="box ban0"></div>  
-                </div>
-
-                <div class="banhero">
-                    <div id="image-box-15" class="image-box"><img id="image-display-15" src=""></div>
-                    <div id="ban-left-5" class="box ban0"></div>  
-                </div>
-
-                <div class="heropick">
-                    <div id="image-box-4" class="image-box"><img id="image-display-4" src=""></div>
-                    <div id="pick-left-4" class="box pick"></div>
-                </div>
-                <div class="heropick">
-                    <div id="image-box-5" class="image-box"><img id="image-display-5" src=""></div>
-                    <div id="pick-left-5" class="box pick"></div>
-                </div>
-
-</div>
-
+<audio id="hero-voice" hidden></audio>
+<div class="phasebox"><h2 id="phase"></h2></div>
+<script src="/script/match-state.js"></script>
+<script src="/script/match-client.js"></script>
+<script src="/script/roster-model.js"></script>
+<script src="/script/draft-model.js"></script>
+<script src="/script/draft-renderer.js"></script>
+<script src="/script/displayheroban6.js"></script>
 </body>
-
-<script src="script/displaynicknamelogo.js"></script>
-<script src="script/displayheroban6.js"></script>
-<script src="script/laneimg.js"></script>
-<script>
-  function createDots(containerId, total) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    container.innerHTML = "";
-    for (let i = 0; i < total; i++) {
-      const dot = document.createElement("span");
-      dot.classList.add("dot");
-      container.appendChild(dot);
-    }
-  }
-
-  // FIXED: Added BO1 support (format = 1 needs 1 win)
-  function getWinsNeeded(format) {
-    if (format === 1) return 1;      // BO1 - isang panalo lang
-    if (format === 3) return 2;      // BO3 - kailangan 2 panalo
-    if (format === 5) return 3;      // BO5 - kailangan 3 panalo
-    if (format === 7) return 4;      // BO7 - kailangan 4 na panalo
-    return 2;                         // default BO3
-  }
-
-  async function updateScoreDots() {
-    try {
-      const response = await fetch("/api/matchdata");
-      const data = await response.json();
-
-      const blueScore = data.teamdata.blueteam.score || 0;
-      const redScore = data.teamdata.redteam.score || 0;
-      const format = data.matchFormat || 3;
-      const winsNeeded = getWinsNeeded(format);
-
-      createDots("blue-score-display", winsNeeded);
-      createDots("red-score-display", winsNeeded);
-
-      document.querySelectorAll("#blue-score-display .dot").forEach((dot, i) => {
-        dot.classList.toggle("active", i < blueScore);
-      });
-      document.querySelectorAll("#red-score-display .dot").forEach((dot, i) => {
-        dot.classList.toggle("active", i < redScore);
-      });
-
-      // Update match display from API if available
-      if (data.matchInfo) {
-        const matchEl = document.getElementById("match-display");
-        if (matchEl && data.matchInfo.text) {
-          matchEl.textContent = data.matchInfo.text.toUpperCase();
-        }
-      }
-    } catch (e) {
-      console.error("Failed to update score dots:", e);
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    updateScoreDots();
-    // Poll every 2 seconds to stay in sync with control panel
-    setInterval(updateScoreDots, 2000);
-  });
-</script>
 </html>

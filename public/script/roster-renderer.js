@@ -69,7 +69,7 @@
       node.src = list[next++] || model.transparent;
     }
     function brandingView() {
-      text("tournament-title", stored("tournament-title", "MLBB"));
+      text("tournament-title", stored("tournament-title", ""));
       const subtitle = stored("tournament-subtitle");
       text("tournament-subtitle", subtitle);
       el("tournament-subtitle").style.display = subtitle
@@ -80,9 +80,9 @@
       document.querySelector(".badge-block").style.display = badge
         ? ""
         : "none";
-      text("bottom-logo", stored("bottom-logo", "MLBB"));
-      text("bottom-text", stored("bottom-text", "BROADCAST OVERLAY"));
-      text("sponsor-label", stored("sponsor-label", "PARTNER IN ESPORTS"));
+      text("bottom-logo", stored("bottom-logo", ""));
+      text("bottom-text", stored("bottom-text", ""));
+      text("sponsor-label", stored("sponsor-label", ""));
       const sponsor = stored("sponsor-name"),
         src = model.safeImage(stored("sponsor-image")),
         holder = el("sponsor-name");
@@ -95,11 +95,16 @@
           holder.replaceChildren(img);
         }
       } else holder.textContent = sponsor;
+      const sponsorLabel = stored("sponsor-label", "");
+      el("sponsor-label").style.display = sponsorLabel ? "" : "none";
       const block = document.querySelector(".sponsor-block");
+      block.classList.toggle("no-label", !sponsorLabel);
       block.classList.toggle("has-image", Boolean(src));
       block.style.display = src || sponsor ? "" : "none";
       const candidate = Number(stored("countdown-target"));
       target = Number.isFinite(candidate) ? candidate : 0;
+      const countdown = document.querySelector(".countdown-block");
+      if (countdown) countdown.style.display = target > 0 ? "" : "none";
       tick();
     }
     function tick() {
@@ -169,8 +174,8 @@
       brandingView();
       const blue = data.teamdata?.blueteam || {},
         red = data.teamdata?.redteam || {};
-      text("team1-code", blue.teamname || blue.name || "BLUE");
-      text("team2-code", red.teamname || red.name || "RED");
+      text("team1-code", blue.teamname || blue.name || "");
+      text("team2-code", red.teamname || red.name || "");
       text("blue-score", parseInt(blue.score, 10) || 0);
       text("red-score", parseInt(red.score, 10) || 0);
       text("coach-blue", blue.coach || "-");
@@ -203,7 +208,7 @@
       if (!pairs.length) {
         const empty = document.createElement("div");
         empty.className = "empty-state";
-        empty.textContent = "No Players";
+        empty.textContent = "";
         container.append(empty);
       }
       for (const pair of pairs) {

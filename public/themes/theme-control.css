@@ -284,3 +284,7 @@ iframe {
   color-scheme: normal;
   background: transparent;
 }
+
+#preview-output { padding:8px; border:1px solid var(--line); border-radius:6px; background:#151c27; color:#e8edf4; font:inherit; }
+.preview-heading { flex-wrap:wrap; gap:12px; }
+.preview-heading h2 { flex:1; }

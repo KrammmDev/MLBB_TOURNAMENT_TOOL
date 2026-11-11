@@ -39,3 +39,5 @@ body[data-roster-theme="classic"] .player-lane-icon {
     transition: none !important;
   }
 }
+
+.sponsor-block.no-label { grid-template-columns: 1fr; }
