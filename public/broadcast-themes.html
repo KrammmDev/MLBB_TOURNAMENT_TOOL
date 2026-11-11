@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>MLBB · Roster Themes</title>
+    <link rel="stylesheet" href="/themes/theme-control.css" />
+  </head>
+  <body>
+    <main>
+      <nav>
+        <a href="/hub.html">← Production hub</a
+        ><span>MLBB / BROADCAST TOOL</span>
+      </nav>
+      <header>
+        <div>
+          <p class="eyebrow">ROSTER GRAPHICS</p>
+          <h1>One roster. Three looks.</h1>
+          <p class="intro">
+            Preview with your current match data, then choose the look for your
+            roster output.
+          </p>
+        </div>
+        <div class="selection">
+          <span>SAVED SELECTION</span><strong id="active-theme">Loading…</strong
+          ><small>Roster output only</small>
+        </div>
+      </header>
+      <section
+        class="theme-grid"
+        id="theme-grid"
+        aria-label="Roster looks"
+      ></section>
+      <section class="preview-section" aria-label="Selected theme preview">
+        <div class="preview-heading">
+          <h2>Preview <span id="preview-label"></span></h2>
+          <span>1920 × 1080 · transparent background</span>
+        </div>
+        <div class="preview-surface">
+          <iframe id="theme-preview" title="Roster theme preview"></iframe>
+        </div>
+        <div class="actions">
+          <p id="theme-status" role="status" aria-live="polite">
+            Loading settings…
+          </p>
+          <button id="reload-settings" class="secondary">
+            Reload settings
+          </button>
+          <button id="previous-theme" class="secondary" disabled>
+            Preview previous look
+          </button>
+          <button id="activate-theme" disabled>Use for roster output</button>
+        </div>
+      </section>
+      <section class="obs-link">
+        <div>
+          <h2>OBS Browser Source</h2>
+          <p>
+            Use this URL at 1920 × 1080 to follow your saved roster selection.
+          </p>
+        </div>
+        <label class="sr-only" for="output-url">Roster Browser Source URL</label
+        ><input id="output-url" readonly /><button
+          id="copy-url"
+          class="secondary"
+        >
+          Copy URL
+        </button>
+      </section>
+      <footer>
+        These presets currently cover the roster graphic. Draft, in-game
+        scoreboard, MVP and postgame graphics keep their existing appearance.
+      </footer>
+    </main>
+    <script src="/script/roster-themes.js"></script>
+    <script src="/script/roster-theme-control.js"></script>
+  </body>
+</html>

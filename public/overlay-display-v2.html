@@ -4,9 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Broadcast Overlay Display</title>
-    <link rel="stylesheet" href="overlay-display-v2.css" />
+    <link data-roster-style="active" rel="stylesheet" href="overlay-display-v2.css" />
   </head>
-  <body>
+  <body data-roster-theme="arena">
     <!-- Fixed 1920x1080 stage, auto-scaled to fit the browser source -->
     <div class="overlay-stage" id="stage">
       <div class="bg-base"></div>
@@ -98,6 +98,13 @@
       </div>
     </div>
 
+    <script src="/script/match-state.js"></script>
+    <script src="/script/match-client.js"></script>
+    <script src="/script/roster-themes.js"></script>
+    <script src="/script/roster-model.js"></script>
+    <script src="/script/roster-theme-client.js"></script>
+    <script src="/script/roster-renderer.js"></script>
     <script src="overlay-display-v2.js"></script>
   </body>
 </html>
+
