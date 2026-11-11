@@ -1,0 +1,41 @@
+/* Shared robustness rules; layout and art direction stay in each preset. */
+.player-name-box {
+  min-width: 0;
+}
+.player-name-text {
+  min-width: 0;
+}
+.player-lane-icon {
+  object-fit: contain;
+  vertical-align: middle;
+  filter: brightness(0) invert(1);
+  flex-shrink: 0;
+}
+body[data-roster-theme="classic"] .player-lane-icon {
+  width: 40px;
+  height: 40px;
+  margin-left: 6px;
+}
+.team-code {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tournament-title {
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.sponsor-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (prefers-reduced-motion: reduce) {
+  .player-slide,
+  .player-card {
+    animation: none !important;
+    transition: none !important;
+  }
+}

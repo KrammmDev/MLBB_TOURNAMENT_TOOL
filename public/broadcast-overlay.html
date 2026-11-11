@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MLBB Roster Broadcast</title>
+    <link data-roster-style="active" rel="stylesheet" href="overlay-display.css" />
+  </head>
+  <body data-roster-theme="classic">
+    <!-- Fixed 1920x1080 stage, auto-scaled to fit the browser source -->
+    <div class="overlay-stage" id="stage" style="visibility:hidden">
+      <div class="bg-base"></div>
+
+      <!-- RIGHT: Player Slideshow (2 players at a time: blue + red) -->
+      <div class="player-slideshow" id="player-slideshow"></div>
+
+      <!-- TOP-LEFT: Tournament Title + Subtitle pill -->
+      <div class="tournament-block">
+        <h1 class="tournament-title" id="tournament-title">TOURNAMENT TITLE</h1>
+        <div class="tournament-subtitle" id="tournament-subtitle">
+          SUBTITLE HERE
+        </div>
+      </div>
+
+      <!-- TOP-RIGHT: Badge -->
+      <div class="badge-block">
+        <span id="anniversary-text">BADGE TEXT</span>
+      </div>
+
+      <!-- LEFT: Scoreboard (header + teams + scores) -->
+      <div class="scoreboard">
+        <div class="match-info-bar">
+          <span id="match-label">MATCH 1</span>
+          <span class="mi-dash">-</span>
+          <span id="match-format">BO3</span>
+          <span class="mi-time" id="match-time"></span>
+        </div>
+
+        <div class="teams-versus">
+          <div class="team-col">
+            <div class="team-logo-box">
+              <img
+                id="team1-logo"
+                src="Assets/Other/transparent.png"
+                alt="Team 1"
+              />
+            </div>
+            <span class="team-code" id="team1-code">BLUE</span>
+          </div>
+
+          <div class="score-col" id="vs-score">
+            <span class="score-num" id="blue-score">0</span>
+            <span class="vs-text">VS</span>
+            <span class="score-num" id="red-score">0</span>
+          </div>
+
+          <div class="team-col">
+            <div class="team-logo-box">
+              <img
+                id="team2-logo"
+                src="Assets/Other/transparent.png"
+                alt="Team 2"
+              />
+            </div>
+            <span class="team-code" id="team2-code">RED</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEFT: Sponsor strip -->
+      <div class="sponsor-block">
+        <div class="sponsor-label" id="sponsor-label">PARTNER IN ESPORTS</div>
+        <div class="sponsor-name" id="sponsor-name">SPONSOR</div>
+      </div>
+
+      <!-- LEFT: Countdown -->
+      <div class="countdown-block">
+        <div class="countdown-label">SHOW STARTS IN</div>
+        <div class="countdown-timer" id="countdown-timer">00:00</div>
+      </div>
+
+      <!-- Coaches (hidden by default; remove .hidden in CSS to show) -->
+      <div class="coach-block hidden">
+        <div class="coach-item">
+          <span class="coach-label">COACH</span>
+          <span class="coach-name" id="coach-blue">-</span>
+        </div>
+        <div class="coach-item">
+          <span class="coach-label">COACH</span>
+          <span class="coach-name" id="coach-red">-</span>
+        </div>
+      </div>
+
+      <!-- BOTTOM-LEFT: Banner -->
+      <div class="bottom-banner">
+        <div class="bottom-logo" id="bottom-logo">MLBB</div>
+        <div class="bottom-text" id="bottom-text"></div>
+      </div>
+    </div>
+
+    <script src="/script/match-state.js"></script>
+    <script src="/script/match-client.js"></script>
+    <script src="/script/roster-themes.js"></script>
+    <script src="/script/roster-model.js"></script>
+    <script src="/script/roster-theme-client.js"></script>
+    <script src="/script/roster-renderer.js"></script>
+    <script>window.RosterOverlay.start();</script>
+  </body>
+</html>

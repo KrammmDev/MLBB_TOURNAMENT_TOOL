@@ -45,3 +45,14 @@ Both `control.html` and `controlban6.html` now load `control-match.js` (one guar
 - A hero/ban mirror patch must succeed before the local draft selection advances. A rejected mirror leaves the persisted draft unchanged and refreshes its UI. **The match mirror and draft JSON save are still separate operations**: draft API/persistence failures and cross-panel draft concurrency require a later domain migration. No cross-file transaction or new draft rules are claimed.
 
 See `control-migration.md` for test scope and operator checks. OCR and graphics/theme redesign remain on hold for this increment.
+
+## Implemented: roster theme contract (phase 3)
+
+- Catalog: `GET /api/roster-themes` returns schemaVersion 1, rendererVersion 1, canvas 1920×1080 and three presets with `outputs: ["roster"]`. IDs are `classic`, `arena`, `studio`. Art direction/layout changes belong in CSS; match binding stays in the single renderer.
+- Selection: `GET /api/roster-theme` returns `{ data: { schemaVersion: 1, themeId, previousThemeId }, revision }` with no-store. `PUT /api/roster-theme` accepts `{ themeId }` plus an exact `If-Match` revision. Missing revision is 428, stale revision 409, unknown ID 400, persistence failure 503. A no-op does not write or broadcast. Revisions are opaque and change after restart.
+- Successful persistence in ignored `runtime/roster-theme.json` precedes `roster_theme_update` with the same snapshot shape. Previous selection updates only on an actual change. Choosing that previous ID uses the same guarded PUT, not an unguarded rollback endpoint.
+- The shared match client's optional third subscribe argument `{ onMessage }` lets the roster consume theme and allowlisted branding events on its existing match socket. Existing two-argument subscribers retain their behavior.
+- `/broadcast-overlay.html` follows saved settings; `?theme=<id>` pins a preview. The two legacy URLs remain fixed to their corresponding presets and use the same model/renderer. Match data, slide pair and countdown are independent of style selection. New-source bootstrap uses its initial loaded style as fallback; theme failure is retained as a diagnostic attribute/event rather than a broadcast error banner.
+- CSS activation is staged and latest-intent wins. It is not a global source-acknowledgement protocol. Disconnected sources reconcile on reconnect/periodic read; failed styles retain the previous loaded appearance. The operator UI reports saved selection, not verified on-air state.
+
+Coverage and recovery instructions: `roster-themes.md`. All other output types and legacy `/api/theme` remain outside this roster contract.

@@ -18,7 +18,7 @@
       : result;
   }
   // Reconnect and poll recovery always fetch a current snapshot; never replay old browser state.
-  function subscribe(listener, onStatus = () => {}) {
+  function subscribe(listener, onStatus = () => {}, options = {}) {
     let socket, reconnect, poll, stopped = false, generation = 0, refreshing = false;
     let retry = 1000;
     async function refresh() {
@@ -40,6 +40,7 @@
       socket.onmessage = event => {
         let message;
         try { message = JSON.parse(event.data); } catch { return; }
+        if (typeof options.onMessage === 'function') options.onMessage(message);
         if (message.type === 'matchdata_update' && message.data) {
           generation++;
           listener({ data: message.data, revision: message.revision });

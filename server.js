@@ -15,6 +15,7 @@ const os = require("os");
 const multer = require("multer");
 const { createMatchStore } = require("./lib/match-store");
 const { installMatchRoutes } = require("./lib/match-routes");
+const { loadRosterThemeStore, installRosterThemeRoutes } = require("./lib/roster-theme-store");
 const { validateMatch } = require("./public/script/match-state");
 
 const app = express();
@@ -384,6 +385,7 @@ async function loadCache() {
   console.log(">> In-Memory Cache Loaded!");
 }
 let matchStore;
+let rosterThemeStore;
 
 async function initFlagDB() {
   if (!fsSync.existsSync(flagJsonPath)) {
@@ -625,6 +627,7 @@ app.get("/api/players", async (req, res) => {
 });
 // --- MATCH DATA API ---
 installMatchRoutes(app, () => matchStore);
+installRosterThemeRoutes(app, () => rosterThemeStore);
 
 // --- MATCH DRAFT API ---
 app.get("/api/matchdraft", (req, res) => {
@@ -1327,6 +1330,10 @@ async function start() {
       broadcast({ type: "matchdata_update", data, revision });
       broadcast({ type: "update", data: { matchdata: data }, revision });
     },
+  });
+  rosterThemeStore = await loadRosterThemeStore({
+    file: path.join(__dirname, "runtime", "roster-theme.json"),
+    onCommit: snapshot => broadcast({ type: "roster_theme_update", ...snapshot }),
   });
   server.listen(port, "0.0.0.0", async () => {
     const boundPort = server.address().port;

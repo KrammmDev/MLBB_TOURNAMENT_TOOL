@@ -14,7 +14,9 @@ async function sandbox(t, raw) {
   await fs.copyFile(path.join(source, 'server.js'), path.join(dir, 'server.js'));
   await fs.cp(path.join(source, 'lib'), path.join(dir, 'lib'), { recursive: true });
   await fs.mkdir(path.join(dir, 'public/script'), { recursive: true });
-  await fs.copyFile(path.join(source, 'public/script/match-state.js'), path.join(dir, 'public/script/match-state.js'));
+  for (const script of ['match-state.js', 'roster-themes.js']) {
+    await fs.copyFile(path.join(source, 'public/script', script), path.join(dir, 'public/script', script));
+  }
   await fs.mkdir(path.join(dir, 'public/database'), { recursive: true });
   const file = path.join(dir, 'public/database/matchdatateam.json');
   await fs.writeFile(file, raw);
@@ -29,7 +31,7 @@ async function sandbox(t, raw) {
     }
     await fs.rm(dir, { recursive: true, force: true });
   });
-  return { child, file, output: () => output };
+  return { child, file, dir, output: () => output };
 }
 async function waitUntil(predicate) {
   const end = Date.now() + 8000;
@@ -59,6 +61,13 @@ test('real server loads saved match before accepting traffic and preserves event
   assert.deepEqual(messages.find(m => m.type === 'matchdata_update').data, data);
   assert.deepEqual(messages.find(m => m.type === 'update').data.matchdata, data);
   assert.deepEqual(JSON.parse(await fs.readFile(env.file, 'utf8')), data);
+  const themeUrl = `http://127.0.0.1:${port}/api/roster-theme`;
+  const theme = await (await fetch(themeUrl)).json();
+  const chosen = await fetch(themeUrl, { method:'PUT', headers:{'Content-Type':'application/json','If-Match':theme.revision}, body:JSON.stringify({themeId:'arena'}) });
+  assert.equal(chosen.status,200);
+  const storedTheme = JSON.parse(await fs.readFile(path.join(env.dir,'runtime/roster-theme.json'),'utf8'));
+  assert.equal(storedTheme.themeId,'arena');
+  assert.deepEqual(await (await fetch(url)).json(),data);
 });
 
 test('corrupt saved match stops startup without replacing the original file', { timeout: 15000 }, async t => {
