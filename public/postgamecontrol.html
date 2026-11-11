@@ -440,6 +440,10 @@
         border-color: var(--active-green) !important;
       }
 
+      #match-sync-tools { position: fixed; top: 12px; right: 16px; z-index: 1100;
+        background: #16161e; padding: 8px 12px; border: 1px solid #555; border-radius: 8px; }
+      #match-sync-tools button { margin-left: 12px; padding: 6px 10px; cursor: pointer; }
+      #save-status.status-error { color: #ffb3b3; border-color: #ff6868; max-width: 420px; }
       .btn-container {
         position: fixed;
         bottom: 0;
@@ -539,7 +543,11 @@
       <div class="blob blob-3"></div>
     </div>
 
-    <div id="save-status">Ready</div>
+    <div id="save-status" role="status" aria-live="polite">Loading match...</div>
+    <div id="match-sync-tools">
+      <span id="match-connection">Connecting...</span>
+      <button id="reload-match" type="button" onclick="reloadLatestMatch()" hidden>Reload latest match</button>
+    </div>
 
     <div id="itemModal" class="modal-overlay">
       <div class="modal-content">
@@ -746,6 +754,8 @@
       </div>
     </div>
 
+    <script src="/script/match-state.js"></script>
+    <script src="/script/match-client.js"></script>
     <script>
       let matchData = {};
       let itemList = [];
@@ -754,26 +764,76 @@
       let resetStage = 0;
       let resetTimeout;
 
-      const ws = new WebSocket(`ws://${window.location.host}`);
+      let lastSubmitted = null;
+      let pendingSaves = 0;
+      let saveBlocked = false;
+      let saveQueue = Promise.resolve();
+      let deferredSnapshot = null;
+      const reloadButton = document.getElementById("reload-match");
+      document.querySelector(".container").inert = true;
 
-      Promise.all([
-        fetch("/api/matchdata").then((r) => r.json()),
-        fetch("/api/items").then((r) => r.json()),
-        fetch("/api/mvp").then((r) => r.json()),
-      ]).then(([mData, items, mvpData]) => {
-        matchData = mData;
-        itemList = items.length ? items : ["winter_truncheon", "immortality"];
-        if (mvpData && mvpData.mvp) currentMvpId = mvpData.mvp.checkboxId;
+      function setSaveStatus(message, className = "") {
+        const el = document.getElementById("save-status");
+        el.textContent = message;
+        el.className = className;
+      }
+      function isEditing() {
+        return document.activeElement?.matches("input, textarea, select") || currentEditContext;
+      }
+      function applyRemote(snapshot) {
+        deferredSnapshot = snapshot;
+        flushRemote();
+      }
+      function flushRemote() {
+        if (!deferredSnapshot || pendingSaves || saveBlocked || isEditing()) return;
+        matchData = MatchDataClient.clone(deferredSnapshot.data);
+        lastSubmitted = MatchDataClient.clone(matchData);
+        deferredSnapshot = null;
+        document.querySelector(".container").inert = false;
         renderAll();
+      }
+      document.addEventListener("focusout", () => setTimeout(flushRemote, 0));
+      window.addEventListener("beforeunload", event => {
+        if (pendingSaves || saveBlocked) { event.preventDefault(); event.returnValue = ""; }
       });
-
-      ws.onmessage = (e) => {
-        const msg = JSON.parse(e.data);
-        if (msg.type === "matchdata_update") {
-          matchData = msg.data;
-          renderAll();
-        }
-      };
+      async function reloadLatestMatch() {
+        if (pendingSaves) return;
+        if (saveBlocked && !confirm("Discard unsaved local edits and load the current match?")) return;
+        reloadButton.disabled = true;
+        try {
+          const snapshot = await MatchDataClient.read();
+          saveBlocked = false;
+          saveQueue = Promise.resolve();
+          currentEditContext = null;
+          closeModal();
+          deferredSnapshot = snapshot;
+          flushRemote();
+          reloadButton.hidden = true;
+          setSaveStatus("READY");
+        } catch (error) {
+          setSaveStatus(error.message, "status-error");
+        } finally { reloadButton.disabled = false; }
+      }
+      Promise.all([
+        MatchDataClient.read(),
+        fetch("/api/items").then(r => r.ok ? r.json() : []).catch(() => []),
+        fetch("/api/mvp").then(r => r.ok ? r.json() : null).catch(() => null),
+      ]).then(([snapshot, items, mvpData]) => {
+        itemList = items.length ? items : ["winter_truncheon", "immortality"];
+        if (mvpData?.mvp) currentMvpId = mvpData.mvp.checkboxId;
+        applyRemote(snapshot);
+        setSaveStatus("READY");
+      }).catch(error => {
+        setSaveStatus(error.message, "status-error");
+        reloadButton.hidden = false;
+      }).finally(() => {
+        MatchDataClient.subscribe(applyRemote, status => {
+          document.getElementById("match-connection").textContent = {
+            connecting: "Connecting...", connected: "Live sync connected",
+            reconnecting: "Reconnecting...", offline: "Server unavailable",
+          }[status] || status;
+        });
+      });
 
       const durationInput = document.getElementById("game-duration");
       durationInput.addEventListener("input", function (e) {
@@ -891,24 +951,36 @@
       }
 
       function autoSave() {
-        const statusEl = document.getElementById("save-status");
-        statusEl.textContent = "SAVING...";
-        statusEl.className = "status-saving";
-
-        fetch("/api/matchdata", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(matchData),
-        })
-          .then((r) => r.json())
-          .then((d) => {
-            statusEl.textContent = "SAVED";
-            statusEl.className = "status-saved";
-            setTimeout(() => {
-              statusEl.textContent = "READY";
-              statusEl.classList.remove("status-saved");
-            }, 2000);
-          });
+        if (!lastSubmitted || saveBlocked) {
+          setSaveStatus("NOT SAVED — reload latest match before continuing.", "status-error");
+          reloadButton.hidden = false;
+          return;
+        }
+        const changes = MatchDataClient.diff(lastSubmitted, matchData);
+        if (!changes.length) return;
+        const guards = MatchDataClient.editorGuards(lastSubmitted);
+        lastSubmitted = MatchDataClient.clone(matchData);
+        pendingSaves++;
+        reloadButton.disabled = true;
+        setSaveStatus("SAVING...", "status-saving");
+        saveQueue = saveQueue.then(async () => {
+          if (saveBlocked) return;
+          await MatchDataClient.patch(changes, guards);
+        }).catch(error => {
+          saveBlocked = true;
+          const detail = error.status === 409
+            ? "Another panel changed this match. Your edit was not saved."
+            : "Save failed. Reload the latest match before continuing.";
+          setSaveStatus(detail, "status-error");
+          reloadButton.hidden = false;
+        }).finally(() => {
+          pendingSaves--;
+          reloadButton.disabled = pendingSaves > 0;
+          if (!pendingSaves && !saveBlocked) {
+            setSaveStatus("SAVED", "status-saved");
+            flushRemote();
+          }
+        });
       }
 
       function setWinner(side) {
@@ -956,6 +1028,7 @@
       function closeModal() {
         document.getElementById("itemModal").classList.remove("show");
         currentEditContext = null;
+        setTimeout(flushRemote, 0);
       }
 
       function renderItemGrid(search) {
@@ -1111,3 +1184,4 @@
     </script>
   </body>
 </html>
+

@@ -18,3 +18,7 @@ User uses OBS Virtual Camera and reports a clear OBS view but blurry/inaccurate 
 
 ## Planned, not yet implemented
 OCR capture/calibration UI, custom recognition engine, normalized ingestion API, field ownership/manual override, versioned theme manifests and supervised unified launcher improvements. Choose engine/runtime only after testing useful capture and target-machine constraints. No native-camera or actual OBS behavior has been validated in this skill-writing task.
+
+
+## Current development priority
+OCR is on hold at the user's request. The first broadcast architecture increment extracts match persistence/routes, adds guarded field-level PATCH and migrates the postgame editor. See state-foundation.md and the implemented section of contract-register.md. Legacy whole-document writers, stable identities, draft state and shared overlay/theme rendering remain subsequent migration work.
