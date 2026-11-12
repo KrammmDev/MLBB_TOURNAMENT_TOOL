@@ -270,6 +270,7 @@
       }
     }
     function onMessage(message) {
+      root.BroadcastColorClient?.accept(message);
       if (message.type === "roster_theme_update" && !pinned) {
         themeReadGeneration++;
         select(message.data.themeId);

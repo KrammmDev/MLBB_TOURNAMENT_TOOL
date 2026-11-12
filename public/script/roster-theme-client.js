@@ -95,6 +95,9 @@
       });
       old.forEach((link) => link.remove());
       document.body.dataset[key] = id;
+      document.body.dataset[ready] = "false";
+      await root.BroadcastColorClient?.activate(id, output);
+      if (attempt !== generation) return null;
       document.body.dataset[ready] = "true";
       delete document.body.dataset[errorKey];
       const separator = document.querySelector(".vs-text");

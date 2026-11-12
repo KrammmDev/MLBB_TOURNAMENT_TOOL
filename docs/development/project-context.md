@@ -44,3 +44,5 @@ The latest Arena reference clarifies a subtle mirrored angle: left frames +4 deg
 Draft presentation constraint: once a slot has a selected hero, hide the player portrait (including during stat cards and match refreshes); restore it for empty/reset slots. Remove Arena's large numeric series scores. Keep stored match scores and the small series-win indicators.
 
 Arena team branding uses raised upper-left/right dark panels with mirrored slanted inner edges, 80px logos and names up to 36px (auto-fit for long names). Size variables live in `public/themes/draft-arena.css`.
+
+Broadcast Themes includes preview-only color editing and explicit save/reset for each theme's roster/draft palette. Runtime settings live in broadcast-colors.json, independently of competition state. This change leaves Arena geometry CSS untouched to preserve operator width adjustments. See broadcast-colors.md.
