@@ -6,7 +6,7 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
   const themes = ["classic", "arena", "studio"],
-    outputs = ["roster", "draft", "scoreboard"];
+    outputs = ["roster", "draft", "scoreboard", "postdraft"];
   const fields = {
     background: "Panel background",
     left: "Left team accent",
@@ -70,6 +70,9 @@
     },
   };
   defaults.scoreboard = Object.fromEntries(
+    themes.map((id) => [id, { ...defaults.draft[id] }]),
+  );
+  defaults.postdraft = Object.fromEntries(
     themes.map((id) => [id, { ...defaults.draft[id] }]),
   );
   function validColors(colors) {
@@ -141,6 +144,23 @@
       );
     const vars = (names, value) =>
       names.split(",").forEach((name) => variables.push(name + ":" + value));
+    if (output === "postdraft") {
+      for (const [field, token] of Object.entries({
+        background: "panel",
+        left: "left",
+        right: "right",
+        border: "edge",
+      }))
+        if (colors[field]) vars("--pd-" + token, colors[field]);
+      vars("--pd-text", readable(palette.text, palette.background));
+      vars("--pd-muted", readable(palette.muted, palette.background));
+      vars("--pd-left-text", readable(colors.text || "#ffffff", palette.left));
+      vars(
+        "--pd-right-text",
+        readable(colors.text || "#ffffff", palette.right),
+      );
+      return scope + "{" + variables.join(";") + "}";
+    }
     if (output === "scoreboard") {
       // Scoreboard owns a separate palette and never receives draft geometry rules.
       const mappings = {

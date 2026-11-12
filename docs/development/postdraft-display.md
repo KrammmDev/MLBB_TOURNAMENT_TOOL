@@ -1,0 +1,19 @@
+# Three-theme post-draft output
+
+Use `/postdraft2.html` as a transparent 1920×1080 OBS Browser Source. It follows the saved broadcast selection; `?theme=classic`, `?theme=arena` and `?theme=studio` pin a look. Broadcast Themes includes **Post-draft** in the Output menu and copies the canonical URL. Its color editor has a separate `postdraft` scope; saves/resets do not alter draft, roster or scoreboard colors.
+
+Classic uses two banks of tall hero panels, colored name bars and white team headers. Arena uses a dark header, staggered card heights and lower name ribbons. Studio separates portrait areas from larger light hero/player labels. All show the same team logos/names, series-win markers, five picks per side, player names and role icons. Right-side slots retain the original reversed visual order (5 through 1). Match/game labels use supplied matchInfo values and remain blank when absent. Long text uses ellipsis; no league title or default match branding is authored.
+
+## GIF and data repair
+
+The old page loaded `displayhero.js`, which now expects DraftDisplay, without loading that renderer. It also had multiple legacy polling/data-binding scripts. The new page uses one read-only post-draft renderer over MatchDataClient plus the existing draft snapshot/events and staged theme/color clients. It does not change the draft controller, match data or legacy draft outputs.
+
+Hero selections come from `/api/matchdraft`. The hero catalog resolves the matching canonical animated `.gif` path even when a stored pick points to a static `.png`. Saber, Zilong and Hirara catalog paths were also corrected to match the actual uppercase asset filenames on case-sensitive servers. Explicit/catalog GIFs have bounded image fallbacks to the selected/static artwork. The same IMG node and source are retained across unchanged snapshots and theme changes: no cache-busting query, canvas conversion or periodic src reset interrupts playback. A selected hero hides the player portrait, including when its image is still loading. Clearing a pick removes hero artwork and restores the player fallback. Native GIF timing/looping comes from the asset; missing/invalid media cannot be made animated by CSS. Reload the source after repairing a missing asset.
+
+Draft/theme responses use event-generation checks so older reads do not overwrite newer received state. Reconnect and recovery polling read fresh snapshots. Page hide stops subscriptions/polling; page restore resumes. Theme failures retain the prior stylesheet set. Source scaling preserves the 1920×1080 composition.
+
+The original postdraft2.css and postdraft-reveal files remain available but are not loaded by this page; their global selectors, floating-image effects and reveal masks no longer interfere with the animated image nodes.
+
+## Verification
+
+The dedicated Chromium scenario checks all three themes, following versus pinned outputs, independent palette preview/save, reversed slot order, same-node/source identity across match and theme changes, missing-GIF fallback, cleared picks and reconnect/reload. It compares screenshot pixels over time while the card layout is static to verify actual animation. The default fixture uses a small multi-frame GIF; `MLBB_TEST_GIF=/path/to/hero.gif` also exercises a real asset. The repository's actual alpha.gif was tested separately and screenshots reviewed with synthetic logos/player fallbacks. Actual Windows/OBS decode load, sharpness and playback performance remain target-machine checks.

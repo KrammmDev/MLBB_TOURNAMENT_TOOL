@@ -35,3 +35,6 @@ Broadcast Themes now provides per-theme, per-output color preview/save/reset con
 The catalog also declares scoreboard support. Broadcast Themes previews the new scoreboard output, which follows the saved selection and uses an independent scoreboard color palette. Original scoreboard pages remain compatible. See [scoreboard-display.md](scoreboard-display.md).
 
 Scoreboard source correction: use scoreboard.html for the three gameplay-HUD layouts; scoreboard-display.html is a compatibility redirect. The shared sponsor playlist also appears in its center slot. See scoreboard-display.md for the actual safe areas.
+
+## Post-draft coverage
+The catalog also supports postdraft2.html with three layouts, native hero GIFs and independent postdraft colors. See [postdraft-display.md](postdraft-display.md).

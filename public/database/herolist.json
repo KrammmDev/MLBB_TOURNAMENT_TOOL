@@ -531,7 +531,7 @@
   },
   {
     "name": "Saber",
-    "img": "/Assets/HeroPick/saber.gif",
+    "img": "/Assets/HeroPick/Saber.gif",
     "voice": "/Assets/Voicelines/saber.ogg"
   },
   {
@@ -641,7 +641,7 @@
   },
   {
     "name": "Zilong",
-    "img": "/Assets/HeroPick/zilong.gif",
+    "img": "/Assets/HeroPick/Zilong.gif",
     "voice": "/Assets/Voicelines/zilong.ogg"
   },
   {
@@ -661,7 +661,7 @@
   },
   {
     "name": "Hirara",
-    "img": "/Assets/HeroPick/hirara.gif",
+    "img": "/Assets/HeroPick/Hirara.gif",
     "voice": "/Assets/Voicelines/hirara.ogg"
   }
 ]

@@ -91,3 +91,6 @@ Scoreboard palette adapter: settings use their own scoreboard scope, while CSS g
 `/api/scoreboard-branding` owns global patchLabel/casterNames and one tournament logo, independent of match, palette and sponsor data. Text saves and logo upload/removal require If-Match; atomic persistence precedes scoreboard_branding_update. The logo uses generated immutable assets in runtime/scoreboard-logos; state is runtime/scoreboard-branding.json. See scoreboard-branding.md.
 
 Color schema 2: /api/broadcast-colors accepts roster, draft or scoreboard output scopes. On loading a version-1 file, preserve a .v1.bak backup and copy missing scoreboard palettes from the previous draft overrides once before atomically persisting version 2. Subsequent scoreboard resets and restarts do not fall back to draft values.
+
+## Post-draft output
+The catalog declares postdraft coverage and per-theme postdraftStyles. Canonical postdraft2.html consumes existing match/draft snapshots and events through a single read-only renderer, preferring catalog GIF assets with static fallback while preserving unchanged image nodes/sources. The color API accepts an independent postdraft scope under schema 2; no existing scopes are copied or changed. See postdraft-display.md.

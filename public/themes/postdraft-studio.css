@@ -1,0 +1,73 @@
+body {
+  --pd-panel: #f1f4f8;
+  --pd-text: #18263a;
+  --pd-muted: #52637a;
+  --pd-left: #0757ed;
+  --pd-right: #e92237;
+  --pd-edge: #d4dde7;
+}
+.pd-header {
+  top: 65px;
+  height: 125px;
+  grid-template-columns: 1fr 210px 1fr;
+  gap: 0;
+}
+.pd-blue.pd-team {
+  border-top: 5px solid var(--pd-left);
+}
+.pd-red.pd-team {
+  border-top: 5px solid var(--pd-right);
+}
+.pd-match {
+  border-left: 1px solid var(--pd-edge);
+  border-right: 1px solid var(--pd-edge);
+}
+.pd-main {
+  top: 235px;
+  grid-template-columns: 1fr 130px 1fr;
+}
+.pd-bank {
+  gap: 12px;
+}
+.pd-card {
+  height: 680px;
+}
+.pd-art {
+  height: 570px;
+}
+.pd-player {
+  bottom: 110px;
+  height: 570px;
+}
+.pd-label {
+  height: 110px;
+  gap: 10px;
+}
+.pd-player-name {
+  font-size: 22px;
+}
+.pd-blue .pd-label {
+  border-bottom: 5px solid var(--pd-left);
+}
+.pd-red .pd-label {
+  border-bottom: 5px solid var(--pd-right);
+}
+.pd-hero-name {
+  order: -1;
+  font-size: 16px;
+  letter-spacing: 2px;
+}
+.pd-lane {
+  top: 575px;
+  right: 50%;
+  transform: translateX(50%);
+  width: 31px;
+  height: 31px;
+}
+.pd-red .pd-lane {
+  right: 50%;
+  left: auto;
+}
+.pd-label {
+  padding-top: 32px;
+}

@@ -1,0 +1,54 @@
+body {
+  --pd-panel: #091827;
+  --pd-text: #f2f7fc;
+  --pd-muted: #73dae9;
+  --pd-left: #1bc2d5;
+  --pd-right: #527fe8;
+  --pd-edge: #28435b;
+}
+.pd-header {
+  top: 100px;
+  height: 104px;
+  grid-template-columns: 1fr 300px 1fr;
+  gap: 12px;
+}
+.pd-blue.pd-team {
+  border-bottom: 3px solid var(--pd-left);
+}
+.pd-red.pd-team {
+  border-bottom: 3px solid var(--pd-right);
+}
+.pd-match {
+  border: 1px solid var(--pd-edge);
+}
+.pd-main {
+  top: 255px;
+  grid-template-columns: 1fr 60px 1fr;
+}
+.pd-bank {
+  gap: 5px;
+}
+.pd-card {
+  height: 620px;
+}
+.pd-card:nth-child(even) {
+  margin-top: 22px;
+}
+.pd-blue .pd-card {
+  border-bottom: 4px solid var(--pd-left);
+}
+.pd-red .pd-card {
+  border-bottom: 4px solid var(--pd-right);
+}
+.pd-label {
+  text-align: left;
+  padding: 18px 10px 10px;
+  min-height: 110px;
+  background: linear-gradient(transparent, var(--pd-panel) 30%);
+}
+.pd-player-name {
+  font-size: 24px;
+}
+.pd-red .pd-label {
+  text-align: right;
+}
