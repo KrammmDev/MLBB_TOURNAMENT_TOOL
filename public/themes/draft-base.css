@@ -60,3 +60,7 @@ body {
 .broadcast-sponsors img[hidden] {
   display: none;
 }
+
+.arena-clock-mirror {
+  display: none;
+}

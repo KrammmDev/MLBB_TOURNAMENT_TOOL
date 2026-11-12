@@ -296,6 +296,10 @@ test(
         () => document.body.dataset.draftTheme === "arena",
       );
     assert.equal(
+      await normal.locator("[data-draft-clock-mirror]").textContent(),
+      "35",
+    );
+    assert.equal(
       await normal
         .locator("#image-display-1")
         .evaluate((el) => el === window.heroImageReference),
@@ -324,6 +328,11 @@ test(
         .locator("#image-display-1")
         .evaluate((el) => el === window.heroImageReference),
       true,
+    );
+    await normal.waitForFunction(
+      () =>
+        document.querySelector("[data-draft-clock-mirror]").textContent ===
+        "00",
     );
     // Corrections, missing art and reset are display updates only.
     draft.draftdata.blueside.pick[0] = { hero: "Assets/HeroPick/Balmond.png" };

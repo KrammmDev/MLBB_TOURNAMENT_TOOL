@@ -54,4 +54,8 @@ The shared sponsor host is a direct child of `.mainbox`, with visible placement 
 
 ## Distinct theme compositions
 
-Classic keeps its original center console. Studio now uses 840px team banks, a 240px clock column, team-header branding and lower center match information. Arena has 960px team banks that meet in the middle, with all presentation controls above the portraits. Color changes alone are not sufficient theme differentiation: the browser scenario checks three distinct bank gaps, Arena's top clock and Studio's header branding, while retaining sponsor, timer and draft checks in both formats.
+Classic keeps its original center console. Studio now uses 840px team banks, a 240px clock column, team-header branding and lower center match information. Arena now follows the supplied angled-card reference, with inward-leaning 780px banks, a white team-logo wedge and presentation controls above the portraits. Color changes alone are not sufficient theme differentiation: the browser scenario checks three distinct bank gaps, Arena's top clock and angled frames and Studio's header branding, while retaining sponsor, timer and draft checks in both formats.
+
+## Arena reference layout
+
+Arena's two visible clock readouts are driven by the existing `clock()` render function. The second readout is an aria-hidden mirror without a duplicate ID, a separate interval, or competition writes. It is hidden in the other themes. Clock corrections, zero, pause and reconnect update both readouts from the same controller snapshot. The sponsor strip sits below the clock/phase area and above the white logo wedge. Tests verify opposite card angles, counter-skewed artwork, nonoverlapping sponsor/clock bounds and matching clock values.

@@ -30,6 +30,12 @@
     sponsor.className = "broadcast-sponsors";
     sponsor.setAttribute("aria-label", "Sponsor logos");
     fragment.querySelector(".mainbox").append(sponsor);
+    // Both Arena readouts mirror the same controller-owned clock.
+    const clockMirror = document.createElement("span");
+    clockMirror.className = "arena-clock-mirror";
+    clockMirror.dataset.draftClockMirror = "";
+    clockMirror.setAttribute("aria-hidden", "true");
+    fragment.querySelector(".mainbox").append(clockMirror);
     DraftDisplay.start({ template: fragment });
     window.SponsorSlideshow?.start(sponsor);
     const stats = document.createElement("script");
