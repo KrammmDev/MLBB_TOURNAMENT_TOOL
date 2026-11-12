@@ -72,3 +72,6 @@ Current product constraint: no authored decorative game/league branding, slogans
 ## Studio sponsor playlist
 
 `/api/broadcast-sponsors` owns a revision-guarded playlist independent of match, draft and theme selection. Raster uploads use `/api/broadcast-sponsors/logos`; committed settings emit `broadcast_sponsors_update`. All three new draft themes render the shared sponsor playlist in their own slot (Arena footer; Classic/Studio center). Blank/disabled playlists introduce no placeholder or league branding. Runtime data and images live under ignored `runtime/`. See `broadcast-sponsors.md` for lifecycle, operator behavior and limits.
+
+## Broadcast color palettes
+`/api/broadcast-colors` owns independent runtime palettes for the three roster/draft theme scopes. GET returns a revision; PUT requires If-Match and validates six allowlisted HEX colors. Atomic persistence precedes `broadcast_colors_update`; no competition or theme-selection state is written. See broadcast-colors.md.

@@ -21,7 +21,8 @@
     selected = null,
     editRevision = null,
     previewReady = false,
-    saving = false;
+    saving = false,
+    colorEditing = false;
   const theme = (id) => catalog.themes.find((theme) => theme.id === id);
   function status(message, error = false) {
     const el = document.getElementById("theme-status");
@@ -34,15 +35,25 @@
     activate.disabled =
       saving ||
       !previewReady ||
+      colorEditing ||
       !snapshot ||
       selected === snapshot.data.themeId;
     previous.disabled = saving || !snapshot?.data.previousThemeId;
     reloadButton.disabled = saving;
     outputSelect.disabled = saving;
   }
+  document.addEventListener("broadcast-colors-editing", (event) => {
+    colorEditing = event.detail.dirty;
+    buttons();
+  });
   function choose(id) {
     if (saving) return;
     selected = id;
+    document.dispatchEvent(
+      new CustomEvent("broadcast-preview-selection", {
+        detail: { id, output: output() },
+      }),
+    );
     editRevision = snapshot?.revision;
     previewReady = false;
     document.getElementById("preview-label").textContent = theme(id).label;
@@ -135,6 +146,11 @@
       return;
     if (event.data.type === "broadcast-theme-ready") {
       previewReady = true;
+      document.dispatchEvent(
+        new CustomEvent("broadcast-preview-ready", {
+          detail: { id: selected, output: output() },
+        }),
+      );
       status("Preview ready. Your saved selection has not changed.");
       buttons();
     }
@@ -165,7 +181,7 @@
     }
   }
   activate.onclick = async () => {
-    if (!previewReady || !snapshot || saving) return;
+    if (!previewReady || !snapshot || saving || colorEditing) return;
     saving = true;
     buttons();
     status("Saving broadcast selection…");

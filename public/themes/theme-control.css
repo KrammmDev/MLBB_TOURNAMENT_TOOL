@@ -375,3 +375,84 @@ iframe {
   min-width: 0;
   flex: 0 0 75px;
 }
+
+.color-settings {
+  margin-top: 24px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #121a26;
+}
+.color-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.color-heading strong {
+  color: #a5e1d8;
+}
+.color-settings p {
+  margin: 12px 0 18px;
+  color: #b5c4d6;
+}
+.color-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin: 20px 0;
+}
+.color-field > label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.color-inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.color-inputs input[type="color"] {
+  width: 48px;
+  height: 42px;
+  min-width: 48px;
+  flex: 0 0 48px;
+  padding: 3px;
+  background: #0b1420;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  cursor: pointer;
+}
+.color-inputs input[type="text"] {
+  width: 120px;
+  min-width: 0;
+  flex: 1;
+  padding: 10px;
+  background: #0b1420;
+  color: #edf4fa;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  font-family: monospace;
+}
+.color-inputs input:invalid {
+  border-color: #ffb0a8;
+}
+.color-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+#color-status[data-error="true"] {
+  color: #ffb0a8;
+}
+@media (max-width: 900px) {
+  .color-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 520px) {
+  .color-fields {
+    grid-template-columns: 1fr;
+  }
+}

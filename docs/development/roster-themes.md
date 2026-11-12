@@ -27,3 +27,6 @@ Activation is best effort per connected roster source, **not** a synchronized al
 `npm run test:browser` includes both legacy roster URLs, a following output, two operator pages, preview isolation, activation with active-pair preservation, stale selection conflict, previous-look selection, a fresh-browser stylesheet failure, reconnect recovery, same-length image updates, metadata as text, scaling and the earlier control/postgame scenarios. Browser fixtures substitute simple silhouette artwork; screenshots were inspected for layout, clipping and transparency. Real Windows/OBS rendering remains a target-machine check.
 
 Skills used: Broadcast Design System, Broadcast Core, Production Validation and Production Workflows. Next extend coverage to additional broadcast outputs before treating a preset as a full production package. Authored decorative branding/default titles are prohibited; see the current user constraint in project-context.md.
+
+## Color customization
+Broadcast Themes now provides per-theme, per-output color preview/save/reset controls for roster and new draft outputs. See [broadcast-colors.md](broadcast-colors.md) for operator workflow, persistence and delivery behavior.

@@ -23,6 +23,7 @@ async function sandbox(t, raw) {
     "match-state.js",
     "roster-themes.js",
     "draft-model.js",
+    "broadcast-color-model.js",
   ]) {
     await fs.copyFile(
       path.join(source, "public/script", script),

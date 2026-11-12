@@ -59,11 +59,36 @@
           </button>
         </div>
       </section>
+      <section class="color-settings" aria-labelledby="color-title">
+        <div class="color-heading">
+          <h2 id="color-title">Theme colors</h2>
+          <strong id="color-scope">Select a preview</strong>
+        </div>
+        <p>
+          Colors are separate for each theme and output. Changes affect only the
+          preview until you save.
+        </p>
+        <form id="color-form">
+          <div id="color-fields" class="color-fields"></div>
+          <div class="color-actions">
+            <button id="save-colors" type="submit" disabled>Save colors</button>
+            <button id="reset-colors" type="button" class="secondary" disabled>
+              Reset to default
+            </button>
+            <button id="reload-colors" type="button" class="secondary">
+              Reload saved colors
+            </button>
+          </div>
+        </form>
+        <p id="color-status" role="status" aria-live="polite">
+          Loading color settings…
+        </p>
+      </section>
       <section class="sponsor-settings" aria-labelledby="sponsor-title">
         <h2 id="sponsor-title">Sponsor slideshow</h2>
         <p>
-          Logos appear in each draft theme’s sponsor slot.
-          Uploading or saving updates all draft outputs.
+          Logos appear in each draft theme’s sponsor slot. Uploading or saving
+          updates all draft outputs.
         </p>
         <button id="sponsor-preview" type="button" class="secondary">
           Preview draft
@@ -131,7 +156,9 @@
       </footer>
     </main>
     <script src="/script/roster-themes.js"></script>
+    <script src="/script/broadcast-color-model.js"></script>
     <script src="/script/roster-theme-control.js"></script>
+    <script src="/script/broadcast-color-control.js"></script>
     <script src="/script/sponsor-control.js"></script>
   </body>
 </html>

@@ -405,6 +405,7 @@
       }
     }
     function onMessage(message) {
+      root.BroadcastColorClient?.accept(message);
       root.SponsorSlideshow?.accept(message);
       if (message.type === "draftdata_update") {
         if (message.data) {
