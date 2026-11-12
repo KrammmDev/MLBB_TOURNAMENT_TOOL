@@ -7,24 +7,26 @@ body {
   --sb-border: #d6d6da;
 }
 .sb-frame {
-  background: linear-gradient(
-    180deg,
-    var(--header-bg, #ffffff) 55%,
-    var(--center-bg, #ececf1)
-  );
+  background: var(--header-bg, #ffffff);
 }
 .sb-banner {
-  clip-path: polygon(0 0, 100% 0, 100% 84%, 50% 100%, 0 84%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 8px));
+}
+.sb-banner-right {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), 0 100%);
 }
 .sb-banner::after {
   content: "";
   position: absolute;
-  inset: 0;
-  background: linear-gradient(110deg, #ffffff30, transparent 45%, #00000025);
+  inset: 0 0 4px 7px;
+  background: var(--header-bg, #ffffff);
 }
-.sb-win {
-  transform: skewX(12deg);
+.sb-banner-right::after {
+  inset: 0 7px 4px 0;
 }
-.sb-right .sb-win {
-  transform: skewX(-12deg);
+.sb-left {
+  border-bottom: 2px solid var(--blue-accent, var(--sb-left));
+}
+.sb-right {
+  border-bottom: 2px solid var(--red-accent, var(--sb-right));
 }

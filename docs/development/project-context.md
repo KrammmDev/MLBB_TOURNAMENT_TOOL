@@ -54,3 +54,5 @@ User correction: the scoreboard must follow the original scoreboard.html gamepla
 Latest scoreboard direction: put the sponsor in the right panel above the single `GRAND FINALS | GAME 3` line. Support scoreboardocr-style stage/group metadata when supplied, but do not include lord/gold/tower/kill-score/timer UI or invoke OCR. Apply this arrangement to all three themes.
 
 Final scoreboard reference correction: match metadata and sponsor are SIDE BY SIDE. The colored left tile contains stage/group/match-game lines; the white right tile contains the sponsor logo. This supersedes the prior vertical sponsor-above-text interpretation for all three themes.
+
+Scoreboard visual refinement: retain the exact HUD/panel arrangement while simplifying decoration. Use the existing Roboto Condensed Bold font, flat surfaces, thinner accent rails, shallow/square logo panels and rectangular series markers. Remove gradients, diamond indicators and metadata notches.

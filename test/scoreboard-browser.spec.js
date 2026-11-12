@@ -103,6 +103,7 @@ test(
     await context.route("**/*", (route) => {
       const url = new URL(route.request().url());
       if (url.hostname !== "127.0.0.1") return route.abort();
+      if (url.pathname.includes("/Assets/Font/")) return route.continue();
       if (
         url.pathname.includes("/Assets/") ||
         url.pathname.startsWith("/broadcast-sponsors/")
@@ -196,6 +197,7 @@ test(
       );
       const logoBox = await live.locator("#displayImage1").boundingBox();
       assert.ok(logoBox.x >= 394 && logoBox.x + logoBox.width <= 510);
+      await live.evaluate(() => document.fonts.ready);
       if (process.env.MLBB_CAPTURE_DIR) {
         await fs.mkdir(process.env.MLBB_CAPTURE_DIR, { recursive: true });
         await live.screenshot({
