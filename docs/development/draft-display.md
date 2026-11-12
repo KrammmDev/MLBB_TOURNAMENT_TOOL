@@ -54,8 +54,10 @@ The shared sponsor host is a direct child of `.mainbox`, with visible placement 
 
 ## Distinct theme compositions
 
-Classic keeps its original center console. Studio now uses 840px team banks, a 240px clock column, team-header branding and lower center match information. Arena now follows the supplied angled-card reference, with inward-leaning 780px banks, a white team-logo wedge and presentation controls above the portraits. Color changes alone are not sufficient theme differentiation: the browser scenario checks three distinct bank gaps, Arena's top clock and angled frames and Studio's header branding, while retaining sponsor, timer and draft checks in both formats.
+Classic keeps its original center console. Studio now uses 840px team banks, a 240px clock column, team-header branding and lower center match information. Arena uses a navy/cyan tournament stage with straight 952px portrait banks, a series-score header and a sponsor/bans footer. Color changes alone are not sufficient theme differentiation: the browser scenario checks three distinct bank gaps, Arena's top clock and straight portraits and Studio's header branding, while retaining sponsor, timer and draft checks in both formats.
 
-## Arena reference layout
+## Arena tournament stage
 
-Arena's two visible clock readouts are driven by the existing `clock()` render function. The second readout is an aria-hidden mirror without a duplicate ID, a separate interval, or competition writes. It is hidden in the other themes. Clock corrections, zero, pause and reconnect update both readouts from the same controller snapshot. The sponsor strip sits below the clock/phase area and above the white logo wedge. Tests verify opposite card angles, counter-skewed artwork, nonoverlapping sponsor/clock bounds and matching clock values.
+The user rejected the angled-card reference and chose dark navy/cyan. Arena now has straight portrait banks separated by a narrow dark divider. Team logos/names, numeric series scores, the single draft clock and match/phase information occupy the header. Bans, coaches and sponsors sit in the footer. There is no white logo wedge or mirrored timer.
+
+Numeric series scores are display-only text nodes bound to the same `team.score` fields as the existing win indicators. They are hidden in the other themes and add no duplicate IDs or state authority. Classic and Studio retain their layouts. Browser checks cover scores, straight frames, header/footer separation, sponsor rotation and unchanged match/draft identity. A separate local visual review uses hero GIF artwork from the existing repository; review assets are not included in the change.

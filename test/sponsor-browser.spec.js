@@ -39,6 +39,8 @@ test(
     data.teamdata.redteam.coach = "Coach South";
     data.teamdata.blueteam.logo = "Assets/Team/north.png";
     data.teamdata.redteam.logo = "Assets/Team/south.png";
+    data.teamdata.blueteam.score = "2";
+    data.teamdata.redteam.score = "1";
     data.matchFormat = 7;
     data.matchInfo = { match: "GRAND FINALS", game: "GAME 3" };
     const match = createMatchStore({ initial: data, persist: async () => {} });
@@ -159,7 +161,7 @@ test(
       if (theme === "arena")
         assert.ok(
           layout.timerBottom <= layout.heroTop + 1,
-          "Arena clock is above the angled hero banks",
+          "Arena clock is in its scoreboard header",
         );
       if (theme === "studio")
         assert.ok(
@@ -173,9 +175,8 @@ test(
       "themes must have three genuinely different compositions",
     );
     assert.ok(
-      gaps.get("arena") > gaps.get("studio") &&
-        gaps.get("arena") < gaps.get("classic"),
-      "Arena reserves a white logo wedge between angled banks",
+      gaps.get("arena") > 0 && gaps.get("arena") < gaps.get("studio"),
+      "Arena uses a narrow dark divider instead of a center console",
     );
     assert.ok(
       gaps.get("studio") > 0 && gaps.get("studio") < gaps.get("classic"),
@@ -323,29 +324,32 @@ test(
       }
       if (theme === "arena") {
         assert.equal(
-          await page.locator("[data-draft-clock-mirror]").textContent(),
-          "34",
+          await page.locator('[data-team-score="blue"]').textContent(),
+          "2",
         );
-        const angle = await page.evaluate(() => {
-          const left = document.querySelector(".heropick.blue-side"),
-            right = document.querySelector(".heropick.red-side");
-          const card = new DOMMatrix(getComputedStyle(left).transform);
-          const art = new DOMMatrix(
-            getComputedStyle(left.querySelector(".image-box")).transform,
-          );
-          return {
-            left: card.c,
-            right: new DOMMatrix(getComputedStyle(right).transform).c,
-            artwork: card.multiply(art).c,
-          };
-        });
-        assert.ok(
-          angle.left > 0.1 && angle.right < -0.1,
-          "Arena banks lean inward",
+        assert.equal(
+          await page.locator('[data-team-score="red"]').textContent(),
+          "1",
         );
+        assert.equal(
+          await page
+            .locator(".heropick")
+            .first()
+            .evaluate((el) => getComputedStyle(el).transform),
+          "none",
+          "Arena portraits are straight",
+        );
+        assert.equal(
+          await page
+            .locator(".lowermid")
+            .evaluate((el) => getComputedStyle(el, "::before").display),
+          "none",
+          "Arena has no white wedge",
+        );
+        const hero = await page.locator(".heropick").first().boundingBox();
         assert.ok(
-          Math.abs(angle.artwork) < 0.001,
-          "Arena portraits stay upright inside angled frames",
+          sponsor.y > hero.y + hero.height,
+          "Arena sponsor is in its footer",
         );
       }
       if (theme === "studio")

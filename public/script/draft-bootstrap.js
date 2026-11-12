@@ -30,12 +30,13 @@
     sponsor.className = "broadcast-sponsors";
     sponsor.setAttribute("aria-label", "Sponsor logos");
     fragment.querySelector(".mainbox").append(sponsor);
-    // Both Arena readouts mirror the same controller-owned clock.
-    const clockMirror = document.createElement("span");
-    clockMirror.className = "arena-clock-mirror";
-    clockMirror.dataset.draftClockMirror = "";
-    clockMirror.setAttribute("aria-hidden", "true");
-    fragment.querySelector(".mainbox").append(clockMirror);
+    for (const side of ["blue", "red"]) {
+      const score = document.createElement("span");
+      score.className = "arena-series-score";
+      score.dataset.teamScore = side;
+      score.setAttribute("aria-label", side + " series score");
+      fragment.querySelector(".mainbox").append(score);
+    }
     DraftDisplay.start({ template: fragment });
     window.SponsorSlideshow?.start(sponsor);
     const stats = document.createElement("script");
