@@ -41,3 +41,9 @@ A stylesheet failure retains the last loaded look; cross-source activation remai
 `npm test` covers existing state/store/HTTP tests, controller-order parity, clock-zero normalization, timer mirror restrictions and unique active IDs in primary legacy pages. The actual server fixture checks that a live zero tick appears in REST without overwriting phase or writing that tick into the saved draft file.
 
 `npm run test:browser` adds normal/6-ban themed and legacy displays, live zero/phase changes, read-only operation, theme preview/activation, retained hero DOM, malformed snapshots, reconnect, corrections/reset and absence of authored branding. Synthetic artwork is used for layout review; actual Windows/OBS rendering, audio behavior and source-frame performance remain target-machine checks.
+
+## Reference-layout correction
+
+New draft outputs now import the `.mainbox` and `.phasebox` from the existing `display2.html` without executing its scripts. Classic loads the original `display2.css`; its slot, coach, logo, score and center geometry is compared with the original page in the browser scenario. Studio uses the white/gold composition; Arena uses the blue/cyan composition with vertical player names. Both restyle the same complete markup. The six-ban output removes only ban slots 4/5 per side; it retains coach, lane, player-image, hero-stat and match bindings. The original output files stay intact.
+
+Hero statistics initialization handles both static and asynchronously mounted templates. Optional Google Fonts import failures retain the already loaded outer stylesheet and its fallback fonts. Synthetic screenshots establish layout and binding behavior; exact final typography and OBS rendering still require checking with the user's real assets and fonts.

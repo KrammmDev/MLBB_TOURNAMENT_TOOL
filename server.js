@@ -17,6 +17,7 @@ const { createMatchStore } = require("./lib/match-store");
 const { installMatchRoutes } = require("./lib/match-routes");
 const { loadRosterThemeStore, installRosterThemeRoutes } = require("./lib/roster-theme-store");
 const { validateMatch } = require("./public/script/match-state");
+const { loadSponsorStore, installSponsorRoutes } = require("./lib/broadcast-sponsors");
 const { mirrorDraftTimer } = require("./lib/draft-timer");
 
 const app = express();
@@ -387,6 +388,8 @@ async function loadCache() {
 }
 let matchStore;
 let rosterThemeStore;
+let sponsorStore;
+const sponsorDirectory = path.join(__dirname, "runtime", "sponsor-logos");
 
 async function initFlagDB() {
   if (!fsSync.existsSync(flagJsonPath)) {
@@ -630,6 +633,7 @@ app.get("/api/players", async (req, res) => {
 // --- MATCH DATA API ---
 installMatchRoutes(app, () => matchStore);
 installRosterThemeRoutes(app, () => rosterThemeStore);
+installSponsorRoutes(app, () => sponsorStore, sponsorDirectory);
 
 // --- MATCH DRAFT API ---
 app.get("/api/matchdraft", (req, res) => {
@@ -1336,6 +1340,10 @@ async function start() {
   rosterThemeStore = await loadRosterThemeStore({
     file: path.join(__dirname, "runtime", "roster-theme.json"),
     onCommit: snapshot => broadcast({ type: "roster_theme_update", ...snapshot }),
+  });
+  sponsorStore = await loadSponsorStore({
+    file: path.join(__dirname, "runtime", "broadcast-sponsors.json"),
+    onCommit: snapshot => broadcast({ type: "broadcast_sponsors_update", ...snapshot }),
   });
   server.listen(port, "0.0.0.0", async () => {
     const boundPort = server.address().port;

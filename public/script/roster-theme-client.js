@@ -69,11 +69,12 @@
               };
               link.onerror = () => {
                 clearTimeout(timer);
-                // Classic's already loaded outer stylesheet can use system fonts when its optional import fails.
+                // Existing outer stylesheets remain usable when optional web-font imports fail.
                 if (
-                  output === "roster" &&
-                  id === "classic" &&
-                  href === "/overlay-display.css" &&
+                  ((output === "roster" &&
+                    id === "classic" &&
+                    href === "/overlay-display.css") ||
+                    (output === "draft" && href === "/display2.css")) &&
                   link.sheet
                 )
                   resolve();

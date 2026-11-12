@@ -1,15 +1,94 @@
-/* Arena: high-contrast cool panels with a fine gold edge. */
 :root {
-  --draft-bg: #101722f5;
-  --draft-panel: #243044;
-  --draft-line: #84734e;
-  --draft-blue: #84bdfb;
-  --draft-red: #f4a7ad;
-  --draft-muted: #d1c5a9;
+  --header-bg: linear-gradient(110deg, #05114f, #1136ae);
+  --header-text: #ffffff;
+  --edge: #25ccff;
+  --inner-edge: #3b6bff;
+  --empty-bg: linear-gradient(140deg, #06104c, #103dc4);
+  --center-bg:
+    radial-gradient(ellipse at 50% 110%, #135dff, transparent 70%), #050b60;
+  --center-text: #54f5ff;
+  --match-bg: transparent;
 }
-.draft-header {
-  border-bottom: 2px solid #ae9764;
+.hero-name.blue,
+.hero-name.red {
+  top: auto;
+  bottom: 0;
+  left: 4px;
+  right: 4px;
+  width: auto;
+  padding: 20px 4px 5px;
+  background: linear-gradient(transparent, #020c32e8);
+  border: 0;
+  font:
+    700 11px Arial,
+    sans-serif;
+  writing-mode: horizontal-tb;
+  transform: none;
 }
-.draft-center {
-  border-top: 3px solid #ae9764;
+.heropick.blue-side .hero-name,
+.heropick.red-side .hero-name {
+  left: 0;
+  right: 0;
+  transform: none;
+}
+.heropick {
+  --accent: 35, 237, 255;
+}
+.heropick.red-side {
+  --accent: 35, 237, 255;
+}
+.nickholder {
+  position: absolute;
+  top: 0;
+  height: 269px;
+  pointer-events: none;
+  z-index: 8;
+}
+.playername,
+.lowerside:last-child .playername {
+  align-items: flex-start;
+  justify-content: flex-start;
+  height: 269px;
+  padding: 40px 0 12px 5px;
+  background: none;
+  border: 1px solid transparent;
+  box-shadow: none;
+}
+.playername > div {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: Impact, sans-serif;
+  font-size: 20px;
+  max-height: 100%;
+  background: #030d3977;
+  padding: 4px 2px;
+}
+#timer {
+  color: #fff;
+  text-shadow: 0 0 20px #008cff66;
+}
+#blue-score-display .dot,
+#red-score-display .dot {
+  width: 9px;
+  transform: none;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+#blue-score-display .dot.active,
+#red-score-display .dot.active {
+  background: #29edff;
+}
+.turn-arrow.left.on span,
+.turn-arrow.right.on span,
+.turn-arrow.left.both-on span,
+.turn-arrow.right.both-on span {
+  background: #29edff;
+}
+.tb-left .tb-fill,
+.tb-right .tb-fill {
+  background: #2bd9ff;
+  box-shadow: none;
+}
+.lanelogo img {
+  filter: brightness(0) saturate(100%) invert(88%) sepia(90%) saturate(1500%)
+    hue-rotate(130deg);
 }

@@ -129,6 +129,87 @@ test(
       await p.waitForFunction(
         () => document.body.dataset.draftReady === "true",
       );
+    // Classic must preserve the actual original structure and geometry, not a recreation.
+    const classic = await page("/draft-display.html?theme=classic");
+    await classic.waitForFunction(
+      () => document.body.dataset.draftReady === "true",
+    );
+    await classic.waitForFunction(
+      () => document.getElementById("timer").textContent === "18",
+    );
+    const ids = async (p) =>
+      p.locator(".mainbox [id]").evaluateAll((nodes) =>
+        nodes
+          .map((n) => n.id)
+          .filter((id) => !id.startsWith("stat-"))
+          .sort(),
+      );
+    assert.deepEqual(await ids(classic), await ids(legacy));
+    async function geometry(p) {
+      return p.evaluate(() => {
+        const main = document.querySelector(".mainbox").getBoundingClientRect();
+        const scale = main.width / 1920;
+        return [
+          ".upper",
+          ".lower",
+          ".pickholder",
+          ".nickholder",
+          ".lowermid",
+          ".coachbox",
+          ".banholder",
+          ".teamlogo",
+          "#blue-score-display",
+          "#timer",
+        ].map((selector) => {
+          const r = document.querySelector(selector).getBoundingClientRect();
+          return [
+            selector,
+            ...[r.x - main.x, r.y - main.y, r.width, r.height].map((v) =>
+              Math.round(v / scale),
+            ),
+          ];
+        });
+      });
+    }
+    // Original score bars animate dimensions for 300ms after a theme changes.
+    await classic.waitForTimeout(400);
+    assert.deepEqual(await geometry(classic), await geometry(legacy));
+    for (const p of [normal, six, classic]) {
+      assert.equal(
+        await p.locator("#coach-name-left").textContent(),
+        "Coach North",
+      );
+      assert.equal(await p.locator(".name-image-box").count(), 10);
+      assert.equal(await p.locator(".timerbar .tb-fill").count(), 2);
+      for (const selector of [
+        "#coach-name-left",
+        "#name-box-1",
+        "#name-box-3",
+        "#hero-name-1",
+        "#timer",
+      ]) {
+        const box = await p.locator(selector).boundingBox();
+        assert.ok(
+          box && box.width > 0 && box.height > 0,
+          selector + " must remain visible",
+        );
+      }
+    }
+    if (process.env.MLBB_CAPTURE_DIR) {
+      const fs = require("node:fs/promises");
+      await fs.mkdir(process.env.MLBB_CAPTURE_DIR, { recursive: true });
+      for (const [p, name] of [
+        [classic, "classic"],
+        [normal, "studio"],
+      ])
+        await p.screenshot({
+          path: path.join(
+            process.env.MLBB_CAPTURE_DIR,
+            "draft-" + name + ".png",
+          ),
+          omitBackground: true,
+        });
+    }
     assert.equal(await normal.locator(".banhero").count(), 10);
     assert.equal(await six.locator(".banhero").count(), 6);
     assert.equal(
@@ -161,8 +242,8 @@ test(
         () => document.getElementById("timer").textContent === "00",
       );
     assert.equal(
-      await normal.locator("#timer-bar").evaluate((el) => el.style.transform),
-      "scaleX(0)",
+      await normal.locator("#timer-bar").evaluate((el) => el.style.width),
+      "0%",
     );
     // Full phase change highlights the correct pair without changing controller rules.
     draft = {

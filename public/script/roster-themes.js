@@ -42,7 +42,9 @@
         ...theme,
         outputs: ["roster", "draft"],
         draftStyles: [
+          "/display2.css",
           "/themes/draft-base.css",
+          ...(theme.id === "classic" ? [] : ["/themes/draft-compact.css"]),
           "/themes/draft-" + theme.id + ".css",
         ],
         requiredAssets: [],
