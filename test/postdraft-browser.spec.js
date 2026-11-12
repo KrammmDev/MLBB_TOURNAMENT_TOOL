@@ -289,6 +289,26 @@ test(
         true,
         "missing photo keeps hero visible",
       );
+      if (id === "arena") {
+        const blue = await live.locator("#pd-blue-bank").boundingBox();
+        const red = await live.locator("#pd-red-bank").boundingBox();
+        assert.ok(
+          red.y > blue.y + blue.height,
+          "Arena shows separate team rows without overlap",
+        );
+        assert.ok(
+          photoBox.width < heroBox.width * 0.8,
+          "Arena leaves hero artwork visible beside the player cutout",
+        );
+        assert.equal(
+          await live
+            .locator(".pd-player-name")
+            .first()
+            .evaluate((name) => getComputedStyle(name).writingMode),
+          "horizontal-tb",
+          "Arena names read horizontally",
+        );
+      }
       const backdropTransform = () =>
         live
           .locator("#postdraft-stage")

@@ -5,147 +5,211 @@ body {
   --pd-left: #1bc2d5;
   --pd-right: #527fe8;
   --pd-edge: #28435b;
+  --pd-scene: var(--pd-panel);
 }
-/* A continuous ten-card dark lineup with lower player cutouts and vertical IGNs. */
+/* Two wide lineup decks, each anchored by an open team identity dock. */
 .pd-header {
-  top: 50px;
-  height: 130px;
-  grid-template-columns: 1fr 200px 1fr;
-  gap: 20px;
+  inset: 0;
+  width: 1920px;
+  height: 1080px;
+  display: block;
+  pointer-events: none;
+}
+.pd-header::before {
+  content: "POST-DRAFT";
+  position: absolute;
+  top: 75px;
+  left: 64px;
+  font-size: 40px;
+  letter-spacing: 8px;
+  color: var(--pd-muted);
+}
+.pd-header::after {
+  content: "";
+  position: absolute;
+  top: 194px;
+  left: 64px;
+  right: 64px;
+  height: 1px;
+  background: var(--pd-edge);
+}
+.pd-team,
+.pd-red.pd-team {
+  position: absolute;
+  left: 54px;
+  width: 260px;
+  height: 330px;
+  padding: 25px 12px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  text-align: center;
+  background: transparent;
 }
 .pd-blue.pd-team {
-  grid-column: 1;
-  border-left: 4px solid var(--pd-left);
+  top: 232px;
 }
 .pd-red.pd-team {
-  grid-column: 3;
-  border-right: 4px solid var(--pd-right);
+  top: 642px;
+}
+.pd-team img {
+  width: 140px;
+  height: 140px;
+}
+.pd-team > div {
+  flex: 0;
+  width: 100%;
+}
+.pd-team-name {
+  font-size: 45px;
+  letter-spacing: 1px;
+}
+.pd-wins,
+.pd-red .pd-wins {
+  justify-content: center;
+  margin-top: 18px;
+  gap: 9px;
+}
+.pd-win {
+  width: 30px;
+  height: 7px;
+  transform: skewX(-20deg);
+}
+#pd-tournament-logo {
+  top: 35px;
+  width: 130px;
+  height: 130px;
 }
 .pd-match {
   position: absolute;
-  top: 905px;
-  left: 600px;
-  width: 640px;
-  height: 70px;
+  top: 60px;
+  right: 64px;
+  width: 650px;
+  height: 90px;
+  padding: 0;
   flex-direction: row;
+  justify-content: flex-end;
   gap: 22px;
-  border-top: 1px solid var(--pd-edge);
 }
 #display-match-text {
   font-size: 30px;
 }
 #display-game-text {
-  font-size: 38px;
+  font-size: 40px;
 }
 .pd-main {
-  top: 225px;
-  grid-template-columns: 1fr 22px 1fr;
+  top: 232px;
+  left: 350px;
+  width: 1506px;
+  height: 750px;
+  display: block;
+}
+.pd-gap {
+  display: none;
 }
 .pd-bank {
-  gap: 5px;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  gap: 14px;
+}
+.pd-blue.pd-bank {
+  top: 0;
+}
+.pd-red.pd-bank {
+  top: 410px;
 }
 .pd-card {
-  height: 670px;
-  --pd-label-height: 4px;
-  --pd-photo-height: 350px;
+  height: 340px;
+  --pd-label-height: 48px;
+  --pd-photo-height: 165px;
 }
-.pd-blue .pd-card {
-  border-bottom: 5px solid var(--pd-left);
+.pd-art {
+  clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+  object-position: 50% 15%;
+  mask-image: linear-gradient(#000 0 70%, #0009 100%);
 }
-.pd-red .pd-card {
-  border-bottom: 5px solid var(--pd-right);
+.pd-red .pd-art {
+  clip-path: polygon(0 0, 95% 0, 100% 100%, 5% 100%);
+}
+.pd-card.has-hero .pd-player {
+  left: 24%;
+  width: 76%;
+  object-position: 50% 0;
 }
 .pd-label {
-  left: auto;
-  right: 8px;
-  bottom: 45px;
-  width: 36px;
-  height: 340px;
-  min-height: 0;
-  padding: 0;
-  background: transparent;
-  justify-content: flex-end;
+  left: -3px;
+  right: -3px;
+  height: 48px;
+  padding: 6px 14px;
+  align-items: flex-start;
+  text-align: left;
+  clip-path: polygon(3% 0, 100% 0, 97% 100%, 0 100%);
+}
+.pd-blue .pd-label {
+  background: var(--pd-left);
+  color: var(--pd-left-text, #091827);
+}
+.pd-red .pd-label {
+  background: var(--pd-right);
+  color: var(--pd-right-text, #ffffff);
 }
 .pd-player-name {
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  font-size: 31px;
-  color: var(--pd-text, #ffffff);
-  text-shadow: 0 1px 4px #000000;
-  max-height: 100%;
+  font-size: 27px;
+  max-width: 100%;
 }
 .pd-hero-name {
   display: none;
 }
 .pd-lane {
-  top: auto;
-  bottom: 10px;
-  left: 10px;
+  top: 10px;
+  left: 18px;
   right: auto;
-  background: #091827cc;
+  width: 34px;
+  height: 34px;
+  padding: 5px;
+  background: #ffffffd9;
 }
-.pd-red .pd-lane {
-  left: 10px;
-  right: auto;
-}
-/* Navy arena scene with broad side sweeps rather than individual boxes. */
-body {
-  --pd-scene: var(--pd-panel, #091827);
-}
-#postdraft-stage::before {
-  background: linear-gradient(
-    120deg,
-    var(--pd-left) 0 3%,
-    transparent 3% 6%,
-    var(--pd-left) 6% 6.3%,
-    transparent 6.3% 93.7%,
-    var(--pd-right) 93.7% 94%,
-    transparent 94% 97%,
-    var(--pd-right) 97%
-  );
-  opacity: 0.2;
-}
-#postdraft-stage::after {
-  inset: 20px 24px;
-  border-bottom: 3px solid var(--pd-edge);
-  border-radius: 0 0 160px 160px;
-}
-.pd-team {
-  border: 0 !important;
-}
-.pd-team-name {
-  font-size: 52px;
-  letter-spacing: 2px;
-}
-.pd-match {
-  border: 0;
-}
-.pd-blue .pd-card,
-.pd-red .pd-card {
-  border: 0;
-}
-.pd-art {
-  clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
-  mask-image: linear-gradient(#000 0 72%, transparent 100%);
-}
-.pd-red .pd-art {
-  clip-path: polygon(0 0, 95% 0, 100% 100%, 5% 100%);
-}
-.pd-label {
-  right: -2px;
-  bottom: 56px;
-}
-.pd-blue.pd-bank::after,
-.pd-red.pd-bank::after {
+/* Long team rails link the side identity dock to its lineup. */
+.pd-bank::before {
   content: "";
   position: absolute;
-  left: 0;
+  top: -9px;
+  left: -296px;
   right: 0;
-  bottom: -10px;
-  height: 4px;
-  background: var(--pd-left);
-  transform: skewX(-30deg);
+  height: 3px;
+  transform: skewX(-20deg);
+  background: linear-gradient(
+    90deg,
+    var(--pd-left) 0 18%,
+    var(--pd-edge) 18% 100%
+  );
 }
-.pd-red.pd-bank::after {
-  background: var(--pd-right);
+.pd-red.pd-bank::before {
+  background: linear-gradient(
+    90deg,
+    var(--pd-right) 0 18%,
+    var(--pd-edge) 18% 100%
+  );
+}
+#postdraft-stage::before {
+  background:
+    linear-gradient(
+      120deg,
+      transparent 0 13%,
+      var(--pd-left) 13% 13.3%,
+      transparent 13.3% 86.7%,
+      var(--pd-right) 86.7% 87%,
+      transparent 87%
+    ),
+    linear-gradient(
+      120deg,
+      var(--pd-edge) 0 15%,
+      transparent 15% 85%,
+      var(--pd-edge) 85%
+    );
+  opacity: 0.25;
+}
+#postdraft-stage::after {
+  inset: 0;
 }
