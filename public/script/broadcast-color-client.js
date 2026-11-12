@@ -41,7 +41,10 @@
       preview === null
         ? data.palettes[active.id]?.[active.output] || {}
         : preview;
-    const css = model.style(active.id, active.output, colors, classicImage);
+    const renderOutput = document.body.dataset.scoreboardTheme
+      ? "scoreboard"
+      : active.output;
+    const css = model.style(active.id, renderOutput, colors, classicImage);
     if (style.textContent !== css) style.textContent = css;
     if (
       style.parentNode !== document.head ||

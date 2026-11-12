@@ -6,27 +6,39 @@ body {
   --sb-right: #ff0101;
   --sb-border: #d6d6da;
 }
+/* Colored name plates and white logo shields: Classic's broadcast identity. */
 .sb-frame {
   background: var(--header-bg, #ffffff);
 }
 .sb-banner {
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 8px));
-}
-.sb-banner-right {
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), 0 100%);
+  height: 128px;
+  clip-path: polygon(0 0, 100% 0, 100% 92%, 50% 100%, 0 92%);
 }
 .sb-banner::after {
   content: "";
   position: absolute;
-  inset: 0 0 4px 7px;
+  inset: 0 0 5px;
   background: var(--header-bg, #ffffff);
 }
-.sb-banner-right::after {
-  inset: 0 7px 4px 0;
-}
 .sb-left {
-  border-bottom: 2px solid var(--blue-accent, var(--sb-left));
+  background: var(--blue-accent, var(--sb-left));
+  color: var(--sb-left-text, #ffffff);
 }
 .sb-right {
-  border-bottom: 2px solid var(--red-accent, var(--sb-right));
+  background: var(--red-accent, var(--sb-right));
+  color: var(--sb-right-text, #ffffff);
+}
+.sb-left .tn {
+  padding-left: 8px;
+}
+.sb-right .tn {
+  padding-right: 8px;
+}
+.score-dots {
+  background: var(--header-bg, #ffffff);
+  padding: 9px 8px;
+}
+.sb-win {
+  width: 5px;
+  height: 21px;
 }

@@ -117,9 +117,15 @@
     return bg > 0.179 ? "#18212b" : "#f2f7fc";
   }
   function style(id, output, colors, classicImage = "") {
-    if (!validScope(id, output) || !validColors(colors))
+    if (
+      !validScope(id, output === "scoreboard" ? "draft" : output) ||
+      !validColors(colors)
+    )
       throw Error("Invalid broadcast colors");
-    const palette = { ...defaults[output][id], ...colors };
+    const palette = {
+      ...defaults[output === "scoreboard" ? "draft" : output][id],
+      ...colors,
+    };
     const scope = `body[data-${output}-theme="${id}"]`,
       rules = [],
       variables = [];
@@ -135,6 +141,26 @@
       );
     const vars = (names, value) =>
       names.split(",").forEach((name) => variables.push(name + ":" + value));
+    if (output === "scoreboard") {
+      // Share saved draft values, never draft geometry selectors (.upper/.lower).
+      const mappings = {
+        background: "--header-bg,--center-bg",
+        left: "--blue-accent",
+        right: "--red-accent",
+        border: "--edge",
+      };
+      for (const [field, names] of Object.entries(mappings))
+        if (colors[field]) vars(names, colors[field]);
+      vars("--sb-readable", readable(palette.text, palette.background));
+      vars("--sb-muted-readable", readable(palette.muted, palette.background));
+      vars("--sb-info-text", readable(colors.text || "#ffffff", palette.right));
+      vars("--sb-left-text", readable(colors.text || "#ffffff", palette.left));
+      vars(
+        "--sb-right-text",
+        readable(colors.text || "#ffffff", palette.right),
+      );
+      return scope + "{" + variables.join(";") + "}";
+    }
     if (output === "draft") {
       if (colors.background) {
         vars("--header-bg,--center-bg,--match-bg", colors.background);
