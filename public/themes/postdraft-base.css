@@ -275,3 +275,26 @@ body {
 .pd-match {
   background: transparent;
 }
+
+/* Move only the decorative backdrop; lineup and branding stay still. */
+#postdraft-stage {
+  overflow: hidden;
+}
+#postdraft-stage::before {
+  animation: pd-backdrop-drift 24s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+@keyframes pd-backdrop-drift {
+  from {
+    transform: translate3d(-10px, -5px, 0) scale(1.035);
+  }
+  to {
+    transform: translate3d(10px, 5px, 0) scale(1.035);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #postdraft-stage::before {
+    animation: none;
+    transform: none;
+  }
+}

@@ -289,6 +289,29 @@ test(
         true,
         "missing photo keeps hero visible",
       );
+      const backdropTransform = () =>
+        live
+          .locator("#postdraft-stage")
+          .evaluate((stage) => getComputedStyle(stage, "::before").transform);
+      await live.bringToFront();
+      const beforeDrift = await backdropTransform();
+      await live.waitForTimeout(350);
+      assert.notEqual(
+        await backdropTransform(),
+        beforeDrift,
+        "decorative backdrop moves while the lineup stays fixed",
+      );
+      await live.emulateMedia({ reducedMotion: "reduce" });
+      assert.equal(
+        await live
+          .locator("#postdraft-stage")
+          .evaluate(
+            (stage) => getComputedStyle(stage, "::before").animationName,
+          ),
+        "none",
+        "reduced motion disables backdrop movement",
+      );
+      await live.emulateMedia({ reducedMotion: "no-preference" });
       if (process.env.MLBB_CAPTURE_DIR) {
         await fs.mkdir(process.env.MLBB_CAPTURE_DIR, { recursive: true });
         await live.screenshot({
