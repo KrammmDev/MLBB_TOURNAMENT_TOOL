@@ -298,3 +298,34 @@ body {
     transform: none;
   }
 }
+
+/* A broad silver light pass, separate from the slower accent ribbons. */
+#postdraft-stage::after {
+  background-image: linear-gradient(
+    118deg,
+    transparent 38%,
+    #64748b0d 43%,
+    #ffffff00 46%,
+    #ffffff99 49%,
+    #ffffff33 52%,
+    #64748b12 55%,
+    transparent 60%
+  );
+  background-size: 260% 100%;
+  background-repeat: no-repeat;
+  animation: pd-silver-sweep 10s linear infinite;
+}
+@keyframes pd-silver-sweep {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -150% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #postdraft-stage::after {
+    animation: none;
+    background-image: none;
+  }
+}
