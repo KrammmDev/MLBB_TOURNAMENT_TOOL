@@ -12,6 +12,7 @@
         (options.format || params.get("format")) === "six" ? "six" : "normal",
       config = model.formats[format];
     const legacy = Boolean(options.legacy),
+      originalLayout = legacy || Boolean(options.template),
       pinned = options.themeId || params.get("theme");
     const audioEnabled =
       params.get("audio") === "1" || (legacy && params.get("audio") !== "0");
@@ -46,97 +47,11 @@
       if (id) el.id = id;
       return el;
     }
-    function build() {
-      const stage = node("draft-stage"),
-        strip = element("div", "draft-strip");
-      for (const side of ["blue", "red"]) {
-        const team = element("section", "draft-team " + side + "-side");
-        team.setAttribute("aria-label", side + " draft");
-        const header = element("div", "draft-header");
-        const logo = element(
-          "img",
-          "draft-logo",
-          side === "blue" ? "displayImage1" : "displayImage2",
-        );
-        logo.alt = "";
-        header.append(
-          logo,
-          element(
-            "div",
-            "draft-team-name",
-            side === "blue" ? "name-box-1" : "name-box-8",
-          ),
-          element("div", "score", side + "-score-display"),
-        );
-        const bans = element("div", "draft-bans"),
-          picks = element("div", "draft-picks");
-        const indices = side === "blue" ? [0, 1, 2, 3, 4] : [4, 3, 2, 1, 0];
-        for (const kind of ["ban", "pick"])
-          for (const index of indices) {
-            if (kind === "ban" && index >= config.banCount) continue;
-            const slot =
-              (kind === "pick" ? 1 : 11) + (side === "red" ? 5 : 0) + index;
-            const host = element(
-              "div",
-              kind === "ban" ? "banhero" : "heropick",
-            );
-            const box = element("div", "image-box", "image-box-" + slot),
-              image = element("img", "", "image-display-" + slot);
-            image.alt = "";
-            box.append(image);
-            host.append(
-              box,
-              element(
-                "div",
-                "box " + (kind === "pick" ? "pick" : "ban0"),
-                kind +
-                  "-" +
-                  (side === "blue" ? "left" : "right") +
-                  "-" +
-                  (index + 1),
-              ),
-              element("div", "hero-name " + side, "hero-name-" + slot),
-            );
-            if (kind === "pick") {
-              const lane = element("div", "lanelogo"),
-                icon = element(
-                  "img",
-                  "lane-icon",
-                  "player-lane-" + (index + 1) + "-" + side,
-                );
-              icon.alt = "";
-              lane.append(icon);
-              const player = element("div", "draft-player");
-              player.append(
-                element(
-                  "span",
-                  "",
-                  "name-box-" + (side === "blue" ? 3 + index : 10 + index),
-                ),
-              );
-              host.append(lane, player);
-            }
-            (kind === "ban" ? bans : picks).append(host);
-          }
-        team.append(header, bans, picks);
-        strip.append(team);
-      }
-      const center = element("section", "draft-center");
-      center.append(element("div", "draft-phase", "phase"));
-      const clock = element("div", "draft-timer");
-      clock.append(
-        element("span", "draft-turn left", "turn-arrow-left"),
-        element("span", "", "timer"),
-        element("span", "draft-turn right", "turn-arrow-right"),
-      );
-      center.append(clock);
-      const track = element("div", "draft-clock-track");
-      track.append(element("div", "", "timer-bar"));
-      center.append(track, element("div", "", "match-display"));
-      strip.insertBefore(center, strip.lastChild);
-      stage.append(strip);
+    // New outputs reuse the actual display2 structure, rather than a reduced copy.
+    if (!legacy) {
+      if (!options.template) throw Error("Draft display template is required");
+      node("draft-stage").append(options.template);
     }
-    if (!legacy) build();
     function image(el, candidates) {
       if (!el) return;
       const list = [...new Set(candidates.filter(Boolean))],
@@ -269,7 +184,7 @@
       );
       const ratio = Math.min(1, time / phaseDuration);
       if (node("timer-bar")) {
-        if (legacy) node("timer-bar").style.width = ratio * 100 + "%";
+        if (originalLayout) node("timer-bar").style.width = ratio * 100 + "%";
         else node("timer-bar").style.transform = "scaleX(" + ratio + ")";
       }
       for (const fill of document.querySelectorAll(".tb-fill")) {
@@ -348,7 +263,7 @@
           label.textContent = phase.type;
         } else label?.remove();
       }
-      if (legacy)
+      if (originalLayout)
         for (const holder of document.querySelectorAll(".pickholder")) {
           const nicks = holder.parentElement.querySelector(".nickholder");
           [...holder.children].forEach((slot, index) =>
@@ -456,6 +371,7 @@
       }
     }
     function onMessage(message) {
+      root.SponsorSlideshow?.accept(message);
       if (message.type === "draftdata_update") {
         if (message.data) {
           fullVersion++;

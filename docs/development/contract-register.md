@@ -68,3 +68,7 @@ Theme catalog coverage expands to `roster` and `draft`; draft styles use the sam
 `/draft-display.html` follows the shared selection; `format=six` chooses the 6-ban display and `theme=<id>` pins a preview. Primary legacy draft URLs retain original geometry and share the renderer. New output canvas is 1920×1080 with a transparent bottom strip. Other graphic types remain outside this selection contract.
 
 Current product constraint: no authored decorative game/league branding, slogans, watermarks or placeholder titles on broadcast scenes. Functional state and actual operator data remain. Automatic roster defaults/edge text were removed. See `draft-display.md` for behavior, audio options and remaining limits.
+
+## Studio sponsor playlist
+
+`/api/broadcast-sponsors` owns a revision-guarded playlist independent of match, draft and theme selection. Raster uploads use `/api/broadcast-sponsors/logos`; committed settings emit `broadcast_sponsors_update`. Only new Studio draft outputs render the top-center sponsor slot. Blank/disabled playlists introduce no placeholder or league branding. Runtime data and images live under ignored `runtime/`. See `broadcast-sponsors.md` for lifecycle, operator behavior and limits.

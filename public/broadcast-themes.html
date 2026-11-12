@@ -59,6 +59,58 @@
           </button>
         </div>
       </section>
+      <section class="sponsor-settings" aria-labelledby="sponsor-title">
+        <h2 id="sponsor-title">Sponsor slideshow</h2>
+        <p>
+          Logos appear in the top center of the Studio draft. Uploading or
+          saving updates that output.
+        </p>
+        <button id="sponsor-preview" type="button" class="secondary">
+          Preview Studio draft
+        </button>
+        <form id="sponsor-upload-form">
+          <label for="sponsor-upload">Add sponsor logo</label>
+          <input
+            id="sponsor-upload"
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            required
+          />
+          <button id="sponsor-add" type="submit" disabled>Upload logo</button>
+          <small
+            >PNG, JPEG, WebP or GIF · up to 3 MB each · up to 20 logos</small
+          >
+        </form>
+        <form id="sponsor-settings-form">
+          <div class="sponsor-options">
+            <label
+              ><input id="sponsor-enabled" type="checkbox" /> Show
+              sponsors</label
+            >
+            <label for="sponsor-interval">Seconds per logo</label>
+            <input
+              id="sponsor-interval"
+              type="number"
+              min="2"
+              max="60"
+              value="5"
+              required
+            />
+          </div>
+          <ol id="sponsor-list" aria-label="Sponsor order"></ol>
+          <div class="sponsor-actions">
+            <button id="sponsor-save" type="submit" disabled>
+              Save slideshow
+            </button>
+            <button id="sponsor-reload" type="button" class="secondary">
+              Reload sponsors
+            </button>
+          </div>
+        </form>
+        <p id="sponsor-status" role="status" aria-live="polite">
+          Loading sponsors…
+        </p>
+      </section>
       <section class="obs-link">
         <div>
           <h2>OBS Browser Source</h2>
@@ -80,5 +132,6 @@
     </main>
     <script src="/script/roster-themes.js"></script>
     <script src="/script/roster-theme-control.js"></script>
+    <script src="/script/sponsor-control.js"></script>
   </body>
 </html>

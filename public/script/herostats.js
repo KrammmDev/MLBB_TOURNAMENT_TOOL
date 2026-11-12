@@ -217,5 +217,7 @@ const CARD_GAP_MS = 400; // gap sa pagitan ng mga card
     }, REFRESH_INTERVAL_MS);
   }
 
-  document.addEventListener("DOMContentLoaded", init);
+  if (document.readyState === "loading")
+    document.addEventListener("DOMContentLoaded", init, { once: true });
+  else init();
 })();

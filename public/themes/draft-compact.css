@@ -1,0 +1,278 @@
+/* Gold and blue use the same complete display2 DOM with a compact composition. */
+#draft-stage > .mainbox {
+  --side-width: 780px;
+  --center-width: 360px;
+  height: 367px;
+}
+.mainbox > .upper,
+.mainbox > .lower {
+  display: contents;
+}
+.uppermid,
+.bantextbox {
+  display: none;
+}
+.upperside {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--side-width);
+  height: 64px;
+  background: var(--header-bg);
+  border-top: 2px solid var(--edge);
+  border-bottom: 2px solid var(--edge);
+}
+.upperside:last-child {
+  left: auto;
+  right: 0;
+}
+.banholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 360px;
+  height: 60px;
+  flex: none;
+  justify-content: flex-start;
+}
+.upperside:last-child .banholder {
+  left: auto;
+  right: 0;
+  justify-content: flex-end;
+}
+.banhero {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+  height: 52px;
+  margin: 2px;
+  border-radius: 0;
+  border: 1px solid var(--edge);
+  background-color: var(--empty-bg);
+}
+.banhero img {
+  width: 100%;
+  height: 52px;
+  margin-top: 35px;
+}
+.coachbox {
+  position: absolute;
+  top: 0;
+  left: 364px;
+  width: 140px;
+  height: 60px;
+  padding: 0 5px !important;
+}
+.upperside:last-child .coachbox {
+  left: auto;
+  right: 364px;
+}
+.coach-name {
+  font-size: 20px;
+  color: var(--header-text);
+  text-shadow: none;
+}
+.coach-label {
+  font-size: 10px;
+  color: var(--header-text);
+  text-shadow: none;
+}
+.coach-name::before,
+.coach-name::after {
+  display: none;
+}
+.lowerside {
+  position: absolute;
+  left: 0;
+  top: 64px;
+  width: var(--side-width);
+  height: 303px;
+}
+.lowerside:last-child {
+  left: auto;
+  right: 0;
+}
+.pickholder {
+  width: 100%;
+  height: 269px;
+}
+.heropick {
+  height: 269px;
+  border-color: var(--edge);
+  background: var(--empty-bg);
+}
+.heropick > .image-box > img {
+  height: 269px;
+}
+.heropick::before,
+.heropick::after {
+  display: none;
+}
+.nickholder {
+  width: 100%;
+  height: 34px;
+}
+.playername {
+  height: 34px;
+  font:
+    700 17px Arial,
+    sans-serif;
+  letter-spacing: 0;
+}
+.lowermid {
+  position: absolute;
+  left: var(--side-width);
+  top: 0;
+  width: var(--center-width);
+  height: 367px;
+  background: var(--center-bg);
+  border: 2px solid var(--edge);
+  overflow: visible;
+}
+.lowermid::before {
+  inset: 12px;
+  width: auto;
+  background: none;
+  border: 1px solid var(--inner-edge);
+}
+.lowermid::after {
+  display: none;
+}
+.upperlowermid {
+  position: static;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  flex: none;
+}
+.upperlowermid .teamlogo-wrap {
+  position: absolute;
+  top: 2px;
+  left: -275px;
+  width: 258px;
+  height: 58px;
+  transform: none;
+  flex-direction: row;
+  gap: 8px;
+}
+.upperlowermid .teamlogo-wrap:last-child {
+  left: auto;
+  right: -275px;
+  flex-direction: row-reverse;
+}
+.teamlogo,
+.teamlogo img {
+  width: 44px;
+  height: 44px;
+}
+.teamnameholder1,
+.teamnameholder2 {
+  width: 150px;
+  font:
+    700 23px Arial,
+    sans-serif;
+  color: var(--header-text);
+}
+.score {
+  position: static;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+#blue-score-display,
+#red-score-display {
+  top: 22px;
+}
+#blue-score-display {
+  left: -35px;
+}
+#red-score-display {
+  right: -35px;
+}
+#blue-score-display .dot,
+#red-score-display .dot {
+  width: 7px;
+  height: 20px;
+  transform: skewX(-15deg);
+}
+.vs-container {
+  position: absolute;
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 112px;
+}
+#timer {
+  font:
+    84px Impact,
+    sans-serif;
+  color: var(--center-text);
+}
+.turn-arrow.left {
+  margin-right: 58px;
+}
+.turn-arrow.right {
+  margin-left: 58px;
+}
+.match-info-display {
+  position: absolute;
+  left: 20px;
+  bottom: 65px;
+  width: calc(100% - 40px);
+  height: 46px;
+  flex: none;
+  padding: 0 8px;
+  box-sizing: border-box;
+  background: var(--match-bg);
+}
+#match-display {
+  font:
+    800 17px Arial,
+    sans-serif;
+  letter-spacing: 0;
+  color: var(--center-text);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.lowerlowermid {
+  display: none;
+}
+.phasebox {
+  display: flex;
+  position: absolute;
+  top: 0;
+  bottom: 24px;
+  left: var(--side-width);
+  width: var(--center-width);
+  align-items: flex-end;
+  padding-bottom: 260px;
+  box-sizing: border-box;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+}
+.phasebox h2 {
+  margin: 0;
+  font:
+    800 17px Arial,
+    sans-serif;
+  letter-spacing: 3px;
+  color: var(--center-text);
+}
+/* Phasebox is a sibling of .mainbox; define its dimensions independently. */
+#draft-stage > .phasebox {
+  --side-width: 780px;
+  --center-width: 360px;
+}
+.hero-name {
+  width: 25px;
+  font-size: 14px;
+}
+.timerbar {
+  top: auto;
+  bottom: -8px;
+  left: 0;
+  width: 1920px;
+  height: 8px;
+}

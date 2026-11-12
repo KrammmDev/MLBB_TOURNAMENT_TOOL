@@ -285,6 +285,93 @@ iframe {
   background: transparent;
 }
 
-#preview-output { padding:8px; border:1px solid var(--line); border-radius:6px; background:#151c27; color:#e8edf4; font:inherit; }
-.preview-heading { flex-wrap:wrap; gap:12px; }
-.preview-heading h2 { flex:1; }
+#preview-output {
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #151c27;
+  color: #e8edf4;
+  font: inherit;
+}
+.preview-heading {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.preview-heading h2 {
+  flex: 1;
+}
+
+.sponsor-settings {
+  margin-top: 24px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #121a26;
+}
+.sponsor-settings > p {
+  margin: 10px 0 18px;
+  color: #b5c4d6;
+}
+#sponsor-upload-form,
+.sponsor-options,
+.sponsor-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 18px 0;
+}
+#sponsor-upload-form small {
+  flex-basis: 100%;
+  color: #b5c4d6;
+}
+#sponsor-interval {
+  width: 75px;
+  padding: 8px;
+  background: #0c131c;
+  color: #fff;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+#sponsor-list {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+}
+#sponsor-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px;
+  background: #0c131c;
+  border-radius: 6px;
+}
+#sponsor-list img {
+  width: 100px;
+  height: 55px;
+  object-fit: contain;
+  background: #e8eae5;
+  border-radius: 4px;
+}
+#sponsor-list span {
+  flex: 1;
+  min-width: 100px;
+  overflow-wrap: anywhere;
+}
+#sponsor-status[data-error="true"] {
+  color: #ffb6ac;
+}
+
+#sponsor-enabled {
+  width: auto;
+  min-width: 0;
+  flex: 0 0 auto;
+  margin-right: 8px;
+}
+#sponsor-interval {
+  width: 75px;
+  min-width: 0;
+  flex: 0 0 75px;
+}
