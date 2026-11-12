@@ -51,7 +51,7 @@
     if (output() === "draft") {
       const details = {
         classic: "Original orange / red / white display2 layout",
-        arena: "Tournament stage · score header · sponsor footer",
+        arena: "Outward-slant cards · navy/cyan stage",
         studio: "White team desks · slim center clock",
       };
       const colors = {

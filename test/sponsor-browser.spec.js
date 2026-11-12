@@ -331,14 +331,37 @@ test(
           await page.locator('[data-team-score="red"]').textContent(),
           "1",
         );
-        assert.equal(
-          await page
-            .locator(".heropick")
-            .first()
-            .evaluate((el) => getComputedStyle(el).transform),
-          "none",
-          "Arena portraits are straight",
+        const angles = await page.evaluate(() => {
+          const left = document.querySelector(".heropick.blue-side"),
+            right = document.querySelector(".heropick.red-side");
+          const matrix = (el) => new DOMMatrix(getComputedStyle(el).transform);
+          return {
+            left: matrix(left).c,
+            right: matrix(right).c,
+            leftArt: matrix(left).multiply(
+              matrix(left.querySelector(".image-box")),
+            ).c,
+            rightArt: matrix(right).multiply(
+              matrix(right.querySelector(".image-box")),
+            ).c,
+            label: matrix(left).multiply(
+              matrix(left.querySelector(".hero-name")),
+            ).c,
+            name: getComputedStyle(document.getElementById("name-box-3"))
+              .transform,
+          };
+        });
+        assert.ok(
+          angles.left < -0.1 && angles.right > 0.1,
+          "Arena cards lean outward, opposite the old reference",
         );
+        assert.ok(
+          Math.abs(angles.leftArt) < 0.001 &&
+            Math.abs(angles.rightArt) < 0.001 &&
+            Math.abs(angles.label) < 0.001,
+          "artwork and hero labels remain upright",
+        );
+        assert.equal(angles.name, "none", "player names remain horizontal");
         assert.equal(
           await page
             .locator(".lowermid")
