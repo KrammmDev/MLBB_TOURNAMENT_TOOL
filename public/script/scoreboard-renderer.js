@@ -14,7 +14,7 @@
           "sb-wins-red": "red-score-display",
           "sb-turtles-blue": "blue-turtle-container",
           "sb-turtles-red": "red-turtle-container",
-          "sb-match": "match-display",
+          "sb-match": "sb-match-text",
         }[id] || id,
       );
   let stopped = false,
@@ -78,6 +78,16 @@
       data.matchInfo?.game ||
         (data.game_number ? `GAME ${data.game_number}` : ""),
     );
+    el("sb-match-divider").hidden = !(
+      el("sb-match").textContent && el("sb-game").textContent
+    );
+    for (const [id, value] of [
+      ["matchinfo-main", data.matchInfo?.stage || data.season || ""],
+      ["matchinfo-day", data.matchInfo?.group || data.week || ""],
+    ]) {
+      el(id).textContent = String(value);
+      el(id).hidden = !value;
+    }
   }
   async function apply(id) {
     if (!valid(id) || stopped) return;

@@ -109,15 +109,39 @@ body {
   height: 116px;
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 3px;
   justify-content: center;
   align-items: center;
-  padding: 12px 24px;
+  padding: 5px 20px;
   box-sizing: border-box;
+}
+.matchinfo-content {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.matchinfo-content > span {
+  max-width: 100%;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+}
+.matchinfo-content > [hidden] {
+  display: none;
+}
+#matchinfo-day {
+  font-size: 11px;
+  color: var(--sb-muted-readable, var(--sb-muted));
 }
 #match-display {
   max-width: 100%;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 900;
   white-space: nowrap;
   overflow: hidden;
@@ -125,13 +149,8 @@ body {
   text-align: center;
 }
 #sb-game {
-  max-width: 100%;
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--sb-muted-readable, var(--sb-muted));
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font: inherit;
+  color: inherit;
 }
 .lower {
   position: absolute;
@@ -211,11 +230,9 @@ body {
   object-fit: contain;
 }
 #sb-sponsors {
-  position: absolute;
-  top: 40px;
-  left: 908px;
-  width: 104px;
-  height: 104px;
+  width: 100%;
+  height: 54px;
+  flex: 0 0 54px;
   display: flex;
   align-items: center;
   justify-content: center;
