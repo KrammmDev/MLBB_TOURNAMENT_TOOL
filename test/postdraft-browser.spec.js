@@ -38,6 +38,10 @@ test(
         player.name = `Player ${i + 1}`;
         player.lane = ["exp", "jungle", "mid", "gold", "roam"][i];
       });
+    data.teamdata.blueteam.playerlist[0].image = "player/custom-photo.png";
+    data.teamdata.blueteam.playerlist[2].name = "No Photo";
+    data.teamdata.blueteam.playerlist[2].image =
+      "/Assets/player/missing-photo.png";
     const side = () => ({
       pick: Array.from({ length: 5 }, () => ({
         hero: "/Assets/HeroPick/Alpha.png",
@@ -105,6 +109,7 @@ test(
           "R0lGODlhIAA0AIEAABh2ogAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQAEQAAACwAAAAAIAA0AAAIRAABCBxIsKDBgwgTKlzIsKHDhxAjSpxIsaLFixgzatzIsaPHjyBDihxJsqTJkyhTqlzJsqXLlzBjypxJs6bNmzhzLgwIACH5BAERAAEALAAAAAAgADQAge9zMQAAAAAAAAAAAAhEAAEIHEiwoMGDCBMqXMiwocOHECNKnEixosWLGDNq3Mixo8ePIEOKHEmypMmTKFOqXMmypcuXMGPKnEmzps2bOHMuDAgAIfkEAREAAQAsAAAAACAANACBdyeiAAAAAAAAAAAACEQAAQgcSLCgwYMIEypcyLChw4cQI0qcSLGixYsYM2rcyLGjx48gQ4ocSbKkyZMoU6pcybKly5cwY8qcSbOmzZs4cy4MCAA7",
           "base64",
         );
+    let missingPhotoAvailable = false;
     await context.route("**/*", (route) => {
       const url = new URL(route.request().url());
       if (url.hostname !== "127.0.0.1") return route.abort();
@@ -113,6 +118,17 @@ test(
         return route.fulfill({ contentType: "image/gif", body: gif });
       if (url.pathname.toLowerCase().endsWith(".gif"))
         return route.fulfill({ status: 404, body: "missing" });
+      if (
+        !missingPhotoAvailable &&
+        (url.pathname.includes("missing-photo") ||
+          url.pathname.includes("No%20Photo"))
+      )
+        return route.fulfill({ status: 404, body: "missing player photo" });
+      if (url.pathname.includes("/Assets/player/"))
+        return route.fulfill({
+          contentType: "image/svg+xml",
+          body: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 320"><circle cx="120" cy="73" r="49" fill="#c9a48c"/><path d="M28 320V191Q28 138 120 138Q212 138 212 191V320" fill="#274a75"/><path d="M77 144L120 185L163 144" fill="none" stroke="#eef3f8" stroke-width="12"/></svg>',
+        });
       if (url.pathname.includes("/Assets/"))
         return route.fulfill({
           contentType: "image/svg+xml",
@@ -154,6 +170,19 @@ test(
     assert.equal(
       await live.locator("#pd-red-bank .pd-player-name").first().textContent(),
       "Player 5",
+    );
+    await live.waitForFunction(() =>
+      document
+        .querySelector("#pd-blue-bank .pd-card")
+        .classList.contains("has-photo"),
+    );
+    assert.ok(
+      (
+        await live
+          .locator("#pd-blue-bank .pd-player")
+          .first()
+          .getAttribute("src")
+      ).endsWith("custom-photo.png"),
     );
     const gifNode = live.locator("#image-display-1");
     await gifNode.evaluate((el) => {
@@ -204,6 +233,34 @@ test(
         ),
         true,
       );
+      assert.equal(
+        await live.locator("#pd-blue-bank .pd-player").first().isVisible(),
+        true,
+        "player photo remains visible beside selected hero",
+      );
+      const heroBox = await live.locator("#image-display-1").boundingBox(),
+        photoBox = await live
+          .locator("#pd-blue-bank .pd-player")
+          .first()
+          .boundingBox();
+      assert.ok(
+        photoBox.y >= heroBox.y + heroBox.height - 1 ||
+          photoBox.x >= heroBox.x + heroBox.width - 1,
+        "hero animation and player photo occupy separate regions",
+      );
+      assert.equal(
+        await live
+          .locator("#pd-blue-bank .pd-card")
+          .nth(2)
+          .locator(".pd-player")
+          .isHidden(),
+        true,
+      );
+      assert.equal(
+        await live.locator("#image-display-3").isVisible(),
+        true,
+        "missing photo keeps hero visible",
+      );
       if (process.env.MLBB_CAPTURE_DIR) {
         await fs.mkdir(process.env.MLBB_CAPTURE_DIR, { recursive: true });
         await live.screenshot({
@@ -212,6 +269,22 @@ test(
         });
       }
     }
+    missingPhotoAvailable = true;
+    await live
+      .locator("#pd-blue-bank .pd-player")
+      .nth(2)
+      .evaluate((el) => (el.dataset.retryAt = "0"));
+    broadcast({ type: "matchdata_update", data });
+    await live.waitForFunction(() =>
+      document
+        .querySelectorAll("#pd-blue-bank .pd-card")[2]
+        .classList.contains("has-photo"),
+    );
+    assert.equal(
+      await live.evaluate(() => window.sourceChanges),
+      0,
+      "recovering a player photo does not reset the hero GIF",
+    );
     assert.equal(
       await pinned.locator("body").getAttribute("data-postdraft-theme"),
       "studio",

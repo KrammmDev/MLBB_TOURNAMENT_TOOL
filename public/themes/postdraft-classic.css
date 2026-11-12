@@ -6,6 +6,13 @@ body {
   --pd-right: #ff0101;
   --pd-edge: #d6d6da;
 }
+/* Straight team desks, hero art above player portraits and colored name plates. */
+.pd-header {
+  top: 70px;
+  height: 110px;
+  gap: 0;
+  grid-template-columns: 1fr 240px 1fr;
+}
 .pd-blue.pd-team {
   border-left: 8px solid var(--pd-left);
 }
@@ -13,13 +20,21 @@ body {
   border-right: 8px solid var(--pd-right);
 }
 .pd-match {
-  border-bottom: 4px solid var(--pd-edge);
+  border-left: 1px solid var(--pd-edge);
+  border-right: 1px solid var(--pd-edge);
+}
+.pd-main {
+  top: 215px;
+  grid-template-columns: 1fr 60px 1fr;
+}
+.pd-bank {
+  gap: 6px;
 }
 .pd-blue .pd-card {
-  border-top: 5px solid var(--pd-left);
+  border-top: 4px solid var(--pd-left);
 }
 .pd-red .pd-card {
-  border-top: 5px solid var(--pd-right);
+  border-top: 4px solid var(--pd-right);
 }
 .pd-blue .pd-label {
   background: var(--pd-left);
@@ -32,4 +47,7 @@ body {
 .pd-hero-name {
   color: inherit;
   opacity: 0.85;
+}
+.pd-player-name {
+  font-size: 25px;
 }

@@ -125,7 +125,9 @@ body {
 .pd-card {
   position: relative;
   min-width: 0;
-  height: 650px;
+  height: 720px;
+  --pd-label-height: 84px;
+  --pd-photo-height: 200px;
   overflow: hidden;
   background: var(--pd-panel);
   box-sizing: border-box;
@@ -139,12 +141,26 @@ body {
   object-fit: cover;
   object-position: 50% 12%;
 }
+.pd-art {
+  height: calc(100% - var(--pd-label-height));
+}
 .pd-player {
+  height: calc(100% - var(--pd-label-height));
   object-fit: contain;
   object-position: 50% 100%;
+  background: var(--pd-panel);
 }
 .pd-card.has-hero .pd-player {
-  display: none;
+  top: auto;
+  bottom: var(--pd-label-height);
+  height: var(--pd-photo-height);
+  object-fit: cover;
+  object-position: 50% 12%;
+  border-top: 1px solid var(--pd-edge);
+  box-sizing: border-box;
+}
+.pd-card.has-hero.has-photo .pd-art {
+  height: calc(100% - var(--pd-label-height) - var(--pd-photo-height));
 }
 .pd-art[hidden],
 .pd-player[hidden],
@@ -178,7 +194,7 @@ body {
   gap: 5px;
   padding: 12px 8px;
   box-sizing: border-box;
-  min-height: 78px;
+  height: var(--pd-label-height);
   z-index: 2;
   text-align: center;
   background: var(--pd-panel);
