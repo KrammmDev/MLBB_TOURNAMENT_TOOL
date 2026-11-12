@@ -6,39 +6,25 @@ body {
   --sb-right: #e92237;
   --sb-border: #d4dde7;
 }
-.sb-frame {
-  clip-path: polygon(
-    0 0,
-    186px 0,
-    202px 52px,
-    1036px 52px,
-    1052px 0,
-    100% 0,
-    100% 100%,
-    0 100%
-  );
-}
 .sb-banner {
-  height: 127px;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 12px));
-}
-.sb-banner-right {
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), 0 100%);
+  height: 116px;
 }
 .sb-banner::after {
   content: "";
   position: absolute;
-  inset: 0 0 9px;
+  inset: 0 0 3px;
   background: var(--header-bg, #ffffff);
 }
 .sb-left {
-  border-left: 4px solid var(--blue-accent, var(--sb-left));
+  border-left: 1px solid var(--blue-accent, var(--sb-left));
 }
 .sb-right {
-  border-right: 4px solid var(--red-accent, var(--sb-right));
+  border-right: 1px solid var(--red-accent, var(--sb-right));
 }
 .sb-win {
-  height: 10px;
-  width: 10px;
-  transform: rotate(45deg);
+  width: 15px;
+  height: 5px;
+}
+.matchinfo-content {
+  border-left: 3px solid var(--header-bg, #f1f4f8);
 }
