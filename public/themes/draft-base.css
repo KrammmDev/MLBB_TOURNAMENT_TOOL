@@ -37,5 +37,26 @@ body {
 }
 
 .broadcast-sponsors {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: var(--side-width, 725px);
+  width: var(--center-width, 470px);
+  height: var(--sponsor-height, 92.5px);
+  padding: 10px 40px;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  background: var(--sponsor-bg, #ffffff);
+  border-bottom: 1px solid var(--edge, #e5e7eb);
+  z-index: 12;
+}
+.broadcast-sponsors img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.broadcast-sponsors img[hidden] {
   display: none;
 }

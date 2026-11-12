@@ -29,7 +29,7 @@
     const sponsor = document.createElement("div");
     sponsor.className = "broadcast-sponsors";
     sponsor.setAttribute("aria-label", "Sponsor logos");
-    fragment.querySelector(".lowermid").prepend(sponsor);
+    fragment.querySelector(".mainbox").append(sponsor);
     DraftDisplay.start({ template: fragment });
     window.SponsorSlideshow?.start(sponsor);
     const stats = document.createElement("script");

@@ -51,13 +51,13 @@
     if (output() === "draft") {
       const details = {
         classic: "Original orange / red / white display2 layout",
-        arena: "Blue / cyan · vertical player names",
-        studio: "White / gold · blue and red team strips",
+        arena: "Navy / cyan · separate player-name bars",
+        studio: "White / slate · blue and red team strips",
       };
       const colors = {
         classic: ["#ffffff", "#ff7200", "#ff0101"],
-        arena: ["#050b60", "#29edff", "#1136ae"],
-        studio: ["#f4dc80", "#0757ed", "#ea1926"],
+        arena: ["#10213a", "#7bdeef", "#e23b53"],
+        studio: ["#f1f4f8", "#0757ed", "#e92237"],
       };
       for (const card of document.querySelectorAll(".theme-card")) {
         card.querySelector("p").textContent = details[card.dataset.themeId];

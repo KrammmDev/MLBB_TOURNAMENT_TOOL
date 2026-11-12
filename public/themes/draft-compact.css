@@ -1,8 +1,9 @@
-/* Gold and blue use the same complete display2 DOM with a compact composition. */
+/* Shared complete draft composition for Studio and Arena. */
 #draft-stage > .mainbox {
-  --side-width: 780px;
-  --center-width: 360px;
-  height: 367px;
+  --side-width: 760px;
+  --center-width: 400px;
+  --sponsor-height: 68px;
+  height: 344px;
 }
 .mainbox > .upper,
 .mainbox > .lower {
@@ -17,124 +18,179 @@
   left: 0;
   top: 0;
   width: var(--side-width);
-  height: 64px;
+  height: 68px;
   background: var(--header-bg);
-  border-top: 2px solid var(--edge);
-  border-bottom: 2px solid var(--edge);
+  border-bottom: 1px solid var(--edge);
+  box-sizing: border-box;
 }
 .upperside:last-child {
   left: auto;
   right: 0;
 }
-.banholder {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 360px;
-  height: 60px;
-  flex: none;
-  justify-content: flex-start;
-}
-.upperside:last-child .banholder {
-  left: auto;
-  right: 0;
-  justify-content: flex-end;
-}
-.banhero {
-  flex: 1 1 0;
-  min-width: 0;
-  width: auto;
-  height: 52px;
-  margin: 2px;
-  border-radius: 0;
-  border: 1px solid var(--edge);
-  background-color: var(--empty-bg);
-}
-.banhero img {
-  width: 100%;
-  height: 52px;
-  margin-top: 35px;
-}
 .coachbox {
   position: absolute;
   top: 0;
-  left: 364px;
-  width: 140px;
-  height: 60px;
-  padding: 0 5px !important;
+  left: 0;
+  width: 220px;
+  height: 68px;
+  padding: 0 20px !important;
 }
 .upperside:last-child .coachbox {
   left: auto;
-  right: 364px;
+  right: 0;
 }
 .coach-name {
-  font-size: 20px;
   color: var(--header-text);
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 28px;
   text-shadow: none;
 }
 .coach-label {
-  font-size: 10px;
   color: var(--header-text);
+  font-size: 11px;
+  letter-spacing: 1px;
   text-shadow: none;
 }
 .coach-name::before,
 .coach-name::after {
   display: none;
 }
+.banholder {
+  position: absolute;
+  top: 0;
+  left: 220px;
+  width: 540px;
+  height: 68px;
+  flex: none;
+  justify-content: flex-start;
+  background: var(--ban-bg);
+}
+.upperside:last-child .banholder {
+  left: auto;
+  right: 220px;
+  justify-content: flex-end;
+}
+.banhero {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+  height: 66px;
+  margin: 1px;
+  border: 1px solid var(--ban-edge);
+  border-radius: 0;
+  background: var(--ban-bg);
+  box-shadow: none;
+}
+.banhero img {
+  width: 100%;
+  height: 66px;
+  margin-top: 45px;
+}
+.banhero:not(.has-hero)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  border: 2px solid var(--ban-edge);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(
+    135deg,
+    transparent 47%,
+    var(--ban-edge) 48% 52%,
+    transparent 53%
+  );
+}
 .lowerside {
+  --side: var(--blue-accent);
   position: absolute;
   left: 0;
-  top: 64px;
+  top: 68px;
   width: var(--side-width);
-  height: 303px;
+  height: 276px;
 }
 .lowerside:last-child {
+  --side: var(--red-accent);
   left: auto;
   right: 0;
 }
 .pickholder {
   width: 100%;
-  height: 269px;
+  height: 238px;
 }
 .heropick {
-  height: 269px;
-  border-color: var(--edge);
+  height: 238px;
+  border-color: var(--pick-edge);
   background: var(--empty-bg);
-}
-.heropick > .image-box > img {
-  height: 269px;
+  box-shadow: none;
 }
 .heropick::before,
 .heropick::after {
   display: none;
 }
+/* Explicit image bounds prevent the empty band above portraits. */
+.heropick > .image-box {
+  inset: 0;
+}
+.heropick > .image-box > img {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 238px;
+  margin: 0;
+  scale: 1;
+  object-fit: cover;
+  object-position: 50% 12%;
+}
 .nickholder {
   width: 100%;
-  height: 34px;
+  height: 38px;
 }
-.playername {
-  height: 34px;
+.playername,
+.lowerside:last-child .playername {
+  height: 38px;
+  padding: 0 5px;
+  border: 1px solid #ffffff30;
+  background: var(--side);
+  color: #fff;
   font:
     700 17px Arial,
     sans-serif;
   letter-spacing: 0;
+  text-shadow: none;
+  box-shadow: none;
+}
+.playername > div {
+  writing-mode: horizontal-tb;
+  transform: none;
+}
+.lanelogo {
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  z-index: 5;
+}
+.lanelogo img {
+  width: 100%;
+  height: 100%;
 }
 .lowermid {
   position: absolute;
-  left: var(--side-width);
   top: 0;
+  left: var(--side-width);
   width: var(--center-width);
-  height: 367px;
+  height: 344px;
+  border: 0;
   background: var(--center-bg);
-  border: 2px solid var(--edge);
-  overflow: visible;
+  overflow: hidden;
+  box-shadow:
+    inset 1px 0 var(--edge),
+    inset -1px 0 var(--edge);
 }
-.lowermid::before {
-  inset: 12px;
-  width: auto;
-  background: none;
-  border: 1px solid var(--inner-edge);
-}
+.lowermid::before,
 .lowermid::after {
   display: none;
 }
@@ -145,33 +201,27 @@
   padding: 0;
   flex: none;
 }
-.upperlowermid .teamlogo-wrap {
+.match-info-display {
   position: absolute;
-  top: 2px;
-  left: -275px;
-  width: 258px;
-  height: 58px;
-  transform: none;
-  flex-direction: row;
-  gap: 8px;
-}
-.upperlowermid .teamlogo-wrap:last-child {
-  left: auto;
-  right: -275px;
-  flex-direction: row-reverse;
-}
-.teamlogo,
-.teamlogo img {
-  width: 44px;
+  top: 68px;
+  bottom: auto;
+  left: 0;
+  width: 100%;
   height: 44px;
+  padding: 0 64px;
+  flex: none;
+  box-sizing: border-box;
+  background: var(--match-bg);
+  border-bottom: 1px solid var(--edge);
 }
-.teamnameholder1,
-.teamnameholder2 {
-  width: 150px;
+#match-display {
+  color: var(--center-text);
   font:
-    700 23px Arial,
+    800 16px/1.15 Arial,
     sans-serif;
-  color: var(--header-text);
+  letter-spacing: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .score {
   position: static;
@@ -181,93 +231,137 @@
 }
 #blue-score-display,
 #red-score-display {
-  top: 22px;
+  top: 78px;
+  gap: 4px;
 }
 #blue-score-display {
-  left: -35px;
+  left: 9px;
 }
 #red-score-display {
-  right: -35px;
+  right: 9px;
 }
 #blue-score-display .dot,
 #red-score-display .dot {
   width: 7px;
-  height: 20px;
-  transform: skewX(-15deg);
+  height: 25px;
+  transform: none;
+  background: var(--empty-score);
+}
+#blue-score-display .dot.active {
+  background: var(--blue-accent);
+}
+#red-score-display .dot.active {
+  background: var(--red-accent);
+}
+.upperlowermid .teamlogo-wrap {
+  position: absolute;
+  top: 112px;
+  left: 0;
+  width: 100px;
+  height: 194px;
+  flex-direction: column;
+  transform: none;
+}
+.upperlowermid .teamlogo-wrap:last-child {
+  left: auto;
+  right: 0;
+  flex-direction: column;
+}
+.teamlogo,
+.teamlogo img {
+  width: 78px;
+  height: 78px;
+}
+.teamlogo img {
+  filter: none;
+  scale: 1;
+}
+.teamnameholder1,
+.teamnameholder2 {
+  position: absolute;
+  top: 194px;
+  left: 0;
+  width: 138px;
+  height: 38px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  background: var(--blue-accent);
+  color: #fff;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 28px;
+  overflow: hidden;
+}
+.teamnameholder2 {
+  left: auto;
+  right: 0;
+  background: var(--red-accent);
 }
 .vs-container {
   position: absolute;
-  top: 120px;
+  top: 156px;
   left: 50%;
   transform: translateX(-50%);
-  width: 160px;
-  height: 112px;
+  width: 110px;
+  height: 94px;
 }
 #timer {
-  font:
-    84px Impact,
-    sans-serif;
   color: var(--center-text);
+  font:
+    78px/1 Impact,
+    "Arial Narrow",
+    sans-serif;
+  text-shadow: none;
 }
 .turn-arrow.left {
-  margin-right: 58px;
+  margin-right: 48px;
 }
 .turn-arrow.right {
-  margin-left: 58px;
+  margin-left: 48px;
 }
-.match-info-display {
+.turn-arrow.left.on span,
+.turn-arrow.left.both-on span {
+  background: var(--blue-accent);
+}
+.turn-arrow.right.on span,
+.turn-arrow.right.both-on span {
+  background: var(--red-accent);
+}
+#draft-stage > .phasebox {
   position: absolute;
-  left: 20px;
-  bottom: 65px;
-  width: calc(100% - 40px);
-  height: 46px;
-  flex: none;
-  padding: 0 8px;
-  box-sizing: border-box;
-  background: var(--match-bg);
-}
-#match-display {
-  font:
-    800 17px Arial,
-    sans-serif;
-  letter-spacing: 0;
-  color: var(--center-text);
-  white-space: normal;
-  overflow-wrap: anywhere;
-}
-.lowerlowermid {
-  display: none;
-}
-.phasebox {
+  top: auto;
+  bottom: 213px;
+  left: 760px;
+  width: 400px;
+  height: 26px;
   display: flex;
-  position: absolute;
-  top: 0;
-  bottom: 24px;
-  left: var(--side-width);
-  width: var(--center-width);
-  align-items: flex-end;
-  padding-bottom: 260px;
-  box-sizing: border-box;
+  padding: 0;
+  align-items: center;
   justify-content: center;
   pointer-events: none;
   z-index: 10;
 }
 .phasebox h2 {
   margin: 0;
+  color: var(--phase-text);
   font:
-    800 17px Arial,
+    800 15px Arial,
     sans-serif;
-  letter-spacing: 3px;
-  color: var(--center-text);
+  letter-spacing: 2px;
 }
-/* Phasebox is a sibling of .mainbox; define its dimensions independently. */
-#draft-stage > .phasebox {
-  --side-width: 780px;
-  --center-width: 360px;
+.lowerlowermid {
+  display: none;
 }
 .hero-name {
-  width: 25px;
+  width: 24px;
   font-size: 14px;
+}
+.hero-name.blue {
+  background: var(--blue-accent);
+  border-color: var(--pick-edge);
+}
+.hero-name.red {
+  background: var(--red-accent);
+  border-color: var(--pick-edge);
 }
 .timerbar {
   top: auto;
@@ -275,4 +369,13 @@
   left: 0;
   width: 1920px;
   height: 8px;
+  background: var(--match-bg);
+}
+.tb-left .tb-fill {
+  background: var(--blue-accent);
+  box-shadow: none;
+}
+.tb-right .tb-fill {
+  background: var(--red-accent);
+  box-shadow: none;
 }

@@ -71,4 +71,4 @@ Current product constraint: no authored decorative game/league branding, slogans
 
 ## Studio sponsor playlist
 
-`/api/broadcast-sponsors` owns a revision-guarded playlist independent of match, draft and theme selection. Raster uploads use `/api/broadcast-sponsors/logos`; committed settings emit `broadcast_sponsors_update`. Only new Studio draft outputs render the top-center sponsor slot. Blank/disabled playlists introduce no placeholder or league branding. Runtime data and images live under ignored `runtime/`. See `broadcast-sponsors.md` for lifecycle, operator behavior and limits.
+`/api/broadcast-sponsors` owns a revision-guarded playlist independent of match, draft and theme selection. Raster uploads use `/api/broadcast-sponsors/logos`; committed settings emit `broadcast_sponsors_update`. All three new draft themes render the top-center sponsor slot. Blank/disabled playlists introduce no placeholder or league branding. Runtime data and images live under ignored `runtime/`. See `broadcast-sponsors.md` for lifecycle, operator behavior and limits.

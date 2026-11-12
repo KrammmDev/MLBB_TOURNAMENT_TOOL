@@ -20,8 +20,8 @@ const {
   installSponsorRoutes,
 } = require("../lib/broadcast-sponsors");
 test(
-  "Studio sponsor controls upload, rotate, reorder, disable, recover and retain draft identity",
-  { timeout: 60000 },
+  "all draft themes show sponsors; controls rotate, reorder, disable, recover and retain draft identity",
+  { timeout: 90000 },
   async (t) => {
     const directory = await fs.mkdtemp(
       path.join(os.tmpdir(), "sponsor-browser-"),
@@ -114,6 +114,23 @@ test(
         document.body.dataset.draftReady === "true" &&
         document.getElementById("timer").textContent === "34",
     );
+    const draftViews = [{ page: studio, theme: "studio", format: "normal" }];
+    for (const theme of ["classic", "arena", "studio"]) {
+      for (const format of ["normal", "six"]) {
+        if (theme === "studio" && format === "normal") continue;
+        const page = await context.newPage();
+        page.on("pageerror", (error) => errors.push(error.message));
+        await page.goto(
+          base + `/draft-display.html?theme=${theme}&format=${format}`,
+        );
+        await page.waitForFunction(
+          () =>
+            document.body.dataset.draftReady === "true" &&
+            document.getElementById("timer").textContent === "34",
+        );
+        draftViews.push({ page, theme, format });
+      }
+    }
     await admin.waitForFunction(
       () => !document.getElementById("sponsor-add").disabled,
     );
@@ -169,13 +186,11 @@ test(
         x.fillRect(20, 20, 40, 40);
         return c.toDataURL().split(",")[1];
       }, color);
-      await admin
-        .locator("#sponsor-upload")
-        .setInputFiles({
-          name,
-          mimeType: "image/png",
-          buffer: Buffer.from(content, "base64"),
-        });
+      await admin.locator("#sponsor-upload").setInputFiles({
+        name,
+        mimeType: "image/png",
+        buffer: Buffer.from(content, "base64"),
+      });
       await admin.locator("#sponsor-add").click();
       await admin.waitForFunction(
         () =>
@@ -188,6 +203,81 @@ test(
       () =>
         document.querySelector(".broadcast-sponsors img")?.naturalWidth === 240,
     );
+    for (const { page, theme, format } of draftViews) {
+      await page.waitForFunction(
+        () =>
+          document.querySelector(".broadcast-sponsors img")?.naturalWidth ===
+          240,
+      );
+      assert.equal(
+        await page
+          .locator(".broadcast-sponsors")
+          .evaluate((el) => getComputedStyle(el).display),
+        "flex",
+        theme + " sponsor must be visible",
+      );
+      const sponsor = await page.locator(".broadcast-sponsors").boundingBox();
+      const timer = await page.locator("#timer").boundingBox();
+      assert.ok(
+        sponsor.width > 100 && sponsor.height > 20,
+        theme + " sponsor has usable space",
+      );
+      assert.ok(
+        sponsor.y + sponsor.height <= timer.y,
+        theme + " sponsor stays above timer",
+      );
+      assert.equal(
+        await page.locator(".banhero").count(),
+        format === "six" ? 6 : 10,
+      );
+      if (theme !== "classic") {
+        await page.waitForFunction(() => {
+          const portrait = document
+            .getElementById("image-display-1")
+            .getBoundingClientRect();
+          const card = document
+            .querySelector(".heropick")
+            .getBoundingClientRect();
+          return Math.abs(portrait.top - card.top) <= 2;
+        });
+        const card = await page.locator(".heropick").first().boundingBox();
+        const name = await page.locator("#name-box-3").boundingBox();
+        assert.ok(
+          name.y >= card.y + card.height - 2,
+          theme + " player name belongs below hero art",
+        );
+      }
+      for (const side of ["left", "right"]) {
+        const fits = await page
+          .locator("#coach-name-" + side)
+          .evaluate((el) => {
+            const holder = el.closest(".coachbox"),
+              style = getComputedStyle(holder);
+            const bounds = holder.getBoundingClientRect();
+            const scale =
+              document.querySelector(".mainbox").getBoundingClientRect().width /
+              1920;
+            const range = document.createRange();
+            range.selectNodeContents(el);
+            const text = range.getBoundingClientRect();
+            return (
+              text.left >=
+                bounds.left + parseFloat(style.paddingLeft) * scale - 1 &&
+              text.right <=
+                bounds.right - parseFloat(style.paddingRight) * scale + 1
+            );
+          });
+        assert.ok(fits, theme + " coach name fits its header");
+      }
+      if (theme === "studio")
+        assert.equal(
+          await page
+            .locator(".lowermid")
+            .evaluate((el) => getComputedStyle(el, "::before").display),
+          "none",
+          "no gold trapezoid",
+        );
+    }
     const first = sponsors.snapshot().data.logos[0].id;
     await logo("Second.png", "#ffe294");
     await admin.locator("#sponsor-interval").fill("2");
@@ -203,6 +293,19 @@ test(
       first,
       { timeout: 7000 },
     );
+    for (const { page, theme } of draftViews) {
+      await page.waitForFunction(
+        (id) =>
+          !document.querySelector(".broadcast-sponsors img").src.includes(id),
+        first,
+        { timeout: 7000 },
+      );
+      assert.equal(
+        await page.locator("#timer").textContent(),
+        "34",
+        theme + " timer is unchanged",
+      );
+    }
     await admin
       .getByRole("button", { name: "Move up Second.png", exact: true })
       .click();
@@ -219,6 +322,16 @@ test(
         path: path.join(process.env.MLBB_CAPTURE_DIR, "studio-sponsors.png"),
         omitBackground: true,
       });
+      for (const { page, theme, format } of draftViews) {
+        if (format === "normal")
+          await page.screenshot({
+            path: path.join(
+              process.env.MLBB_CAPTURE_DIR,
+              theme + "-sponsors.png",
+            ),
+            omitBackground: true,
+          });
+      }
       await admin.screenshot({
         path: path.join(process.env.MLBB_CAPTURE_DIR, "sponsor-controls.png"),
         fullPage: true,
@@ -229,6 +342,10 @@ test(
     await studio.waitForFunction(
       () => !document.querySelector(".broadcast-sponsors img"),
     );
+    for (const { page } of draftViews)
+      await page.waitForFunction(
+        () => !document.querySelector(".broadcast-sponsors img"),
+      );
     // A stale second operator cannot replace the current sponsor playlist.
     await other.goto(base + "/broadcast-themes.html");
     await other.waitForFunction(
