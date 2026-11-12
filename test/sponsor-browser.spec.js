@@ -159,7 +159,7 @@ test(
       if (theme === "arena")
         assert.ok(
           layout.timerBottom <= layout.heroTop + 1,
-          "Arena clock is above the full-width lineup",
+          "Arena clock is above the angled hero banks",
         );
       if (theme === "studio")
         assert.ok(
@@ -173,8 +173,9 @@ test(
       "themes must have three genuinely different compositions",
     );
     assert.ok(
-      gaps.get("arena") <= 2,
-      "Arena's two banks meet without a center column",
+      gaps.get("arena") > gaps.get("studio") &&
+        gaps.get("arena") < gaps.get("classic"),
+      "Arena reserves a white logo wedge between angled banks",
     );
     assert.ok(
       gaps.get("studio") > 0 && gaps.get("studio") < gaps.get("classic"),
@@ -273,8 +274,9 @@ test(
         theme + " sponsor has usable space",
       );
       assert.ok(
-        sponsor.y + sponsor.height <= timer.y,
-        theme + " sponsor stays above timer",
+        sponsor.y + sponsor.height <= timer.y ||
+          timer.y + timer.height <= sponsor.y,
+        theme + " sponsor and timer do not overlap",
       );
       assert.equal(
         await page.locator(".banhero").count(),
@@ -318,6 +320,33 @@ test(
             );
           });
         assert.ok(fits, theme + " coach name fits its header");
+      }
+      if (theme === "arena") {
+        assert.equal(
+          await page.locator("[data-draft-clock-mirror]").textContent(),
+          "34",
+        );
+        const angle = await page.evaluate(() => {
+          const left = document.querySelector(".heropick.blue-side"),
+            right = document.querySelector(".heropick.red-side");
+          const card = new DOMMatrix(getComputedStyle(left).transform);
+          const art = new DOMMatrix(
+            getComputedStyle(left.querySelector(".image-box")).transform,
+          );
+          return {
+            left: card.c,
+            right: new DOMMatrix(getComputedStyle(right).transform).c,
+            artwork: card.multiply(art).c,
+          };
+        });
+        assert.ok(
+          angle.left > 0.1 && angle.right < -0.1,
+          "Arena banks lean inward",
+        );
+        assert.ok(
+          Math.abs(angle.artwork) < 0.001,
+          "Arena portraits stay upright inside angled frames",
+        );
       }
       if (theme === "studio")
         assert.equal(

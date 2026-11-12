@@ -205,6 +205,15 @@
       if (!draft) return;
       const time = model.timer(draft.timer) ?? config.defaultTimer;
       text("timer", String(time).padStart(2, "0"));
+      for (const mirror of document.querySelectorAll(
+        "[data-draft-clock-mirror]",
+      )) {
+        mirror.textContent = String(time).padStart(2, "0");
+        mirror.classList.toggle(
+          "warning",
+          time <= 5 && draft.timer_running === true,
+        );
+      }
       const clockNode = node("timer")?.closest(".draft-timer,.countdown");
       clockNode?.classList.toggle(
         "warning",
