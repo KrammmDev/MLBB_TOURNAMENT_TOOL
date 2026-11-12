@@ -2,6 +2,9 @@
 (function (root) {
   "use strict";
   let host,
+    track,
+    activeImage,
+    animations = [],
     config,
     key,
     currentId = null,
@@ -12,6 +15,12 @@
     requestVersion = 0,
     renderVersion = 0;
   const safe = /^[a-f0-9-]{36}\.(png|jpg|webp|gif)$/;
+  function settle() {
+    if (!track) return;
+    for (const animation of animations) animation.cancel();
+    animations = [];
+    track.replaceChildren(...(activeImage ? [activeImage] : []));
+  }
   function schedule() {
     clearTimeout(rotation);
     if (running && config?.enabled && config.logos.length > 1)
@@ -25,15 +34,48 @@
     index = (next + config.logos.length) % config.logos.length;
     const logo = config.logos[index],
       version = ++renderVersion;
-    if (currentId === logo.id && host.firstChild) return schedule();
+    if (currentId === logo.id && activeImage) return schedule();
     const image = new Image();
     image.alt = "";
     image.onload = () => {
       if (!running || version !== renderVersion) return;
+      settle();
+      const previous = activeImage;
       currentId = logo.id;
-      image.className = "sponsor-reveal";
-      host.replaceChildren(image);
-      schedule();
+      activeImage = image;
+      track.append(image);
+      if (
+        !previous ||
+        root.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ) {
+        settle();
+        schedule();
+        return;
+      }
+      const options = {
+        duration: 800,
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+        fill: "both",
+      };
+      animations = [
+        previous.animate(
+          [{ transform: "translateX(0)" }, { transform: "translateX(-100%)" }],
+          options,
+        ),
+        image.animate(
+          [{ transform: "translateX(100%)" }, { transform: "translateX(0)" }],
+          options,
+        ),
+      ];
+      Promise.all(animations.map((animation) => animation.finished))
+        .then(() => {
+          if (!running || version !== renderVersion) return;
+          settle();
+          schedule();
+        })
+        .catch(() => {
+          /* Superseded by a playlist edit or page lifecycle event. */
+        });
     };
     image.onerror = () => {
       if (!running || version !== renderVersion) return;
@@ -64,15 +106,18 @@
     config = data;
     clearTimeout(rotation);
     renderVersion++;
+    settle();
     if (!data.enabled || !data.logos.length) {
       currentId = null;
-      host.replaceChildren();
+      activeImage = null;
+      settle();
       return;
     }
     const current = data.logos.findIndex((logo) => logo.id === currentId);
     if (current < 0) {
       currentId = null;
-      host.replaceChildren();
+      activeImage = null;
+      settle();
     }
     show(current < 0 ? 0 : current);
   }
@@ -102,6 +147,7 @@
     renderVersion++;
     clearTimeout(rotation);
     clearInterval(polling);
+    settle();
   }
   root.addEventListener("pagehide", pause);
   root.addEventListener("pageshow", resume);
@@ -109,6 +155,9 @@
     start(element) {
       if (host) return;
       host = element;
+      track = document.createElement("div");
+      track.className = "sponsor-pan-track";
+      host.replaceChildren(track);
       resume();
     },
     accept(message) {
