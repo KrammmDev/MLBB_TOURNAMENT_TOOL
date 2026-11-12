@@ -138,6 +138,7 @@
     if (output === "draft") {
       if (colors.background) {
         vars("--header-bg,--center-bg,--match-bg", colors.background);
+        if (id === "classic") vars("--sponsor-bg", colors.background);
         vars("--empty-bg,--ban-bg", shade(colors.background, 0.75));
         rule(
           ".lowermid,.upperside,.uppermid,.upperlowermid .teamlogo-wrap,.lowerside .playername",
@@ -155,6 +156,18 @@
               : "--red-accent,--mid-right",
             colors[field],
           );
+          if (id === "classic") {
+            const rgb = [1, 3, 5]
+              .map((i) => parseInt(colors[field].slice(i, i + 2), 16))
+              .join(", ");
+            vars(`--classic-${field}-rgb`, rgb);
+            vars(`--classic-${field}-edge`, colors[field]);
+            vars(`--classic-${field}-light`, colors[field]);
+            vars(
+              `--classic-${field}-stat-gradient`,
+              `linear-gradient(90deg,${colors[field]},${shade(colors[field], 0.7)},${colors[field]})`,
+            );
+          }
           if (id !== "arena")
             rule(`.hero-name.${side}`, `background:${colors[field]}`);
           rule(

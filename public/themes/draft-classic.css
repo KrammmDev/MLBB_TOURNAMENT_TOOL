@@ -1,2 +1,61 @@
 /* Classic deliberately inherits the original orange/red/white display2.css.
    No replacement geometry or decorative text is applied. */
+
+/* Classic's inherited artwork has its own RGB accents. Bind those details to
+   semantic colors without changing display2 or any layout dimensions. */
+body[data-draft-theme="classic"] .heropick {
+  --accent: var(--classic-left-rgb, 255, 114, 0);
+}
+body[data-draft-theme="classic"] .heropick.red-side {
+  --accent: var(--classic-right-rgb, 255, 1, 1);
+}
+body[data-draft-theme="classic"] .hero-name.blue {
+  border-right-color: var(--classic-left-edge, #ffb380);
+}
+body[data-draft-theme="classic"] .hero-name.red {
+  border-left-color: var(--classic-right-edge, #ff0101);
+}
+body[data-draft-theme="classic"] .tb-left .tb-fill {
+  background: linear-gradient(
+    90deg,
+    var(--mid-left),
+    var(--classic-left-light, #ff9e4d)
+  );
+  box-shadow: 0 0 10px rgba(var(--classic-left-rgb, 255, 114, 0), 0.7);
+}
+body[data-draft-theme="classic"] .tb-right .tb-fill {
+  background: linear-gradient(
+    90deg,
+    var(--classic-right-light, #ff4d4d),
+    var(--mid-right)
+  );
+  box-shadow: 0 0 10px rgba(var(--classic-right-rgb, 255, 1, 1), 0.7);
+}
+body[data-draft-theme="classic"] .heropick .hero-stats-header,
+body[data-draft-theme="classic"] .heropick .pick-count-header {
+  background: var(
+    --classic-left-stat-gradient,
+    linear-gradient(
+      90deg,
+      #ffb380,
+      #ff8c00 18%,
+      #cc5a00 50%,
+      #ff8c00 82%,
+      #ffb380
+    )
+  );
+}
+body[data-draft-theme="classic"] .heropick.red-side .hero-stats-header,
+body[data-draft-theme="classic"] .heropick.red-side .pick-count-header {
+  background: var(
+    --classic-right-stat-gradient,
+    linear-gradient(
+      90deg,
+      #ff8080,
+      #ff4040 18%,
+      #cc0000 50%,
+      #ff4040 82%,
+      #ff8080
+    )
+  );
+}

@@ -355,6 +355,49 @@ test(
         .evaluate((el) => getComputedStyle(el).color),
       "rgb(255, 255, 255)",
     );
+    assert.equal(
+      await frame
+        .locator(".heropick.blue-side")
+        .first()
+        .evaluate((el) =>
+          getComputedStyle(el).getPropertyValue("--accent").trim(),
+        ),
+      "24, 92, 37",
+    );
+    assert.equal(
+      await frame
+        .locator(".heropick.red-side")
+        .first()
+        .evaluate((el) =>
+          getComputedStyle(el).getPropertyValue("--accent").trim(),
+        ),
+      "86, 142, 0",
+    );
+    assert.match(
+      await frame
+        .locator(".heropick.blue-side")
+        .first()
+        .evaluate((el) => getComputedStyle(el, "::before").backgroundImage),
+      /rgb\(24, 92, 37\)/,
+    );
+    assert.match(
+      await frame
+        .locator(".tb-left .tb-fill")
+        .evaluate((el) => getComputedStyle(el).backgroundImage),
+      /rgb\(24, 92, 37\)/,
+    );
+    assert.match(
+      await frame
+        .locator(".tb-right .tb-fill")
+        .evaluate((el) => getComputedStyle(el).backgroundImage),
+      /rgb\(86, 142, 0\)/,
+    );
+    assert.equal(
+      await frame
+        .locator(".broadcast-sponsors")
+        .evaluate((el) => getComputedStyle(el).backgroundColor),
+      "rgb(255, 255, 255)",
+    );
     await save();
     await choose("studio", "roster");
     await set("left", "#456789");
