@@ -84,3 +84,5 @@ Scoreboard correction: `/scoreboard.html` is now the canonical themed gameplay-H
 Scoreboard sponsor placement: the shared playlist now renders at the top of the right-side match-info panel; match/game is one line beneath it, with optional stage/group using scoreboardocr's matchInfo.stage/group (season/week fallback) fields. No OCR statistics or timer elements are introduced. This supersedes the center sponsor-slot placement.
 
 Right-panel format correction: use two adjacent columns, colored metadata left and white sponsor right, height 116px. Stage/group and match/game bindings remain unchanged. This supersedes the previous vertical stack.
+
+Scoreboard palette adapter: settings still use the existing draft scope, while CSS generation uses a distinct scoreboard render target and data-scoreboard-theme selector. The HTTP settings schema is unchanged. Only scoreboard semantic variables are emitted; draft geometry rules are excluded.

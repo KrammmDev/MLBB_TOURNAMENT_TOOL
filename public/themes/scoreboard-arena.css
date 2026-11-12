@@ -6,39 +6,55 @@ body {
   --sb-right: #527fe8;
   --sb-border: #28435b;
 }
+/* Inset dark logo plates, raised names and bottom series rails. */
 .sb-frame {
   border-bottom: 1px solid var(--edge, var(--sb-border));
   box-sizing: border-box;
 }
 .sb-banner {
+  height: 124px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+.sb-banner-right {
   clip-path: polygon(
     0 0,
     100% 0,
-    100% calc(100% - 6px),
-    calc(100% - 6px) 100%,
-    6px 100%,
-    0 calc(100% - 6px)
+    100% calc(100% - 12px),
+    calc(100% - 12px) 100%,
+    0 100%
   );
 }
 .sb-banner::after {
   content: "";
   position: absolute;
-  inset: 0 0 3px 3px;
+  inset: 0 3px 3px;
   background: var(--header-bg, var(--sb-panel));
 }
-.sb-banner-right::after {
-  inset: 0 3px 3px 0;
+.teamnamesc {
+  align-items: flex-start;
+  padding-top: 5px;
+}
+.name-box {
+  font-size: 27px;
+  letter-spacing: 1px;
+}
+.score-dots {
+  position: absolute;
+  bottom: 7px;
+  right: 14px;
+  gap: 5px;
+}
+.sb-right .score-dots {
+  left: 14px;
+  right: auto;
 }
 .sb-left {
-  border-bottom: 1px solid var(--blue-accent, var(--sb-left));
+  border-bottom: 2px solid var(--blue-accent, var(--sb-left));
 }
 .sb-right {
-  border-bottom: 1px solid var(--red-accent, var(--sb-right));
+  border-bottom: 2px solid var(--red-accent, var(--sb-right));
 }
 .sb-win {
-  width: 17px;
-  height: 6px;
-}
-.matchinfo-content {
-  box-shadow: inset 0 3px 0 #ffffff22;
+  width: 34px;
+  height: 5px;
 }

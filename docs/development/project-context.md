@@ -56,3 +56,5 @@ Latest scoreboard direction: put the sponsor in the right panel above the single
 Final scoreboard reference correction: match metadata and sponsor are SIDE BY SIDE. The colored left tile contains stage/group/match-game lines; the white right tile contains the sponsor logo. This supersedes the prior vertical sponsor-above-text interpretation for all three themes.
 
 Scoreboard visual refinement: retain the exact HUD/panel arrangement while simplifying decoration. Use the existing Roboto Condensed Bold font, flat surfaces, thinner accent rails, shallow/square logo panels and rectangular series markers. Remove gradients, diamond indicators and metadata notches.
+
+Scoreboard themes must differ in composition, not only palette: Classic has colored name plates and shield logos; Arena has raised names and bottom win rails; Studio has centered names and a second row of square wins. Saved draft values are shared but rendered through an isolated scoreboard color adapter. Never apply draft .upper/.lower/.uppermid style rules to scoreboard markup.

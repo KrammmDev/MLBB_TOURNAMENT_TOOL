@@ -210,6 +210,47 @@ test(
       await pinned.locator("body").getAttribute("data-scoreboard-theme"),
       "classic",
     );
+    // Reproduce the reported Classic brown/green palette: draft selectors must
+    // never paint scoreboard's full-width upper/lower rows over the HUD.
+    await colors.save(
+      "classic",
+      "draft",
+      { background: "#332e2e", left: "#5ed100", right: "#ff0101" },
+      colors.snapshot().revision,
+    );
+    await pinned.waitForFunction(
+      () =>
+        getComputedStyle(document.querySelector(".sb-left")).backgroundColor ===
+        "rgb(94, 209, 0)",
+    );
+    for (const selector of [".upper", ".lower", ".uppermid"]) {
+      const backgrounds = await pinned
+        .locator(selector)
+        .first()
+        .evaluate((el) => ({
+          color: getComputedStyle(el).backgroundColor,
+          image: getComputedStyle(el).backgroundImage,
+        }));
+      assert.deepEqual(
+        backgrounds,
+        { color: "rgba(0, 0, 0, 0)", image: "none" },
+        "palette must not paint gameplay layout wrappers",
+      );
+    }
+    assert.equal(
+      await pinned.evaluate(() => document.elementFromPoint(450, 55).id),
+      "displayImage1",
+    );
+    assert.equal(await pinned.locator("#sb-sponsors img").isVisible(), true);
+    if (process.env.MLBB_CAPTURE_DIR)
+      await pinned.screenshot({
+        omitBackground: true,
+        path: path.join(
+          process.env.MLBB_CAPTURE_DIR,
+          "scoreboard-classic-custom.png",
+        ),
+      });
+
     const admin = await page("/broadcast-themes.html");
     await admin.locator("#preview-output").selectOption("scoreboard");
     await admin.waitForFunction(() =>
