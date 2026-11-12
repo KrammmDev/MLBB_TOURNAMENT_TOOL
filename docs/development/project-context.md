@@ -36,3 +36,5 @@ Studio draft now uses the reference's center sponsor/match/phase/clock/team comp
 Draft polish: the shared sponsor playlist is now visible in Classic, Arena and Studio. Studio's gold trapezoid is removed in favor of a flat white/slate center. Arena uses a compact navy composition with separate horizontal player-name ribbons and portraits aligned to the top of their cards. Legacy display URLs and roster sponsorship are unchanged.
 
 The user requires visibly different esports compositions, not recolors. Current draft layouts: Classic original center console; Studio slim white clock column with branding in team headers; Arena dark navy/cyan tournament stage with straight portrait banks, one clock and numeric series scores in the header, and sponsors/bans/coaches in the footer. The user rejected the angled-card/white-wedge reference. All consume the same draft/match bindings and sponsor playlist.
+
+Latest Arena refinement: keep the navy/cyan stage and footer, but angle the left cards outward left and the right outward right, reversing the rejected reference. Keep artwork/labels upright, name bars horizontal and the white wedge removed.
