@@ -1,118 +1,204 @@
-/* Arena reference layout: charcoal header, angled blue banks, white team-logo wedge. */
+/* Arena tournament stage: straight portraits, a score header and a utility footer. */
 :root {
-  --header-bg: #26282e;
-  --header-text: #f2f6fb;
-  --edge: #1683b7;
-  --ban-bg: #122537;
-  --ban-edge: #377293;
-  --pick-edge: #1e5273;
-  --empty-bg: linear-gradient(145deg, #183d58, #111d30);
-  --center-bg: transparent;
-  --center-text: #f1f6ff;
-  --phase-text: #e2f3fb;
-  --match-bg: #26282e;
-  --sponsor-bg: #eff5f8;
-  --empty-score: #3b5067;
-  --blue-accent: #1689ca;
-  --red-accent: #179fb4;
+  --header-bg: #091827;
+  --header-text: #f2f7fc;
+  --edge: #28435b;
+  --ban-bg: #091522;
+  --ban-edge: #39536a;
+  --pick-edge: #264157;
+  --empty-bg: linear-gradient(145deg, #173146, #091725);
+  --center-bg: #091827;
+  --center-text: #f3f8fc;
+  --phase-text: #73dae9;
+  --match-bg: #0b1c2d;
+  --sponsor-bg: #edf5f8;
+  --empty-score: #30475b;
+  --blue-accent: #1bc2d5;
+  --red-accent: #527fe8;
 }
 #draft-stage > .mainbox {
-  --side-width: 780px;
-  --center-width: 360px;
-  --sponsor-height: 40px;
-  height: 360px;
-  isolation: isolate;
+  --side-width: 760px;
+  --center-width: 400px;
+  --sponsor-height: 60px;
+  height: 390px;
 }
-.mainbox::before {
+#draft-stage > .mainbox::before {
   content: "";
   position: absolute;
+  top: 64px;
+  left: 952px;
+  width: 16px;
+  height: 266px;
+  background: #07121e;
+}
+/* Header: team identity, series scores and one controller-owned clock. */
+.lowermid {
   top: 0;
   left: 0;
-  width: 100%;
-  height: 112px;
-  background: #26282e;
-  border-top: 3px solid #126aa2;
-  box-sizing: border-box;
-  z-index: -1;
+  width: 1920px;
+  height: 64px;
+  background: linear-gradient(90deg, #0d2639, #081420 45%, #0b1a2d);
+  border-bottom: 2px solid #2f859d;
+  overflow: visible;
+  box-shadow: none;
 }
-.upperside {
-  height: 112px;
+.lowermid::before,
+.lowermid::after {
+  display: none;
+}
+.upperlowermid .teamlogo-wrap {
+  top: 0;
+  left: 20px;
+  width: 440px;
+  height: 62px;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 12px;
+}
+.upperlowermid .teamlogo-wrap:last-child {
+  left: auto;
+  right: 20px;
+  flex-direction: row-reverse;
+}
+.teamlogo,
+.teamlogo img {
+  width: 48px;
+  height: 48px;
+}
+.teamnameholder1,
+.teamnameholder2 {
+  position: static;
+  width: 360px;
+  height: 62px;
+  padding: 0;
   background: transparent;
+  color: #f0f6fb;
+  font:
+    700 28px "Rajdhani",
+    Arial,
+    sans-serif;
+  justify-content: flex-start;
+}
+.teamnameholder2 {
+  justify-content: flex-end;
+}
+#blue-score-display,
+#red-score-display {
+  top: 26px;
+  gap: 5px;
+}
+#blue-score-display {
+  left: 490px;
+}
+#red-score-display {
+  right: 490px;
+}
+#blue-score-display .dot,
+#red-score-display .dot {
+  width: 14px;
+  height: 8px;
+}
+.arena-series-score {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 650px;
+  width: 80px;
+  height: 64px;
+  align-items: center;
+  justify-content: center;
+  border-left: 2px solid var(--blue-accent);
+  background: #153549;
+  color: #f4fbff;
+  font:
+    700 40px "Rajdhani",
+    Arial,
+    sans-serif;
+  font-variant-numeric: tabular-nums;
+  z-index: 8;
+}
+.arena-series-score[data-team-score="red"] {
+  left: 1190px;
+  border-left-color: var(--red-accent);
+  background: #182d4a;
+}
+.vs-container {
+  top: 0;
+  left: 960px;
+  width: 96px;
+  height: 62px;
+}
+#timer {
+  font:
+    48px/1 Impact,
+    "Arial Narrow",
+    sans-serif;
+  color: #f3f9ff;
+}
+.turn-arrow.left {
+  margin-right: 36px;
+}
+.turn-arrow.right {
+  margin-left: 36px;
+}
+.turn-arrow span {
+  width: 9px;
+  height: 16px;
+}
+.match-info-display {
+  top: 0;
+  left: 1030px;
+  width: 150px;
+  height: 62px;
+  padding: 0 8px;
   border: 0;
-}
-.coachbox {
-  width: 360px;
-  height: 32px;
-  padding: 0 12px !important;
-}
-.coach-name {
-  font-size: 18px;
-}
-.coach-label {
-  font-size: 8px;
-  letter-spacing: 1px;
-}
-.banholder {
-  top: 34px;
-  left: 0;
-  width: 360px;
-  height: 72px;
   background: transparent;
 }
-.upperside:last-child .banholder {
-  right: 0;
+#match-display {
+  color: #adbfce;
+  font:
+    700 12px/1.25 Arial,
+    sans-serif;
 }
-.banhero {
-  flex: 0 0 70px;
-  height: 68px;
-  margin: 1px;
-  border-color: #316282;
+#draft-stage > .phasebox {
+  left: 760px;
+  width: 150px;
+  bottom: 376px;
+  height: 20px;
 }
-.banhero img {
-  height: 68px;
-  margin-top: 46px;
-  filter: grayscale(1) sepia(0.5) hue-rotate(140deg) saturate(2);
+.phasebox h2 {
+  font-size: 12px;
+  letter-spacing: 1.5px;
 }
+/* Two broad, straight team banks with a narrow center divider. */
 .lowerside {
-  top: 112px;
-  width: 780px;
-  height: 248px;
+  top: 64px;
+  width: 952px;
+  height: 266px;
 }
 .pickholder,
 .heropick,
 .heropick > .image-box > img {
-  height: 210px;
-}
-.pickholder {
-  overflow: visible;
+  height: 230px;
 }
 .heropick {
-  --accent: 22, 137, 202;
-  transform: skewX(12deg);
-  transform-origin: 50% 100%;
+  --accent: 27, 194, 213;
+  transform: none;
+  border-width: 0 1px;
+  border-color: #234055;
+  box-shadow: inset 0 3px var(--blue-accent);
 }
 .heropick.red-side {
-  --accent: 23, 159, 180;
-  transform: skewX(-12deg);
+  --accent: 82, 127, 232;
+  box-shadow: inset 0 3px var(--red-accent);
 }
-/* Counter-skew artwork so faces and stat cards remain upright. */
 .heropick > .image-box {
-  left: -28px;
-  right: -28px;
-  width: calc(100% + 56px);
-  transform: skewX(-12deg);
-  transform-origin: 50% 100%;
+  inset: 0;
+  width: 100%;
+  transform: none;
 }
-.heropick.red-side > .image-box {
-  transform: skewX(12deg);
-}
-.lanelogo,
-.name-image-box {
-  transform: skewX(-12deg);
-}
-.red-side .lanelogo,
-.red-side .name-image-box {
-  transform: skewX(12deg);
+.heropick > .image-box > img {
+  object-position: 50% 12%;
 }
 .hero-name.blue,
 .hero-name.red {
@@ -121,179 +207,108 @@
   left: 0;
   right: 0;
   width: auto;
-  padding: 18px 8px 5px;
-  background: linear-gradient(transparent, #081526ee);
+  padding: 25px 10px 8px;
+  background: linear-gradient(transparent, #06101de8);
   border: 0;
+  color: #d8e5ee;
   font:
     700 11px Arial,
     sans-serif;
+  letter-spacing: 1px;
   writing-mode: horizontal-tb;
 }
 .heropick.blue-side .hero-name,
-.heropick.blue-side .hero-name.show {
-  left: 0;
-  right: 0;
-  transform: skewX(-12deg);
-}
+.heropick.blue-side .hero-name.show,
 .heropick.red-side .hero-name,
 .heropick.red-side .hero-name.show {
   left: 0;
   right: 0;
-  transform: skewX(12deg);
+  transform: none;
 }
-.playername {
-  transform: skewX(12deg);
-  transform-origin: 50% 100%;
-  font-size: 14px;
+.nickholder,
+.playername,
+.lowerside:last-child .playername {
+  height: 36px;
+}
+.playername,
+.lowerside:last-child .playername {
+  padding: 0 10px;
+  border: 0;
+  border-top: 2px solid var(--side);
+  background: #0c2233;
+  color: #f1f8fd;
+  font-size: 17px;
+  justify-content: flex-start;
+  transform: none;
 }
 .lowerside:last-child .playername {
-  transform: skewX(-12deg);
-  font-size: 14px;
+  background: #102139;
 }
 .playername > div {
-  transform: skewX(-12deg);
+  transform: none;
 }
-.lowerside:last-child .playername > div {
-  transform: skewX(12deg);
+/* Footer: bans and coach names outside, a contained sponsor image at center. */
+.upperside {
+  top: 330px;
+  height: 60px;
+  background: #0a1826;
+  border-top: 1px solid #2a4258;
+  border-bottom: 0;
 }
-.lowermid {
-  top: 112px;
-  height: 248px;
-  background: transparent;
-  overflow: visible;
-  box-shadow: none;
-}
-.lowermid::before {
-  display: block;
-  inset: 0 -48px;
-  width: auto;
-  background: #f6f7f8;
-  border: 0;
-  clip-path: polygon(0 0, 100% 0, 89.5% 100%, 10.5% 100%);
-}
-.lowermid::after {
-  content: "";
-  display: block;
-  inset: 16px auto 16px 50%;
-  width: 1px;
-  height: auto;
-  background: #d3dbe1;
-  filter: none;
-  animation: none;
-  clip-path: none;
-  mix-blend-mode: normal;
-  z-index: 2;
-}
-.upperlowermid .teamlogo-wrap {
+.banholder {
   top: 0;
   left: 0;
-  width: 180px;
-  height: 248px;
-  gap: 12px;
+  width: 450px;
+  height: 60px;
+  padding: 3px;
+  box-sizing: border-box;
 }
-.upperlowermid .teamlogo-wrap:last-child {
+.upperside:last-child .banholder {
   right: 0;
 }
-.teamlogo,
-.teamlogo img {
-  width: 90px;
-  height: 90px;
+.banhero {
+  height: 52px;
+  margin: 0 2px;
+  border-color: #34516a;
 }
-.teamnameholder1,
-.teamnameholder2 {
-  position: static;
-  width: 160px;
-  height: 30px;
-  padding: 0;
-  background: none;
-  color: #162332;
+.banhero img {
+  height: 52px;
+  margin-top: 35px;
+  filter: grayscale(1) contrast(1.1);
+}
+.banhero .active-ban {
+  background: #1686a5;
+}
+.coachbox {
+  top: 0;
+  left: 460px;
+  width: 280px;
+  height: 60px;
+  padding: 0 16px !important;
+}
+.upperside:last-child .coachbox {
+  right: 460px;
+}
+.coach-name {
   font:
-    700 18px Arial,
+    700 18px "Rajdhani",
+    Arial,
     sans-serif;
 }
-#blue-score-display,
-#red-score-display {
-  top: -100px;
-}
-#blue-score-display {
-  left: -180px;
-}
-#red-score-display {
-  right: -180px;
-}
-#blue-score-display .dot,
-#red-score-display .dot {
-  width: 30px;
-  height: 4px;
-}
-.match-info-display {
-  top: -106px;
-  left: 100px;
-  width: 160px;
-  height: 40px;
-  padding: 0 4px;
-  border: 0;
-  background: transparent;
-}
-#match-display {
-  color: #f3f6fa;
-  font-size: 12px;
-  line-height: 1.15;
-}
-.vs-container {
-  top: -106px;
-  left: 0;
-  width: 90px;
-  height: 66px;
-}
-#timer {
-  font-size: 62px;
-  color: #f4f7fb;
-}
-.turn-arrow.left {
-  margin-right: 37px;
-}
-.turn-arrow.right {
-  margin-left: 37px;
-}
-.turn-arrow span {
-  width: 9px;
-  height: 18px;
-}
-#draft-stage > .phasebox {
-  left: 860px;
-  width: 200px;
-  bottom: 316px;
-  height: 20px;
-}
-.phasebox h2 {
-  font-size: 13px;
-  letter-spacing: 1px;
+.coach-label {
+  font-size: 9px;
+  color: #7e9aaf;
+  letter-spacing: 1.5px;
 }
 .broadcast-sponsors {
-  top: 72px;
-  padding: 4px 40px;
-  border-top: 1px solid #1683b7;
-  border-bottom: 1px solid #1683b7;
+  top: 330px;
+  padding: 8px 40px;
+  border: 0;
 }
-.arena-clock-mirror {
-  display: flex;
-  position: absolute;
-  top: 6px;
-  left: 1095px;
-  width: 90px;
-  height: 66px;
-  align-items: center;
-  justify-content: center;
-  color: #f4f7fb;
-  font:
-    62px/1 Impact,
-    "Arial Narrow",
-    sans-serif;
-  font-variant-numeric: tabular-nums;
-  z-index: 10;
+.timerbar {
+  height: 4px;
+  bottom: -4px;
 }
-.countdown.warning #timer,
-.arena-clock-mirror.warning {
-  color: #ff8b92;
+.countdown.warning #timer {
+  color: #ff899a;
 }

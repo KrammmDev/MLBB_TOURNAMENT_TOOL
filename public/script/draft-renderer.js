@@ -141,6 +141,10 @@
           images.safeImage(team.logo),
         ]);
         dots(side + "-score-display", team.score, data.matchFormat);
+        const seriesScore = document.querySelector(
+          '[data-team-score="' + side + '"]',
+        );
+        if (seriesScore) seriesScore.textContent = team.score ?? "";
         const coachId = side === "blue" ? "left" : "right";
         text("coach-name-" + coachId, team.coach || "");
         fitText(node("coach-name-" + coachId));
@@ -205,15 +209,6 @@
       if (!draft) return;
       const time = model.timer(draft.timer) ?? config.defaultTimer;
       text("timer", String(time).padStart(2, "0"));
-      for (const mirror of document.querySelectorAll(
-        "[data-draft-clock-mirror]",
-      )) {
-        mirror.textContent = String(time).padStart(2, "0");
-        mirror.classList.toggle(
-          "warning",
-          time <= 5 && draft.timer_running === true,
-        );
-      }
       const clockNode = node("timer")?.closest(".draft-timer,.countdown");
       clockNode?.classList.toggle(
         "warning",

@@ -51,12 +51,12 @@
     if (output() === "draft") {
       const details = {
         classic: "Original orange / red / white display2 layout",
-        arena: "Angled hero banks · white logo wedge",
+        arena: "Tournament stage · score header · sponsor footer",
         studio: "White team desks · slim center clock",
       };
       const colors = {
         classic: ["#ffffff", "#ff7200", "#ff0101"],
-        arena: ["#26282e", "#1689ca", "#f6f7f8"],
+        arena: ["#091827", "#1bc2d5", "#527fe8"],
         studio: ["#f1f4f8", "#0757ed", "#e92237"],
       };
       for (const card of document.querySelectorAll(".theme-card")) {
