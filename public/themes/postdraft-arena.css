@@ -6,55 +6,85 @@ body {
   --pd-right: #527fe8;
   --pd-edge: #28435b;
 }
-/* Dark stage with raised card banks and framed player-photo strips. */
+/* A continuous ten-card dark lineup with lower player cutouts and vertical IGNs. */
 .pd-header {
-  top: 80px;
-  height: 104px;
-  grid-template-columns: 1fr 280px 1fr;
-  gap: 12px;
+  top: 50px;
+  height: 130px;
+  grid-template-columns: 1fr 200px 1fr;
+  gap: 20px;
 }
 .pd-blue.pd-team {
-  border-bottom: 3px solid var(--pd-left);
+  grid-column: 1;
+  border-left: 4px solid var(--pd-left);
 }
 .pd-red.pd-team {
-  border-bottom: 3px solid var(--pd-right);
+  grid-column: 3;
+  border-right: 4px solid var(--pd-right);
 }
 .pd-match {
-  border: 1px solid var(--pd-edge);
+  position: absolute;
+  top: 905px;
+  left: 600px;
+  width: 640px;
+  height: 70px;
+  flex-direction: row;
+  gap: 22px;
+  border-top: 1px solid var(--pd-edge);
+}
+#display-match-text {
+  font-size: 30px;
+}
+#display-game-text {
+  font-size: 38px;
 }
 .pd-main {
   top: 225px;
-  grid-template-columns: 1fr 70px 1fr;
+  grid-template-columns: 1fr 22px 1fr;
 }
 .pd-bank {
-  gap: 7px;
+  gap: 5px;
 }
 .pd-card {
-  height: 700px;
-  --pd-photo-height: 185px;
-}
-.pd-card:nth-child(even) {
-  margin-top: 18px;
+  height: 670px;
+  --pd-label-height: 4px;
+  --pd-photo-height: 550px;
 }
 .pd-blue .pd-card {
-  border-bottom: 4px solid var(--pd-left);
+  border-bottom: 5px solid var(--pd-left);
 }
 .pd-red .pd-card {
-  border-bottom: 4px solid var(--pd-right);
-}
-.pd-card.has-hero .pd-player {
-  left: 8px;
-  width: calc(100% - 16px);
-  border: 1px solid var(--pd-edge);
+  border-bottom: 5px solid var(--pd-right);
 }
 .pd-label {
-  text-align: left;
-  padding: 12px 10px;
-  background: var(--pd-panel);
+  left: auto;
+  right: 8px;
+  bottom: 45px;
+  width: 36px;
+  height: 340px;
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+  justify-content: flex-end;
 }
 .pd-player-name {
-  font-size: 24px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 31px;
+  color: var(--pd-text, #ffffff);
+  text-shadow: 0 1px 4px #000000;
+  max-height: 100%;
 }
-.pd-red .pd-label {
-  text-align: right;
+.pd-hero-name {
+  display: none;
+}
+.pd-lane {
+  top: auto;
+  bottom: 10px;
+  left: 10px;
+  right: auto;
+  background: #091827cc;
+}
+.pd-red .pd-lane {
+  left: 10px;
+  right: auto;
 }

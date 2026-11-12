@@ -79,6 +79,15 @@ test(
     installMatchRoutes(app, () => match);
     installRosterThemeRoutes(app, () => themes);
     installColorRoutes(app, () => colors);
+    const brandingData = {
+      schemaVersion: 1,
+      patchLabel: "",
+      casterNames: "",
+      logoFile: "11111111-1111-4111-8111-111111111111.png",
+    };
+    app.get("/api/scoreboard-branding", (req, res) =>
+      res.json({ data: brandingData, revision: '"fixture"' }),
+    );
     app.get("/api/matchdraft", (req, res) => res.json({ draftdata: draft }));
     app.get("/database/herolist.json", (req, res) =>
       res.json([
@@ -113,6 +122,11 @@ test(
     await context.route("**/*", (route) => {
       const url = new URL(route.request().url());
       if (url.hostname !== "127.0.0.1") return route.abort();
+      if (url.pathname.startsWith("/scoreboard-branding/"))
+        return route.fulfill({
+          contentType: "image/svg+xml",
+          body: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><path d="M60 4L112 30V90L60 116L8 90V30Z" fill="#b49a42"/><path d="M60 20L96 39V81L60 100L24 81V39Z" fill="#172638"/></svg>',
+        });
       if (url.pathname.includes("/Assets/Font/")) return route.continue();
       if (url.pathname === "/Assets/HeroPick/alpha.gif")
         return route.fulfill({ contentType: "image/gif", body: gif });
@@ -154,6 +168,7 @@ test(
       );
     await ready(live, "classic");
     await ready(pinned, "studio");
+    await live.locator("#pd-tournament-logo").waitFor({ state: "visible" });
     await live.waitForFunction(
       () =>
         document.getElementById("image-display-1").src.endsWith("/alpha.gif") &&
@@ -244,9 +259,9 @@ test(
           .first()
           .boundingBox();
       assert.ok(
-        photoBox.y >= heroBox.y + heroBox.height - 1 ||
-          photoBox.x >= heroBox.x + heroBox.width - 1,
-        "hero animation and player photo occupy separate regions",
+        photoBox.y < heroBox.y + heroBox.height &&
+          photoBox.x < heroBox.x + heroBox.width,
+        "player cutout overlays the lower hero area",
       );
       assert.equal(
         await live
@@ -269,6 +284,25 @@ test(
         });
       }
     }
+    const beforeBranding = await live.evaluate(() => window.sourceChanges);
+    brandingData.logoFile = null;
+    broadcast({ type: "scoreboard_branding_update", data: brandingData });
+    await live.waitForFunction(
+      () => document.getElementById("pd-tournament-logo").hidden,
+    );
+    brandingData.logoFile = "22222222-2222-4222-8222-222222222222.png";
+    broadcast({ type: "scoreboard_branding_update", data: brandingData });
+    await live.locator("#pd-tournament-logo").waitFor({ state: "visible" });
+    assert.ok(
+      (await live.locator("#pd-tournament-logo").getAttribute("src")).endsWith(
+        brandingData.logoFile,
+      ),
+    );
+    assert.equal(
+      await live.evaluate(() => window.sourceChanges),
+      beforeBranding,
+      "tournament logo updates preserve hero playback",
+    );
     missingPhotoAvailable = true;
     await live
       .locator("#pd-blue-bank .pd-player")
