@@ -99,7 +99,7 @@ body {
 .pd-card {
   height: 360px;
   --pd-label-height: 46px;
-  --pd-photo-height: 270px;
+  --pd-photo-height: 175px;
 }
 .pd-label {
   padding: 7px 8px;
@@ -127,4 +127,74 @@ body {
 .pd-red .pd-lane {
   left: 8px;
   right: auto;
+}
+/* Sweeping diagonal split, with open team identities and tapered ribbons. */
+body {
+  --pd-scene: var(--pd-panel, #ffffff);
+}
+#postdraft-stage::before {
+  background:
+    linear-gradient(
+      132deg,
+      transparent 0 20%,
+      var(--pd-left) 20% 24%,
+      transparent 24% 76%,
+      var(--pd-right) 76% 80%,
+      transparent 80%
+    ),
+    linear-gradient(
+      132deg,
+      transparent 0 18%,
+      var(--pd-edge) 18% 18.2%,
+      transparent 18.2% 81.8%,
+      var(--pd-edge) 81.8% 82%,
+      transparent 82%
+    );
+  opacity: 0.14;
+}
+#postdraft-stage::after {
+  inset: 30px;
+  border-top: 2px solid var(--pd-edge);
+  border-bottom: 2px solid var(--pd-edge);
+  clip-path: polygon(
+    0 0,
+    65% 0,
+    65% 8%,
+    100% 8%,
+    100% 100%,
+    35% 100%,
+    35% 92%,
+    0 92%
+  );
+}
+.pd-team {
+  border: 0 !important;
+}
+.pd-team img {
+  width: 190px;
+  height: 190px;
+}
+.pd-match {
+  border: 0;
+}
+.pd-match::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--pd-left), var(--pd-right));
+  transform: skewX(-22deg);
+}
+.pd-art {
+  clip-path: polygon(9% 0, 100% 0, 91% 100%, 0 100%);
+}
+.pd-label {
+  left: -5px;
+  right: -5px;
+  clip-path: polygon(4% 0, 100% 0, 96% 100%, 0 100%);
+}
+.pd-bank {
+  gap: 14px;
 }

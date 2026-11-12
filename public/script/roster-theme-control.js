@@ -40,6 +40,10 @@
     el.dataset.error = String(error);
   }
   function buttons() {
+    document.getElementById("preview-canvas-note").textContent =
+      output() === "postdraft"
+        ? "1920 × 1080 · full-page design"
+        : "1920 × 1080 · transparent background";
     for (const card of document.querySelectorAll(".theme-card"))
       card.disabled = saving || !snapshot;
     activate.disabled =
