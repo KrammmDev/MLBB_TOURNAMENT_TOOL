@@ -281,15 +281,15 @@ body {
   overflow: hidden;
 }
 #postdraft-stage::before {
-  animation: pd-backdrop-drift 24s ease-in-out infinite alternate;
+  animation: pd-backdrop-drift 14s linear infinite alternate;
   transform-origin: center;
 }
 @keyframes pd-backdrop-drift {
   from {
-    transform: translate3d(-10px, -5px, 0) scale(1.035);
+    transform: translate3d(-48px, -16px, 0) scale(1.1);
   }
   to {
-    transform: translate3d(10px, 5px, 0) scale(1.035);
+    transform: translate3d(48px, 16px, 0) scale(1.1);
   }
 }
 @media (prefers-reduced-motion: reduce) {
