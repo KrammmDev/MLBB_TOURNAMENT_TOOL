@@ -268,6 +268,11 @@ test(
         "flex",
         theme + " sponsor must be visible",
       );
+      assert.equal(
+        await page.locator("#name-image-box-3").isVisible(),
+        false,
+        theme + " selected hero hides player photo",
+      );
       const sponsor = await page.locator(".broadcast-sponsors").boundingBox();
       const timer = await page.locator("#timer").boundingBox();
       assert.ok(
@@ -324,12 +329,17 @@ test(
       }
       if (theme === "arena") {
         assert.equal(
-          await page.locator('[data-team-score="blue"]').textContent(),
-          "2",
+          await page.locator(".arena-series-score,[data-team-score]").count(),
+          0,
+          "no large numeric series scores",
         );
         assert.equal(
-          await page.locator('[data-team-score="red"]').textContent(),
-          "1",
+          await page.locator("#blue-score-display .dot.active").count(),
+          2,
+        );
+        assert.equal(
+          await page.locator("#red-score-display .dot.active").count(),
+          1,
         );
         const angles = await page.evaluate(() => {
           const left = document.querySelector(".heropick.blue-side"),

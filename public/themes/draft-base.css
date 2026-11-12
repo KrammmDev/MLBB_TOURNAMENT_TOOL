@@ -60,7 +60,3 @@ body {
 .broadcast-sponsors img[hidden] {
   display: none;
 }
-
-.arena-series-score {
-  display: none;
-}

@@ -98,30 +98,6 @@
   width: 14px;
   height: 8px;
 }
-.arena-series-score {
-  display: flex;
-  position: absolute;
-  top: 0;
-  left: 650px;
-  width: 80px;
-  height: 64px;
-  align-items: center;
-  justify-content: center;
-  border-left: 2px solid var(--blue-accent);
-  background: #153549;
-  color: #f4fbff;
-  font:
-    700 40px "Rajdhani",
-    Arial,
-    sans-serif;
-  font-variant-numeric: tabular-nums;
-  z-index: 8;
-}
-.arena-series-score[data-team-score="red"] {
-  left: 1190px;
-  border-left-color: var(--red-accent);
-  background: #182d4a;
-}
 .vs-container {
   top: 0;
   left: 960px;

@@ -1768,3 +1768,8 @@ body {
 #coach-box-right .coach-name::after {
   margin-left: 8px;
 }
+
+/* A selected hero replaces the player portrait, including during stat-card reveals. */
+.heropick.has-hero > .name-image-box {
+  display: none;
+}

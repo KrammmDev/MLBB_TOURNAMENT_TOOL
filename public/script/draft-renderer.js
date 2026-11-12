@@ -141,10 +141,6 @@
           images.safeImage(team.logo),
         ]);
         dots(side + "-score-display", team.score, data.matchFormat);
-        const seriesScore = document.querySelector(
-          '[data-team-score="' + side + '"]',
-        );
-        if (seriesScore) seriesScore.textContent = team.score ?? "";
         const coachId = side === "blue" ? "left" : "right";
         text("coach-name-" + coachId, team.coach || "");
         fitText(node("coach-name-" + coachId));
