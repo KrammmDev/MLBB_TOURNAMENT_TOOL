@@ -2,58 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Scoreboard output</title>
-    <link rel="stylesheet" href="/themes/scoreboard-base.css" />
   </head>
   <body>
-    <main id="scoreboard-stage">
-      <section class="sb-bar" aria-label="Match scoreboard">
-        <div class="sb-team sb-left">
-          <img id="sb-logo-blue" alt="" />
-          <div class="sb-identity">
-            <div id="sb-name-blue" class="sb-name"></div>
-            <div
-              id="sb-wins-blue"
-              class="sb-wins"
-              aria-label="Left series wins"
-            ></div>
-          </div>
-          <div
-            id="sb-turtles-blue"
-            class="sb-turtles"
-            aria-label="Left turtles"
-          ></div>
-        </div>
-        <div class="sb-center">
-          <div id="sb-match"></div>
-          <div id="sb-game"></div>
-        </div>
-        <div class="sb-team sb-right">
-          <img id="sb-logo-red" alt="" />
-          <div class="sb-identity">
-            <div id="sb-name-red" class="sb-name"></div>
-            <div
-              id="sb-wins-red"
-              class="sb-wins"
-              aria-label="Right series wins"
-            ></div>
-          </div>
-          <div
-            id="sb-turtles-red"
-            class="sb-turtles"
-            aria-label="Right turtles"
-          ></div>
-        </div>
-      </section>
-    </main>
-    <script src="/script/match-state.js"></script>
-    <script src="/script/match-client.js"></script>
-    <script src="/script/roster-model.js"></script>
-    <script src="/script/roster-themes.js"></script>
-    <script src="/script/broadcast-color-model.js"></script>
-    <script src="/script/broadcast-color-client.js"></script>
-    <script src="/script/roster-theme-client.js"></script>
-    <script src="/script/scoreboard-renderer.js"></script>
+    <script>
+      location.replace("/scoreboard.html" + location.search + location.hash);
+    </script>
+    <noscript>Open scoreboard.html with JavaScript enabled.</noscript>
   </body>
 </html>

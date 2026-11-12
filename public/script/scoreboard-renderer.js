@@ -3,7 +3,20 @@
   "use strict";
   const pinned = new URLSearchParams(location.search).get("theme"),
     valid = (id) => root.RosterThemes.themes.some((theme) => theme.id === id),
-    el = (id) => document.getElementById(id);
+    el = (id) =>
+      document.getElementById(
+        {
+          "sb-name-blue": "name-box-1",
+          "sb-name-red": "name-box-8",
+          "sb-logo-blue": "displayImage1",
+          "sb-logo-red": "displayImage2",
+          "sb-wins-blue": "blue-score-display",
+          "sb-wins-red": "red-score-display",
+          "sb-turtles-blue": "blue-turtle-container",
+          "sb-turtles-red": "red-turtle-container",
+          "sb-match": "match-display",
+        }[id] || id,
+      );
   let stopped = false,
     stopMatch,
     poll,
@@ -103,6 +116,7 @@
       {
         onMessage(message) {
           root.BroadcastColorClient.accept(message);
+          root.SponsorSlideshow.accept(message);
           if (message.type === "roster_theme_update" && !pinned) {
             themeVersion++;
             apply(message.data?.themeId);
@@ -129,6 +143,7 @@
   root.addEventListener("pageshow", () => {
     if (stopped) start();
   });
+  root.SponsorSlideshow.start(el("sb-sponsors"));
   fit();
   start();
 })(window);

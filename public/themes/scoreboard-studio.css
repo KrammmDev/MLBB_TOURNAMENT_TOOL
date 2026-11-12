@@ -1,25 +1,47 @@
 body {
   --sb-panel: #f1f4f8;
   --sb-text: #18263a;
+  --sb-muted: #52637a;
   --sb-left: #0757ed;
   --sb-right: #e92237;
   --sb-border: #d4dde7;
 }
-.sb-bar {
-  height: 100px;
+.sb-frame {
+  clip-path: polygon(
+    0 0,
+    186px 0,
+    202px 52px,
+    1036px 52px,
+    1052px 0,
+    100% 0,
+    100% 100%,
+    0 100%
+  );
+}
+.sb-banner {
+  height: 127px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 12px));
+}
+.sb-banner-right {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), 0 100%);
+}
+.sb-banner::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 9px;
+  background: var(--header-bg, #ffffff);
 }
 .sb-left {
-  border-left: 7px solid var(--blue-accent, var(--sb-left));
+  border-left: 4px solid var(--blue-accent, var(--sb-left));
 }
 .sb-right {
-  border-right: 7px solid var(--red-accent, var(--sb-right));
+  border-right: 4px solid var(--red-accent, var(--sb-right));
 }
-.sb-center {
-  border-left: 1px solid var(--edge, var(--sb-border));
-  border-right: 1px solid var(--edge, var(--sb-border));
+.match-info {
+  border-left: 8px solid var(--edge, var(--sb-border));
 }
 .sb-win {
-  width: 9px;
-  height: 9px;
-  transform: skewX(-12deg);
+  height: 10px;
+  width: 10px;
+  transform: rotate(45deg);
 }

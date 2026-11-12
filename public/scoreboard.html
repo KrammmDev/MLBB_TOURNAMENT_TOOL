@@ -3,230 +3,67 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>scoreboard</title>
-    <link rel="stylesheet" href="scoreboard.css" />
-    <style>
-      .match-info-logo {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 2px;
-      }
-
-      .match-info-logo img {
-        width: 65px;
-        height: 65px;
-        object-fit: contain;
-      }
-
-      .match-info-logo .match-line {
-        font-family: "myfonts", sans-serif;
-        font-size: 11px;
-        font-weight: 800;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: #1a1a1a;
-        line-height: 1.2;
-        text-align: center;
-      }
-    </style>
+    <title>Scoreboard</title>
+    <link rel="stylesheet" href="/themes/scoreboard-base.css" />
   </head>
   <body>
-    <div class="mainbox"></div>
-
-    <div class="scoreboard">
-      <div class="upper">
-        <div class="mapbox"></div>
-        <div class="gb1"></div>
-
-        <!-- Left team logo -->
-        <div class="logo">
-          <img id="displayImage1" src="" alt="" />
+    <main id="scoreboard-stage">
+      <div class="scoreboard" aria-label="Gameplay scoreboard overlay">
+        <div class="sb-frame" aria-hidden="true"></div>
+        <div class="sb-banner sb-banner-left" aria-hidden="true"></div>
+        <div class="sb-banner sb-banner-right" aria-hidden="true"></div>
+        <div class="upper">
+          <div class="mapbox" aria-hidden="true"></div>
+          <div class="gb1" aria-hidden="true"></div>
+          <div class="logo sb-team-logo"><img id="displayImage1" alt="" /></div>
+          <div class="uppermid" aria-hidden="true"></div>
+          <div class="logo sb-team-logo"><img id="displayImage2" alt="" /></div>
+          <div class="logo match-info">
+            <div id="match-display"></div>
+            <div id="sb-game"></div>
+          </div>
         </div>
-
-        <div class="uppermid"></div>
-
-        <!-- Right team logo -->
-        <div class="logo">
-          <img id="displayImage2" src="" alt="" />
-        </div>
-
-        <!-- 3rd yellow box: E PROJECT logo sa itaas, match info sa baba -->
-        <div class="logo match-info">
-          <span class="match-line" id="match-display">MATCH 1 - GAME 1</span>
-        </div>
-      </div>
-
-      <div class="lower">
-        <div class="mapbox"></div>
-        <div class="gb1"></div>
-        <div class="logo"></div>
-        <div class="uppermid">
-          <div class="midscorename">
-            <div class="teamnamesc">
-              <div class="tn">
-                <div id="name-box-1" class="name-box"></div>
+        <div class="lower">
+          <div class="mapbox" aria-hidden="true"></div>
+          <div class="gb1" aria-hidden="true"></div>
+          <div class="logo" aria-hidden="true"></div>
+          <div class="uppermid">
+            <div class="midscorename">
+              <div class="teamnamesc sb-left">
+                <div class="tn">
+                  <div id="name-box-1" class="name-box"></div>
+                </div>
+                <div class="score-dots" id="blue-score-display"></div>
+                <div
+                  id="blue-turtle-container"
+                  class="turtle-container blue-turtle"
+                ></div>
               </div>
-              <div class="score-dots" id="blue-score-display"></div>
-
-              <!-- TURTLE COUNTER BLUE - Hiwalay -->
-              <div
-                id="blue-turtle-container"
-                class="turtle-container blue-turtle"
-              ></div>
-            </div>
-
-            <div class="gb2"></div>
-
-            <div class="teamnamesc">
-              <!-- TURTLE COUNTER RED - Hiwalay -->
-              <div
-                id="red-turtle-container"
-                class="turtle-container red-turtle"
-              ></div>
-
-              <div class="score-dots" id="red-score-display"></div>
-              <div class="tn">
-                <div id="name-box-8" class="name-box"></div>
+              <div class="gb2" aria-hidden="true"></div>
+              <div class="teamnamesc sb-right">
+                <div
+                  class="turtle-container red-turtle"
+                  id="red-turtle-container"
+                ></div>
+                <div class="score-dots" id="red-score-display"></div>
+                <div class="tn">
+                  <div id="name-box-8" class="name-box"></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        <div id="sb-sponsors" aria-label="Sponsor slideshow"></div>
       </div>
-
-      <div class="hide">
-        <div id="name-box-3" class="name-box"></div>
-        <div id="name-box-4" class="name-box"></div>
-        <div id="name-box-5" class="name-box"></div>
-        <div id="name-box-6" class="name-box"></div>
-        <div id="name-box-7" class="name-box"></div>
-        <div id="name-box-10" class="name-box"></div>
-        <div id="name-box-11" class="name-box"></div>
-        <div id="name-box-12" class="name-box"></div>
-        <div id="name-box-13" class="name-box"></div>
-        <div id="name-box-14" class="name-box"></div>
-      </div>
-    </div>
-
-    <script src="script/displaynicknamelogo.js"></script>
-    <script src="crossclient.js"></script>
-    <script>
-      function createDots(containerId, total) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-        container.innerHTML = "";
-        for (let i = 0; i < total; i++) {
-          const dot = document.createElement("span");
-          dot.classList.add("dot");
-          container.appendChild(dot);
-        }
-      }
-
-      function getWinsNeeded(format) {
-        if (format === 1) return 1;
-        if (format === 3) return 2;
-        if (format === 5) return 3;
-        if (format === 7) return 4;
-        return 2;
-      }
-
-      async function updateScoreDots() {
-        try {
-          const response = await fetch("/api/matchdata");
-          const data = await response.json();
-
-          const blueScore = data.teamdata.blueteam.score || 0;
-          const redScore = data.teamdata.redteam.score || 0;
-          const format = data.matchFormat || 3;
-          const winsNeeded = getWinsNeeded(format);
-
-          createDots("blue-score-display", winsNeeded);
-          createDots("red-score-display", winsNeeded);
-
-          document
-            .querySelectorAll("#blue-score-display .dot")
-            .forEach((dot, i) => {
-              dot.classList.toggle("active", i < blueScore);
-            });
-          document
-            .querySelectorAll("#red-score-display .dot")
-            .forEach((dot, i) => {
-              dot.classList.toggle("active", i < redScore);
-            });
-
-          if (data.matchInfo) {
-            const matchEl = document.getElementById("match-display");
-            if (matchEl) {
-              const match = data.matchInfo.match || "Match 1";
-              const game = data.matchInfo.game || "Game 1";
-              matchEl.textContent = `${match} - ${game}`.toUpperCase();
-            }
-          }
-        } catch (e) {
-          console.error("Failed to update score dots:", e);
-        }
-      }
-
-      // ===== TURTLE COUNTER FETCHER (SMART UPDATE, NO BLINK) =====
-      const TURTLE_ICON_PATH = "Assets/Other/turtle-icon.png";
-
-      function syncTurtleIcons(container, count) {
-        if (!container) return;
-
-        const currentCount = container.children.length;
-        if (count === currentCount) return;
-
-        if (count > currentCount) {
-          for (let i = currentCount; i < count; i++) {
-            const img = document.createElement("img");
-            img.src = TURTLE_ICON_PATH;
-            img.className = "turtle-icon-img";
-            img.alt = "Turtle";
-            container.appendChild(img);
-          }
-        } else {
-          for (let i = currentCount; i > count; i--) {
-            if (container.lastChild) {
-              container.removeChild(container.lastChild);
-            }
-          }
-        }
-      }
-
-      async function updateTurtleCounters() {
-        try {
-          const response = await fetch("/api/matchdata");
-          const data = await response.json();
-
-          const blueContainer = document.getElementById(
-            "blue-turtle-container",
-          );
-          const redContainer = document.getElementById("red-turtle-container");
-
-          if (blueContainer && data.teamdata && data.teamdata.blueteam) {
-            const count = data.teamdata.blueteam.turtles || 0;
-            syncTurtleIcons(blueContainer, count);
-          }
-
-          if (redContainer && data.teamdata && data.teamdata.redteam) {
-            const count = data.teamdata.redteam.turtles || 0;
-            syncTurtleIcons(redContainer, count);
-          }
-        } catch (e) {
-          console.error("Failed to fetch turtle counts:", e);
-        }
-      }
-
-      window.updateTurtleCounters = updateTurtleCounters;
-      window.updateDisplay = updateScoreDots;
-
-      document.addEventListener("DOMContentLoaded", () => {
-        updateScoreDots();
-        updateTurtleCounters();
-        setInterval(updateScoreDots, 1000);
-        setInterval(updateTurtleCounters, 2000);
-      });
-    </script>
+    </main>
+    <script src="/script/match-state.js"></script>
+    <script src="/script/match-client.js"></script>
+    <script src="/script/roster-model.js"></script>
+    <script src="/script/roster-themes.js"></script>
+    <script src="/script/broadcast-color-model.js"></script>
+    <script src="/script/broadcast-color-client.js"></script>
+    <script src="/script/roster-theme-client.js"></script>
+    <script src="/script/sponsor-slideshow.js"></script>
+    <script src="/script/scoreboard-renderer.js"></script>
   </body>
 </html>
