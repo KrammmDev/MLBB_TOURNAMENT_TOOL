@@ -3,7 +3,7 @@
   "use strict";
   const model = root.BroadcastColorModel;
   let active = null,
-    data = { schemaVersion: 1, palettes: {} },
+    data = { schemaVersion: 2, palettes: {} },
     loaded = false,
     preview = null,
     style,
@@ -14,7 +14,7 @@
     pending = null;
   function valid(value) {
     return (
-      value?.schemaVersion === 1 &&
+      value?.schemaVersion === 2 &&
       value.palettes &&
       typeof value.palettes === "object" &&
       !Array.isArray(value.palettes) &&
@@ -41,10 +41,7 @@
       preview === null
         ? data.palettes[active.id]?.[active.output] || {}
         : preview;
-    const renderOutput = document.body.dataset.scoreboardTheme
-      ? "scoreboard"
-      : active.output;
-    const css = model.style(active.id, renderOutput, colors, classicImage);
+    const css = model.style(active.id, active.output, colors, classicImage);
     if (style.textContent !== css) style.textContent = css;
     if (
       style.parentNode !== document.head ||

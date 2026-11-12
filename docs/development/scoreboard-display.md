@@ -8,7 +8,7 @@ The composition follows the original scoreboard.html geometry rather than a comp
 
 Classic uses solid team-colored name plates, shield-shaped logo panels and separate inset series markers. Arena raises team names above bottom series rails in a dark frame with recessed angular logo panels. Studio centers names over a second row of small square wins in light rectangular desks. CSS creates the framing without copying league branding from a background bitmap. The right-side sponsor slot stays empty when the playlist is disabled. Long names use ellipsis, logos use contain sizing, and failed images hide without shifting the layout. The full canvas scales proportionally for previews.
 
-The scoreboard shares each theme's **draft palette**. When previewing Scoreboard, the Theme colors scope reads Draft; saved colors update both outputs. Preview edits remain iframe-only until Save colors. Roster palettes remain independent. The existing scoreboardocr page is unchanged; this feature does not start OCR.
+Each scoreboard theme has its **own scoreboard palette**, separate from draft and roster. Select Scoreboard in the Output menu; the scope reads, for example, Studio · Scoreboard. Saves and resets affect only that theme/output. Preview edits remain iframe-only until Save colors. The existing scoreboardocr page is unchanged; this feature does not start OCR.
 
 ## Binding and recovery
 
@@ -18,13 +18,13 @@ The right-panel SponsorSlideshow reads the shared playlist and receives sponsor 
 
 ## Verification
 
-Chromium checks the canonical URL and compatibility redirect, all three presets, pinned versus following outputs, preview isolation, shared draft-palette saves, sponsor display, text-safe names, series/turtle/game updates, reconnect/reload, transparency and scaling. Hit testing verifies that frame/banner graphics do not cover minimap, game HUD or gameplay safe points. Screenshots use synthetic logos and cannot establish final placement against the actual game feed. Windows/OBS verification remains a target-machine check.
+Chromium checks the canonical URL and compatibility redirect, all three presets, pinned versus following outputs, preview isolation, independent draft/scoreboard palette saves and resets, sponsor display, text-safe names, series/turtle/game updates, reconnect/reload, transparency and scaling. Hit testing verifies that frame/banner graphics do not cover minimap, game HUD or gameplay safe points. Screenshots use synthetic logos and cannot establish final placement against the actual game feed. Windows/OBS verification remains a target-machine check.
 
 ## Right-side sponsor and OCR-style metadata
 The right panel places optional matchInfo.stage/group fields (season/week fallbacks) and a single `matchInfo.match | matchInfo.game` line in the left colored column, beside the white sponsor-logo column on the right. Typography uses the existing Roboto Condensed Bold asset with system fallbacks. Flat adjacent tiles and rectangular win markers keep the design restrained. Missing fields clear and hide rather than retaining old match metadata. It uses the scoreboardocr metadata arrangement without loading its OCR script or adding lord, gold, tower, kill score or timer elements. Existing series indicators and turtle counters remain.
 
 ## Palette isolation
-The scoreboard inherits saved draft palette values, but BroadcastColorClient renders them through a scoreboard-only CSS adapter scoped to data-scoreboard-theme. It never receives draft geometry selectors such as .upper, .lower or .uppermid. This prevents custom Classic colors from painting full-width bands over logos and the game HUD. Regression coverage includes the reported brown panel/green left-accent palette and checks transparent wrappers plus logo hit visibility.
+The scoreboard uses its own saved scoreboard palette, rendered through a scoreboard-only CSS adapter scoped to data-scoreboard-theme. It never receives draft geometry selectors such as .upper, .lower or .uppermid. This prevents custom Classic colors from painting full-width bands over logos and the game HUD. Regression coverage includes the reported brown panel/green left-accent palette and checks transparent wrappers plus logo hit visibility.
 
 ## Production details and center logo
 Broadcast Themes now manages a patch/caster strip below the right tiles and a separate uploaded tournament logo at the scoreboard center, extending 25px below the frame. See [scoreboard-branding.md](scoreboard-branding.md) for control behavior, geometry, API and backup requirements.

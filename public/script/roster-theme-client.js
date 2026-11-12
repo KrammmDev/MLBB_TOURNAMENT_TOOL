@@ -101,11 +101,7 @@
       old.forEach((link) => link.remove());
       document.body.dataset[key] = id;
       document.body.dataset[ready] = "false";
-      if (output === "scoreboard") document.body.dataset.draftTheme = id;
-      await root.BroadcastColorClient?.activate(
-        id,
-        output === "scoreboard" ? "draft" : output,
-      );
+      await root.BroadcastColorClient?.activate(id, output);
       if (attempt !== generation) return null;
       document.body.dataset[ready] = "true";
       delete document.body.dataset[errorKey];

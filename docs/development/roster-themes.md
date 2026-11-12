@@ -32,6 +32,6 @@ Skills used: Broadcast Design System, Broadcast Core, Production Validation and 
 Broadcast Themes now provides per-theme, per-output color preview/save/reset controls for roster and new draft outputs. See [broadcast-colors.md](broadcast-colors.md) for operator workflow, persistence and delivery behavior.
 
 ## Scoreboard coverage
-The catalog also declares scoreboard support. Broadcast Themes previews the new scoreboard output, which follows the saved selection and inherits draft colors. Original scoreboard pages remain compatible. See [scoreboard-display.md](scoreboard-display.md).
+The catalog also declares scoreboard support. Broadcast Themes previews the new scoreboard output, which follows the saved selection and uses an independent scoreboard color palette. Original scoreboard pages remain compatible. See [scoreboard-display.md](scoreboard-display.md).
 
 Scoreboard source correction: use scoreboard.html for the three gameplay-HUD layouts; scoreboard-display.html is a compatibility redirect. The shared sponsor playlist also appears in its center slot. See scoreboard-display.md for the actual safe areas.

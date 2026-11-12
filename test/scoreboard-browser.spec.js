@@ -97,6 +97,23 @@ test(
         revision: '"test"',
       }),
     );
+    const draftSide = () => ({
+      pick: Array.from({ length: 5 }, () => ({})),
+      ban: Array.from({ length: 5 }, () => ({})),
+    });
+    app.get("/api/matchdraft", (req, res) =>
+      res.json({
+        draftdata: {
+          current_phase: 6,
+          timer: "18",
+          timer_running: false,
+          blueside: draftSide(),
+          redside: draftSide(),
+        },
+      }),
+    );
+    app.get("/database/herolist.json", (req, res) => res.json([]));
+    app.get("/api/herostats", (req, res) => res.json({ heroes: {} }));
     app.use(express.static(path.join(__dirname, "../public")));
     server.listen(0, "127.0.0.1");
     await new Promise((r) => server.once("listening", r));
@@ -146,6 +163,11 @@ test(
         id,
       );
     await ready(live, "arena");
+    const draftOutput = await page("/draft-display.html");
+    await draftOutput.waitForFunction(
+      () => document.body.dataset.draftReady === "true",
+    );
+
     await ready(pinned, "classic");
     await live.locator("#sb-sponsors img").waitFor();
     assert.equal(
@@ -229,7 +251,7 @@ test(
     // never paint scoreboard's full-width upper/lower rows over the HUD.
     await colors.save(
       "classic",
-      "draft",
+      "scoreboard",
       { background: "#332e2e", left: "#5ed100", right: "#ff0101" },
       colors.snapshot().revision,
     );
@@ -343,9 +365,74 @@ test(
         getComputedStyle(document.querySelector(".sb-left")).borderLeftColor ===
         "rgb(187, 102, 221)",
     );
-    assert.deepEqual(colors.snapshot().data.palettes.studio.draft, {
+    assert.deepEqual(colors.snapshot().data.palettes.studio.scoreboard, {
       left: "#bb66dd",
     });
+    assert.equal(
+      await admin.locator("#color-scope").textContent(),
+      "Studio · Scoreboard",
+    );
+    assert.equal(
+      await draftOutput.evaluate(() =>
+        getComputedStyle(document.body)
+          .getPropertyValue("--blue-accent")
+          .trim(),
+      ),
+      "#0757ed",
+    );
+    await admin.locator("#preview-output").selectOption("draft-normal");
+    await admin.waitForFunction(
+      () =>
+        document.getElementById("color-scope").textContent ===
+          "Studio · Draft" &&
+        document
+          .getElementById("theme-status")
+          .textContent.startsWith("Preview ready"),
+    );
+    await admin.locator("#color-hex-left").fill("#228844");
+    await admin.locator("#save-colors").click();
+    await draftOutput.waitForFunction(
+      () =>
+        getComputedStyle(document.body)
+          .getPropertyValue("--blue-accent")
+          .trim() === "#228844",
+    );
+    assert.equal(
+      await live
+        .locator(".sb-left")
+        .evaluate((el) => getComputedStyle(el).borderLeftColor),
+      "rgb(187, 102, 221)",
+    );
+    await admin.locator("#preview-output").selectOption("scoreboard");
+    await admin.waitForFunction(
+      () =>
+        document.getElementById("color-scope").textContent ===
+          "Studio · Scoreboard" &&
+        document
+          .getElementById("theme-status")
+          .textContent.startsWith("Preview ready"),
+    );
+    assert.equal(
+      await admin.locator("#color-hex-left").inputValue(),
+      "#bb66dd",
+    );
+    await admin.locator("#reset-colors").click();
+    await admin.locator("#save-colors").click();
+    await live.waitForFunction(
+      () =>
+        getComputedStyle(document.body)
+          .getPropertyValue("--blue-accent")
+          .trim() === "",
+    );
+    assert.equal(
+      await draftOutput.evaluate(() =>
+        getComputedStyle(document.body)
+          .getPropertyValue("--blue-accent")
+          .trim(),
+      ),
+      "#228844",
+    );
+    assert.deepEqual(colors.snapshot().data.palettes.studio.scoreboard, {});
     const changed = structuredClone(data);
     changed.teamdata.blueteam.teamname = "<b>LONG TEAM NAME FROM OPERATOR</b>";
     changed.teamdata.blueteam.score = "3";
@@ -391,6 +478,8 @@ test(
     assert.deepEqual(writes, [
       "/api/scoreboard-branding",
       "/api/scoreboard-branding/logo",
+      "/api/broadcast-colors",
+      "/api/broadcast-colors",
       "/api/broadcast-colors",
     ]);
     assert.deepEqual(errors, []);
