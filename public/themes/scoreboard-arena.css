@@ -1,0 +1,28 @@
+body {
+  --sb-panel: #091827;
+  --sb-text: #f2f7fc;
+  --sb-left: #1bc2d5;
+  --sb-right: #527fe8;
+  --sb-border: #28435b;
+}
+.sb-bar {
+  height: 106px;
+}
+.sb-team {
+  padding-bottom: 17px;
+}
+.sb-left {
+  clip-path: polygon(0 0, 96% 0, 100% 100%, 0 100%);
+  padding-right: 30px;
+}
+.sb-right {
+  clip-path: polygon(4% 0, 100% 0, 100% 100%, 0 100%);
+  padding-left: 30px;
+}
+.sb-center {
+  margin: 12px -8px 0;
+  border-top: 1px solid var(--edge, var(--sb-border));
+}
+.sb-name {
+  font-size: 29px;
+}

@@ -1,0 +1,20 @@
+body {
+  --sb-panel: #ffffff;
+  --sb-text: #252525;
+  --sb-left: #ff7200;
+  --sb-right: #ff0101;
+  --sb-border: #d6d6da;
+}
+.sb-bar {
+  height: 104px;
+}
+.sb-left {
+  border-top: 7px solid var(--blue-accent, var(--sb-left));
+}
+.sb-right {
+  border-top: 7px solid var(--red-accent, var(--sb-right));
+}
+.sb-center {
+  background: var(--center-bg, #f1f1f4);
+  border-top: 7px solid var(--edge, #ffffff);
+}

@@ -30,3 +30,6 @@ Skills used: Broadcast Design System, Broadcast Core, Production Validation and 
 
 ## Color customization
 Broadcast Themes now provides per-theme, per-output color preview/save/reset controls for roster and new draft outputs. See [broadcast-colors.md](broadcast-colors.md) for operator workflow, persistence and delivery behavior.
+
+## Scoreboard coverage
+The catalog also declares scoreboard support. Broadcast Themes previews the new scoreboard output, which follows the saved selection and inherits draft colors. Original scoreboard pages remain compatible. See [scoreboard-display.md](scoreboard-display.md).

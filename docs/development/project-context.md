@@ -46,3 +46,5 @@ Draft presentation constraint: once a slot has a selected hero, hide the player 
 Arena team branding uses raised upper-left/right dark panels with mirrored slanted inner edges, 80px logos and names up to 36px (auto-fit for long names). Size variables live in `public/themes/draft-arena.css`.
 
 Broadcast Themes includes preview-only color editing and explicit save/reset for each theme's roster/draft palette. Runtime settings live in broadcast-colors.json, independently of competition state. This change leaves Arena geometry CSS untouched to preserve operator width adjustments. See broadcast-colors.md.
+
+Themed in-game scoreboard is now available at scoreboard-display.html and in Broadcast Themes previews. Its three presets align with current draft designs and share saved draft colors. The existing scoreboard and OCR URLs remain unchanged. No new match state, OCR or league branding is introduced. Actual gameplay-HUD positioning in OBS still needs target-machine verification.
