@@ -198,6 +198,20 @@ test(
     }))
       await set(field, value);
     await save();
+    assert.equal(
+      await frame
+        .locator(".hero-name.blue")
+        .first()
+        .evaluate((el) => getComputedStyle(el).backgroundColor),
+      "rgba(0, 0, 0, 0)",
+    );
+    assert.match(
+      await frame
+        .locator(".hero-name.blue")
+        .first()
+        .evaluate((el) => getComputedStyle(el).backgroundImage),
+      /linear-gradient/,
+    );
     for (const page of [normal, six])
       await waitVariable(page, "--blue-accent", "#aabbcc");
     assert.equal(
@@ -315,6 +329,33 @@ test(
       "arena",
       "saving colors does not activate the preview theme",
     );
+    // Reproduce the reported Classic palette: white panels/text and green accents.
+    await set("background", "#ffffff");
+    await set("text", "#ffffff");
+    await set("muted", "#ffffff");
+    await set("left", "#185c25");
+    await set("right", "#568e00");
+    await frame.waitForFunction(
+      () =>
+        getComputedStyle(document.querySelector("#timer")).color ===
+        "rgb(24, 33, 43)",
+    );
+    for (const selector of ["#match-display", ".coach-name", ".phasebox h2"])
+      assert.equal(
+        await frame
+          .locator(selector)
+          .first()
+          .evaluate((el) => getComputedStyle(el).color),
+        "rgb(24, 33, 43)",
+      );
+    assert.equal(
+      await frame
+        .locator(".hero-name.blue")
+        .first()
+        .evaluate((el) => getComputedStyle(el).color),
+      "rgb(255, 255, 255)",
+    );
+    await save();
     await choose("studio", "roster");
     await set("left", "#456789");
     frame = await previewFrame();
