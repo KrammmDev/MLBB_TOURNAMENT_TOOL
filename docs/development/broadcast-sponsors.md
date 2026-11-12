@@ -4,7 +4,7 @@ All new draft themes render the shared sponsor playlist on a 1920x1080 transpare
 
 - Classic retains the original 1920x367 orange/red/white display2 strip, 725px team banks and a 470px center console. Sponsors occupy its upper-center banner.
 - Studio uses a 1920x344 white broadcast desk: wider 840px team banks, a slim 240px clock/sponsor column, team logos/names/scores in the team headers, and match/game information near the bottom of the center column. There is no gold trapezoid.
-- Arena uses a 1920x390 navy/cyan tournament stage. Subtly mirrored frames with upright artwork occupy two broad 952px banks with a narrow dark divider. Team logos/names, small series-win indicators, one draft clock and match/phase information occupy the top header. Bans, coaches and the sponsor slot occupy the footer. The latest reference uses a mild mirrored slant: +4 degrees on the left and -4 degrees on the right. Artwork is counter-skewed and player bars remain horizontal. There is no white wedge or duplicate timer.
+- Arena uses a 1920x454 navy/cyan tournament stage, including raised team-branding panels. Subtly mirrored frames with upright artwork occupy two broad 952px banks with a narrow dark divider. Team logos/names, small series-win indicators, one draft clock and match/phase information occupy the top header. Bans, coaches and the sponsor slot occupy the footer. The latest reference uses a mild mirrored slant: +4 degrees on the left and -4 degrees on the right. Artwork is counter-skewed and player bars remain horizontal. There is no white wedge or duplicate timer.
 
 All retain coach, hero, lane, score, phase, clock, team logo/name and player bindings. No BPM or authored league logo is introduced. Original legacy display URLs stay fixed.
 

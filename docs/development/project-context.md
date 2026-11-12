@@ -42,3 +42,5 @@ Latest Arena refinement: keep the navy/cyan stage and footer, but angle the left
 The latest Arena reference clarifies a subtle mirrored angle: left frames +4 degrees, right -4 degrees. This supersedes the earlier outward -8/+8 interpretation. Artwork and labels stay upright and the navy/cyan stage is retained.
 
 Draft presentation constraint: once a slot has a selected hero, hide the player portrait (including during stat cards and match refreshes); restore it for empty/reset slots. Remove Arena's large numeric series scores. Keep stored match scores and the small series-win indicators.
+
+Arena team branding uses raised upper-left/right dark panels with mirrored slanted inner edges, 80px logos and names up to 36px (auto-fit for long names). Size variables live in `public/themes/draft-arena.css`.
