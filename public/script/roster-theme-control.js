@@ -6,12 +6,19 @@
     previous = document.getElementById("previous-theme");
   const outputSelect = document.getElementById("preview-output");
   const output = () =>
-    outputSelect.value.startsWith("draft") ? "draft" : "roster";
+    outputSelect.value === "scoreboard"
+      ? "scoreboard"
+      : outputSelect.value.startsWith("draft")
+        ? "draft"
+        : "roster";
+  const paletteOutput = () => (output() === "scoreboard" ? "draft" : output());
   const format = () => (outputSelect.value === "draft-six" ? "six" : "normal");
   function outputURL() {
-    return output() === "roster"
-      ? "/broadcast-overlay.html"
-      : "/draft-display.html?format=" + format();
+    return output() === "scoreboard"
+      ? "/scoreboard-display.html"
+      : output() === "roster"
+        ? "/broadcast-overlay.html"
+        : "/draft-display.html?format=" + format();
   }
   function updateURL() {
     document.getElementById("output-url").value = location.origin + outputURL();
@@ -51,7 +58,7 @@
     selected = id;
     document.dispatchEvent(
       new CustomEvent("broadcast-preview-selection", {
-        detail: { id, output: output() },
+        detail: { id, output: paletteOutput() },
       }),
     );
     editRevision = snapshot?.revision;
@@ -59,11 +66,20 @@
     document.getElementById("preview-label").textContent = theme(id).label;
     for (const card of document.querySelectorAll(".theme-card"))
       card.setAttribute("aria-pressed", String(card.dataset.themeId === id));
-    if (output() === "draft") {
+    if (output() !== "roster") {
       const details = {
-        classic: "Original orange / red / white display2 layout",
-        arena: "Subtle mirrored cards · navy/cyan stage",
-        studio: "White team desks · slim center clock",
+        classic:
+          output() === "scoreboard"
+            ? "White score desk · orange/red rails"
+            : "Original orange / red / white display2 layout",
+        arena:
+          output() === "scoreboard"
+            ? "Navy score desk · mirrored inner edges"
+            : "Subtle mirrored cards · navy/cyan stage",
+        studio:
+          output() === "scoreboard"
+            ? "White score desk · blue/red side accents"
+            : "White team desks · slim center clock",
       };
       const colors = {
         classic: ["#ffffff", "#ff7200", "#ff0101"],
@@ -148,7 +164,7 @@
       previewReady = true;
       document.dispatchEvent(
         new CustomEvent("broadcast-preview-ready", {
-          detail: { id: selected, output: output() },
+          detail: { id: selected, output: paletteOutput() },
         }),
       );
       status("Preview ready. Your saved selection has not changed.");

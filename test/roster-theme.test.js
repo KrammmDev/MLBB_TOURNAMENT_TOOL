@@ -75,9 +75,10 @@ test("theme HTTP catalog and selection do not expose legacy theme mutation seman
   assert.ok(
     catalog.themes.every(
       (theme) =>
-        theme.outputs.length === 2 &&
+        theme.outputs.length === 3 &&
         theme.outputs.includes("roster") &&
-        theme.outputs.includes("draft"),
+        theme.outputs.includes("draft") &&
+        theme.outputs.includes("scoreboard"),
     ),
   );
   const response = await fetch(base + "/api/roster-theme");

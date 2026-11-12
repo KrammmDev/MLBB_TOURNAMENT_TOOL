@@ -1,0 +1,126 @@
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+#scoreboard-stage {
+  position: absolute;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: top left;
+  font-family: Arial, sans-serif;
+}
+.sb-bar {
+  position: absolute;
+  top: 18px;
+  left: 394px;
+  width: 1132px;
+  height: 100px;
+  display: grid;
+  grid-template-columns: 1fr 220px 1fr;
+  box-sizing: border-box;
+  color: var(--header-text, var(--sb-text));
+}
+.sb-team {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  background: var(--header-bg, var(--sb-panel));
+  border-bottom: 3px solid var(--blue-accent, var(--sb-left));
+}
+.sb-right {
+  flex-direction: row-reverse;
+  border-color: var(--red-accent, var(--sb-right));
+  text-align: right;
+}
+.sb-team img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.sb-identity {
+  min-width: 0;
+  flex: 1;
+}
+.sb-name {
+  font-size: 27px;
+  font-weight: 900;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.15;
+}
+.sb-wins {
+  display: flex;
+  gap: 5px;
+  margin-top: 9px;
+}
+.sb-right .sb-wins {
+  flex-direction: row-reverse;
+}
+.sb-win {
+  width: 17px;
+  height: 5px;
+  background: var(--edge, var(--sb-border));
+}
+.sb-left .sb-win.active {
+  background: var(--blue-accent, var(--sb-left));
+}
+.sb-right .sb-win.active {
+  background: var(--red-accent, var(--sb-right));
+}
+.sb-center {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  padding: 12px;
+  box-sizing: border-box;
+  text-align: center;
+  background: var(--center-bg, var(--sb-panel));
+  border-bottom: 3px solid var(--edge, var(--sb-border));
+}
+#sb-match {
+  width: 100%;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#sb-game {
+  font-size: 22px;
+  font-weight: 900;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sb-turtles {
+  display: flex;
+  gap: 3px;
+  max-width: 72px;
+  flex-wrap: wrap;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.sb-turtles img {
+  width: 19px;
+  height: 19px;
+  object-fit: contain;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sb-bar * {
+    transition: none !important;
+  }
+}

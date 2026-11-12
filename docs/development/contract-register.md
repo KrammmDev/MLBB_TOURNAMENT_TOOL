@@ -75,3 +75,6 @@ Current product constraint: no authored decorative game/league branding, slogans
 
 ## Broadcast color palettes
 `/api/broadcast-colors` owns independent runtime palettes for the three roster/draft theme scopes. GET returns a revision; PUT requires If-Match and validates six allowlisted HEX colors. Atomic persistence precedes `broadcast_colors_update`; no competition or theme-selection state is written. See broadcast-colors.md.
+
+## Themed scoreboard output
+The theme catalog now declares `scoreboard` coverage and per-theme scoreboardStyles. `/scoreboard-display.html` uses the existing match API/socket, shared staged CSS client and saved broadcast selection. It inherits draft palette settings rather than adding another writable palette scope. Legacy scoreboard/OCR pages remain unchanged. See scoreboard-display.md for fields, bounds and recovery.
