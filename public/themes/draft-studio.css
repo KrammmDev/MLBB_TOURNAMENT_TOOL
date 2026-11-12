@@ -22,3 +22,109 @@
 .heropick.red-side {
   --accent: 233, 34, 55;
 }
+
+/* Studio desk: wider team banks, slim clock column, branding in team headers. */
+#draft-stage > .mainbox {
+  --side-width: 840px;
+  --center-width: 240px;
+}
+.coachbox {
+  width: 160px;
+  padding: 0 14px !important;
+}
+.coach-name {
+  font-size: 24px;
+}
+.banholder {
+  left: 160px;
+  width: 440px;
+}
+.upperside:last-child .banholder {
+  right: 160px;
+}
+.upperside {
+  border-bottom: 3px solid var(--blue-accent);
+}
+.upperside:last-child {
+  border-bottom-color: var(--red-accent);
+}
+.lowermid {
+  overflow: visible;
+}
+.broadcast-sponsors {
+  padding: 10px 24px;
+}
+.upperlowermid .teamlogo-wrap {
+  top: 0;
+  left: -240px;
+  width: 240px;
+  height: 68px;
+}
+.upperlowermid .teamlogo-wrap:last-child {
+  right: -240px;
+}
+.teamlogo {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+}
+.teamlogo,
+.teamlogo img {
+  width: 40px;
+  height: 40px;
+}
+.teamlogo-wrap:last-child .teamlogo {
+  left: auto;
+  right: 14px;
+}
+.teamnameholder1,
+.teamnameholder2 {
+  top: 6px;
+  left: 64px;
+  width: 162px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  color: var(--header-text);
+  font:
+    700 21px Arial,
+    sans-serif;
+  justify-content: flex-start;
+}
+.teamnameholder2 {
+  left: auto;
+  right: 64px;
+  justify-content: flex-end;
+}
+#blue-score-display,
+#red-score-display {
+  top: 43px;
+}
+#blue-score-display {
+  left: -176px;
+}
+#red-score-display {
+  right: -176px;
+}
+#blue-score-display .dot,
+#red-score-display .dot {
+  width: 19px;
+  height: 4px;
+}
+.match-info-display {
+  top: 270px;
+  left: 12px;
+  width: 216px;
+  height: 48px;
+  padding: 6px 10px;
+  border: 1px solid var(--edge);
+  border-radius: 4px;
+}
+#match-display {
+  font-size: 14px;
+  line-height: 1.3;
+}
+#draft-stage > .phasebox {
+  left: 840px;
+  width: 240px;
+}

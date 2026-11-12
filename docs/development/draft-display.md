@@ -51,3 +51,7 @@ Hero statistics initialization handles both static and asynchronously mounted te
 ## Sponsor and layout polish
 
 The shared sponsor host is a direct child of `.mainbox`, with visible placement in Classic's existing upper-center banner and the top-center slot in both compact themes. No playlist migration is needed. Studio's gold polygon is removed. Arena replaces overlaid vertical player names with separate horizontal name ribbons, reduces the center-panel dominance and explicitly anchors hero images to avoid blank top bands. See `broadcast-sponsors.md` for current scope.
+
+## Distinct theme compositions
+
+Classic keeps its original center console. Studio now uses 840px team banks, a 240px clock column, team-header branding and lower center match information. Arena has 960px team banks that meet in the middle, with all presentation controls above the portraits. Color changes alone are not sufficient theme differentiation: the browser scenario checks three distinct bank gaps, Arena's top clock and Studio's header branding, while retaining sponsor, timer and draft checks in both formats.

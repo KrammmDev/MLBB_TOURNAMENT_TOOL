@@ -51,8 +51,8 @@
     if (output() === "draft") {
       const details = {
         classic: "Original orange / red / white display2 layout",
-        arena: "Navy / cyan · separate player-name bars",
-        studio: "White / slate · blue and red team strips",
+        arena: "Full-width lineup · top scoreboard rail",
+        studio: "White team desks · slim center clock",
       };
       const colors = {
         classic: ["#ffffff", "#ff7200", "#ff0101"],

@@ -1,6 +1,12 @@
 # Draft layouts and sponsor slideshow
 
-All new draft themes render the shared top-center sponsor playlist on a 1920x1080 transparent canvas. Classic keeps the original orange/red/white display2 geometry, with the sponsor slot occupying its previously empty upper-center banner. Studio uses a flat white/slate center; the gold trapezoid is removed. Arena uses a compact navy center with horizontal player-name ribbons below the portraits. Studio and Arena use a 1920x344 bottom strip with explicit image bounds to avoid a blank band above hero art. All retain coach, hero, lane, score, phase, clock, team logo/name and player bindings. No BPM or authored league logo is introduced. Original legacy display URLs stay fixed.
+All new draft themes render the shared sponsor playlist on a 1920x1080 transparent canvas. Their compositions are intentionally different:
+
+- Classic retains the original 1920x367 orange/red/white display2 strip, 725px team banks and a 470px center console. Sponsors occupy its upper-center banner.
+- Studio uses a 1920x344 white broadcast desk: wider 840px team banks, a slim 240px clock/sponsor column, team logos/names/scores in the team headers, and match/game information near the bottom of the center column. There is no gold trapezoid.
+- Arena uses a 1920x392 navy stage: all ten portraits form one continuous lower lineup with no middle gap. Team branding, coaches, scores, bans, sponsors, match/game, phase and clock are in the top rail. Player names remain below portraits.
+
+All retain coach, hero, lane, score, phase, clock, team logo/name and player bindings. No BPM or authored league logo is introduced. Original legacy display URLs stay fixed.
 
 Open `/broadcast-themes.html`, find **Sponsor slideshow**, and click **Preview draft** to inspect the currently selected theme. Add one PNG, JPEG, WebP or GIF at a time (3 MiB per logo, up to 20). Uploads save immediately. Reorder/remove, change the 2–60-second interval or toggle display, then click **Save slideshow**. Save pending edits before uploading another logo. A single logo holds; multiple logos rotate in saved order. The slot stays blank when disabled or empty. Logo images use contain sizing and preserve transparency. Previewing a theme does not activate it globally; the existing theme activation button still controls the selected broadcast theme.
 
@@ -12,4 +18,4 @@ Runtime files are `runtime/broadcast-sponsors.json` and `runtime/sponsor-logos/`
 
 The renderer fetches settings on mount/recovery, consumes the existing draft socket's sponsor events, and polls every five seconds for recovery. Playlist changes preserve the current logo when possible. A failed logo retains the last decoded logo and advances on the next interval; a failed initial logo leaves the slot blank. It never writes match, draft or sponsor state. Settings and playlist order survive restart; slide elapsed time does not.
 
-Verification uses isolated data, real upload and persistence routes, browser decoding, rotation, reorder, enable/disable, stale-editor rejection, recovery, and identical draft state before/after sponsor edits. Browser composition is checked with synthetic artwork across all three themes and both ban formats, including visible sponsor bounds, portrait alignment and separate player-name bars. Actual Windows/OBS rendering, font availability and final sponsor assets require checking on the production PC.
+Verification uses isolated data, real upload and persistence routes, browser decoding, rotation, reorder, enable/disable, stale-editor rejection, recovery, and identical draft state before/after sponsor edits. Browser composition is checked with synthetic artwork across all three themes and both ban formats, including visible sponsor bounds, portrait alignment, separate player-name bars, and three distinct bank/center arrangements. Actual Windows/OBS rendering, font availability and final sponsor assets require checking on the production PC.
