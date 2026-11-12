@@ -28,6 +28,7 @@ test(
     matchData.teamdata.blueteam.teamname = "North";
     matchData.teamdata.redteam.teamname = "South";
     matchData.teamdata.blueteam.coach = "Coach North";
+    matchData.teamdata.blueteam.playerlist[0].image = "Assets/player/north.png";
     matchData.teamdata.blueteam.playerlist[0].lane = "gold";
     const match = createMatchStore({
       initial: matchData,
@@ -210,6 +211,36 @@ test(
           omitBackground: true,
         });
     }
+    for (const p of [normal, six, classic, legacy, legacySix]) {
+      await p.waitForFunction(
+        () => document.querySelector("#name-image-box-3 img")?.naturalWidth > 0,
+      );
+      assert.equal(
+        await p.locator("#name-image-box-3").isVisible(),
+        false,
+        "selected hero hides loaded player portrait",
+      );
+      assert.equal(await p.locator("#image-display-1").isVisible(), true);
+    }
+    await normal.waitForFunction(() =>
+      document.querySelector("#image-box-1 .stat-card.show"),
+    );
+    assert.equal(
+      await normal.locator("#name-image-box-3").isVisible(),
+      false,
+      "stat cards cannot expose the player photo over the hero",
+    );
+    broadcast({
+      type: "matchdata_update",
+      data: match.snapshot().data,
+      revision: match.snapshot().revision,
+    });
+    for (const p of [normal, six, classic, legacy, legacySix])
+      assert.equal(
+        await p.locator("#name-image-box-3").isVisible(),
+        false,
+        "match refresh cannot restore portrait over hero",
+      );
     assert.equal(await normal.locator(".banhero").count(), 10);
     assert.equal(await six.locator(".banhero").count(), 6);
     assert.equal(
@@ -353,6 +384,18 @@ test(
       () => !document.getElementById("image-box-1").classList.contains("show"),
     );
     assert.equal(await normal.locator("#hero-name-1").textContent(), "");
+    for (const p of [normal, six, classic, legacy, legacySix]) {
+      await p.waitForFunction(
+        () =>
+          !document.getElementById("image-box-1").classList.contains("show"),
+      );
+      assert.equal(
+        await p.locator("#name-image-box-3").isVisible(),
+        true,
+        "portrait returns after hero reset",
+      );
+    }
+
     assert.deepEqual(writes, ["/api/broadcast-theme"]);
     assert.deepEqual(errors, []);
   },

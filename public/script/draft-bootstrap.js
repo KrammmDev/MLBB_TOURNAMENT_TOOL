@@ -30,13 +30,6 @@
     sponsor.className = "broadcast-sponsors";
     sponsor.setAttribute("aria-label", "Sponsor logos");
     fragment.querySelector(".mainbox").append(sponsor);
-    for (const side of ["blue", "red"]) {
-      const score = document.createElement("span");
-      score.className = "arena-series-score";
-      score.dataset.teamScore = side;
-      score.setAttribute("aria-label", side + " series score");
-      fragment.querySelector(".mainbox").append(score);
-    }
     DraftDisplay.start({ template: fragment });
     window.SponsorSlideshow?.start(sponsor);
     const stats = document.createElement("script");

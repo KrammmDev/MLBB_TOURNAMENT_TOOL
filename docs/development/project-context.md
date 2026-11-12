@@ -40,3 +40,5 @@ The user requires visibly different esports compositions, not recolors. Current 
 Latest Arena refinement: keep the navy/cyan stage and footer, but angle the left cards outward left and the right outward right, reversing the rejected reference. Keep artwork/labels upright, name bars horizontal and the white wedge removed.
 
 The latest Arena reference clarifies a subtle mirrored angle: left frames +4 degrees, right -4 degrees. This supersedes the earlier outward -8/+8 interpretation. Artwork and labels stay upright and the navy/cyan stage is retained.
+
+Draft presentation constraint: once a slot has a selected hero, hide the player portrait (including during stat cards and match refreshes); restore it for empty/reset slots. Remove Arena's large numeric series scores. Keep stored match scores and the small series-win indicators.
