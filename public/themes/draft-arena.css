@@ -1,4 +1,4 @@
-/* Arena tournament stage: outward-slant frames with upright portraits. */
+/* Arena tournament stage: subtly mirrored frames with upright portraits. */
 :root {
   --header-bg: #091827;
   --header-text: #f2f7fc;
@@ -170,7 +170,7 @@
   font-size: 12px;
   letter-spacing: 1.5px;
 }
-/* Two broad banks; card angles lean outward, opposite the old reference. */
+/* Two broad banks with a gentle mirrored slant matching the latest reference. */
 .lowerside {
   top: 64px;
   width: 952px;
@@ -187,7 +187,7 @@
 }
 .heropick {
   --accent: 27, 194, 213;
-  transform: skewX(-8deg);
+  transform: skewX(4deg);
   transform-origin: 50% 100%;
   border-width: 0 1px;
   border-color: #234055;
@@ -195,25 +195,25 @@
 }
 .heropick.red-side {
   --accent: 82, 127, 232;
-  transform: skewX(8deg);
+  transform: skewX(-4deg);
   box-shadow: inset 0 3px var(--red-accent);
 }
 .heropick > .image-box {
-  inset: 0 -36px;
-  width: calc(100% + 72px);
-  transform: skewX(8deg);
+  inset: 0 -18px;
+  width: calc(100% + 36px);
+  transform: skewX(-4deg);
   transform-origin: 50% 100%;
 }
 .heropick.red-side > .image-box {
-  transform: skewX(-8deg);
+  transform: skewX(4deg);
 }
 .heropick .lanelogo,
 .heropick .name-image-box {
-  transform: skewX(8deg);
+  transform: skewX(-4deg);
 }
 .heropick.red-side .lanelogo,
 .heropick.red-side .name-image-box {
-  transform: skewX(-8deg);
+  transform: skewX(4deg);
 }
 .heropick > .image-box > img {
   object-position: 50% 12%;
@@ -239,13 +239,13 @@
 .heropick.blue-side .hero-name.show {
   left: 0;
   right: 0;
-  transform: skewX(8deg);
+  transform: skewX(-4deg);
 }
 .heropick.red-side .hero-name,
 .heropick.red-side .hero-name.show {
   left: 0;
   right: 0;
-  transform: skewX(-8deg);
+  transform: skewX(4deg);
 }
 .nickholder,
 .playername,

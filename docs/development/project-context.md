@@ -38,3 +38,5 @@ Draft polish: the shared sponsor playlist is now visible in Classic, Arena and S
 The user requires visibly different esports compositions, not recolors. Current draft layouts: Classic original center console; Studio slim white clock column with branding in team headers; Arena dark navy/cyan tournament stage with straight portrait banks, one clock and numeric series scores in the header, and sponsors/bans/coaches in the footer. The user rejected the angled-card/white-wedge reference. All consume the same draft/match bindings and sponsor playlist.
 
 Latest Arena refinement: keep the navy/cyan stage and footer, but angle the left cards outward left and the right outward right, reversing the rejected reference. Keep artwork/labels upright, name bars horizontal and the white wedge removed.
+
+The latest Arena reference clarifies a subtle mirrored angle: left frames +4 degrees, right -4 degrees. This supersedes the earlier outward -8/+8 interpretation. Artwork and labels stay upright and the navy/cyan stage is retained.
