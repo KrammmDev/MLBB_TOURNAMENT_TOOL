@@ -101,6 +101,21 @@
         .join("")
     );
   }
+  function readable(text, background) {
+    const luminance = (hex) => {
+      const rgb = [1, 3, 5].map((i) => {
+        const value = parseInt(hex.slice(i, i + 2), 16) / 255;
+        return value <= 0.04045
+          ? value / 12.92
+          : ((value + 0.055) / 1.055) ** 2.4;
+      });
+      return rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722;
+    };
+    const bg = luminance(background),
+      fg = luminance(text);
+    if ((Math.max(bg, fg) + 0.05) / (Math.min(bg, fg) + 0.05) >= 3) return text;
+    return bg > 0.179 ? "#18212b" : "#f2f7fc";
+  }
   function style(id, output, colors, classicImage = "") {
     if (!validScope(id, output) || !validColors(colors))
       throw Error("Invalid broadcast colors");
@@ -140,7 +155,8 @@
               : "--red-accent,--mid-right",
             colors[field],
           );
-          rule(`.hero-name.${side}`, `background:${colors[field]}`);
+          if (id !== "arena")
+            rule(`.hero-name.${side}`, `background:${colors[field]}`);
           rule(
             `#${side}-score-display .dot.active`,
             `background:${colors[field]}`,
@@ -207,6 +223,48 @@
           ".heropick,.banhero,.lowermid,.upperside",
           `border-color:${colors.border}`,
         );
+      }
+      // Classic has light central/header surfaces and separate colored name rails.
+      // Keep labels readable even when a saved palette used white text everywhere.
+      if (id === "classic" && Object.keys(colors).length) {
+        rule(
+          "#timer,#match-display,.teamnameholder1,.teamnameholder2",
+          `color:${readable(palette.text, palette.background)}`,
+        );
+        rule(
+          ".coach-name",
+          `color:${readable(palette.text, colors.background || palette.left)}`,
+        );
+        rule(
+          ".coach-label",
+          `color:${readable(palette.muted, colors.background || palette.left)}`,
+        );
+        rule(
+          ".phasebox h2",
+          `color:${readable(palette.muted, palette.background)}`,
+        );
+        for (const [side, field, position] of [
+          ["blue", "left", "first"],
+          ["red", "right", "last"],
+        ]) {
+          const accent = palette[field];
+          rule(
+            `.hero-name.${side}`,
+            `color:${readable(palette.muted, accent)}`,
+          );
+          rule(
+            `.lowerside:${position}-child .playername`,
+            `color:${readable(palette.text, colors[field] || colors.background || accent)}`,
+          );
+          rule(
+            `.upperside:${position}-child .coach-name`,
+            `color:${readable(palette.text, colors.background || accent)}`,
+          );
+          rule(
+            `.upperside:${position}-child .coach-label`,
+            `color:${readable(palette.muted, colors.background || accent)}`,
+          );
+        }
       }
       if (colors.text) rule(".countdown.warning #timer", "color:#ff899a");
     } else {

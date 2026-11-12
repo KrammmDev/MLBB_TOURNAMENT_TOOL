@@ -17,3 +17,5 @@ The renderer uses scoped CSS overrides and the existing socket, with recovery po
 ## Verification
 
 Node tests cover API validation, conflicts, independent scopes, restart/reset, failed persistence and corrupt-file preservation. Chromium tests cover all six theme/output combinations, six-ban draft mode, preview isolation, reset/save, scope switching, concurrent operators, reload/reconnect, transparency, hero DOM preservation and clock warnings. Actual Windows/OBS Browser Source appearance remains an operator check before live use.
+
+Arena hero labels retain their transparent-to-dark gradient when team accents change. Classic applies a contrasting text fallback on its light center/header panels and colored name rails when a selected text color would disappear against the surface; this also repairs previously saved palettes without requiring a reset.
