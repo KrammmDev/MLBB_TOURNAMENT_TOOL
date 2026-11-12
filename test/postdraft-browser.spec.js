@@ -306,6 +306,19 @@ test(
         Math.abs(driftX(await backdropTransform()) - driftX(beforeDrift)) >= 1,
         "backdrop travels visibly rather than only a fractional pixel",
       );
+      const sweepPosition = () =>
+        live
+          .locator("#postdraft-stage")
+          .evaluate(
+            (stage) => getComputedStyle(stage, "::after").backgroundPosition,
+          );
+      const initialSweep = await sweepPosition();
+      await live.waitForTimeout(150);
+      assert.notEqual(
+        await sweepPosition(),
+        initialSweep,
+        "silver light sweeps across the background",
+      );
       await live.emulateMedia({ reducedMotion: "reduce" });
       assert.equal(
         await live
@@ -315,6 +328,15 @@ test(
           ),
         "none",
         "reduced motion disables backdrop movement",
+      );
+      assert.equal(
+        await live
+          .locator("#postdraft-stage")
+          .evaluate(
+            (stage) => getComputedStyle(stage, "::after").animationName,
+          ),
+        "none",
+        "reduced motion disables the silver sweep",
       );
       await live.emulateMedia({ reducedMotion: "no-preference" });
       if (process.env.MLBB_CAPTURE_DIR) {
