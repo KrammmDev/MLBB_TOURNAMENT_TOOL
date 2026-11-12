@@ -1,5 +1,7 @@
 /* Arena tournament stage: subtly mirrored frames with upright portraits. */
 :root {
+  --arena-team-logo-size: 80px;
+  --arena-team-name-size: 36px;
   --header-bg: #091827;
   --header-text: #f2f7fc;
   --edge: #28435b;
@@ -20,12 +22,12 @@
   --side-width: 760px;
   --center-width: 400px;
   --sponsor-height: 60px;
-  height: 390px;
+  height: 454px;
 }
 #draft-stage > .mainbox::before {
   content: "";
   position: absolute;
-  top: 64px;
+  top: 128px;
   left: 952px;
   width: 16px;
   height: 266px;
@@ -33,7 +35,7 @@
 }
 /* Header: team identity, series scores and one controller-owned clock. */
 .lowermid {
-  top: 0;
+  top: 64px;
   left: 0;
   width: 1920px;
   height: 64px;
@@ -47,34 +49,44 @@
   display: none;
 }
 .upperlowermid .teamlogo-wrap {
-  top: 0;
-  left: 20px;
-  width: 440px;
-  height: 62px;
+  top: -64px;
+  left: 0;
+  width: 560px;
+  height: 128px;
+  box-sizing: border-box;
+  padding: 12px 36px;
   flex-direction: row;
   justify-content: flex-start;
-  gap: 12px;
+  gap: 20px;
+  background: linear-gradient(100deg, #102e43, #091827);
+  border-top: 3px solid var(--blue-accent);
+  border-bottom: 2px solid #2f859d;
+  clip-path: polygon(0 0, 88% 0, 100% 100%, 0 100%);
 }
 .upperlowermid .teamlogo-wrap:last-child {
   left: auto;
-  right: 20px;
+  right: 0;
   flex-direction: row-reverse;
+  background: linear-gradient(260deg, #142c4a, #091827);
+  border-top-color: var(--red-accent);
+  clip-path: polygon(12% 0, 100% 0, 100% 100%, 0 100%);
 }
 .teamlogo,
 .teamlogo img {
-  width: 48px;
-  height: 48px;
+  width: var(--arena-team-logo-size);
+  height: var(--arena-team-logo-size);
+  flex-shrink: 0;
 }
 .teamnameholder1,
 .teamnameholder2 {
   position: static;
   width: 360px;
-  height: 62px;
+  height: 100px;
   padding: 0;
   background: transparent;
   color: #f0f6fb;
   font:
-    700 28px "Rajdhani",
+    700 var(--arena-team-name-size) "Rajdhani",
     Arial,
     sans-serif;
   justify-content: flex-start;
@@ -88,10 +100,10 @@
   gap: 5px;
 }
 #blue-score-display {
-  left: 490px;
+  left: 582px;
 }
 #red-score-display {
-  right: 490px;
+  right: 582px;
 }
 #blue-score-display .dot,
 #red-score-display .dot {
@@ -148,7 +160,7 @@
 }
 /* Two broad banks with a gentle mirrored slant matching the latest reference. */
 .lowerside {
-  top: 64px;
+  top: 128px;
   width: 952px;
   height: 266px;
 }
@@ -247,7 +259,7 @@
 }
 /* Footer: bans and coach names outside, a contained sponsor image at center. */
 .upperside {
-  top: 330px;
+  top: 394px;
   height: 60px;
   background: #0a1826;
   border-top: 1px solid #2a4258;
@@ -299,7 +311,7 @@
   letter-spacing: 1.5px;
 }
 .broadcast-sponsors {
-  top: 330px;
+  top: 394px;
   padding: 8px 40px;
   border: 0;
 }

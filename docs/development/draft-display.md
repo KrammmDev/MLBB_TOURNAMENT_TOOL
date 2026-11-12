@@ -65,3 +65,7 @@ Large numeric Arena scores are removed at the user's request. The existing small
 ## Player portrait visibility
 
 The renderer already marks selected slots with `.has-hero`. The shared display2 stylesheet now hides that slot's `.name-image-box`, so match refreshes and stat-card transitions cannot place the player photo over the hero. Empty/reset slots show their portraits again. Browser scenarios load a real image fixture, check hidden portraits with selected heroes across new/legacy pages, and verify restoration after reset.
+
+## Arena raised team panels
+
+The upper-left/right team identities sit in raised dark panels with mirrored slanted inner edges. Defaults are `--arena-team-logo-size: 80px` and `--arena-team-name-size: 36px` in `draft-arena.css`; long names still use the existing text-fit behavior. The component includes 64px of extra top space (454px total), while portraits, footer, timer and sponsor retain their prior canvas positions. The transparent 1920x1080 stage contract is unchanged.
