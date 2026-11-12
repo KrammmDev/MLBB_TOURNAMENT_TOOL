@@ -86,9 +86,9 @@
       };
       if (output() === "postdraft")
         Object.assign(details, {
-          classic: "Tall hero + player cards · colored name bars",
-          arena: "Dark stage · framed player portraits",
-          studio: "Mirrored lineup rows · hero + player portraits",
+          classic: "Stacked team rows · player cutouts over heroes",
+          arena: "Dark ten-card lineup · vertical player names",
+          studio: "White ten-card lineup · team color name rails",
         });
       const colors = {
         classic: ["#ffffff", "#ff7200", "#ff0101"],

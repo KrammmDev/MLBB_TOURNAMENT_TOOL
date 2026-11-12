@@ -94,3 +94,5 @@ Color schema 2: /api/broadcast-colors accepts roster, draft or scoreboard output
 
 ## Post-draft output
 The catalog declares postdraft coverage and per-theme postdraftStyles. Canonical postdraft2.html consumes existing match/draft snapshots and events through a single read-only renderer, preferring catalog GIF assets with static fallback while preserving unchanged image nodes/sources. The color API accepts an independent postdraft scope under schema 2; no existing scopes are copied or changed. See postdraft-display.md.
+
+Post-draft tournament identity: consume only logoFile from the existing scoreboard-branding GET/event contract for center logos in all layouts. This remains read-only; patch/caster strips and all output palette scopes remain independent.

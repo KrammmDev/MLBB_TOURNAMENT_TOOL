@@ -16,7 +16,9 @@
     themeVersion = 0,
     readingDraft = false,
     readingTheme = false,
-    readingHeroes = false;
+    readingHeroes = false,
+    readingBranding = false,
+    brandingVersion = 0;
   const cards = [];
   for (const [side, start, ids] of [
     ["blue", 3, [1, 2, 3, 4, 5]],
@@ -199,6 +201,35 @@
       readingHeroes = false;
     }
   }
+  function branding(data) {
+    const file = data?.logoFile;
+    if (
+      file === null ||
+      (typeof file === "string" &&
+        /^[a-f0-9-]{36}\.(png|jpg|webp|gif)$/.test(file))
+    )
+      image(
+        el("pd-tournament-logo"),
+        file ? ["/scoreboard-branding/" + file] : [],
+      );
+  }
+  async function readBranding() {
+    if (stopped || readingBranding) return;
+    readingBranding = true;
+    const version = brandingVersion;
+    try {
+      const response = await fetch("/api/scoreboard-branding", {
+        cache: "no-store",
+      });
+      if (response.ok) {
+        const value = await response.json();
+        if (!stopped && version === brandingVersion) branding(value.data);
+      }
+    } catch {
+    } finally {
+      readingBranding = false;
+    }
+  }
   async function apply(id) {
     if (stopped || !validTheme(id)) return;
     try {
@@ -241,6 +272,10 @@
       {
         onMessage(message) {
           root.BroadcastColorClient.accept(message);
+          if (message.type === "scoreboard_branding_update") {
+            brandingVersion++;
+            branding(message.data);
+          }
           if (message.type === "roster_theme_update" && !pinned) {
             themeVersion++;
             apply(message.data?.themeId);
@@ -269,10 +304,12 @@
     }
     readDraft();
     loadHeroes();
+    readBranding();
     poll = setInterval(() => {
       readDraft();
       readTheme();
       loadHeroes();
+      readBranding();
     }, 5000);
   }
   function fit() {
@@ -284,6 +321,7 @@
     stopped = true;
     draftVersion++;
     themeVersion++;
+    brandingVersion++;
     clearInterval(poll);
     stopMatch?.();
     stopMatch = null;

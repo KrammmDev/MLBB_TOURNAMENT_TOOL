@@ -24,3 +24,5 @@ The read-only scoreboard client consumes that event and recovery polling; it nev
 ## Validation
 
 Node checks cover save/upload, revision conflicts, invalid input/image rejection, stale-file cleanup, restart, clearing/removal, corrupt-file preservation and failed-write recovery. The scoreboard browser scenario saves production text, uploads a tournament logo, checks the center overlap and footer in all themes, then exercises the existing palette, match and reconnect paths. Synthetic artwork verifies bounds; actual Windows/OBS readability remains a target-machine check.
+
+The same tournament logo is also used in the three post-draft compositions. The upload label identifies both output types. Patch/caster strips remain scoreboard-only; the logo is shared tournament identity and does not share palette settings.

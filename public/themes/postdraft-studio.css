@@ -6,115 +6,78 @@ body {
   --pd-right: #e92237;
   --pd-edge: #d4dde7;
 }
-/* Mirrored five-row lineup desks: hero, player photo and readable identity. */
+/* White competition desk, one ten-card portrait line and solid team name rails. */
 .pd-header {
-  top: 65px;
-  height: 125px;
-  grid-template-columns: 1fr 210px 1fr;
-  gap: 0;
+  top: 55px;
+  height: 120px;
+  grid-template-columns: 1fr 240px 1fr;
+  gap: 24px;
 }
 .pd-blue.pd-team {
-  border-top: 5px solid var(--pd-left);
+  grid-column: 1;
+  border-bottom: 5px solid var(--pd-left);
 }
 .pd-red.pd-team {
-  border-top: 5px solid var(--pd-right);
+  grid-column: 3;
+  border-bottom: 5px solid var(--pd-right);
 }
 .pd-match {
-  border-left: 1px solid var(--pd-edge);
-  border-right: 1px solid var(--pd-edge);
+  position: absolute;
+  top: 145px;
+  left: 650px;
+  width: 540px;
+  height: 46px;
+  flex-direction: row;
+  gap: 18px;
+  padding: 6px 20px;
+  border-bottom: 2px solid var(--pd-edge);
+}
+#display-match-text {
+  font-size: 23px;
+}
+#display-game-text {
+  font-size: 25px;
 }
 .pd-main {
-  top: 225px;
-  grid-template-columns: 1fr 100px 1fr;
+  top: 280px;
+  grid-template-columns: 1fr 22px 1fr;
 }
 .pd-bank {
-  grid-template-columns: 1fr;
-  gap: 12px;
+  gap: 8px;
 }
 .pd-card {
-  height: 132px;
-}
-.pd-art,
-.pd-card.has-hero.has-photo .pd-art {
-  left: 0;
-  right: auto;
-  width: 150px;
-  height: 132px;
-  object-position: 50% 25%;
-}
-.pd-player {
-  left: 0;
-  right: auto;
-  width: 150px;
-  height: 132px;
-  object-fit: cover;
-  object-position: 50% 12%;
-}
-.pd-card.has-hero .pd-player {
-  top: 0;
-  bottom: auto;
-  left: 150px;
-  width: 120px;
-  height: 132px;
-  border: 0;
+  height: 650px;
+  --pd-label-height: 46px;
+  --pd-photo-height: 520px;
+  border: 2px solid var(--pd-edge);
 }
 .pd-label {
-  top: 0;
-  bottom: auto;
-  left: 170px;
-  right: 40px;
-  height: 132px;
-  text-align: left;
-  gap: 10px;
-  padding: 12px 8px;
+  height: 46px;
+  padding: 6px 8px;
+  gap: 0;
 }
-.pd-card.has-hero.has-photo .pd-label {
-  left: 290px;
-}
-.pd-blue .pd-card {
-  border-right: 4px solid var(--pd-left);
-}
-.pd-red .pd-card {
-  border-left: 4px solid var(--pd-right);
-}
-.pd-hero-name {
-  order: -1;
-  font-size: 18px;
-  letter-spacing: 2px;
-}
-.pd-player-name {
-  font-size: 30px;
-}
-.pd-lane {
-  right: 10px;
-  top: 12px;
-  width: 28px;
-  height: 28px;
-  padding: 4px;
-}
-.pd-red .pd-art,
-.pd-red .pd-card.has-hero.has-photo .pd-art {
-  left: auto;
-  right: 0;
-}
-.pd-red .pd-player {
-  left: auto;
-  right: 0;
-}
-.pd-red .pd-card.has-hero .pd-player {
-  left: auto;
-  right: 150px;
+.pd-blue .pd-label {
+  background: var(--pd-left);
+  color: var(--pd-left-text, #ffffff);
 }
 .pd-red .pd-label {
-  left: 40px;
-  right: 170px;
-  text-align: right;
+  background: var(--pd-right);
+  color: var(--pd-right-text, #ffffff);
 }
-.pd-red .pd-card.has-hero.has-photo .pd-label {
-  left: 40px;
-  right: 290px;
+.pd-player-name {
+  font-size: 25px;
+}
+.pd-hero-name {
+  display: none;
+}
+.pd-lane {
+  top: auto;
+  bottom: 52px;
+  right: 8px;
+  left: auto;
+  background: #091827aa;
 }
 .pd-red .pd-lane {
-  left: 10px;
+  left: 8px;
   right: auto;
 }

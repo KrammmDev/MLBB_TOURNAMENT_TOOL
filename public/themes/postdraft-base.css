@@ -145,22 +145,21 @@ body {
   height: calc(100% - var(--pd-label-height));
 }
 .pd-player {
+  top: auto;
+  bottom: var(--pd-label-height);
   height: calc(100% - var(--pd-label-height));
   object-fit: contain;
   object-position: 50% 100%;
-  background: var(--pd-panel);
+  background: transparent;
+  z-index: 1;
 }
 .pd-card.has-hero .pd-player {
   top: auto;
   bottom: var(--pd-label-height);
   height: var(--pd-photo-height);
   object-fit: cover;
-  object-position: 50% 12%;
-  border-top: 1px solid var(--pd-edge);
-  box-sizing: border-box;
-}
-.pd-card.has-hero.has-photo .pd-art {
-  height: calc(100% - var(--pd-label-height) - var(--pd-photo-height));
+  object-position: 50% 0%;
+  border: 0;
 }
 .pd-art[hidden],
 .pd-player[hidden],
@@ -213,4 +212,22 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+#pd-tournament-logo {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  z-index: 4;
+}
+#pd-tournament-logo[hidden] {
+  display: none;
+}
+
+.pd-match #display-match-text {
+  color: var(--pd-muted);
 }
