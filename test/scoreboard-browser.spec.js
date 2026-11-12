@@ -66,9 +66,14 @@ test(
       res.json({
         data: {
           schemaVersion: 1,
-          enabled: false,
+          enabled: true,
           intervalSeconds: 5,
-          logos: [],
+          logos: [
+            {
+              id: "test-sponsor",
+              file: "11111111-1111-4111-8111-111111111111.png",
+            },
+          ],
         },
         revision: '"test"',
       }),
@@ -93,7 +98,10 @@ test(
     await context.route("**/*", (route) => {
       const url = new URL(route.request().url());
       if (url.hostname !== "127.0.0.1") return route.abort();
-      if (url.pathname.includes("/Assets/"))
+      if (
+        url.pathname.includes("/Assets/") ||
+        url.pathname.startsWith("/broadcast-sponsors/")
+      )
         return route.fulfill({
           contentType: "image/svg+xml",
           body: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><circle cx="40" cy="40" r="38" fill="#24b3cb"/></svg>',
@@ -107,7 +115,7 @@ test(
       await page.goto(base + url);
       return page;
     }
-    const live = await page("/scoreboard-display.html"),
+    const live = await page("/scoreboard.html"),
       pinned = await page("/scoreboard-display.html?theme=classic");
     const ready = (page, id) =>
       page.waitForFunction(
@@ -118,13 +126,14 @@ test(
       );
     await ready(live, "arena");
     await ready(pinned, "classic");
+    await live.locator("#sb-sponsors img").waitFor();
     assert.equal(
-      await live.locator("#sb-name-blue").textContent(),
+      await live.locator("#name-box-1").textContent(),
       data.teamdata.blueteam.teamname,
     );
-    assert.equal(await live.locator("#sb-wins-blue .active").count(), 2);
-    assert.equal(await live.locator("#sb-wins-blue .sb-win").count(), 3);
-    assert.equal(await live.locator("#sb-turtles-red img").count(), 1);
+    assert.equal(await live.locator("#blue-score-display .active").count(), 2);
+    assert.equal(await live.locator("#blue-score-display .sb-win").count(), 3);
+    assert.equal(await live.locator("#red-turtle-container img").count(), 1);
     assert.equal(await live.locator("#sb-game").textContent(), "GAME 3");
     assert.equal(
       await live
@@ -136,9 +145,33 @@ test(
       await themes.select(id, themes.snapshot().revision);
       broadcast({ type: "roster_theme_update", ...themes.snapshot() });
       await ready(live, id);
+      const safeAreas = await live.evaluate(() =>
+        [
+          [170, 170],
+          [960, 20],
+          [1600, 400],
+        ].map(
+          ([x, y]) =>
+            document
+              .elementsFromPoint(x, y)
+              .filter((el) =>
+                ["sb-frame", "sb-banner"].some((cls) =>
+                  el.classList.contains(cls),
+                ),
+              ).length,
+        ),
+      );
+      assert.deepEqual(
+        safeAreas,
+        [0, 0, 0],
+        "minimap, top game HUD and gameplay stay uncovered",
+      );
+      const logoBox = await live.locator("#displayImage1").boundingBox();
+      assert.ok(logoBox.x >= 394 && logoBox.x + logoBox.width <= 510);
       if (process.env.MLBB_CAPTURE_DIR) {
         await fs.mkdir(process.env.MLBB_CAPTURE_DIR, { recursive: true });
         await live.screenshot({
+          omitBackground: true,
           path: path.join(process.env.MLBB_CAPTURE_DIR, `scoreboard-${id}.png`),
         });
       }
@@ -185,16 +218,19 @@ test(
     await live.waitForFunction(
       () => document.getElementById("sb-game").textContent === "GAME 4",
     );
-    assert.equal(await live.locator("#sb-name-blue b").count(), 0);
-    assert.equal(await live.locator("#sb-wins-blue .active").count(), 3);
-    assert.equal(await live.locator("#sb-turtles-blue img").count(), 0);
+    assert.equal(await live.locator("#name-box-1 b").count(), 0);
+    assert.equal(await live.locator("#blue-score-display .active").count(), 3);
+    assert.equal(await live.locator("#blue-turtle-container img").count(), 0);
     for (const client of wss.clients) client.close();
     await live.waitForFunction(
       () => document.getElementById("sb-game").textContent === "GAME 3",
     );
     await live.reload();
     await ready(live, "studio");
-    assert.equal(await live.locator("#sb-match").textContent(), "GRAND FINALS");
+    assert.equal(
+      await live.locator("#match-display").textContent(),
+      "GRAND FINALS",
+    );
     await live.setViewportSize({ width: 960, height: 540 });
     await live.waitForFunction(
       () =>

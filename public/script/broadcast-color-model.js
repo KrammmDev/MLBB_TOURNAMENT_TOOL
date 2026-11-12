@@ -280,10 +280,10 @@
         }
       }
       if (Object.keys(colors).length) {
-        rule(".sb-bar", `color:${readable(palette.text, palette.background)}`);
-        rule(
-          "#sb-match",
-          `color:${readable(palette.muted, palette.background)}`,
+        vars("--sb-readable", readable(palette.text, palette.background));
+        vars(
+          "--sb-muted-readable",
+          readable(palette.muted, palette.background),
         );
       }
       if (colors.text) rule(".countdown.warning #timer", "color:#ff899a");

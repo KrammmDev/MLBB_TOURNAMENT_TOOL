@@ -78,3 +78,5 @@ Current product constraint: no authored decorative game/league branding, slogans
 
 ## Themed scoreboard output
 The theme catalog now declares `scoreboard` coverage and per-theme scoreboardStyles. `/scoreboard-display.html` uses the existing match API/socket, shared staged CSS client and saved broadcast selection. It inherits draft palette settings rather than adding another writable palette scope. Legacy scoreboard/OCR pages remain unchanged. See scoreboard-display.md for fields, bounds and recovery.
+
+Scoreboard correction: `/scoreboard.html` is now the canonical themed gameplay-HUD frame using the original upper/lower geometry and binding IDs. scoreboard-display.html redirects with its query intact. It consumes the shared sponsor playlist. The OCR scoreboard remains unchanged. This supersedes the compact scoreboard composition and the earlier note that scoreboard.html stays fixed.

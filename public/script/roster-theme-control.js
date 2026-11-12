@@ -15,7 +15,7 @@
   const format = () => (outputSelect.value === "draft-six" ? "six" : "normal");
   function outputURL() {
     return output() === "scoreboard"
-      ? "/scoreboard-display.html"
+      ? "/scoreboard.html"
       : output() === "roster"
         ? "/broadcast-overlay.html"
         : "/draft-display.html?format=" + format();
@@ -70,15 +70,15 @@
       const details = {
         classic:
           output() === "scoreboard"
-            ? "White score desk · orange/red rails"
+            ? "White HUD frame · orange/red banners"
             : "Original orange / red / white display2 layout",
         arena:
           output() === "scoreboard"
-            ? "Navy score desk · mirrored inner edges"
+            ? "Navy HUD frame · cyan bevels"
             : "Subtle mirrored cards · navy/cyan stage",
         studio:
           output() === "scoreboard"
-            ? "White score desk · blue/red side accents"
+            ? "White HUD frame · blue/red wing panels"
             : "White team desks · slim center clock",
       };
       const colors = {
