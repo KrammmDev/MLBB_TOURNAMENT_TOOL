@@ -282,6 +282,14 @@
       if (Object.keys(colors).length) {
         vars("--sb-readable", readable(palette.text, palette.background));
         vars(
+          "--sb-info-text",
+          readable(colors.text || "#ffffff", palette.right),
+        );
+        rule(
+          ".matchinfo-content,.matchinfo-content #match-display,#matchinfo-day",
+          `color:${readable(colors.text || "#ffffff", palette.right)}`,
+        );
+        vars(
           "--sb-muted-readable",
           readable(palette.muted, palette.background),
         );

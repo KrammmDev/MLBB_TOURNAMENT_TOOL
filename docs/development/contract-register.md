@@ -82,3 +82,5 @@ The theme catalog now declares `scoreboard` coverage and per-theme scoreboardSty
 Scoreboard correction: `/scoreboard.html` is now the canonical themed gameplay-HUD frame using the original upper/lower geometry and binding IDs. scoreboard-display.html redirects with its query intact. It consumes the shared sponsor playlist. The OCR scoreboard remains unchanged. This supersedes the compact scoreboard composition and the earlier note that scoreboard.html stays fixed.
 
 Scoreboard sponsor placement: the shared playlist now renders at the top of the right-side match-info panel; match/game is one line beneath it, with optional stage/group using scoreboardocr's matchInfo.stage/group (season/week fallback) fields. No OCR statistics or timer elements are introduced. This supersedes the center sponsor-slot placement.
+
+Right-panel format correction: use two adjacent columns, colored metadata left and white sponsor right, height 116px. Stage/group and match/game bindings remain unchanged. This supersedes the previous vertical stack.
