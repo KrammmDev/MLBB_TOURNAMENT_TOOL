@@ -26,3 +26,6 @@ Classic's theme CSS binds its inherited corner brackets, glow, hero-rail edges, 
 Roster, draft and scoreboard have distinct stored palettes, editor scopes and reset behavior for each theme. The editor retains unsaved edits independently when switching outputs. Scoreboard rendering remains isolated from draft geometry rules.
 
 On the first updated server start, a schema-1 color file is backed up to `broadcast-colors.json.v1.bak`, then migrated atomically to schema 2. Existing draft overrides are copied once into missing scoreboard scopes to retain the current appearance; existing scoreboard scopes are preserved. All later saves/resets are independent, and restarting never recopies draft colors. Empty/new installations start with independent defaults. Restart the server and refresh open pages after updating. A rollback to an older server requires restoring the schema-1 color backup.
+
+## Post-draft colors
+Post-draft has its own `postdraft` scope and defaults under schema 2. Select Post-draft in Broadcast Themes; edits preview locally until Save colors. This scope is independent of all other outputs and does not require a palette migration.

@@ -39,9 +39,12 @@
     return context
       ? window.RosterThemes.themes.find((t) => t.id === context.id).label +
           " · " +
-          { draft: "Draft", roster: "Roster", scoreboard: "Scoreboard" }[
-            context.output
-          ]
+          {
+            draft: "Draft",
+            roster: "Roster",
+            scoreboard: "Scoreboard",
+            postdraft: "Post-draft",
+          }[context.output]
       : "Select a preview";
   }
   function controls() {

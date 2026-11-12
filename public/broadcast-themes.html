@@ -22,7 +22,7 @@
         </div>
         <div class="selection">
           <span>SAVED SELECTION</span><strong id="active-theme">Loading…</strong
-          ><small>Roster + draft + scoreboard outputs</small>
+          ><small>Roster + draft + scoreboard + post-draft outputs</small>
         </div>
       </header>
       <section
@@ -36,6 +36,7 @@
           <select id="preview-output">
             <option value="roster">Roster</option>
             <option value="draft-normal">Draft</option>
+            <option value="postdraft">Post-draft</option>
             <option value="scoreboard">In-game scoreboard</option>
             <option value="draft-six">Draft · 6 bans</option>
           </select>
@@ -56,7 +57,7 @@
             Preview previous look
           </button>
           <button id="activate-theme" disabled>
-            Use for roster + draft + scoreboard outputs
+            Use for roster + draft + scoreboard + post-draft outputs
           </button>
         </div>
       </section>
@@ -66,8 +67,8 @@
           <strong id="color-scope">Select a preview</strong>
         </div>
         <p>
-          Roster, draft and scoreboard colors are saved separately for each
-          theme. Changes affect only the preview until you save.
+          Roster, draft, scoreboard and post-draft colors are saved separately
+          for each theme. Changes affect only the preview until you save.
         </p>
         <form id="color-form">
           <div id="color-fields" class="color-fields"></div>
@@ -222,7 +223,7 @@
         </button>
       </section>
       <footer>
-        Themes cover the new roster, draft and scoreboard outputs. MVP and
+        Themes cover roster, draft, scoreboard and post-draft outputs. MVP and
         postgame retain their existing appearance. Legacy display URLs stay
         fixed.
       </footer>

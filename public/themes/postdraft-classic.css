@@ -1,0 +1,35 @@
+body {
+  --pd-panel: #ffffff;
+  --pd-text: #252525;
+  --pd-muted: #666666;
+  --pd-left: #ff7200;
+  --pd-right: #ff0101;
+  --pd-edge: #d6d6da;
+}
+.pd-blue.pd-team {
+  border-left: 8px solid var(--pd-left);
+}
+.pd-red.pd-team {
+  border-right: 8px solid var(--pd-right);
+}
+.pd-match {
+  border-bottom: 4px solid var(--pd-edge);
+}
+.pd-blue .pd-card {
+  border-top: 5px solid var(--pd-left);
+}
+.pd-red .pd-card {
+  border-top: 5px solid var(--pd-right);
+}
+.pd-blue .pd-label {
+  background: var(--pd-left);
+  color: var(--pd-left-text, #18212b);
+}
+.pd-red .pd-label {
+  background: var(--pd-right);
+  color: var(--pd-right-text, #ffffff);
+}
+.pd-hero-name {
+  color: inherit;
+  opacity: 0.85;
+}

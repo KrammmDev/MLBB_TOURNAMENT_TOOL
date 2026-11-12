@@ -1,0 +1,200 @@
+@font-face {
+  font-family: "Postdraft Condensed";
+  src: url("/Assets/Font/RobotoCondensed-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: swap;
+}
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+#postdraft-stage {
+  position: absolute;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: top left;
+  font:
+    700 24px "Postdraft Condensed",
+    "Arial Narrow",
+    Arial,
+    sans-serif;
+  color: var(--pd-text, #eef3f8);
+}
+.pd-header {
+  position: absolute;
+  top: 80px;
+  left: 40px;
+  width: 1840px;
+  height: 112px;
+  display: grid;
+  grid-template-columns: 1fr 240px 1fr;
+  gap: 32px;
+}
+.pd-team {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 24px;
+  box-sizing: border-box;
+  background: var(--pd-panel);
+  min-width: 0;
+}
+.pd-team > div {
+  min-width: 0;
+  flex: 1;
+}
+.pd-team img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.pd-team-name {
+  font-size: 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pd-red.pd-team {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+.pd-wins {
+  display: flex;
+  gap: 7px;
+  margin-top: 10px;
+}
+.pd-red .pd-wins {
+  flex-direction: row-reverse;
+}
+.pd-win {
+  width: 20px;
+  height: 6px;
+  background: var(--pd-edge);
+}
+.pd-blue .pd-win.active {
+  background: var(--pd-left);
+}
+.pd-red .pd-win.active {
+  background: var(--pd-right);
+}
+.pd-match {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
+  background: var(--pd-panel);
+  padding: 12px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+#display-match-text {
+  font-size: 21px;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#display-game-text {
+  font-size: 34px;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pd-main {
+  position: absolute;
+  top: 240px;
+  left: 40px;
+  width: 1840px;
+  display: grid;
+  grid-template-columns: 1fr 100px 1fr;
+}
+.pd-bank {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+}
+.pd-card {
+  position: relative;
+  min-width: 0;
+  height: 650px;
+  overflow: hidden;
+  background: var(--pd-panel);
+  box-sizing: border-box;
+}
+.pd-art,
+.pd-player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 12%;
+}
+.pd-player {
+  object-fit: contain;
+  object-position: 50% 100%;
+}
+.pd-card.has-hero .pd-player {
+  display: none;
+}
+.pd-art[hidden],
+.pd-player[hidden],
+.pd-lane[hidden] {
+  display: none;
+}
+.pd-lane {
+  position: absolute;
+  right: 10px;
+  top: 12px;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  z-index: 3;
+  padding: 5px;
+  box-sizing: border-box;
+  background: #0b1826;
+}
+.pd-red .pd-lane {
+  right: auto;
+  left: 10px;
+}
+.pd-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 12px 8px;
+  box-sizing: border-box;
+  min-height: 78px;
+  z-index: 2;
+  text-align: center;
+  background: var(--pd-panel);
+}
+.pd-player-name {
+  font-size: 23px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pd-hero-name {
+  font-size: 16px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--pd-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

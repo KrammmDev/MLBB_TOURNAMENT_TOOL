@@ -6,18 +6,22 @@
     previous = document.getElementById("previous-theme");
   const outputSelect = document.getElementById("preview-output");
   const output = () =>
-    outputSelect.value === "scoreboard"
-      ? "scoreboard"
-      : outputSelect.value.startsWith("draft")
-        ? "draft"
-        : "roster";
+    outputSelect.value === "postdraft"
+      ? "postdraft"
+      : outputSelect.value === "scoreboard"
+        ? "scoreboard"
+        : outputSelect.value.startsWith("draft")
+          ? "draft"
+          : "roster";
   const format = () => (outputSelect.value === "draft-six" ? "six" : "normal");
   function outputURL() {
-    return output() === "scoreboard"
-      ? "/scoreboard.html"
-      : output() === "roster"
-        ? "/broadcast-overlay.html"
-        : "/draft-display.html?format=" + format();
+    return output() === "postdraft"
+      ? "/postdraft2.html"
+      : output() === "scoreboard"
+        ? "/scoreboard.html"
+        : output() === "roster"
+          ? "/broadcast-overlay.html"
+          : "/draft-display.html?format=" + format();
   }
   function updateURL() {
     document.getElementById("output-url").value = location.origin + outputURL();
@@ -80,6 +84,12 @@
             ? "White HUD frame · blue/red wing panels"
             : "White team desks · slim center clock",
       };
+      if (output() === "postdraft")
+        Object.assign(details, {
+          classic: "Tall hero panels · orange/red name bars",
+          arena: "Dark staggered cards · lower name ribbons",
+          studio: "Light portrait desks · separate hero/player labels",
+        });
       const colors = {
         classic: ["#ffffff", "#ff7200", "#ff0101"],
         arena: ["#091827", "#1bc2d5", "#527fe8"],
