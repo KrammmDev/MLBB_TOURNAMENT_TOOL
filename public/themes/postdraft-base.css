@@ -48,13 +48,13 @@ body {
   flex: 1;
 }
 .pd-team img {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   object-fit: contain;
   flex-shrink: 0;
 }
 .pd-team-name {
-  font-size: 40px;
+  font-size: 60px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -72,8 +72,8 @@ body {
   flex-direction: row-reverse;
 }
 .pd-win {
-  width: 20px;
-  height: 6px;
+  width: 30px;
+  height: 10px;
   background: var(--pd-edge);
 }
 .pd-blue .pd-win.active {
@@ -219,10 +219,11 @@ body {
   left: 50%;
   top: 0;
   transform: translateX(-50%);
-  width: 120px;
-  height: 120px;
+  width: 200px;
+  height: 200px;
   object-fit: contain;
   z-index: 4;
+  padding-bottom: 20px;
 }
 #pd-tournament-logo[hidden] {
   display: none;

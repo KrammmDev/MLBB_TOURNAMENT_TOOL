@@ -1,57 +1,57 @@
 {
   "draftdata": {
-    "timer": "0",
+    "timer": "50",
     "timerRunning": false,
     "current_phase": 17,
     "blueside": {
       "ban": [
         {
-          "hero": "/Assets/HeroPick/aulus.gif"
+          "hero": "/Assets/HeroPick/granger.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/hilda.gif"
         },
         {
           "hero": "/Assets/HeroPick/marcel.gif"
         },
         {
-          "hero": "/Assets/HeroPick/atlas.gif"
+          "hero": "/Assets/HeroPick/arlot.gif"
         },
         {
-          "hero": "/Assets/HeroPick/kadita.gif"
-        },
-        {
-          "hero": "/Assets/HeroPick/lylia.gif"
+          "hero": "/Assets/HeroPick/irithel.gif"
         }
       ],
       "pick": [
         {
-          "hero": "/Assets/HeroPick/cici.gif"
-        },
-        {
-          "hero": "/Assets/HeroPick/miya.gif"
-        },
-        {
-          "hero": "/Assets/HeroPick/minotaur.gif"
-        },
-        {
-          "hero": "/Assets/HeroPick/yve.gif"
-        },
-        {
           "hero": "/Assets/HeroPick/nolan.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/zetian.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/atlas.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/obsidia.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/joy.gif"
         }
       ]
     },
     "redside": {
       "ban": [
         {
-          "hero": "/Assets/HeroPick/natan.gif"
+          "hero": "/Assets/HeroPick/suyou.gif"
         },
         {
-          "hero": "/Assets/HeroPick/bruno.gif"
+          "hero": "/Assets/HeroPick/karrie.gif"
         },
         {
-          "hero": "/Assets/HeroPick/masha.gif"
+          "hero": "/Assets/HeroPick/lunox.gif"
         },
         {
-          "hero": "/Assets/HeroPick/yisunshin.gif"
+          "hero": "/Assets/HeroPick/fanny.gif"
         },
         {
           "hero": "/Assets/HeroPick/eudora.gif"
@@ -59,22 +59,22 @@
       ],
       "pick": [
         {
-          "hero": "/Assets/HeroPick/obsidia.png"
-        },
-        {
           "hero": "/Assets/HeroPick/hirara.gif"
         },
         {
-          "hero": "/Assets/HeroPick/beleric.gif"
+          "hero": "/Assets/HeroPick/yve.gif"
         },
         {
-          "hero": "/Assets/HeroPick/novaria.gif"
+          "hero": "/Assets/HeroPick/hylos.gif"
         },
         {
-          "hero": "/Assets/HeroPick/kaja.gif"
+          "hero": "/Assets/HeroPick/clint.gif"
+        },
+        {
+          "hero": "/Assets/HeroPick/lapulapu.gif"
         }
       ]
     },
-    "timer_running": false
+    "timer_running": true
   }
 }
