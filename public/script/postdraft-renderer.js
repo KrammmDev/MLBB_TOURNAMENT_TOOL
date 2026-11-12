@@ -39,17 +39,35 @@
   function image(node, candidates) {
     const sources = [...new Set(candidates.filter(Boolean))],
       key = JSON.stringify(sources);
-    if (node.dataset.key === key) return;
+    const retryPhoto =
+      node.classList.contains("pd-player") &&
+      sources.length &&
+      node.hidden &&
+      node.complete &&
+      Date.now() >= Number(node.dataset.retryAt || Infinity);
+    if (node.dataset.key === key && !retryPhoto) return;
     node.dataset.key = key;
     node.hidden = true;
+    const photoCard = node.classList.contains("pd-player")
+      ? node.closest(".pd-card")
+      : null;
+    photoCard?.classList.remove("has-photo");
     let next = 0;
     node.onload = () => {
-      if (node.dataset.key === key) node.hidden = false;
+      if (node.dataset.key === key && next > 0) {
+        node.hidden = false;
+        delete node.dataset.retryAt;
+        photoCard?.classList.add("has-photo");
+      }
     };
     node.onerror = () => {
       if (node.dataset.key !== key) return;
       if (next < sources.length) node.src = sources[next++];
-      else node.hidden = true;
+      else {
+        node.hidden = true;
+        if (photoCard) node.dataset.retryAt = String(Date.now() + 15000);
+        photoCard?.classList.remove("has-photo");
+      }
     };
     if (sources.length) node.src = sources[next++];
     else node.removeAttribute("src");
@@ -109,12 +127,28 @@
         selected = Boolean(raw && resolved.sources.length);
       node.classList.toggle("has-hero", selected);
       image(node.querySelector(".pd-art"), selected ? resolved.sources : []);
-      const portrait =
-        safe(player.image || player.photo || player.img || player.picture) ||
-        (player.name
-          ? "/Assets/player/" + encodeURIComponent(player.name) + ".png"
-          : "");
-      image(node.querySelector(".pd-player"), selected ? [] : [portrait]);
+      const rawPhoto =
+        player.image ||
+        player.photo ||
+        player.img ||
+        player.picture ||
+        player.playerImage ||
+        "";
+      let portrait = safe(rawPhoto);
+      if (
+        !portrait &&
+        typeof rawPhoto === "string" &&
+        rawPhoto.trim() &&
+        !/[:/\\]/.test(rawPhoto.replace(/^\/?player\//i, ""))
+      ) {
+        let filename = rawPhoto.trim().replace(/^\/?player\//i, "");
+        if (!/\.(png|jpe?g|gif|webp)$/i.test(filename)) filename += ".png";
+        portrait = "/Assets/player/" + encodeURIComponent(filename);
+      }
+      const namedPhoto = player.name
+        ? "/Assets/player/" + encodeURIComponent(player.name) + ".png"
+        : "";
+      image(node.querySelector(".pd-player"), [portrait, namedPhoto]);
       node.querySelector(".pd-player-name").textContent =
         player.name || player.ign || "";
       node.querySelector(".pd-hero-name").textContent = selected
