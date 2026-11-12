@@ -310,3 +310,9 @@
 .countdown.warning #timer {
   color: #ff899a;
 }
+
+/* Mirror the right team's role icons to the inside/opposite corner. */
+.heropick.red-side .lanelogo {
+  left: 8px;
+  right: auto;
+}
