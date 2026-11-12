@@ -52,3 +52,5 @@ Themed in-game scoreboard is now available at scoreboard-display.html and in Bro
 User correction: the scoreboard must follow the original scoreboard.html gameplay-HUD template and its open minimap/top-center spaces, not the compact desk introduced in PR18. The canonical scoreboard.html now has three CSS frame/banner designs, the original binding IDs, and a center sponsor slot. scoreboard-display.html is a redirect alias. Do not reintroduce a filled compact bar over the gameplay HUD.
 
 Latest scoreboard direction: put the sponsor in the right panel above the single `GRAND FINALS | GAME 3` line. Support scoreboardocr-style stage/group metadata when supplied, but do not include lord/gold/tower/kill-score/timer UI or invoke OCR. Apply this arrangement to all three themes.
+
+Final scoreboard reference correction: match metadata and sponsor are SIDE BY SIDE. The colored left tile contains stage/group/match-game lines; the white right tile contains the sponsor logo. This supersedes the prior vertical sponsor-above-text interpretation for all three themes.

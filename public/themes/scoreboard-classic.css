@@ -22,9 +22,6 @@ body {
   inset: 0;
   background: linear-gradient(110deg, #ffffff30, transparent 45%, #00000025);
 }
-.match-info {
-  border-left: 2px solid var(--edge, var(--sb-border));
-}
 .sb-win {
   transform: skewX(12deg);
 }

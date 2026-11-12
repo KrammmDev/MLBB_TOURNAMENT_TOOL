@@ -38,11 +38,6 @@ body {
 .sb-right {
   border-bottom: 3px solid var(--red-accent, var(--sb-right));
 }
-.match-info {
-  border-left: 1px solid var(--edge, var(--sb-border));
-  align-items: center;
-  padding-left: 20px;
-}
 .sb-win {
   width: 18px;
   height: 5px;

@@ -29,7 +29,12 @@ test(
     };
     const data = fixture();
     data.matchFormat = 5;
-    data.matchInfo = { match: "GRAND FINALS", game: "GAME 3" };
+    data.matchInfo = {
+      stage: "PLAYOFFS",
+      group: "DAY 2",
+      match: "GRAND FINALS",
+      game: "GAME 3",
+    };
     Object.assign(data.teamdata.blueteam, {
       teamname: "CITY COLLEGE OF ANGELES",
       logo: "Assets/Team/left.png",
@@ -148,8 +153,11 @@ test(
       const sponsorBox = await live.locator("#sb-sponsors img").boundingBox(),
         infoBox = await live.locator("#match-display").boundingBox();
       assert.ok(
-        sponsorBox.x >= 1530 && sponsorBox.y + sponsorBox.height <= infoBox.y,
-        "sponsor stays in right panel above match/game line",
+        sponsorBox.x >= 1724 &&
+          sponsorBox.x >= infoBox.x + infoBox.width &&
+          infoBox.y >= sponsorBox.y &&
+          infoBox.y < sponsorBox.y + sponsorBox.height,
+        "match details are left of sponsor in adjacent panels",
       );
       assert.equal(
         (await live.locator("#match-display").innerText())
