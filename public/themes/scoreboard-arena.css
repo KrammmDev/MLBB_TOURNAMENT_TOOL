@@ -40,8 +40,8 @@ body {
 }
 .match-info {
   border-left: 1px solid var(--edge, var(--sb-border));
-  align-items: flex-start;
-  padding-left: 32px;
+  align-items: center;
+  padding-left: 20px;
 }
 .sb-win {
   width: 18px;

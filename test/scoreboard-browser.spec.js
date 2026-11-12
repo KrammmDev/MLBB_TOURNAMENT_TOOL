@@ -145,6 +145,26 @@ test(
       await themes.select(id, themes.snapshot().revision);
       broadcast({ type: "roster_theme_update", ...themes.snapshot() });
       await ready(live, id);
+      const sponsorBox = await live.locator("#sb-sponsors img").boundingBox(),
+        infoBox = await live.locator("#match-display").boundingBox();
+      assert.ok(
+        sponsorBox.x >= 1530 && sponsorBox.y + sponsorBox.height <= infoBox.y,
+        "sponsor stays in right panel above match/game line",
+      );
+      assert.equal(
+        (await live.locator("#match-display").innerText())
+          .replace(/\s+/g, " ")
+          .trim(),
+        "GRAND FINALS | GAME 3",
+      );
+      assert.equal(
+        await live
+          .locator(
+            "#bluelord,#redlord,#bluegold,#redgold,#bluetower,#redtower,#homescore,#awayscore,#timer",
+          )
+          .count(),
+        0,
+      );
       const safeAreas = await live.evaluate(() =>
         [
           [170, 170],
@@ -214,10 +234,17 @@ test(
     changed.teamdata.blueteam.score = "3";
     changed.teamdata.blueteam.turtles = 0;
     changed.matchInfo.game = "GAME 4";
+    changed.matchInfo.stage = "GROUP STAGE";
+    changed.matchInfo.group = "GROUP A";
     broadcast({ type: "matchdata_update", data: changed });
     await live.waitForFunction(
       () => document.getElementById("sb-game").textContent === "GAME 4",
     );
+    assert.equal(
+      await live.locator("#matchinfo-main").textContent(),
+      "GROUP STAGE",
+    );
+    assert.equal(await live.locator("#matchinfo-day").textContent(), "GROUP A");
     assert.equal(await live.locator("#name-box-1 b").count(), 0);
     assert.equal(await live.locator("#blue-score-display .active").count(), 3);
     assert.equal(await live.locator("#blue-turtle-container img").count(), 0);
@@ -228,7 +255,7 @@ test(
     await live.reload();
     await ready(live, "studio");
     assert.equal(
-      await live.locator("#match-display").textContent(),
+      await live.locator("#sb-match-text").textContent(),
       "GRAND FINALS",
     );
     await live.setViewportSize({ width: 960, height: 540 });

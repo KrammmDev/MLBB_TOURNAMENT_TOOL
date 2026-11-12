@@ -50,3 +50,5 @@ Broadcast Themes includes preview-only color editing and explicit save/reset for
 Themed in-game scoreboard is now available at scoreboard-display.html and in Broadcast Themes previews. Its three presets align with current draft designs and share saved draft colors. The existing scoreboard and OCR URLs remain unchanged. No new match state, OCR or league branding is introduced. Actual gameplay-HUD positioning in OBS still needs target-machine verification.
 
 User correction: the scoreboard must follow the original scoreboard.html gameplay-HUD template and its open minimap/top-center spaces, not the compact desk introduced in PR18. The canonical scoreboard.html now has three CSS frame/banner designs, the original binding IDs, and a center sponsor slot. scoreboard-display.html is a redirect alias. Do not reintroduce a filled compact bar over the gameplay HUD.
+
+Latest scoreboard direction: put the sponsor in the right panel above the single `GRAND FINALS | GAME 3` line. Support scoreboardocr-style stage/group metadata when supplied, but do not include lord/gold/tower/kill-score/timer UI or invoke OCR. Apply this arrangement to all three themes.
