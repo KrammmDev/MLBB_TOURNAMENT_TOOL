@@ -11,7 +11,6 @@
       : outputSelect.value.startsWith("draft")
         ? "draft"
         : "roster";
-  const paletteOutput = () => (output() === "scoreboard" ? "draft" : output());
   const format = () => (outputSelect.value === "draft-six" ? "six" : "normal");
   function outputURL() {
     return output() === "scoreboard"
@@ -58,7 +57,7 @@
     selected = id;
     document.dispatchEvent(
       new CustomEvent("broadcast-preview-selection", {
-        detail: { id, output: paletteOutput() },
+        detail: { id, output: output() },
       }),
     );
     editRevision = snapshot?.revision;
@@ -164,7 +163,7 @@
       previewReady = true;
       document.dispatchEvent(
         new CustomEvent("broadcast-preview-ready", {
-          detail: { id: selected, output: paletteOutput() },
+          detail: { id: selected, output: output() },
         }),
       );
       status("Preview ready. Your saved selection has not changed.");

@@ -39,7 +39,9 @@
     return context
       ? window.RosterThemes.themes.find((t) => t.id === context.id).label +
           " · " +
-          (context.output === "draft" ? "Draft" : "Roster")
+          { draft: "Draft", roster: "Roster", scoreboard: "Scoreboard" }[
+            context.output
+          ]
       : "Select a preview";
   }
   function controls() {
@@ -143,7 +145,7 @@
     }));
     if (
       !response.ok ||
-      result.data?.schemaVersion !== 1 ||
+      result.data?.schemaVersion !== 2 ||
       typeof result.revision !== "string"
     )
       throw Error(result.message || "Color settings unavailable");

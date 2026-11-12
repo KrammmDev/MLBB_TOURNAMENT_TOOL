@@ -77,7 +77,7 @@ Current product constraint: no authored decorative game/league branding, slogans
 `/api/broadcast-colors` owns independent runtime palettes for the three roster/draft theme scopes. GET returns a revision; PUT requires If-Match and validates six allowlisted HEX colors. Atomic persistence precedes `broadcast_colors_update`; no competition or theme-selection state is written. See broadcast-colors.md.
 
 ## Themed scoreboard output
-The theme catalog now declares `scoreboard` coverage and per-theme scoreboardStyles. `/scoreboard-display.html` uses the existing match API/socket, shared staged CSS client and saved broadcast selection. It inherits draft palette settings rather than adding another writable palette scope. Legacy scoreboard/OCR pages remain unchanged. See scoreboard-display.md for fields, bounds and recovery.
+The theme catalog now declares `scoreboard` coverage and per-theme scoreboardStyles. `/scoreboard-display.html` uses the existing match API/socket, shared staged CSS client and saved broadcast selection. It uses an independent scoreboard palette scope. Legacy scoreboard/OCR pages remain unchanged. See scoreboard-display.md for fields, bounds and recovery.
 
 Scoreboard correction: `/scoreboard.html` is now the canonical themed gameplay-HUD frame using the original upper/lower geometry and binding IDs. scoreboard-display.html redirects with its query intact. It consumes the shared sponsor playlist. The OCR scoreboard remains unchanged. This supersedes the compact scoreboard composition and the earlier note that scoreboard.html stays fixed.
 
@@ -85,7 +85,9 @@ Scoreboard sponsor placement: the shared playlist now renders at the top of the 
 
 Right-panel format correction: use two adjacent columns, colored metadata left and white sponsor right, height 116px. Stage/group and match/game bindings remain unchanged. This supersedes the previous vertical stack.
 
-Scoreboard palette adapter: settings still use the existing draft scope, while CSS generation uses a distinct scoreboard render target and data-scoreboard-theme selector. The HTTP settings schema is unchanged. Only scoreboard semantic variables are emitted; draft geometry rules are excluded.
+Scoreboard palette adapter: settings use their own scoreboard scope, while CSS generation uses the scoreboard render target and data-scoreboard-theme selector. Color data schema 2 separates the scopes. Only scoreboard semantic variables are emitted; draft geometry rules are excluded.
 
 ## Scoreboard production branding
 `/api/scoreboard-branding` owns global patchLabel/casterNames and one tournament logo, independent of match, palette and sponsor data. Text saves and logo upload/removal require If-Match; atomic persistence precedes scoreboard_branding_update. The logo uses generated immutable assets in runtime/scoreboard-logos; state is runtime/scoreboard-branding.json. See scoreboard-branding.md.
+
+Color schema 2: /api/broadcast-colors accepts roster, draft or scoreboard output scopes. On loading a version-1 file, preserve a .v1.bak backup and copy missing scoreboard palettes from the previous draft overrides once before atomically persisting version 2. Subsequent scoreboard resets and restarts do not fall back to draft values.

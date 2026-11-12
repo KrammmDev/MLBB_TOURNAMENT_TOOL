@@ -124,3 +124,58 @@ test("corrupt saved colors are preserved instead of being overwritten", async (t
   );
   assert.equal(await fs.readFile(file, "utf8"), "broken");
 });
+
+test("legacy palettes migrate once; draft and scoreboard saves/resets remain independent", async (t) => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "color-split-")),
+    file = path.join(dir, "colors.json");
+  t.after(() => fs.rm(dir, { recursive: true, force: true }));
+  const legacy = {
+    schemaVersion: 1,
+    palettes: {
+      classic: {
+        draft: { background: "#332e2e", left: "#5ed100" },
+        roster: { text: "#ffffff" },
+      },
+      studio: { draft: { right: "#ee1122" }, scoreboard: { right: "#123456" } },
+    },
+  };
+  await fs.writeFile(file, JSON.stringify(legacy));
+  let store = await loadColorStore({ file });
+  assert.equal(store.snapshot().data.schemaVersion, 2);
+  assert.deepEqual(
+    JSON.parse(await fs.readFile(file + ".v1.bak", "utf8")),
+    legacy,
+  );
+  assert.deepEqual(
+    store.snapshot().data.palettes.classic.scoreboard,
+    legacy.palettes.classic.draft,
+  );
+  assert.deepEqual(
+    store.snapshot().data.palettes.classic.roster,
+    legacy.palettes.classic.roster,
+  );
+  assert.equal(
+    store.snapshot().data.palettes.studio.scoreboard.right,
+    "#123456",
+    "existing scoreboard scope is preserved",
+  );
+  await store.save(
+    "classic",
+    "draft",
+    { left: "#112233" },
+    store.snapshot().revision,
+  );
+  assert.equal(
+    store.snapshot().data.palettes.classic.scoreboard.left,
+    "#5ed100",
+  );
+  await store.save("classic", "scoreboard", {}, store.snapshot().revision);
+  assert.equal(store.snapshot().data.palettes.classic.draft.left, "#112233");
+  store = await loadColorStore({ file });
+  assert.deepEqual(
+    store.snapshot().data.palettes.classic.scoreboard,
+    {},
+    "restart does not recopy draft after scoreboard reset",
+  );
+  assert.equal(store.snapshot().data.palettes.classic.draft.left, "#112233");
+});

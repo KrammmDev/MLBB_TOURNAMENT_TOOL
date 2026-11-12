@@ -6,7 +6,7 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
   const themes = ["classic", "arena", "studio"],
-    outputs = ["roster", "draft"];
+    outputs = ["roster", "draft", "scoreboard"];
   const fields = {
     background: "Panel background",
     left: "Left team accent",
@@ -69,6 +69,9 @@
       },
     },
   };
+  defaults.scoreboard = Object.fromEntries(
+    themes.map((id) => [id, { ...defaults.draft[id] }]),
+  );
   function validColors(colors) {
     return (
       colors !== null &&
@@ -117,13 +120,10 @@
     return bg > 0.179 ? "#18212b" : "#f2f7fc";
   }
   function style(id, output, colors, classicImage = "") {
-    if (
-      !validScope(id, output === "scoreboard" ? "draft" : output) ||
-      !validColors(colors)
-    )
+    if (!validScope(id, output) || !validColors(colors))
       throw Error("Invalid broadcast colors");
     const palette = {
-      ...defaults[output === "scoreboard" ? "draft" : output][id],
+      ...defaults[output][id],
       ...colors,
     };
     const scope = `body[data-${output}-theme="${id}"]`,
@@ -142,7 +142,7 @@
     const vars = (names, value) =>
       names.split(",").forEach((name) => variables.push(name + ":" + value));
     if (output === "scoreboard") {
-      // Share saved draft values, never draft geometry selectors (.upper/.lower).
+      // Scoreboard owns a separate palette and never receives draft geometry rules.
       const mappings = {
         background: "--header-bg,--center-bg",
         left: "--blue-accent",
