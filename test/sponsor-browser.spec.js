@@ -397,6 +397,11 @@ test(
           "no gold trapezoid",
         );
     }
+    assert.equal(
+      await studio.locator(".sponsor-pan-track img").count(),
+      1,
+      "one sponsor holds without duplicate images",
+    );
     const first = sponsors.snapshot().data.logos[0].id;
     await logo("Second.png", "#ffe294");
     await admin.locator("#sponsor-interval").fill("2");
@@ -412,6 +417,51 @@ test(
       first,
       { timeout: 7000 },
     );
+    await studio.bringToFront();
+    await studio.waitForFunction(
+      () => document.querySelectorAll(".sponsor-pan-track img").length === 2,
+    );
+    const pan = await studio.locator(".sponsor-pan-track").evaluate((track) => {
+      const images = [...track.children];
+      for (const image of images)
+        for (const animation of image.getAnimations())
+          animation.currentTime = 400;
+      return {
+        clipped: getComputedStyle(track).overflow,
+        offsets: images.map(
+          (image) => new DOMMatrix(getComputedStyle(image).transform).m41,
+        ),
+        decoded: images.every(
+          (image) => image.complete && image.naturalWidth > 0,
+        ),
+      };
+    });
+    assert.equal(pan.clipped, "hidden", "pan stays inside the sponsor slot");
+    assert.equal(pan.decoded, true, "both logos are decoded before panning");
+    assert.ok(
+      pan.offsets[0] < 0 && pan.offsets[1] > 0,
+      "outgoing logo pans left as the next logo enters from the right",
+    );
+    await studio.waitForFunction(
+      () => document.querySelectorAll(".sponsor-pan-track img").length === 1,
+    );
+    await studio.emulateMedia({ reducedMotion: "reduce" });
+    const heldSource = await studio
+      .locator(".sponsor-pan-track img")
+      .getAttribute("src");
+    await studio.waitForFunction(
+      (source) =>
+        document
+          .querySelector(".sponsor-pan-track img")
+          ?.getAttribute("src") !== source,
+      heldSource,
+    );
+    assert.equal(
+      await studio.locator(".sponsor-pan-track img").count(),
+      1,
+      "reduced motion switches logos without a pan",
+    );
+    await studio.emulateMedia({ reducedMotion: "no-preference" });
     for (const { page, theme } of draftViews) {
       await page.waitForFunction(
         (id) =>
