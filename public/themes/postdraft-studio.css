@@ -48,7 +48,7 @@ body {
 .pd-card {
   height: 650px;
   --pd-label-height: 46px;
-  --pd-photo-height: 520px;
+  --pd-photo-height: 330px;
   border: 2px solid var(--pd-edge);
 }
 .pd-label {
@@ -80,4 +80,52 @@ body {
 .pd-red .pd-lane {
   left: 8px;
   right: auto;
+}
+/* White canvas, corner ribbons and uninterrupted foreground portraits. */
+body {
+  --pd-scene: var(--pd-panel, #f1f4f8);
+}
+#postdraft-stage::before {
+  background:
+    linear-gradient(
+      118deg,
+      var(--pd-left) 0 4%,
+      transparent 4% 96%,
+      var(--pd-right) 96%
+    ),
+    repeating-linear-gradient(
+      118deg,
+      transparent 0 130px,
+      var(--pd-edge) 130px 131px,
+      transparent 131px 260px
+    );
+  opacity: 0.2;
+}
+#postdraft-stage::after {
+  inset: 25px;
+  border-top: 1px solid var(--pd-edge);
+  border-bottom: 1px solid var(--pd-edge);
+}
+.pd-team {
+  border: 0 !important;
+}
+.pd-team-name {
+  font-size: 46px;
+}
+.pd-match {
+  border: 0;
+}
+.pd-card {
+  border: 0;
+}
+.pd-art {
+  clip-path: polygon(0 0, 100% 3%, 100% 100%, 0 97%);
+}
+.pd-red .pd-art {
+  clip-path: polygon(0 3%, 100% 0, 100% 97%, 0 100%);
+}
+.pd-label {
+  left: -4px;
+  right: -4px;
+  clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
 }

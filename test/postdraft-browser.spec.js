@@ -263,6 +263,19 @@ test(
           photoBox.x < heroBox.x + heroBox.width,
         "player cutout overlays the lower hero area",
       );
+      assert.ok(
+        photoBox.y >= heroBox.y + heroBox.height * 0.4,
+        "player leaves the upper hero artwork unobstructed",
+      );
+      assert.equal(
+        await live
+          .locator("#postdraft-stage")
+          .evaluate((stage) =>
+            getComputedStyle(stage).backgroundColor.endsWith(", 0)"),
+          ),
+        false,
+        "full-page scene has an opaque background",
+      );
       assert.equal(
         await live
           .locator("#pd-blue-bank .pd-card")

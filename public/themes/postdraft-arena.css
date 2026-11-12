@@ -47,7 +47,7 @@ body {
 .pd-card {
   height: 670px;
   --pd-label-height: 4px;
-  --pd-photo-height: 550px;
+  --pd-photo-height: 350px;
 }
 .pd-blue .pd-card {
   border-bottom: 5px solid var(--pd-left);
@@ -87,4 +87,65 @@ body {
 .pd-red .pd-lane {
   left: 10px;
   right: auto;
+}
+/* Navy arena scene with broad side sweeps rather than individual boxes. */
+body {
+  --pd-scene: var(--pd-panel, #091827);
+}
+#postdraft-stage::before {
+  background: linear-gradient(
+    120deg,
+    var(--pd-left) 0 3%,
+    transparent 3% 6%,
+    var(--pd-left) 6% 6.3%,
+    transparent 6.3% 93.7%,
+    var(--pd-right) 93.7% 94%,
+    transparent 94% 97%,
+    var(--pd-right) 97%
+  );
+  opacity: 0.2;
+}
+#postdraft-stage::after {
+  inset: 20px 24px;
+  border-bottom: 3px solid var(--pd-edge);
+  border-radius: 0 0 160px 160px;
+}
+.pd-team {
+  border: 0 !important;
+}
+.pd-team-name {
+  font-size: 52px;
+  letter-spacing: 2px;
+}
+.pd-match {
+  border: 0;
+}
+.pd-blue .pd-card,
+.pd-red .pd-card {
+  border: 0;
+}
+.pd-art {
+  clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+  mask-image: linear-gradient(#000 0 72%, transparent 100%);
+}
+.pd-red .pd-art {
+  clip-path: polygon(0 0, 95% 0, 100% 100%, 5% 100%);
+}
+.pd-label {
+  right: -2px;
+  bottom: 56px;
+}
+.pd-blue.pd-bank::after,
+.pd-red.pd-bank::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -10px;
+  height: 4px;
+  background: var(--pd-left);
+  transform: skewX(-30deg);
+}
+.pd-red.pd-bank::after {
+  background: var(--pd-right);
 }

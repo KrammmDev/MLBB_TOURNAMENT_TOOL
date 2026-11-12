@@ -231,3 +231,47 @@ body {
 .pd-match #display-match-text {
   color: var(--pd-muted);
 }
+/* Full broadcast scene: the artwork belongs to the entire canvas. */
+body {
+  background: #101820;
+}
+#postdraft-stage {
+  background: var(--pd-scene, var(--pd-panel));
+  isolation: isolate;
+}
+#postdraft-stage::before,
+#postdraft-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.pd-header {
+  z-index: 2;
+}
+.pd-main {
+  z-index: 1;
+}
+.pd-card {
+  background: transparent;
+  overflow: visible;
+}
+.pd-art {
+  clip-path: polygon(7% 0, 100% 0, 93% 100%, 0 100%);
+}
+.pd-red .pd-art {
+  clip-path: polygon(0 0, 93% 0, 100% 100%, 7% 100%);
+}
+.pd-card.has-hero .pd-player {
+  left: 0;
+  right: auto;
+  width: 100%;
+}
+.pd-lane {
+  border-radius: 50%;
+}
+.pd-team,
+.pd-match {
+  background: transparent;
+}
