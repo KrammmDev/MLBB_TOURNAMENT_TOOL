@@ -301,6 +301,11 @@ test(
         beforeDrift,
         "decorative backdrop moves while the lineup stays fixed",
       );
+      const driftX = (matrix) => Number(matrix.slice(7, -1).split(",")[4]);
+      assert.ok(
+        Math.abs(driftX(await backdropTransform()) - driftX(beforeDrift)) >= 1,
+        "backdrop travels visibly rather than only a fractional pixel",
+      );
       await live.emulateMedia({ reducedMotion: "reduce" });
       assert.equal(
         await live
