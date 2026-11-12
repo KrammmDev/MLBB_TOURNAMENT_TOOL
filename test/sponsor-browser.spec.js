@@ -352,8 +352,11 @@ test(
           };
         });
         assert.ok(
-          angles.left < -0.1 && angles.right > 0.1,
-          "Arena cards lean outward, opposite the old reference",
+          angles.left > 0.05 &&
+            angles.left < 0.09 &&
+            angles.right < -0.05 &&
+            angles.right > -0.09,
+          "Arena uses subtle mirrored slants matching the latest reference",
         );
         assert.ok(
           Math.abs(angles.leftArt) < 0.001 &&
