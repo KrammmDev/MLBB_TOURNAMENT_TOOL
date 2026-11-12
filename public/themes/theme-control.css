@@ -456,3 +456,26 @@ iframe {
     grid-template-columns: 1fr;
   }
 }
+.scoreboard-details-form {
+  display: grid;
+  gap: 10px;
+  margin: 20px 0;
+}
+.scoreboard-details-form input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  color: var(--text, #eef3f8);
+  background: #0c141f;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  font: inherit;
+}
+#tournament-logo-preview {
+  width: 120px;
+  height: 96px;
+  object-fit: contain;
+  background: #ffffff;
+  padding: 8px;
+  border-radius: 4px;
+}

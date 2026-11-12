@@ -25,3 +25,6 @@ The right panel places optional matchInfo.stage/group fields (season/week fallba
 
 ## Palette isolation
 The scoreboard inherits saved draft palette values, but BroadcastColorClient renders them through a scoreboard-only CSS adapter scoped to data-scoreboard-theme. It never receives draft geometry selectors such as .upper, .lower or .uppermid. This prevents custom Classic colors from painting full-width bands over logos and the game HUD. Regression coverage includes the reported brown panel/green left-accent palette and checks transparent wrappers plus logo hit visibility.
+
+## Production details and center logo
+Broadcast Themes now manages a patch/caster strip below the right tiles and a separate uploaded tournament logo at the scoreboard center, extending 25px below the frame. See [scoreboard-branding.md](scoreboard-branding.md) for control behavior, geometry, API and backup requirements.

@@ -19,6 +19,7 @@ const { loadRosterThemeStore, installRosterThemeRoutes } = require("./lib/roster
 const { validateMatch } = require("./public/script/match-state");
 const { loadSponsorStore, installSponsorRoutes } = require("./lib/broadcast-sponsors");
 const { loadColorStore, installColorRoutes } = require("./lib/broadcast-colors");
+const { loadBrandingStore, installBrandingRoutes } = require("./lib/scoreboard-branding");
 const { mirrorDraftTimer } = require("./lib/draft-timer");
 
 const app = express();
@@ -391,6 +392,7 @@ let matchStore;
 let rosterThemeStore;
 let sponsorStore;
 let colorStore;
+let brandingStore;
 const sponsorDirectory = path.join(__dirname, "runtime", "sponsor-logos");
 
 async function initFlagDB() {
@@ -637,6 +639,7 @@ installMatchRoutes(app, () => matchStore);
 installRosterThemeRoutes(app, () => rosterThemeStore);
 installSponsorRoutes(app, () => sponsorStore, sponsorDirectory);
 installColorRoutes(app, () => colorStore);
+installBrandingRoutes(app, () => brandingStore, path.join(__dirname, "runtime", "scoreboard-logos"));
 
 // --- MATCH DRAFT API ---
 app.get("/api/matchdraft", (req, res) => {
@@ -1351,6 +1354,10 @@ async function start() {
   colorStore = await loadColorStore({
     file: path.join(__dirname, "runtime", "broadcast-colors.json"),
     onCommit: snapshot => broadcast({ type: "broadcast_colors_update", ...snapshot }),
+  });
+  brandingStore = await loadBrandingStore({
+    file: path.join(__dirname, "runtime", "scoreboard-branding.json"),
+    onCommit: snapshot => broadcast({ type: "scoreboard_branding_update", ...snapshot }),
   });
   server.listen(port, "0.0.0.0", async () => {
     const boundPort = server.address().port;

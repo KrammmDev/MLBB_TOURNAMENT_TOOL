@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "node --test test/match-store.test.js test/match-api.test.js test/startup.test.js test/roster-theme.test.js test/draft-model.test.js test/sponsors.test.js test/broadcast-colors.test.js",
+    "test": "node --test test/match-store.test.js test/match-api.test.js test/startup.test.js test/roster-theme.test.js test/draft-model.test.js test/sponsors.test.js test/broadcast-colors.test.js test/scoreboard-branding.test.js",
     "start": "node server.js",
     "test:browser": "node --test test/browser.spec.js test/control-browser.spec.js test/roster-browser.spec.js test/draft-browser.spec.js test/sponsor-browser.spec.js test/broadcast-colors-browser.spec.js test/scoreboard-browser.spec.js"
   },
