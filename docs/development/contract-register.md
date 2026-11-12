@@ -86,3 +86,6 @@ Scoreboard sponsor placement: the shared playlist now renders at the top of the 
 Right-panel format correction: use two adjacent columns, colored metadata left and white sponsor right, height 116px. Stage/group and match/game bindings remain unchanged. This supersedes the previous vertical stack.
 
 Scoreboard palette adapter: settings still use the existing draft scope, while CSS generation uses a distinct scoreboard render target and data-scoreboard-theme selector. The HTTP settings schema is unchanged. Only scoreboard semantic variables are emitted; draft geometry rules are excluded.
+
+## Scoreboard production branding
+`/api/scoreboard-branding` owns global patchLabel/casterNames and one tournament logo, independent of match, palette and sponsor data. Text saves and logo upload/removal require If-Match; atomic persistence precedes scoreboard_branding_update. The logo uses generated immutable assets in runtime/scoreboard-logos; state is runtime/scoreboard-branding.json. See scoreboard-branding.md.

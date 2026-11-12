@@ -8,6 +8,10 @@ const test = require("node:test"),
 const express = require("express"),
   { WebSocketServer } = require("ws"),
   { chromium } = require("playwright");
+const {
+  loadBrandingStore,
+  installBrandingRoutes,
+} = require("../lib/scoreboard-branding");
 const { fixture } = require("./fixtures"),
   { createMatchStore } = require("../lib/match-store"),
   { installMatchRoutes } = require("../lib/match-routes"),
@@ -67,6 +71,16 @@ test(
     installMatchRoutes(app, () => match);
     installRosterThemeRoutes(app, () => themes);
     installColorRoutes(app, () => colors);
+    const branding = await loadBrandingStore({
+      file: path.join(directory, "branding.json"),
+      onCommit: (snapshot) =>
+        broadcast({ type: "scoreboard_branding_update", ...snapshot }),
+    });
+    installBrandingRoutes(
+      app,
+      () => branding,
+      path.join(directory, "tournament-logos"),
+    );
     app.get("/api/broadcast-sponsors", (req, res) =>
       res.json({
         data: {
@@ -106,7 +120,8 @@ test(
       if (url.pathname.includes("/Assets/Font/")) return route.continue();
       if (
         url.pathname.includes("/Assets/") ||
-        url.pathname.startsWith("/broadcast-sponsors/")
+        url.pathname.startsWith("/broadcast-sponsors/") ||
+        url.pathname.startsWith("/scoreboard-branding/")
       )
         return route.fulfill({
           contentType: "image/svg+xml",
@@ -253,6 +268,57 @@ test(
 
     const admin = await page("/broadcast-themes.html");
     await admin.locator("#preview-output").selectOption("scoreboard");
+    await admin.waitForFunction(
+      () => !document.getElementById("scoreboard-details-save").disabled,
+    );
+    await admin.locator("#scoreboard-patch").fill("STARWARD DECADE 1014");
+    await admin.locator("#scoreboard-casters").fill("MARSU | MIKAEL");
+    await admin.locator("#scoreboard-details-save").click();
+    await live.waitForFunction(
+      () =>
+        document.getElementById("sb-caster-names").textContent ===
+        "MARSU | MIKAEL",
+    );
+    await admin.locator("#tournament-logo-file").setInputFiles({
+      name: "tournament.png",
+      mimeType: "image/png",
+      buffer: Buffer.from(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jE1sAAAAASUVORK5CYII=",
+        "base64",
+      ),
+    });
+    await admin.locator("#tournament-logo-upload").click();
+    await live.waitForFunction(
+      () => !document.getElementById("sb-tournament-logo").hidden,
+    );
+    assert.equal(
+      await live.locator("#sb-patch-label").textContent(),
+      "STARWARD DECADE 1014",
+    );
+    const tournamentBox = await live
+      .locator("#sb-tournament-logo")
+      .boundingBox();
+    assert.ok(
+      tournamentBox.x >= 878 &&
+        tournamentBox.x + tournamentBox.width <= 1045 &&
+        tournamentBox.y + tournamentBox.height > 116 &&
+        tournamentBox.y + tournamentBox.height <= 146,
+    );
+    for (const id of ["classic", "arena", "studio"]) {
+      await themes.select(id, themes.snapshot().revision);
+      broadcast({ type: "roster_theme_update", ...themes.snapshot() });
+      await ready(live, id);
+      assert.equal(await live.locator("#sb-tournament-logo").isVisible(), true);
+      if (process.env.MLBB_CAPTURE_DIR)
+        await live.screenshot({
+          omitBackground: true,
+          path: path.join(
+            process.env.MLBB_CAPTURE_DIR,
+            `scoreboard-branding-${id}.png`,
+          ),
+        });
+    }
+
     await admin.waitForFunction(() =>
       document
         .getElementById("theme-status")
@@ -322,7 +388,11 @@ test(
       "matrix(0.5, 0, 0, 0.5, 0, 0)",
     );
     assert.equal(JSON.stringify(match.snapshot()), before);
-    assert.deepEqual(writes, ["/api/broadcast-colors"]);
+    assert.deepEqual(writes, [
+      "/api/scoreboard-branding",
+      "/api/scoreboard-branding/logo",
+      "/api/broadcast-colors",
+    ]);
     assert.deepEqual(errors, []);
   },
 );

@@ -126,6 +126,7 @@
       {
         onMessage(message) {
           root.BroadcastColorClient.accept(message);
+          root.ScoreboardBrandingClient.accept(message);
           root.SponsorSlideshow.accept(message);
           if (message.type === "roster_theme_update" && !pinned) {
             themeVersion++;

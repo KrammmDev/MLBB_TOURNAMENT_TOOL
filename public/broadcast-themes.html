@@ -85,6 +85,77 @@
           Loading color settings…
         </p>
       </section>
+      <section
+        class="sponsor-settings"
+        aria-labelledby="scoreboard-details-title"
+      >
+        <h2 id="scoreboard-details-title">Scoreboard details</h2>
+        <p>
+          Saved details appear on all three scoreboard themes. Patch and caster
+          names sit below the right panels; the tournament logo sits at center
+          and extends slightly below the frame.
+        </p>
+        <form id="scoreboard-details-form" class="scoreboard-details-form">
+          <label for="scoreboard-patch">Patch / broadcast label</label>
+          <input
+            id="scoreboard-patch"
+            type="text"
+            maxlength="64"
+            autocomplete="off"
+          />
+          <label for="scoreboard-casters">Caster names</label>
+          <input
+            id="scoreboard-casters"
+            type="text"
+            maxlength="100"
+            autocomplete="off"
+          />
+          <div class="sponsor-actions">
+            <button id="scoreboard-details-save" type="submit" disabled>
+              Save details</button
+            ><button
+              id="scoreboard-details-reload"
+              type="button"
+              class="secondary"
+            >
+              Reload details
+            </button>
+          </div>
+        </form>
+        <form id="tournament-logo-form" class="scoreboard-details-form">
+          <label for="tournament-logo-file">Tournament logo</label>
+          <input
+            id="tournament-logo-file"
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            required
+          />
+          <small
+            >PNG, JPEG, WebP or GIF · up to 3 MB. Uploading publishes the logo
+            to all scoreboard themes.</small
+          >
+          <img
+            id="tournament-logo-preview"
+            alt="Saved tournament logo"
+            hidden
+          />
+          <div class="sponsor-actions">
+            <button id="tournament-logo-upload" type="submit" disabled>
+              Upload tournament logo</button
+            ><button
+              id="tournament-logo-remove"
+              type="button"
+              class="secondary"
+              disabled
+            >
+              Remove logo
+            </button>
+          </div>
+        </form>
+        <p id="scoreboard-details-status" role="status" aria-live="polite">
+          Loading scoreboard details…
+        </p>
+      </section>
       <section class="sponsor-settings" aria-labelledby="sponsor-title">
         <h2 id="sponsor-title">Sponsor slideshow</h2>
         <p>
@@ -160,6 +231,7 @@
     <script src="/script/broadcast-color-model.js"></script>
     <script src="/script/roster-theme-control.js"></script>
     <script src="/script/broadcast-color-control.js"></script>
+    <script src="/script/scoreboard-branding-control.js"></script>
     <script src="/script/sponsor-control.js"></script>
   </body>
 </html>
