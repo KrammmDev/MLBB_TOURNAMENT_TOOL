@@ -131,6 +131,55 @@ test(
         draftViews.push({ page, theme, format });
       }
     }
+    const gaps = new Map();
+    for (const { page, theme, format } of draftViews) {
+      if (format !== "normal") continue;
+      const layout = await page.evaluate(() => {
+        const sides = [...document.querySelectorAll(".lowerside")].map((el) =>
+          el.getBoundingClientRect(),
+        );
+        const hero = document
+          .querySelector(".heropick")
+          .getBoundingClientRect();
+        const timer = document.getElementById("timer").getBoundingClientRect();
+        const logo = document
+          .getElementById("displayImage1")
+          .getBoundingClientRect();
+        const scale =
+          document.querySelector(".mainbox").getBoundingClientRect().width /
+          1920;
+        return {
+          gap: Math.round((sides[1].left - sides[0].right) / scale),
+          heroTop: hero.top,
+          timerBottom: timer.bottom,
+          logoBottom: logo.bottom,
+        };
+      });
+      gaps.set(theme, layout.gap);
+      if (theme === "arena")
+        assert.ok(
+          layout.timerBottom <= layout.heroTop + 1,
+          "Arena clock is above the full-width lineup",
+        );
+      if (theme === "studio")
+        assert.ok(
+          layout.logoBottom <= layout.heroTop + 1,
+          "Studio puts team branding in its headers",
+        );
+    }
+    assert.equal(
+      new Set(gaps.values()).size,
+      3,
+      "themes must have three genuinely different compositions",
+    );
+    assert.ok(
+      gaps.get("arena") <= 2,
+      "Arena's two banks meet without a center column",
+    );
+    assert.ok(
+      gaps.get("studio") > 0 && gaps.get("studio") < gaps.get("classic"),
+      "Studio uses a slimmer center than Classic",
+    );
     await admin.waitForFunction(
       () => !document.getElementById("sponsor-add").disabled,
     );
@@ -171,8 +220,9 @@ test(
       .boundingBox();
     const logoBox = await studio.locator("#displayImage1").boundingBox();
     assert.ok(
-      logoBox.y > sponsorBox.y + sponsorBox.height,
-      "team logo stays below sponsor slot",
+      logoBox.x + logoBox.width <= sponsorBox.x ||
+        logoBox.x >= sponsorBox.x + sponsorBox.width,
+      "Studio team branding stays outside its sponsor slot",
     );
     async function logo(name, color) {
       const content = await admin.evaluate((color) => {
@@ -323,14 +373,21 @@ test(
         omitBackground: true,
       });
       for (const { page, theme, format } of draftViews) {
-        if (format === "normal")
-          await page.screenshot({
+        if (format === "normal") {
+          // Compare compositions without transient stat cards obscuring portraits.
+          const captureStyle = await page.addStyleTag({
+            content: ".stat-card { visibility: hidden !important; }",
+          });
+          await page.locator(".mainbox").screenshot({
             path: path.join(
               process.env.MLBB_CAPTURE_DIR,
               theme + "-sponsors.png",
             ),
             omitBackground: true,
+            animations: "disabled",
           });
+          await captureStyle.evaluate((el) => el.remove());
+        }
       }
       await admin.screenshot({
         path: path.join(process.env.MLBB_CAPTURE_DIR, "sponsor-controls.png"),

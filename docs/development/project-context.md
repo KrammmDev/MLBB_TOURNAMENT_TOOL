@@ -34,3 +34,5 @@ User constraint for all subsequent graphics: **no authored decorative text such 
 Studio draft now uses the reference's center sponsor/match/phase/clock/team composition without BPM or an authored league logo. Broadcast Themes owns a separately persisted sponsor playlist with upload, ordering/removal, interval and enabled controls. The playlist is displayed only by the new Studio draft (normal/six), with no match or draft mutation. See `broadcast-sponsors.md`.
 
 Draft polish: the shared sponsor playlist is now visible in Classic, Arena and Studio. Studio's gold trapezoid is removed in favor of a flat white/slate center. Arena uses a compact navy composition with separate horizontal player-name ribbons and portraits aligned to the top of their cards. Legacy display URLs and roster sponsorship are unchanged.
+
+The user requires visibly different esports compositions, not recolors. Current draft layouts: Classic original center console; Studio slim white clock column with branding in team headers; Arena continuous ten-card lineup with top scoreboard rail. All consume the same draft/match bindings and sponsor playlist.

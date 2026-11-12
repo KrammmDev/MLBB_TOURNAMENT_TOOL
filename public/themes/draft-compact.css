@@ -1,4 +1,4 @@
-/* Shared complete draft composition for Studio and Arena. */
+/* Shared draft primitives; each theme supplies its own composition. */
 #draft-stage > .mainbox {
   --side-width: 760px;
   --center-width: 400px;
