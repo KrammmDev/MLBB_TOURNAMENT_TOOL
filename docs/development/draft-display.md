@@ -47,3 +47,7 @@ A stylesheet failure retains the last loaded look; cross-source activation remai
 New draft outputs now import the `.mainbox` and `.phasebox` from the existing `display2.html` without executing its scripts. Classic loads the original `display2.css`; its slot, coach, logo, score and center geometry is compared with the original page in the browser scenario. Studio uses the white/gold composition; Arena uses the blue/cyan composition with vertical player names. Both restyle the same complete markup. The six-ban output removes only ban slots 4/5 per side; it retains coach, lane, player-image, hero-stat and match bindings. The original output files stay intact.
 
 Hero statistics initialization handles both static and asynchronously mounted templates. Optional Google Fonts import failures retain the already loaded outer stylesheet and its fallback fonts. Synthetic screenshots establish layout and binding behavior; exact final typography and OBS rendering still require checking with the user's real assets and fonts.
+
+## Sponsor and layout polish
+
+The shared sponsor host is a direct child of `.mainbox`, with visible placement in Classic's existing upper-center banner and the top-center slot in both compact themes. No playlist migration is needed. Studio's gold polygon is removed. Arena replaces overlaid vertical player names with separate horizontal name ribbons, reduces the center-panel dominance and explicitly anchors hero images to avoid blank top bands. See `broadcast-sponsors.md` for current scope.

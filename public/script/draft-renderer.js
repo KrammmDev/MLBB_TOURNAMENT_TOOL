@@ -93,10 +93,38 @@
       el.style.overflow = "hidden";
       const holder = el.closest(".teamnameholder1,.teamnameholder2,.coachbox");
       if (!holder?.clientWidth) return;
+      const style = getComputedStyle(holder);
+      const available =
+        holder.clientWidth -
+        parseFloat(style.paddingLeft) -
+        parseFloat(style.paddingRight);
       const size = parseFloat(getComputedStyle(el).fontSize) || 24;
-      if (el.scrollWidth > holder.clientWidth)
-        el.style.fontSize =
-          Math.max(10, (size * holder.clientWidth) / el.scrollWidth) + "px";
+      // scrollWidth misses text overflowing to the left of right-aligned coach names.
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const stage = node("draft-stage");
+      const scale = stage ? stage.getBoundingClientRect().width / 1920 : 1;
+      let icons = 0;
+      for (const pseudo of ["::before", "::after"]) {
+        const icon = getComputedStyle(el, pseudo);
+        if (
+          icon.content !== "none" &&
+          icon.content !== "normal" &&
+          icon.display !== "none"
+        )
+          icons +=
+            (parseFloat(icon.width) || 0) +
+            (parseFloat(icon.marginLeft) || 0) +
+            (parseFloat(icon.marginRight) || 0);
+      }
+      let fitted = size;
+      // Recheck after shrinking: fixed letter spacing does not scale with font size.
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const width = range.getBoundingClientRect().width / scale;
+        if (width <= 0 || width + icons <= available - 1) break;
+        fitted = Math.max(10, (fitted * (available - icons - 1)) / width);
+        el.style.fontSize = fitted + "px";
+      }
     }
     function renderMatch(data) {
       match = data;
@@ -346,7 +374,13 @@
     }
     async function selectTheme(id) {
       try {
-        await root.BroadcastThemeClient.apply(id, "draft");
+        const applied = await root.BroadcastThemeClient.apply(id, "draft");
+        if (applied && match) renderMatch(match);
+        if (applied)
+          document.fonts?.ready.then(() => {
+            if (!stopped && match && document.body.dataset.draftTheme === id)
+              renderMatch(match);
+          });
       } catch (error) {
         console.error("Retained previous draft look:", error.message);
       } finally {

@@ -126,7 +126,7 @@
   node("sponsor-preview").onclick = () => {
     const output = node("preview-output");
     if (!output.value.startsWith("draft")) output.value = "draft-normal";
-    document.querySelector('[data-theme-id="studio"]').click();
+    document.querySelector('.theme-card[aria-pressed="true"]')?.click();
   };
   node("sponsor-reload").onclick = () =>
     perform(() => request(), "Sponsor settings loaded.");
