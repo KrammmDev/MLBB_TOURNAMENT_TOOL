@@ -4,6 +4,8 @@ Use `/postdraft2.html` as a full-page 1920×1080 OBS Browser Source. It follows 
 
 Classic uses two offset stacked team rows with large team logos in the open ends. Arena uses a dark ten-card lineup with player cutouts and vertical IGNs. Studio uses a white ten-card lineup with solid team-colored name rails. All three have opaque full-canvas backgrounds, diagonal hero strips, open team headers and angled name ribbons. Player cutouts occupy approximately the lower half of selected hero artwork so the hero face and upper body remain visible. All three place the hero GIF behind the foreground player photo, following the supplied broadcast references. All show the same team logos/names, series-win markers, five picks per side, player names and role icons. Right-side slots retain the original reversed visual order (5 through 1). Match/game labels use supplied matchInfo values and remain blank when absent. Long text uses ellipsis; no league title or default match branding is authored.
 
+Background accents drift slowly on a 24-second alternating cycle across all three themes. Only the decorative layer moves; heroes, player portraits, text and logos stay fixed. The opaque canvas remains covered throughout, and reduced-motion preferences disable the drift.
+
 ## GIF and data repair
 
 The old page loaded `displayhero.js`, which now expects DraftDisplay, without loading that renderer. It also had multiple legacy polling/data-binding scripts. The new page uses one read-only post-draft renderer over MatchDataClient plus the existing draft snapshot/events and staged theme/color clients. It does not change the draft controller, match data or legacy draft outputs.
