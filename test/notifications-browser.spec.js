@@ -297,6 +297,50 @@ test(
           );
         }),
     );
+    const closeProgress = await overlay
+      .locator("#player-notification")
+      .evaluate((banner) => {
+        const animation = banner
+          .getAnimations()
+          .find((animation) => animation.playState === "running");
+        animation.pause();
+        const sample = (fraction) => {
+          animation.currentTime =
+            Number(animation.effect.getTiming().duration) * fraction;
+          return Number(
+            getComputedStyle(banner).clipPath.match(/([\d.]+)%/)[1],
+          );
+        };
+        return {
+          phase: banner.dataset.phase,
+          duration: animation.effect.getTiming().duration,
+          middle: sample(0.5),
+          nearEnd: sample(0.9),
+        };
+      });
+    assert.equal(closeProgress.phase, "closing");
+    assert.ok(
+      closeProgress.duration >= 800,
+      "OUT remains visible long enough to see both doors close",
+    );
+    assert.ok(
+      closeProgress.middle > 15 &&
+        closeProgress.middle < 35 &&
+        closeProgress.nearEnd > 45,
+      "rendered clip narrows symmetrically from both edges during OUT",
+    );
+    await overlay.waitForTimeout(250);
+    assert.equal(
+      await overlay.locator("#player-notification").isHidden(),
+      false,
+      "the notification stays visible until its closing animation actually finishes",
+    );
+    await overlay.locator("#player-notification").evaluate((banner) =>
+      banner
+        .getAnimations()
+        .find((animation) => animation.playState === "paused")
+        .play(),
+    );
     await overlay.waitForFunction(
       () => document.getElementById("player-notification").hidden,
     );
