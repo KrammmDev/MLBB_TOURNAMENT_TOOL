@@ -71,3 +71,5 @@ Latest supplied post-draft references supersede separate photo strips and horizo
 
 
 Individual player notifications extend the existing /api/notification → notification_trigger → notifdisplay.html flow. General video cues and shortcuts remain. Both control variants show two team groups with ten event buttons per player. Server-resolved identity is guarded against lineup/game changes; player events do not write match data. All individual events now use their own lower-third, never the general WebM clips. Show player photo when available, otherwise the selected team logo, with center-out/reverse barn-door entrance/exit effects and bundled Renegade Pursuit / Big Noodle Titling typography. General notifications alone retain WebM playback. See notifications.md and the contract register.
+
+Notification typography refinement: remove the on-air team-name subtitle, enlarge event titles, and show the saved role icon immediately before the player name. Team identity remains in the cue for attribution and logo fallback. Missing/unknown roles omit the icon rather than guessing.

@@ -110,31 +110,57 @@ body {
   object-position: center;
 }
 .notification-copy {
-  padding: 25px 42px 20px 276px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 20px 28px 20px 276px;
 }
 .notification-event {
   font-family: "Notification Display", "Notification Condensed", sans-serif;
-  font-size: 40px;
-  line-height: 1.25;
+  font-size: 56px;
+  line-height: 1.1;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   white-space: nowrap;
 }
 .notification-player {
   font-family: "Notification Player", "Notification Condensed", sans-serif;
-  font-size: 35px;
+  font-size: 38px;
   letter-spacing: 1px;
   text-transform: uppercase;
   line-height: 1.2;
-  margin: 12px 0 2px;
+  margin: 0;
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.notification-team {
-  font-size: 18px;
-  color: #b4c7d7;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.notification-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  min-width: 0;
+}
+.notification-role {
+  display: flex;
+  flex: 0 0 38px;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 5px;
+  box-sizing: border-box;
+  background: #eef6fc;
+  border-radius: 3px;
+}
+.notification-role[hidden] {
+  display: none;
+}
+.notification-role img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
