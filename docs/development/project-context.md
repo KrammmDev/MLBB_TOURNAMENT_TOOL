@@ -74,4 +74,4 @@ Individual player notifications extend the existing /api/notification → notifi
 
 Notification typography refinement: remove the on-air team-name subtitle, enlarge event titles, and show the saved role icon immediately before the player name. Team identity remains in the cue for attribution and logo fallback. Missing/unknown roles omit the icon rather than guessing.
 
-Player notification motion now uses a quick 360ms barn-door opening led by a single team-color hit/streak burst, plate settle, title snap and staggered identity row. Accents finish within 440ms and the hold stays still; the existing 800ms reverse barn-door OUT remains. This increment is visual-only and introduces no sound or WebM for individual events.
+Player notification motion uses a quick 360ms barn-door opening and two horizontal title slices: they converge from opposing directions on IN and separate on OUT. This replaces the prior accent burst/plate kick. Entrance motion settles within 480ms and the hold stays still; the existing 800ms reverse barn-door OUT remains. This is visual-only, with no sound or WebM for individual events.
