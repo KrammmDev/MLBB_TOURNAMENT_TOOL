@@ -7,8 +7,11 @@ const { fixture } = require("./fixtures");
 const model = require("../public/script/notification-model");
 const { installNotificationRoutes } = require("../lib/notifications");
 test("notification API preserves general cues and resolves all player events without match writes", async (t) => {
-  const match = fixture(),
-    original = structuredClone(match),
+  const match = fixture();
+  match.teamdata.blueteam.logo = "Assets/Team/blue.png";
+  match.teamdata.redteam.logo = "Assets/Team/red.png";
+  match.teamdata.blueteam.playerlist[0].image = "player/portrait.png";
+  const original = structuredClone(match),
     cues = [],
     records = [];
   const app = express();
@@ -48,6 +51,9 @@ test("notification API preserves general cues and resolves all player events wit
           teamSide,
           playerIndex,
           expected,
+          videoId: "videoPlayer11",
+          playerImages: ["/Assets/forged.png"],
+          teamLogo: "/Assets/forged-logo.png",
           playerName: "Forged name",
           teamName: "Forged team",
         });
@@ -58,7 +64,23 @@ test("notification API preserves general cues and resolves all player events wit
         assert.equal(cue.teamSide, teamSide);
         assert.equal(cue.playerIndex, playerIndex);
         assert.equal(cue.eventLabel, event.label);
-        assert.equal(cue.videoId, event.videoId || event[teamSide] || null);
+        assert.equal(cue.videoId, null, "individual cues never select a WebM");
+        assert.equal(cue.teamLogo, `/Assets/Team/${teamSide}.png`);
+        assert.ok(
+          cue.playerImages.includes(
+            "/Assets/player/" +
+              encodeURIComponent(expected.playerName) +
+              ".png",
+          ),
+        );
+        if (teamSide === "blue" && playerIndex === 0)
+          assert.ok(cue.playerImages.includes("/Assets/player/portrait.png"));
+        assert.ok(
+          !cue.playerImages.some(
+            (src) =>
+              src.endsWith("noplayer.png") || src.endsWith("transparent.png"),
+          ),
+        );
         assert.deepEqual(cue, cues.at(-1));
       }
   assert.deepEqual(match, original);

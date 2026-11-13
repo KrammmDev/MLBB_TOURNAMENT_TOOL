@@ -24,6 +24,9 @@ test(
         (player, index) =>
           (player.name = `${side === "blueteam" ? "North" : "South"} ${index + 1}`),
       );
+    initial.teamdata.blueteam.logo = "Assets/Team/blue.png";
+    initial.teamdata.redteam.logo = "Assets/Team/red.png";
+    initial.teamdata.blueteam.playerlist[0].image = "player/north-photo.png";
     const app = express(),
       server = http.createServer(app),
       wss = new WebSocketServer({ server }),
@@ -39,7 +42,8 @@ test(
         broadcast({ type: "matchdata_update", ...snapshot }),
     });
     let failNotification = false,
-      missingVideo = false;
+      missingArtwork = false,
+      videoRequests = 0;
     let draft = {
       draftdata: {
         timer: "50",
@@ -101,12 +105,27 @@ test(
     await context.route("**/*", (route) => {
       const url = new URL(route.request().url());
       if (url.hostname !== "127.0.0.1") return route.abort();
-      if (url.pathname.startsWith("/Assets/notification/"))
-        return route.fulfill(
-          missingVideo
-            ? { status: 404, body: "missing" }
-            : { contentType: "video/webm", body: video },
-        );
+      if (url.pathname.startsWith("/Assets/notification/")) {
+        videoRequests++;
+        return route.fulfill({ contentType: "video/webm", body: video });
+      }
+      if (url.pathname.startsWith("/Assets/player/")) {
+        if (missingArtwork || url.pathname !== "/Assets/player/north-photo.png")
+          return route.fulfill({ status: 404, body: "missing photo" });
+        return route.fulfill({
+          contentType: "image/svg+xml",
+          body: '<svg xmlns="http://www.w3.org/2000/svg" width="280" height="400"><path d="M55 400V245Q65 205 100 205h80q35 0 45 40v155" fill="#e7edf5"/><path d="M100 205l40 40 40-40" fill="#97233d"/><ellipse cx="140" cy="140" rx="48" ry="62" fill="#c89573"/><path d="M92 127q-5-85 65-65 40 5 31 65l-30-24z" fill="#171e29"/><path d="M90 305l100 40M190 305L90 345" stroke="#c89573" stroke-width="25"/><path d="M118 265h44v35h-44" fill="#143b62"/></svg>',
+        });
+      }
+      if (url.pathname.startsWith("/Assets/Team/")) {
+        if (missingArtwork)
+          return route.fulfill({ status: 404, body: "missing team logo" });
+        const red = url.pathname.endsWith("red.png");
+        return route.fulfill({
+          contentType: "image/svg+xml",
+          body: `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="180"><path d="M15 10h130v110l-65 50-65-50z" fill="${red ? "#ba304b" : "#2579a0"}" stroke="#fff" stroke-width="5"/><text x="80" y="107" text-anchor="middle" fill="#fff" font-size="65" font-family="Arial">${red ? "S" : "N"}</text></svg>`,
+        });
+      }
       if (url.pathname.includes("/Assets/Font/")) return route.continue();
       if (url.pathname.startsWith("/Assets/"))
         return route.fulfill({
@@ -193,6 +212,7 @@ test(
     await overlay.waitForFunction(
       () => document.getElementById("videoPlayer").style.display === "none",
     );
+    const generalVideoRequests = videoRequests;
     assert.equal((await send(normal, "blue", 0, "first-blood")).status(), 200);
     await overlay.waitForFunction(
       () =>
@@ -205,9 +225,44 @@ test(
     );
     await overlay.waitForFunction(
       () =>
-        document.getElementById("videoPlayer").currentTime > 0 &&
-        !document.getElementById("videoPlayer").paused,
+        document.getElementById("player-notification").dataset.artwork ===
+        "player",
     );
+    assert.equal(
+      await overlay.locator("#videoPlayer").isVisible(),
+      false,
+      "individual cues never show a WebM",
+    );
+    assert.equal(
+      videoRequests,
+      generalVideoRequests,
+      "individual cues never request a WebM",
+    );
+    assert.match(
+      await overlay.locator("#notification-art img").getAttribute("src"),
+      /north-photo.png$/,
+    );
+    const bannerBounds = await overlay
+      .locator("#player-notification")
+      .boundingBox();
+    const artBounds = await overlay.locator("#notification-art").boundingBox();
+    assert.ok(
+      bannerBounds.y > 500 && artBounds.y < bannerBounds.y,
+      "player cutout extends above a lower-third card",
+    );
+    assert.ok(
+      await overlay
+        .locator("#player-notification")
+        .evaluate((banner) =>
+          banner
+            .getAnimations()
+            .some((animation) => animation.effect.getTiming().duration === 420),
+        ),
+      "lower-third has an entrance effect",
+    );
+
+    await overlay.bringToFront();
+    await overlay.waitForTimeout(500);
     if (process.env.MLBB_CAPTURE_DIR) {
       await fs.mkdir(process.env.MLBB_CAPTURE_DIR, { recursive: true });
       await overlay.screenshot({
@@ -218,22 +273,45 @@ test(
         omitBackground: true,
       });
     }
+    await overlay.waitForFunction(() =>
+      document
+        .getElementById("player-notification")
+        .getAnimations()
+        .some((animation) => animation.effect.getTiming().duration === 300),
+    );
     await overlay.waitForFunction(
       () => document.getElementById("player-notification").hidden,
     );
-    // Both team/slot and side-specific objective clip travel through the existing cue.
+    // Both teams use lower-thirds; missing portraits fall back to their own logo.
     assert.equal((await send(six, "red", 4, "lord-slain")).status(), 200);
     await overlay.waitForFunction(
       () =>
         document.getElementById("notification-player").textContent ===
         "South 5",
     );
-    assert.equal(cues.at(-1).videoId, "videoPlayer6");
+    assert.equal(cues.at(-1).videoId, null);
+    await overlay.waitForFunction(
+      () =>
+        document.getElementById("player-notification").dataset.artwork ===
+        "team",
+    );
+    assert.match(
+      await overlay.locator("#notification-art img").getAttribute("src"),
+      /Team\/red.png$/,
+    );
+    if (process.env.MLBB_CAPTURE_DIR)
+      await overlay.screenshot({
+        path: path.join(
+          process.env.MLBB_CAPTURE_DIR,
+          "notification-team-fallback.png",
+        ),
+        omitBackground: true,
+      });
     assert.equal(
       await overlay.locator("#player-notification").getAttribute("data-side"),
       "red",
     );
-    // Text-only events, repetition and interruption do not leak prior cue timeouts.
+    // Repeated player events and interruption do not leak prior cue timeouts.
     await send(normal, "blue", 2, "shutdown");
     await overlay.waitForFunction(
       () =>
@@ -258,13 +336,22 @@ test(
     await overlay.waitForFunction(
       () => document.getElementById("player-notification").hidden,
     );
-    // Missing media still displays the selected player's event with bounded timing.
-    missingVideo = true;
+    // Missing photo AND logo still keep the correct text and clear on time.
+    missingArtwork = true;
+    const noLogo = store.snapshot().data;
+    noLogo.teamdata.redteam.logo = "Assets/Team/missing-red.png";
+    await store.replace(noLogo);
     await send(six, "red", 1, "double-kill");
     await overlay.waitForFunction(
       () =>
-        document.getElementById("player-notification").dataset.textOnly ===
-          "true" && !document.getElementById("player-notification").hidden,
+        document.getElementById("notification-player").textContent ===
+          "South 2" && !document.getElementById("player-notification").hidden,
+    );
+    await overlay.waitForTimeout(200);
+    assert.equal(
+      await overlay.locator("#notification-art img").count(),
+      0,
+      "failed assets do not leave broken images",
     );
     assert.equal(
       await overlay.locator("#notification-player").textContent(),
@@ -273,7 +360,52 @@ test(
     await overlay.waitForFunction(
       () => document.getElementById("player-notification").hidden,
     );
-    missingVideo = false;
+    missingArtwork = false;
+    const restoredLogo = store.snapshot().data;
+    restoredLogo.teamdata.redteam.logo = "Assets/Team/red.png";
+    await store.replace(restoredLogo);
+    // A late portrait from an interrupted cue cannot replace the current team's logo.
+    const delayedMatch = store.snapshot().data;
+    delayedMatch.teamdata.blueteam.playerlist[0].image =
+      "player/delayed-photo.png";
+    await store.replace(delayedMatch);
+    let releasePhoto, photoRequested;
+    const photoStarted = new Promise((resolve) => (photoRequested = resolve));
+    const photoRelease = new Promise((resolve) => (releasePhoto = resolve));
+    await context.route(
+      "**/Assets/player/delayed-photo.png",
+      async (route) => {
+        photoRequested();
+        await photoRelease;
+        await route.fulfill({
+          contentType: "image/svg+xml",
+          body: '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="200"><rect width="100" height="200" fill="red"/></svg>',
+        });
+      },
+      { times: 1 },
+    );
+    await send(normal, "blue", 0, "shutdown");
+    await photoStarted;
+    await send(six, "red", 4, "shutdown");
+    releasePhoto();
+    await overlay.waitForFunction(
+      () =>
+        document.getElementById("notification-player").textContent ===
+          "South 5" &&
+        document.getElementById("player-notification").dataset.artwork ===
+          "team",
+    );
+    await overlay.waitForTimeout(200);
+    assert.match(
+      await overlay.locator("#notification-art img").getAttribute("src"),
+      /Team\/red.png$/,
+      "late photo cannot overwrite the replacement cue",
+    );
+    assert.equal(
+      videoRequests,
+      generalVideoRequests,
+      "no player event loads any WebM asset",
+    );
     // A server-side lineup change between rendering and send must not misattribute.
     const countBeforeStale = cues.length;
     await normal.route(

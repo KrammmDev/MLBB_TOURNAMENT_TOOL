@@ -12,14 +12,23 @@
         <source id="videoSource" src="" type="video/webm" />
       </video>
       <section id="player-notification" hidden aria-live="polite">
-        <div class="notification-event" id="notification-event"></div>
-        <div class="notification-player" id="notification-player"></div>
-        <div class="notification-team" id="notification-team"></div>
+        <div class="notification-panel" aria-hidden="true"></div>
+        <div
+          id="notification-art"
+          class="notification-art"
+          aria-hidden="true"
+        ></div>
+        <div class="notification-copy">
+          <div class="notification-event" id="notification-event"></div>
+          <div class="notification-player" id="notification-player"></div>
+          <div class="notification-team" id="notification-team"></div>
+        </div>
       </section>
     </main>
     <script src="/script/match-state.js"></script>
     <script src="/script/match-client.js"></script>
     <script src="/script/notification-model.js"></script>
+    <script src="/script/roster-model.js"></script>
     <script src="/script/notification-overlay.js"></script>
   </body>
 </html>
