@@ -27,6 +27,11 @@ test(
     initial.teamdata.blueteam.logo = "Assets/Team/blue.png";
     initial.teamdata.redteam.logo = "Assets/Team/red.png";
     initial.teamdata.blueteam.playerlist[0].image = "player/north-photo.png";
+    for (const team of Object.values(initial.teamdata))
+      team.playerlist.forEach(
+        (player, index) =>
+          (player.lane = ["gold", "jungle", "mid", "exp", "roam"][index]),
+      );
     const app = express(),
       server = http.createServer(app),
       wss = new WebSocketServer({ server }),
@@ -220,8 +225,24 @@ test(
           "North 1" && !document.getElementById("player-notification").hidden,
     );
     assert.equal(
-      await overlay.locator("#notification-team").textContent(),
-      "BLUE",
+      await overlay.locator("#notification-team").count(),
+      0,
+      "team-name subtitle is removed",
+    );
+    await overlay.locator("#notification-role img").waitFor();
+    assert.match(
+      await overlay.locator("#notification-role img").getAttribute("src"),
+      /lane\/gold.png$/,
+    );
+    const roleBounds = await overlay
+      .locator("#notification-role")
+      .boundingBox();
+    const nameBounds = await overlay
+      .locator("#notification-player")
+      .boundingBox();
+    assert.ok(
+      roleBounds.x + roleBounds.width <= nameBounds.x,
+      "role icon precedes the player name",
     );
     await overlay.waitForFunction(
       () =>
@@ -395,6 +416,13 @@ test(
       await overlay.locator("#notification-event").textContent(),
       "Killing Spree",
     );
+    assert.ok(
+      await overlay
+        .locator("#notification-event")
+        .evaluate((event) => event.scrollWidth <= event.clientWidth),
+      "the enlarged Killing Spree heading fits the panel",
+    );
+
     await overlay.waitForFunction(
       () => document.getElementById("player-notification").hidden,
     );
@@ -402,6 +430,7 @@ test(
     missingArtwork = true;
     const noLogo = store.snapshot().data;
     noLogo.teamdata.redteam.logo = "Assets/Team/missing-red.png";
+    noLogo.teamdata.redteam.playerlist[1].lane = "none";
     await store.replace(noLogo);
     await send(six, "red", 1, "double-kill");
     await overlay.waitForFunction(
@@ -414,6 +443,11 @@ test(
       await overlay.locator("#notification-art img").count(),
       0,
       "failed assets do not leave broken images",
+    );
+    assert.equal(
+      await overlay.locator("#notification-role").isHidden(),
+      true,
+      "unknown role leaves no stale icon",
     );
     assert.equal(
       await overlay.locator("#notification-player").textContent(),

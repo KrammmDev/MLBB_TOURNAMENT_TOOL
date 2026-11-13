@@ -11,6 +11,11 @@ test("notification API preserves general cues and resolves all player events wit
   match.teamdata.blueteam.logo = "Assets/Team/blue.png";
   match.teamdata.redteam.logo = "Assets/Team/red.png";
   match.teamdata.blueteam.playerlist[0].image = "player/portrait.png";
+  for (const team of Object.values(match.teamdata))
+    team.playerlist.forEach(
+      (player, index) =>
+        (player.lane = ["gold", "junggle", "mid", "exp", "roam"][index]),
+    );
   const original = structuredClone(match),
     cues = [],
     records = [];
@@ -51,6 +56,7 @@ test("notification API preserves general cues and resolves all player events wit
           teamSide,
           playerIndex,
           expected,
+          playerRole: "forged-role",
           videoId: "videoPlayer11",
           playerImages: ["/Assets/forged.png"],
           teamLogo: "/Assets/forged-logo.png",
@@ -63,6 +69,10 @@ test("notification API preserves general cues and resolves all player events wit
         assert.equal(cue.teamName, expected.teamName);
         assert.equal(cue.teamSide, teamSide);
         assert.equal(cue.playerIndex, playerIndex);
+        assert.equal(
+          cue.playerRole,
+          ["gold", "jungle", "mid", "exp", "roam"][playerIndex],
+        );
         assert.equal(cue.eventLabel, event.label);
         assert.equal(cue.videoId, null, "individual cues never select a WebM");
         assert.equal(cue.teamLogo, `/Assets/Team/${teamSide}.png`);
