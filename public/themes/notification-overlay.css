@@ -1,0 +1,75 @@
+@font-face {
+  font-family: "Notification Condensed";
+  src: url("/Assets/Font/RobotoCondensed-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: swap;
+}
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+#notification-stage {
+  position: absolute;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: top left;
+}
+#videoPlayer {
+  display: none;
+  width: 1920px;
+  height: 1080px;
+  position: absolute;
+  inset: 0;
+  object-fit: cover;
+}
+#player-notification {
+  --cue-accent: #38c7ee;
+  position: absolute;
+  top: 86px;
+  left: 50%;
+  width: 650px;
+  box-sizing: border-box;
+  transform: translateX(-50%);
+  padding: 16px 34px 18px;
+  background: #0b1b2cf5;
+  border-top: 3px solid var(--cue-accent);
+  border-bottom: 1px solid #516779;
+  clip-path: polygon(3% 0, 100% 0, 97% 100%, 0 100%);
+  text-align: center;
+  color: #f4f8fc;
+  font-family: "Notification Condensed", "Arial Narrow", Arial, sans-serif;
+}
+#player-notification[data-side="red"] {
+  --cue-accent: #ff6176;
+}
+#player-notification[hidden] {
+  display: none;
+}
+.notification-event {
+  color: var(--cue-accent);
+  font-size: 23px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.notification-player {
+  font-size: 42px;
+  line-height: 1.15;
+  margin: 5px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.notification-team {
+  font-size: 20px;
+  color: #c2d0dd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#player-notification[data-text-only="true"] .notification-event {
+  font-size: 34px;
+}

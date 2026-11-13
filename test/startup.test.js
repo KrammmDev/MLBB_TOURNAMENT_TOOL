@@ -21,6 +21,7 @@ async function sandbox(t, raw) {
   await fs.mkdir(path.join(dir, "public/script"), { recursive: true });
   for (const script of [
     "match-state.js",
+    "notification-model.js",
     "roster-themes.js",
     "draft-model.js",
     "broadcast-color-model.js",
@@ -103,6 +104,37 @@ test(
       data,
     );
     assert.deepEqual(JSON.parse(await fs.readFile(env.file, "utf8")), data);
+    const notificationUrl = `http://127.0.0.1:${port}/api/notification`;
+    const command = {
+      eventId: "shutdown",
+      teamSide: "red",
+      playerIndex: 4,
+      expected: require("../public/script/notification-model").identity(
+        data,
+        "red",
+        4,
+      ),
+    };
+    const cueResponse = await fetch(notificationUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(command),
+    });
+    assert.equal(cueResponse.status, 200);
+    await waitUntil(() =>
+      messages.some((message) => message.type === "notification_trigger"),
+    );
+    const cue = messages.find(
+      (message) => message.type === "notification_trigger",
+    );
+    assert.equal(cue.playerName, data.teamdata.redteam.playerlist[4].name);
+    assert.equal(cue.eventId, "shutdown");
+    assert.equal(cue.videoId, null);
+    assert.deepEqual(
+      await (await fetch(url)).json(),
+      data,
+      "notification does not mutate match state",
+    );
     const themeUrl = `http://127.0.0.1:${port}/api/roster-theme`;
     const theme = await (await fetch(themeUrl)).json();
     const chosen = await fetch(themeUrl, {
