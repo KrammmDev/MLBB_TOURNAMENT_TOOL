@@ -24,18 +24,22 @@
     video.style.display = "none";
     source.removeAttribute("src");
     banner.hidden = true;
+    banner.dataset.phase = "idle";
     artwork.replaceChildren();
     banner.dataset.artwork = "none";
   }
   function finish(version) {
     if (version !== generation) return;
     if (banner.hidden || reduced()) return reset();
+    // Release the completed entrance's fill before applying the reverse wipe.
+    banner.getAnimations().forEach((animation) => animation.cancel());
+    banner.dataset.phase = "closing";
     const animation = banner.animate(
       [
         { clipPath: "inset(-112px -6px -8px -6px)" },
         { clipPath: "inset(-112px 50% -8px 50%)" },
       ],
-      { duration: 420, easing: "cubic-bezier(.65,0,.35,1)", fill: "both" },
+      { duration: 800, easing: "cubic-bezier(.45,0,.55,1)", fill: "both" },
     );
     animation.finished
       .then(() => {
@@ -98,6 +102,7 @@
       document.getElementById("notification-team").textContent = cue.teamName;
       banner.dataset.side = cue.teamSide;
       banner.hidden = false;
+      banner.dataset.phase = "holding";
       loadArtwork(cue, version);
       if (!reduced()) {
         // Negative top inset preserves the portrait above the card while both doors open.
