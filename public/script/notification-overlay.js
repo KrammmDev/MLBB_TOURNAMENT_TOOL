@@ -32,10 +32,10 @@
     if (banner.hidden || reduced()) return reset();
     const animation = banner.animate(
       [
-        { opacity: 1, translate: "0 0" },
-        { opacity: 0, translate: "-50px 22px" },
+        { clipPath: "inset(-112px -6px -8px -6px)" },
+        { clipPath: "inset(-112px 50% -8px 50%)" },
       ],
-      { duration: 300, easing: "cubic-bezier(.4,0,1,1)", fill: "both" },
+      { duration: 420, easing: "cubic-bezier(.65,0,.35,1)", fill: "both" },
     );
     animation.finished
       .then(() => {
@@ -100,19 +100,13 @@
       banner.hidden = false;
       loadArtwork(cue, version);
       if (!reduced()) {
+        // Negative top inset preserves the portrait above the card while both doors open.
         banner.animate(
           [
-            { opacity: 0, translate: "58px 30px" },
-            { opacity: 1, translate: "0 0" },
+            { clipPath: "inset(-112px 50% -8px 50%)" },
+            { clipPath: "inset(-112px -6px -8px -6px)" },
           ],
-          { duration: 420, easing: "cubic-bezier(.16,1,.3,1)" },
-        );
-        banner.querySelector(".notification-copy").animate(
-          [
-            { opacity: 0, translate: "24px 0" },
-            { opacity: 1, translate: "0 0" },
-          ],
-          { duration: 300, delay: 90, fill: "backwards", easing: "ease-out" },
+          { duration: 560, easing: "cubic-bezier(.65,0,.35,1)", fill: "both" },
         );
       }
       timeout = setTimeout(() => finish(version), 4000);

@@ -1,4 +1,16 @@
 @font-face {
+  font-family: "Notification Display";
+  src: url("/Assets/Font/Renegade%20Pursuit.otf") format("opentype");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Notification Player";
+  src: url("/Assets/Font/big_noodle_titling.ttf") format("truetype");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
   font-family: "Notification Condensed";
   src: url("/Assets/Font/RobotoCondensed-Bold.ttf") format("truetype");
   font-weight: 700;
@@ -37,6 +49,7 @@ body {
   color: #f4f8fc;
   font-family: "Notification Condensed", "Arial Narrow", Arial, sans-serif;
   isolation: isolate;
+  clip-path: inset(-112px -6px -8px -6px);
 }
 #player-notification[data-side="red"] {
   --cue-accent: #ff6176;
@@ -100,14 +113,18 @@ body {
   padding: 25px 42px 20px 276px;
 }
 .notification-event {
-  font-size: 47px;
-  line-height: 1.05;
-  letter-spacing: 1px;
+  font-family: "Notification Display", "Notification Condensed", sans-serif;
+  font-size: 40px;
+  line-height: 1.25;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
   white-space: nowrap;
 }
 .notification-player {
-  font-size: 30px;
+  font-family: "Notification Player", "Notification Condensed", sans-serif;
+  font-size: 35px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
   line-height: 1.2;
   margin: 12px 0 2px;
   white-space: nowrap;

@@ -251,18 +251,30 @@ test(
       "player cutout extends above a lower-third card",
     );
     assert.ok(
-      await overlay
-        .locator("#player-notification")
-        .evaluate((banner) =>
-          banner
-            .getAnimations()
-            .some((animation) => animation.effect.getTiming().duration === 420),
-        ),
-      "lower-third has an entrance effect",
+      await overlay.locator("#player-notification").evaluate((banner) =>
+        banner.getAnimations().some((animation) => {
+          const frames = animation.effect.getKeyframes();
+          return (
+            frames[0].clipPath?.includes("50%") &&
+            frames.at(-1).clipPath?.includes("-6px")
+          );
+        }),
+      ),
+      "barn doors reveal the lower-third outward from its center",
     );
 
     await overlay.bringToFront();
-    await overlay.waitForTimeout(500);
+    await overlay.waitForTimeout(700);
+    await overlay.evaluate(() => document.fonts.ready);
+    assert.equal(
+      await overlay.evaluate(
+        () =>
+          document.fonts.check('40px "Notification Display"') &&
+          document.fonts.check('35px "Notification Player"'),
+      ),
+      true,
+      "bundled esports fonts load successfully",
+    );
     if (process.env.MLBB_CAPTURE_DIR) {
       await fs.mkdir(process.env.MLBB_CAPTURE_DIR, { recursive: true });
       await overlay.screenshot({
@@ -277,7 +289,13 @@ test(
       document
         .getElementById("player-notification")
         .getAnimations()
-        .some((animation) => animation.effect.getTiming().duration === 300),
+        .some((animation) => {
+          const frames = animation.effect.getKeyframes();
+          return (
+            frames[0].clipPath?.includes("-6px") &&
+            frames.at(-1).clipPath?.includes("50%")
+          );
+        }),
     );
     await overlay.waitForFunction(
       () => document.getElementById("player-notification").hidden,
