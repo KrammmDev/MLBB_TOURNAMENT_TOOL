@@ -8,6 +8,7 @@
   const source = document.getElementById("videoSource");
   const banner = document.getElementById("player-notification");
   const artwork = document.getElementById("notification-art");
+  const role = document.getElementById("notification-role");
   let generation = 0,
     timeout,
     stop;
@@ -26,6 +27,8 @@
     banner.hidden = true;
     banner.dataset.phase = "idle";
     artwork.replaceChildren();
+    role.hidden = true;
+    role.replaceChildren();
     banner.dataset.artwork = "none";
   }
   function finish(version) {
@@ -83,6 +86,24 @@
     }
     next(0);
   }
+  function loadRole(playerRole, version) {
+    const lanes = {
+      gold: "gold",
+      jungle: "junggle",
+      mid: "mid",
+      exp: "exp",
+      roam: "roam",
+    };
+    if (!Object.hasOwn(lanes, playerRole)) return;
+    const image = new Image();
+    image.alt = `${playerRole} role`;
+    image.onload = () => {
+      if (version !== generation) return;
+      role.replaceChildren(image);
+      role.hidden = false;
+    };
+    image.src = "/Assets/lane/" + lanes[playerRole] + ".png";
+  }
   function show(cue) {
     if (cue.type !== "notification_trigger") return;
     if (cue.scope === "player") {
@@ -99,7 +120,7 @@
       document.getElementById("notification-event").textContent = event.label;
       document.getElementById("notification-player").textContent =
         cue.playerName;
-      document.getElementById("notification-team").textContent = cue.teamName;
+      loadRole(cue.playerRole, version);
       banner.dataset.side = cue.teamSide;
       banner.hidden = false;
       banner.dataset.phase = "holding";

@@ -20,7 +20,7 @@
     />
     <link
       rel="stylesheet"
-      href="/themes/notification-overlay.css?v=barn-door-2"
+      href="/themes/notification-overlay.css?v=role-row-1"
     />
   </head>
   <body>
@@ -37,8 +37,14 @@
         ></div>
         <div class="notification-copy">
           <div class="notification-event" id="notification-event"></div>
-          <div class="notification-player" id="notification-player"></div>
-          <div class="notification-team" id="notification-team"></div>
+          <div class="notification-identity">
+            <span
+              id="notification-role"
+              class="notification-role"
+              hidden
+            ></span>
+            <div class="notification-player" id="notification-player"></div>
+          </div>
         </div>
       </section>
     </main>
@@ -46,6 +52,6 @@
     <script src="/script/match-client.js"></script>
     <script src="/script/notification-model.js"></script>
     <script src="/script/roster-model.js"></script>
-    <script src="/script/notification-overlay.js?v=barn-door-2"></script>
+    <script src="/script/notification-overlay.js?v=role-row-1"></script>
   </body>
 </html>
