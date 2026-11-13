@@ -104,6 +104,57 @@
     };
     image.src = "/Assets/lane/" + lanes[playerRole] + ".png";
   }
+  function enter() {
+    // A single activation hit leads the center-out doors; everything settles for the hold.
+    banner.animate(
+      [
+        { clipPath: "inset(-112px 50% -8px 50%)" },
+        { clipPath: "inset(-112px -6px -8px -6px)" },
+      ],
+      { duration: 360, easing: "cubic-bezier(.16,1,.3,1)", fill: "both" },
+    );
+    banner.querySelector(".notification-hit").animate(
+      [
+        { opacity: 0, scale: "1 .3" },
+        { opacity: 0.95, scale: "1 1", offset: 0.22 },
+        { opacity: 0, scale: "1 1.08" },
+      ],
+      { duration: 260, easing: "ease-out" },
+    );
+    for (const [selector, direction] of [
+      [".notification-streak-left", -1],
+      [".notification-streak-right", 1],
+    ])
+      banner.querySelector(selector).animate(
+        [
+          { opacity: 0, translate: "0 0" },
+          { opacity: 1, offset: 0.2 },
+          { opacity: 0, translate: `${direction * 380}px 0` },
+        ],
+        { duration: 380, easing: "cubic-bezier(.16,1,.3,1)" },
+      );
+    banner
+      .querySelector(".notification-panel")
+      .animate([{ scale: "1.025 1.035" }, { scale: "1 1" }], {
+        duration: 280,
+        easing: "cubic-bezier(.16,1,.3,1)",
+      });
+    document.getElementById("notification-event").animate(
+      [
+        { opacity: 0, translate: "22px 0", scale: "1.07" },
+        { opacity: 1, translate: "-2px 0", scale: "1.01", offset: 0.7 },
+        { opacity: 1, translate: "0 0", scale: "1" },
+      ],
+      { duration: 260, delay: 120, fill: "backwards", easing: "ease-out" },
+    );
+    banner.querySelector(".notification-identity").animate(
+      [
+        { opacity: 0, translate: "14px 0" },
+        { opacity: 1, translate: "0 0" },
+      ],
+      { duration: 200, delay: 240, fill: "backwards", easing: "ease-out" },
+    );
+  }
   function show(cue) {
     if (cue.type !== "notification_trigger") return;
     if (cue.scope === "player") {
@@ -125,16 +176,7 @@
       banner.hidden = false;
       banner.dataset.phase = "holding";
       loadArtwork(cue, version);
-      if (!reduced()) {
-        // Negative top inset preserves the portrait above the card while both doors open.
-        banner.animate(
-          [
-            { clipPath: "inset(-112px 50% -8px 50%)" },
-            { clipPath: "inset(-112px -6px -8px -6px)" },
-          ],
-          { duration: 560, easing: "cubic-bezier(.65,0,.35,1)", fill: "both" },
-        );
-      }
+      if (!reduced()) enter();
       timeout = setTimeout(() => finish(version), 4000);
       return; // Individual cues never load, play or depend on a WebM clip.
     }

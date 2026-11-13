@@ -164,3 +164,40 @@ body {
   height: 100%;
   object-fit: contain;
 }
+
+/* One-shot activation marks; invisible throughout the readable hold. */
+.notification-trigger {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.notification-trigger span {
+  position: absolute;
+  display: block;
+  opacity: 0;
+  background: var(--cue-accent);
+}
+.notification-hit {
+  left: calc(50% - 2px);
+  top: -8px;
+  bottom: -4px;
+  width: 4px;
+  box-shadow: 0 0 14px var(--cue-accent);
+  transform-origin: center;
+}
+.notification-streak {
+  top: 0;
+  left: 50%;
+  width: 130px;
+  height: 4px;
+}
+.notification-streak-left {
+  margin-left: -130px;
+}
+.notification-event {
+  transform-origin: left center;
+}
+.notification-panel {
+  transform-origin: center;
+}
