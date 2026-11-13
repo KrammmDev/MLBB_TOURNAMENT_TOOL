@@ -22,6 +22,7 @@ async function sandbox(t, raw) {
   for (const script of [
     "match-state.js",
     "notification-model.js",
+    "roster-model.js",
     "roster-themes.js",
     "draft-model.js",
     "broadcast-color-model.js",

@@ -1,98 +1,138 @@
-/* Extend the existing overlay: same video clips, same live notification_trigger channel. */
+/* One cue channel, two exclusive presentations: general WebM or player lower-third. */
 (function (root) {
   "use strict";
   const model = root.NotificationModel;
+  const safeImage = root.RosterModel.safeImage;
   const stage = document.getElementById("notification-stage");
   const video = document.getElementById("videoPlayer");
   const source = document.getElementById("videoSource");
   const banner = document.getElementById("player-notification");
+  const artwork = document.getElementById("notification-art");
   let generation = 0,
     timeout,
-    stop,
-    active,
-    exitAnimation;
+    stop;
+  const reduced = () =>
+    root.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function reset() {
     generation++;
     clearTimeout(timeout);
-    exitAnimation?.cancel();
-    banner.getAnimations().forEach((animation) => animation.cancel());
+    banner
+      .getAnimations({ subtree: true })
+      .forEach((animation) => animation.cancel());
     video.onended = video.onerror = source.onerror = null;
     video.pause();
     video.style.display = "none";
     source.removeAttribute("src");
     banner.hidden = true;
-    active = null;
+    artwork.replaceChildren();
+    banner.dataset.artwork = "none";
   }
   function finish(version) {
     if (version !== generation) return;
-    if (
-      banner.hidden ||
-      root.matchMedia("(prefers-reduced-motion: reduce)").matches
-    )
-      return reset();
-    exitAnimation = banner.animate([{ opacity: 1 }, { opacity: 0 }], {
-      duration: 120,
-      fill: "both",
-    });
-    exitAnimation.finished
+    if (banner.hidden || reduced()) return reset();
+    const animation = banner.animate(
+      [
+        { opacity: 1, translate: "0 0" },
+        { opacity: 0, translate: "-50px 22px" },
+      ],
+      { duration: 300, easing: "cubic-bezier(.4,0,1,1)", fill: "both" },
+    );
+    animation.finished
       .then(() => {
         if (version === generation) reset();
       })
       .catch(() => {});
   }
-  function textFallback(version) {
-    if (version !== generation) return;
-    video.pause();
-    video.style.display = "none";
-    if (!active || active.scope !== "player") return reset();
-    banner.dataset.textOnly = "true";
-    clearTimeout(timeout);
-    timeout = setTimeout(() => finish(version), 4000);
+  function loadArtwork(cue, version) {
+    function display(image, kind) {
+      if (
+        version !== generation ||
+        (kind === "team" && banner.dataset.artwork === "player")
+      )
+        return;
+      artwork.replaceChildren(image);
+      banner.dataset.artwork = kind;
+      if (!reduced())
+        image.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 150 });
+    }
+    const logo = safeImage(cue.teamLogo);
+    if (logo) {
+      const image = new Image();
+      image.alt = "";
+      image.onload = () => display(image, "team");
+      image.src = logo;
+    }
+    const candidates = [
+      ...new Set(
+        (Array.isArray(cue.playerImages) ? cue.playerImages : [])
+          .map(safeImage)
+          .filter(Boolean),
+      ),
+    ];
+    function next(index) {
+      if (version !== generation || index >= candidates.length) return;
+      const image = new Image();
+      image.alt = "";
+      image.onload = () => display(image, "player");
+      image.onerror = () => next(index + 1);
+      image.src = candidates[index];
+    }
+    next(0);
   }
   function show(cue) {
     if (cue.type !== "notification_trigger") return;
-    const event = model.event(cue.eventId);
-    const individual =
-      cue.scope === "player" &&
-      event &&
-      ["blue", "red"].includes(cue.teamSide) &&
-      typeof cue.playerName === "string" &&
-      typeof cue.teamName === "string";
-    const path = Object.hasOwn(model.videos, cue.videoId)
-      ? model.videos[cue.videoId]
-      : null;
-    if (!individual && !path) return;
-    reset();
-    active = individual ? cue : { scope: "general" };
-    const version = generation;
-    if (individual) {
+    if (cue.scope === "player") {
+      const event = model.event(cue.eventId);
+      if (
+        !event ||
+        !["blue", "red"].includes(cue.teamSide) ||
+        typeof cue.playerName !== "string" ||
+        typeof cue.teamName !== "string"
+      )
+        return;
+      reset();
+      const version = generation;
       document.getElementById("notification-event").textContent = event.label;
       document.getElementById("notification-player").textContent =
         cue.playerName;
       document.getElementById("notification-team").textContent = cue.teamName;
       banner.dataset.side = cue.teamSide;
-      banner.dataset.textOnly = String(!path);
       banner.hidden = false;
-      if (!root.matchMedia("(prefers-reduced-motion: reduce)").matches)
+      loadArtwork(cue, version);
+      if (!reduced()) {
         banner.animate(
           [
-            { opacity: 0, translate: "0 -12px" },
+            { opacity: 0, translate: "58px 30px" },
             { opacity: 1, translate: "0 0" },
           ],
-          { duration: 180, easing: "ease-out" },
+          { duration: 420, easing: "cubic-bezier(.16,1,.3,1)" },
         );
+        banner.querySelector(".notification-copy").animate(
+          [
+            { opacity: 0, translate: "24px 0" },
+            { opacity: 1, translate: "0 0" },
+          ],
+          { duration: 300, delay: 90, fill: "backwards", easing: "ease-out" },
+        );
+      }
+      timeout = setTimeout(() => finish(version), 4000);
+      return; // Individual cues never load, play or depend on a WebM clip.
     }
-    if (!path) return textFallback(version);
+    const path = Object.hasOwn(model.videos, cue.videoId)
+      ? model.videos[cue.videoId]
+      : null;
+    if (!path) return;
+    reset();
+    const version = generation;
+    const clear = () => {
+      if (version === generation) reset();
+    };
     source.src = path;
-    video.onended = () => finish(version);
-    video.onerror = () => textFallback(version);
-    source.onerror = () => textFallback(version);
+    video.onended = video.onerror = source.onerror = clear;
     video.load();
     video.style.display = "block";
-    const promise = video.play();
-    promise?.catch(() => textFallback(version));
-    // A stalled/invalid asset must never leave a permanent on-air banner.
-    timeout = setTimeout(() => textFallback(version), 15000);
+    video.play()?.catch(clear);
+    timeout = setTimeout(clear, 15000);
   }
   function scale() {
     stage.style.transform = `scale(${Math.min(innerWidth / 1920, innerHeight / 1080)})`;
