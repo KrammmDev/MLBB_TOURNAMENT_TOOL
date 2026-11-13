@@ -29,19 +29,14 @@ body {
 #player-notification {
   --cue-accent: #38c7ee;
   position: absolute;
-  top: 86px;
+  bottom: 66px;
   left: 50%;
-  width: 650px;
-  box-sizing: border-box;
+  width: 820px;
+  height: 186px;
   transform: translateX(-50%);
-  padding: 16px 34px 18px;
-  background: #0b1b2cf5;
-  border-top: 3px solid var(--cue-accent);
-  border-bottom: 1px solid #516779;
-  clip-path: polygon(3% 0, 100% 0, 97% 100%, 0 100%);
-  text-align: center;
   color: #f4f8fc;
   font-family: "Notification Condensed", "Arial Narrow", Arial, sans-serif;
+  isolation: isolate;
 }
 #player-notification[data-side="red"] {
   --cue-accent: #ff6176;
@@ -49,27 +44,80 @@ body {
 #player-notification[hidden] {
   display: none;
 }
+.notification-panel {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #0b1b2c;
+  clip-path: polygon(0 0, 97% 0, 100% 14%, 100% 100%, 3% 100%, 0 86%);
+  border-top: 1px solid #4c6577;
+  border-bottom: 4px solid var(--cue-accent);
+  box-sizing: border-box;
+}
+.notification-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 250px;
+  background: linear-gradient(125deg, var(--cue-accent), #16364c);
+  clip-path: polygon(0 0, 81% 0, 100% 100%, 0 100%);
+  opacity: 0.45;
+}
+.notification-panel::after {
+  content: "";
+  position: absolute;
+  top: 19px;
+  right: 30px;
+  width: 36px;
+  height: 5px;
+  background: var(--cue-accent);
+  transform: skewX(-25deg);
+}
+.notification-art {
+  position: absolute;
+  left: 6px;
+  bottom: 4px;
+  width: 242px;
+  height: 280px;
+  pointer-events: none;
+}
+.notification-art img {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 50% 100%;
+}
+#player-notification[data-artwork="team"] .notification-art img {
+  left: 30px;
+  bottom: 16px;
+  width: 180px;
+  height: 150px;
+  object-position: center;
+}
+.notification-copy {
+  padding: 25px 42px 20px 276px;
+}
 .notification-event {
-  color: var(--cue-accent);
-  font-size: 23px;
-  letter-spacing: 3px;
+  font-size: 47px;
+  line-height: 1.05;
+  letter-spacing: 1px;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 .notification-player {
-  font-size: 42px;
-  line-height: 1.15;
-  margin: 5px 0;
+  font-size: 30px;
+  line-height: 1.2;
+  margin: 12px 0 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .notification-team {
-  font-size: 20px;
-  color: #c2d0dd;
+  font-size: 18px;
+  color: #b4c7d7;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-#player-notification[data-text-only="true"] .notification-event {
-  font-size: 34px;
 }

@@ -21,26 +21,22 @@
   });
   const events = Object.freeze(
     [
-      { id: "first-blood", label: "First Blood", videoId: "videoPlayer7" },
-      { id: "double-kill", label: "Double Kill", videoId: "videoPlayer8" },
-      { id: "triple-kill", label: "Triple Kill", videoId: "videoPlayer9" },
-      { id: "maniac", label: "Maniac", videoId: "videoPlayer10" },
-      { id: "savage", label: "Savage", videoId: "videoPlayer11" },
+      { id: "first-blood", label: "First Blood" },
+      { id: "double-kill", label: "Double Kill" },
+      { id: "triple-kill", label: "Triple Kill" },
+      { id: "maniac", label: "Maniac" },
+      { id: "savage", label: "Savage" },
       {
         id: "turtle-slain",
         label: "Turtle Slain",
-        blue: "videoPlayer2",
-        red: "videoPlayer3",
       },
       {
         id: "lord-slain",
         label: "Lord Slain",
-        blue: "videoPlayer5",
-        red: "videoPlayer6",
       },
       { id: "shutdown", label: "Shutdown" },
       { id: "killing-spree", label: "Killing Spree" },
-      { id: "wipe-out", label: "Wipe Out", videoId: "videoPlayer12" },
+      { id: "wipe-out", label: "Wipe Out" },
     ].map(Object.freeze),
   );
   const event = (id) => events.find((item) => item.id === id);
