@@ -1,0 +1,11 @@
+# General and individual player notifications
+
+Use the existing Notification section of `/control.html` or `/controlban6.html`. General Notifications retains the original objective/kill buttons and keyboard shortcuts. Use the Player controls jump link in General Notifications to reach the full-width panel below the existing console. Individual Player Notifications groups the current five-player lineup under each team, with First Blood, Double Kill, Triple Kill, Maniac, Savage, Turtle Slain, Lord Slain, Shutdown, Killing Spree and Wipe Out buttons on every player card.
+
+Save match/team/player edits before sending a player cue. The panel shows server acknowledgement or a visible failure; it does not claim that OBS played the cue. A stale lineup/game is rejected instead of attributing the event to the wrong player. The player panel follows committed match updates, including renames and side swaps. Repeating a button intentionally fires another cue. New cues interrupt the prior cue, matching legacy behavior.
+
+Continue using `/notifdisplay.html` as a transparent 1920×1080 OBS Browser Source. General cues play their original WebM files. Individual cues play the same matching clip, plus a team-colored player/event/team banner near the top; existing full-screen animation remains intact. Shutdown and Killing Spree use the banner alone for four seconds. Missing/unplayable player clips fall back to the same text banner. The banner clears at video end or bounded fallback/watchdog expiry. Reduced-motion preferences disable banner entrance/exit motion without altering supplied video content. There are no authored league logos or season titles.
+
+The overlay reconnects through the existing match socket client and never replays stored cues. Reload the control and overlay after pulling this update; restart the server because the notification route changed. No database migration or new manual service is required. Keep uploaded assets and production match data unchanged.
+
+Verification uses isolated Express/WebSocket fixtures, all twelve general video IDs and all ten events for both teams/all slots, stale/malformed commands, server identity, live control/overlay wiring, interruption, missing-media fallback, timing, reconnect and responsive layouts. Actual Windows/OBS playback and audio policy still require checking on the broadcast PC.

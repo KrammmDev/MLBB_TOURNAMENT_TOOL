@@ -21,6 +21,7 @@ const { loadSponsorStore, installSponsorRoutes } = require("./lib/broadcast-spon
 const { loadColorStore, installColorRoutes } = require("./lib/broadcast-colors");
 const { loadBrandingStore, installBrandingRoutes } = require("./lib/scoreboard-branding");
 const { mirrorDraftTimer } = require("./lib/draft-timer");
+const { installNotificationRoutes } = require("./lib/notifications");
 
 const app = express();
 const server = http.createServer(app);
@@ -826,17 +827,12 @@ app.post("/api/mvp", (req, res) => {
   }
 });
 
-app.post("/api/notification", (req, res) => {
-  try {
-    const payload = { currentVideo: req.body.videoId, timestamp: Date.now() };
-    broadcast({ type: "notification_trigger", videoId: req.body.videoId });
-    fileQueue.enqueue(() =>
-      fs.writeFile(notifPath, JSON.stringify(payload, null, 2)),
-    );
-    res.json({ message: "Notification triggered" });
-  } catch (error) {
-    res.status(500).json({ message: "Error" });
-  }
+installNotificationRoutes(app, {
+  getMatch: () => matchStore.snapshot().data,
+  broadcast,
+  record: payload => fileQueue.enqueue(() =>
+    fs.writeFile(notifPath, JSON.stringify(payload, null, 2)),
+  ),
 });
 
 // ==========================================
