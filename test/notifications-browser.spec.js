@@ -284,6 +284,28 @@ test(
       "barn doors reveal the lower-third outward from its center",
     );
 
+    assert.equal(await overlay.locator(".notification-title-slice").count(), 2);
+    const titleParts = await overlay
+      .locator(".notification-title-slice")
+      .evaluateAll((parts) =>
+        parts.map((part) => ({
+          clip: getComputedStyle(part).clipPath,
+          start: part.getAnimations()[0].effect.getKeyframes()[0].translate,
+          end: part.getAnimations()[0].effect.getKeyframes().at(-1).translate,
+        })),
+      );
+    assert.ok(
+      titleParts[0].start.startsWith("-") &&
+        !titleParts[1].start.startsWith("-"),
+      "title halves enter from opposite directions",
+    );
+    assert.ok(
+      titleParts.every(
+        (part) =>
+          part.end === "0px" || part.end === "0px 0px" || part.end === "0 0",
+      ),
+      "title halves align for the reading hold",
+    );
     await overlay.bringToFront();
     await overlay.waitForTimeout(700);
     await overlay.evaluate(() => document.fonts.ready);
@@ -317,6 +339,18 @@ test(
             frames.at(-1).clipPath?.includes("50%")
           );
         }),
+    );
+    const titleExit = await overlay
+      .locator(".notification-title-slice")
+      .evaluateAll((parts) =>
+        parts.map(
+          (part) =>
+            part.getAnimations().at(-1).effect.getKeyframes().at(-1).translate,
+        ),
+      );
+    assert.ok(
+      titleExit[0].startsWith("-") && !titleExit[1].startsWith("-"),
+      "title halves separate in opposite directions on OUT",
     );
     const closeProgress = await overlay
       .locator("#player-notification")
