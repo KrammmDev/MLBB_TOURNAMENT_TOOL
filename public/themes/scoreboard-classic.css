@@ -29,9 +29,9 @@ body {
 }
 .sb-frame {
   left: 456px;
-  top: 80px;
+  top: 56px;
   width: 1008px;
-  height: 54px;
+  height: 78px;
   background: var(--edge, var(--sb-border));
   clip-path: polygon(
     24px 0,
@@ -68,7 +68,7 @@ body {
   right: auto;
   top: 3px;
   width: 180px;
-  height: 48px;
+  height: 72px;
   background: #f1eee4;
   clip-path: polygon(0 0, 100% 0, calc(100% - 28px) 100%, 28px 100%);
 }
