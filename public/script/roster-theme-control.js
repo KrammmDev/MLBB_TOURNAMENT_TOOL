@@ -77,7 +77,7 @@
       const details = {
         classic:
           output() === "scoreboard"
-            ? "Compact HUD · round team badges · integrated center logo"
+            ? "Slim ribbon · rectangular logo panels · horizontal series rails"
             : "Original orange / red / white display2 layout",
         arena:
           output() === "scoreboard"

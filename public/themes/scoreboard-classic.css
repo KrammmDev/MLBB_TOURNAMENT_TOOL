@@ -6,79 +6,50 @@ body {
   --sb-right: #ff0101;
   --sb-border: #d6d6da;
 }
-/* Compact Classic HUD: cover the source's logo slot and keep its stats exposed. */
+/* Reference geometry: tall rectangular logos, shallow ribbon, open upper HUD. */
 .sb-frame {
-  height: 116px;
   background: var(--header-bg, var(--sb-panel));
 }
 .sb-frame::after {
   height: 1px;
-  opacity: 0.35;
+  opacity: 0.5;
 }
 .sb-banner {
   height: 124px;
+  background: #ffffff;
   box-sizing: border-box;
-  background: var(--header-bg, var(--sb-panel));
-  border: 0;
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% calc(100% - 8px),
-    calc(100% - 8px) 100%,
-    0 100%
-  );
-}
-.sb-banner-left {
-  left: 342px;
-  width: 168px;
+  border-bottom: 2px solid var(--blue-accent, var(--sb-left));
 }
 .sb-banner-right {
-  width: 116px;
+  border-bottom-color: var(--red-accent, var(--sb-right));
 }
 .sb-banner::after {
   content: "";
   position: absolute;
-  inset: 0 auto 0 0;
-  width: 3px;
-  background: var(--blue-accent, var(--sb-left));
+  inset: 0;
+  border-left: 2px solid var(--blue-accent, var(--sb-left));
 }
 .sb-banner-right::after {
-  background: var(--red-accent, var(--sb-right));
-}
-.sb-team-logo {
-  height: 104px;
+  border-left: 0;
+  border-right: 2px solid var(--red-accent, var(--sb-right));
 }
 .sb-team-logo img {
-  width: 72px;
-  height: 72px;
-  padding: 5px;
-  box-sizing: border-box;
-  background: #ffffff;
-  border-radius: 50%;
-}
-#displayImage1 {
-  transform: translateX(-20px);
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
 }
 .lower {
-  top: 52px;
-  height: 64px;
-}
-.midscorename,
-.teamnamesc {
-  height: 64px;
+  pointer-events: none;
 }
 .teamnamesc {
   background: var(--header-bg, var(--sb-panel));
   color: var(--sb-readable, var(--sb-text));
-  padding: 0 22px;
-  gap: 20px;
+  padding: 0 16px;
 }
 .teamnamesc::before {
   content: "";
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+  inset: auto 0 0;
   height: 2px;
   background: var(--blue-accent, var(--sb-left));
 }
@@ -86,84 +57,51 @@ body {
   background: var(--red-accent, var(--sb-right));
 }
 .name-box {
-  font-size: 34px;
-  letter-spacing: 0.5px;
+  font-size: 28px;
+  letter-spacing: 0.75px;
 }
 .score-dots {
+  position: absolute;
+  bottom: 7px;
+  right: 14px;
   padding: 0;
-  gap: 6px;
+  gap: 5px;
   background: transparent;
 }
-.sb-win {
-  width: 8px;
-  height: 17px;
-  transform: skewX(-12deg);
-  background: var(--sb-muted-readable, var(--sb-muted));
-  opacity: 0.25;
+.sb-right .score-dots {
+  left: 14px;
+  right: auto;
 }
-.sb-right .sb-win {
-  transform: skewX(12deg);
+.sb-win {
+  width: 34px;
+  height: 5px;
+  background: var(--sb-muted-readable, var(--sb-muted));
+  opacity: 0.6;
 }
 .sb-win.active {
   opacity: 1;
 }
 #sb-tournament-logo {
-  left: 901px;
-  top: 46px;
-  width: 118px;
-  height: 82px;
+  left: 912px;
+  top: 58px;
+  width: 96px;
+  height: 64px;
   padding: 0;
-  box-sizing: border-box;
   background: transparent;
-  filter: drop-shadow(0 1px 0 #fff) drop-shadow(1px 0 0 #fff)
-    drop-shadow(-1px 0 0 #fff);
+  filter: drop-shadow(0 1px 0 #ffffff);
 }
-.logo.match-info,
-.matchinfo-content,
-#sb-sponsors {
-  height: 104px;
-}
-.matchinfo-content {
-  gap: 6px;
-}
-.matchinfo-content > span {
-  font-size: 18px;
-  letter-spacing: 0.5px;
-}
-#matchinfo-day,
-#match-display {
-  font-size: 13px;
-}
-#sb-sponsors {
-  padding: 12px 16px;
-}
-#sb-production-strip {
-  top: 104px;
-  height: 24px;
-  font-size: 12px;
-}
-/* Empty alignment spacers must not sit over the visible team logo. */
-.lower {
-  pointer-events: none;
-}
-
-.gb2 {
-  position: relative;
-}
-.gb2::before {
+/* Short corner seams distinguish Classic without changing the reference layout. */
+.sb-banner::before {
   content: "";
   position: absolute;
+  left: 10px;
   top: 0;
-  left: -10px;
-  width: calc(100% + 20px);
-  height: 76px;
-  background: var(--header-bg, var(--sb-panel));
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% calc(100% - 8px),
-    calc(100% - 8px) 100%,
-    8px 100%,
-    0 calc(100% - 8px)
-  );
+  width: 22px;
+  height: 2px;
+  background: var(--blue-accent, var(--sb-left));
+}
+.sb-banner-right::before {
+  left: auto;
+  right: 10px;
+  background: var(--red-accent, var(--sb-right));
 }
