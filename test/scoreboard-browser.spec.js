@@ -427,7 +427,10 @@ test(
     for (const selector of [".name-box", ".score-dots"]) {
       for (const box of await pinned.locator(selector).all()) {
         const bounds = await box.boundingBox();
-        assert.ok(Math.abs(bounds.y + bounds.height / 2 - 95) < 1, `${selector} is vertically centered in the rail`);
+        assert.ok(
+          Math.abs(bounds.y + bounds.height / 2 - 95) < 1,
+          `${selector} is vertically centered in the rail`,
+        );
       }
     }
     const winRail = await pinned.locator(".sb-win").first().boundingBox();
@@ -495,6 +498,19 @@ test(
       broadcast({ type: "roster_theme_update", ...themes.snapshot() });
       await ready(live, id);
       assert.equal(await live.locator("#sb-tournament-logo").isVisible(), true);
+      if (id === "studio") {
+        const left = await live.locator(".sb-banner-left").boundingBox();
+        const right = await live.locator(".sb-banner-right").boundingBox();
+        assert.equal(left.width, right.width);
+        assert.equal(left.height, 132);
+        assert.equal(left.height, right.height);
+        for (const selector of [".name-box", ".score-dots"]) {
+          for (const element of await live.locator(selector).all()) {
+            const box = await element.boundingBox();
+            assert.ok(Math.abs(box.y + box.height / 2 - 94) < 1);
+          }
+        }
+      }
       if (id === "classic") {
         const center = await live.locator("#sb-tournament-logo").boundingBox();
         assert.ok(
@@ -521,20 +537,20 @@ test(
     const frame = admin.frames().find((frame) => frame !== admin.mainFrame());
     await frame.waitForFunction(
       () =>
-        getComputedStyle(document.querySelector(".sb-left")).borderLeftColor ===
-        "rgb(187, 102, 221)",
+        getComputedStyle(document.querySelector(".sb-left"), "::before")
+          .backgroundColor === "rgb(187, 102, 221)",
     );
     assert.notEqual(
       await live
         .locator(".sb-left")
-        .evaluate((el) => getComputedStyle(el).borderLeftColor),
+        .evaluate((el) => getComputedStyle(el, "::before").backgroundColor),
       "rgb(187, 102, 221)",
     );
     await admin.locator("#save-colors").click();
     await live.waitForFunction(
       () =>
-        getComputedStyle(document.querySelector(".sb-left")).borderLeftColor ===
-        "rgb(187, 102, 221)",
+        getComputedStyle(document.querySelector(".sb-left"), "::before")
+          .backgroundColor === "rgb(187, 102, 221)",
     );
     assert.deepEqual(colors.snapshot().data.palettes.studio.scoreboard, {
       left: "#bb66dd",
@@ -571,7 +587,7 @@ test(
     assert.equal(
       await live
         .locator(".sb-left")
-        .evaluate((el) => getComputedStyle(el).borderLeftColor),
+        .evaluate((el) => getComputedStyle(el, "::before").backgroundColor),
       "rgb(187, 102, 221)",
     );
     await admin.locator("#preview-output").selectOption("scoreboard");

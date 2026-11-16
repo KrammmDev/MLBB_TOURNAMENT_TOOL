@@ -85,7 +85,7 @@
             : "Subtle mirrored cards · navy/cyan stage",
         studio:
           output() === "scoreboard"
-            ? "White HUD frame · blue/red wing panels"
+            ? "Pearl desk · mirrored wings · slanted series markers"
             : "White team desks · slim center clock",
       };
       if (output() === "postdraft")
