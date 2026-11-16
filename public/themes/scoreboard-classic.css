@@ -133,14 +133,19 @@ body {
   filter: drop-shadow(0 1px 0 #ffffff);
 }
 .lower {
-  top: 80px;
+  top: 56px;
+  height: 78px;
   pointer-events: none;
 }
+.midscorename {
+  height: 78px;
+}
 .teamnamesc {
+  height: 78px;
   background: transparent;
   color: var(--sb-readable, var(--sb-text));
-  padding: 2px 32px 0;
-  align-items: flex-start;
+  padding: 0 32px;
+  align-items: center;
 }
 .teamnamesc::before {
   content: "";
@@ -167,7 +172,9 @@ body {
 }
 .score-dots {
   position: absolute;
-  bottom: 8px;
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
   right: 14px;
   padding: 0;
   gap: 4px;
@@ -189,9 +196,9 @@ body {
 }
 #sb-tournament-logo {
   left: 900px;
-  top: 56px;
+  top: 59px;
   width: 120px;
-  height: 124px;
+  height: 72px;
   padding: 0;
   background: transparent;
   filter: drop-shadow(0 1px 0 #ffffff);
