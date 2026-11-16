@@ -72,6 +72,14 @@
   defaults.scoreboard = Object.fromEntries(
     themes.map((id) => [id, { ...defaults.draft[id] }]),
   );
+  defaults.scoreboard.studio = {
+    background: "#101820",
+    left: "#16c6d3",
+    right: "#f23b58",
+    text: "#f7f3e9",
+    muted: "#b4bec7",
+    border: "#b9a879",
+  };
   defaults.scoreboard.classic = {
     background: "#242424",
     left: "#f08b2b",
