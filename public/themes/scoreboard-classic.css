@@ -190,10 +190,10 @@ body {
   background: var(--sb-muted-readable, var(--sb-muted));
   opacity: 0.4;
   clip-path: none;
-  transform: skewX(-10deg);
+  transform: skewX(10deg);
 }
 .sb-right .sb-win {
-  transform: skewX(10deg);
+  transform: skewX(-10deg);
 }
 .sb-win.active {
   opacity: 1;
