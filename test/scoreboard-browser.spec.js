@@ -504,6 +504,40 @@ test(
         assert.equal(left.width, right.width);
         assert.equal(left.height, 132);
         assert.equal(left.height, right.height);
+        const paletteProbe = await live.evaluate(() => {
+          const style = document.createElement("style");
+          style.textContent = BroadcastColorModel.style(
+            "studio",
+            "scoreboard",
+            {
+              background: "#182030",
+              left: "#22bbcc",
+              right: "#cc3344",
+              text: "#ffeecc",
+              muted: "#abcdef",
+              border: "#cc44aa",
+            },
+          );
+          document.head.append(style);
+          const result = {
+            name: getComputedStyle(document.querySelector(".teamnamesc")).color,
+            day: getComputedStyle(document.getElementById("matchinfo-day"))
+              .color,
+            holder: getComputedStyle(document.querySelector(".sb-banner"))
+              .backgroundImage,
+            panel: getComputedStyle(document.querySelector(".sb-frame"))
+              .backgroundImage,
+            active: getComputedStyle(document.querySelector(".sb-win.active"))
+              .backgroundImage,
+          };
+          style.remove();
+          return result;
+        });
+        assert.equal(paletteProbe.name, "rgb(255, 238, 204)");
+        assert.equal(paletteProbe.day, "rgb(171, 205, 239)");
+        assert.ok(paletteProbe.holder.includes("204, 68, 170"));
+        assert.ok(paletteProbe.panel.includes("24, 32, 48"));
+        assert.ok(paletteProbe.active.includes("204, 68, 170"));
         for (const selector of [".name-box", ".score-dots"]) {
           for (const element of await live.locator(selector).all()) {
             const box = await element.boundingBox();
@@ -537,20 +571,24 @@ test(
     const frame = admin.frames().find((frame) => frame !== admin.mainFrame());
     await frame.waitForFunction(
       () =>
-        getComputedStyle(document.querySelector(".sb-left"), "::before")
-          .backgroundColor === "rgb(187, 102, 221)",
+        getComputedStyle(document.body)
+          .getPropertyValue("--blue-accent")
+          .trim() === "#bb66dd",
     );
     assert.notEqual(
       await live
         .locator(".sb-left")
-        .evaluate((el) => getComputedStyle(el, "::before").backgroundColor),
-      "rgb(187, 102, 221)",
+        .evaluate((el) =>
+          getComputedStyle(el).getPropertyValue("--blue-accent").trim(),
+        ),
+      "#bb66dd",
     );
     await admin.locator("#save-colors").click();
     await live.waitForFunction(
       () =>
-        getComputedStyle(document.querySelector(".sb-left"), "::before")
-          .backgroundColor === "rgb(187, 102, 221)",
+        getComputedStyle(document.body)
+          .getPropertyValue("--blue-accent")
+          .trim() === "#bb66dd",
     );
     assert.deepEqual(colors.snapshot().data.palettes.studio.scoreboard, {
       left: "#bb66dd",
@@ -587,8 +625,10 @@ test(
     assert.equal(
       await live
         .locator(".sb-left")
-        .evaluate((el) => getComputedStyle(el, "::before").backgroundColor),
-      "rgb(187, 102, 221)",
+        .evaluate((el) =>
+          getComputedStyle(el).getPropertyValue("--blue-accent").trim(),
+        ),
+      "#bb66dd",
     );
     await admin.locator("#preview-output").selectOption("scoreboard");
     await admin.waitForFunction(

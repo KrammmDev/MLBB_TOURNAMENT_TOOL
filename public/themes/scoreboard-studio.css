@@ -18,33 +18,41 @@
 body,
 body.theme-m {
   --sb-panel: #0a0b10;
-  --sb-panel-2: #14161f;
+
   --sb-text: #fff8e6;
   --sb-muted: #b8b2a0;
   --sb-left: #2f8cff; /* fallback blue team */
   --sb-right: #e0243c; /* fallback red team */
   --sb-border: #d9a93a; /* gold */
-  --gold-1: #fff1b8;
-  --gold-2: #e6b840;
-  --gold-3: #8a6418;
-  --crest-bg: linear-gradient(180deg, #1b1710 0%, #0a0b10 100%);
-  --glow: 0 0 14px rgba(230, 184, 64, 0.45);
 }
 
 /* ---------- MPL ---------- */
 body.theme-mpl {
   --sb-panel: #070d1f;
-  --sb-panel-2: #0e1a38;
+
   --sb-text: #f2f7ff;
   --sb-muted: #9fb2d6;
   --sb-left: #19b5ff;
   --sb-right: #ff6a1a;
   --sb-border: #3d7bff;
-  --gold-1: #bfe0ff;
-  --gold-2: #3d7bff;
-  --gold-3: #14308a;
-  --crest-bg: linear-gradient(180deg, #12214a 0%, #070d1f 100%);
-  --glow: 0 0 14px rgba(61, 123, 255, 0.55);
+}
+
+/* All decorative shades derive from the same six editor controls. */
+body {
+  --sb-panel-2: color-mix(
+    in srgb,
+    var(--header-bg, var(--sb-panel)) 88%,
+    white
+  );
+  --gold-2: var(--edge, var(--sb-border));
+  --gold-1: color-mix(in srgb, var(--gold-2) 65%, white);
+  --gold-3: color-mix(in srgb, var(--gold-2) 65%, black);
+  --crest-bg: linear-gradient(
+    180deg,
+    var(--sb-panel-2),
+    var(--header-bg, var(--sb-panel))
+  );
+  --glow: 0 0 14px color-mix(in srgb, var(--gold-2) 45%, transparent);
 }
 
 /* ---------- MAIN RAIL ---------- */
@@ -151,7 +159,7 @@ body.theme-mpl {
 .teamnamesc {
   align-items: center;
   padding: 0 26px;
-  color: var(--sb-text);
+  color: var(--sb-readable, var(--sb-text));
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 50%),
     transparent;
@@ -227,7 +235,8 @@ body.theme-mpl {
 .sb-right .sb-win {
   transform: scaleX(-1);
 }
-.sb-win.active {
+.sb-left .sb-win.active,
+.sb-right .sb-win.active {
   background: linear-gradient(180deg, var(--gold-1), var(--gold-2));
   filter: drop-shadow(0 0 6px var(--gold-2));
 }
@@ -255,7 +264,7 @@ body.theme-mpl {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 45%),
     var(--header-bg, var(--sb-panel));
-  color: var(--sb-text);
+  color: var(--sb-readable, var(--sb-text));
   border-left: 2px solid var(--gold-2);
   padding: 10px 10px 36px;
   gap: 6px;
@@ -266,13 +275,17 @@ body.theme-mpl {
   font-weight: 400;
   letter-spacing: 2px;
   text-transform: uppercase;
-  background: linear-gradient(180deg, var(--gold-1), var(--gold-2));
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--sb-readable, var(--sb-text)) 80%, white),
+    var(--sb-readable, var(--sb-text))
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 #matchinfo-day {
-  color: var(--sb-muted);
+  color: var(--sb-muted-readable, var(--sb-muted));
   letter-spacing: 2px;
 }
 #match-display {
@@ -291,14 +304,11 @@ body.theme-mpl {
     var(--gold-2) 50%,
     var(--gold-3)
   );
-  color: #0a0b10;
+  color: var(--sb-trim-text, #0a0b10);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-}
-body.theme-mpl #match-display {
-  color: #ffffff;
 }
 
 /* ---------- SPONSORS ---------- */
@@ -318,8 +328,12 @@ body.theme-mpl #match-display {
 }
 #sb-patch-label,
 #sb-caster-cell {
-  background: linear-gradient(180deg, var(--sb-panel-2), var(--sb-panel));
-  color: var(--sb-text);
+  background: linear-gradient(
+    180deg,
+    var(--sb-panel-2),
+    var(--header-bg, var(--sb-panel))
+  );
+  color: var(--sb-readable, var(--sb-text));
   border-top: 2px solid var(--gold-2);
   box-sizing: border-box;
   text-transform: uppercase;
