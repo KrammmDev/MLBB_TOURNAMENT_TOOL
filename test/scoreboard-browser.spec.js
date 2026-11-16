@@ -365,9 +365,19 @@ test(
       rightHolder.height,
       "Classic team-logo holders have equal heights",
     );
+    assert.equal(
+      await pinned
+        .locator(".sb-banner-left")
+        .evaluate((el) => getComputedStyle(el).clipPath),
+      await pinned
+        .locator(".sb-banner-right")
+        .evaluate((el) => getComputedStyle(el).clipPath),
+      "CCA uses the identical TCU cut, not a mirrored holder",
+    );
     const connector = await pinned.locator(".scoreboard").evaluate((el) => {
       const css = getComputedStyle(el, "::before");
       return {
+        top: parseFloat(css.top),
         left: parseFloat(css.left),
         width: parseFloat(css.width),
         height: parseFloat(css.height),
@@ -378,7 +388,16 @@ test(
       connector.left <= 342 && connector.left + connector.width >= leftHolder.x,
       "the separate rectangle bridges the minimap and left holder",
     );
-    assert.equal(connector.height, leftHolder.height);
+    const rail = await pinned.locator(".sb-frame").boundingBox();
+    assert.equal(
+      connector.top + connector.height,
+      rail.y + rail.height,
+      "the connector ends at the side-rail baseline",
+    );
+    assert.ok(
+      connector.height < leftHolder.height,
+      "the connector line stays above the bottom of the logo holder",
+    );
     assert.equal(
       connector.color,
       "rgb(51, 46, 46)",
