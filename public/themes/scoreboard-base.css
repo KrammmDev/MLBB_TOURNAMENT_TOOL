@@ -321,3 +321,8 @@ body {
   object-fit: contain;
   pointer-events: none;
 }
+
+/* The minimap outline belongs only to Classic. */
+.sb-map-frame {
+  display: none;
+}

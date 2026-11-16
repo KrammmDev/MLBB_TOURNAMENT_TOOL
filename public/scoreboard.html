@@ -28,6 +28,20 @@
   <body>
     <main id="scoreboard-stage">
       <div class="scoreboard" aria-label="Gameplay scoreboard overlay">
+        <svg class="sb-map-frame" viewBox="0 0 342 342" aria-hidden="true">
+          <defs>
+            <linearGradient id="classic-map-edge" x1="1" y1="0" x2="0" y2="1">
+              <stop class="map-edge-start" offset="0" />
+              <stop class="map-edge-end" offset="1" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M340 0 V300 L300 340 H0"
+            fill="none"
+            stroke="url(#classic-map-edge)"
+            stroke-width="3"
+          />
+        </svg>
         <div class="sb-frame" aria-hidden="true"></div>
         <div class="sb-banner sb-banner-left" aria-hidden="true"></div>
         <div class="sb-banner sb-banner-right" aria-hidden="true"></div>
