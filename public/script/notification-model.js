@@ -34,9 +34,10 @@
         id: "lord-slain",
         label: "Lord Slain",
       },
-      { id: "shutdown", label: "Shutdown" },
-      { id: "killing-spree", label: "Killing Spree" },
-      { id: "wipe-out", label: "Wipe Out" },
+      { id: "lord-stolen", label: "Lord Stolen" },
+      { id: "turtle-stolen", label: "Turtle Stolen" },
+      { id: "perfect-turtle", label: "Perfect Turtle" },
+      { id: "wipe-out", label: "Wipeout" },
     ].map(Object.freeze),
   );
   const event = (id) => events.find((item) => item.id === id);
