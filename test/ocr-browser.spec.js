@@ -96,6 +96,8 @@ test(
       errors = [];
     panel.on("pageerror", (e) => errors.push(e.message));
     await panel.addInitScript(() => {
+      // Reproduce Chromium suppressing presentation callbacks while decode continues.
+      HTMLVideoElement.prototype.requestVideoFrameCallback = () => 0;
       const camera = document.createElement("canvas");
       camera.width = 1920;
       camera.height = 1080;
@@ -176,6 +178,15 @@ test(
       rect.width * 2 + 16,
       rect.height * 2 + 16,
     ]);
+    await panel.waitForFunction(() => performance.now() > 6000);
+    assert.equal(
+      await panel.evaluate(() => window.__captureTrack.readyState),
+      "live",
+    );
+    assert.ok(
+      (await panel.locator("#capture-info").textContent()) !==
+        "Capture disconnected",
+    );
     const overlay = await context.newPage();
     overlay.on("pageerror", (e) => errors.push(e.message));
     await overlay.goto(origin + "/scoreboardocr.html");
@@ -208,6 +219,44 @@ test(
         path: process.env.MLBB_OCR_SCREENSHOT,
         fullPage: true,
       });
+    await panel.bringToFront();
+    await panel.evaluate(() => {
+      const video = document.querySelector("#video"),
+        total = video.getVideoPlaybackQuality().totalVideoFrames;
+      video.getVideoPlaybackQuality = () => ({ totalVideoFrames: total });
+    });
+    await panel.waitForFunction(
+      () =>
+        document.querySelector("#message").textContent.includes("OCR paused"),
+      { timeout: 10000 },
+    );
+    await panel.waitForFunction(
+      async () => !(await (await fetch("/api/ocr/state")).json()).active,
+    );
+    assert.equal(store.state().active, false);
+    assert.equal(
+      await panel.evaluate(() => window.__captureTrack.readyState),
+      "live",
+      "a stall pauses OCR without shutting down the camera",
+    );
+    await overlay.waitForFunction(
+      () => document.querySelector("#homescore-value").textContent === "--",
+    );
+    await panel.evaluate(() => {
+      delete document.querySelector("#video").getVideoPlaybackQuality;
+    });
+    await panel.waitForFunction(() =>
+      document
+        .querySelector("#message")
+        .textContent.includes("Video frames resumed"),
+    );
+    await panel.locator("#start").click();
+    await panel.waitForFunction(
+      () =>
+        document.querySelector(
+          'tr[data-field="blueKills"] [data-key="accepted"]',
+        ).textContent === "12",
+    );
     await panel.locator("#stop").click();
     await overlay.waitForFunction(
       () => document.querySelector("#homescore-value").textContent === "--",
