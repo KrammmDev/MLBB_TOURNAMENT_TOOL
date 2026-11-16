@@ -110,7 +110,11 @@ body {
     color-mix(in srgb, var(--header-bg, var(--sb-panel)) 78%, white) 50%,
     var(--header-bg, var(--sb-panel))
   );
-  clip-path: inherit;
+  /* Inset bevel coordinates keep a 3px diagonal border on both sides. */
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 78.24px 100%, 0 81.76px);
+}
+.sb-banner-left::before {
+  clip-path: polygon(0 0, 100% 0, 100% 81.76px, 31.76px 100%, 0 100%);
 }
 .sb-banner::after {
   content: "";
