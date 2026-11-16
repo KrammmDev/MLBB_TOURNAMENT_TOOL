@@ -202,6 +202,17 @@ test(
       await themes.select(id, themes.snapshot().revision);
       broadcast({ type: "roster_theme_update", ...themes.snapshot() });
       await ready(live, id);
+      assert.equal(
+        await live.locator(".sb-map-frame").isVisible(),
+        id === "classic",
+        "the reference minimap outline belongs only to Classic",
+      );
+      if (id === "classic")
+        assert.equal(
+          await live.locator(".sb-map-frame path").getAttribute("fill"),
+          "none",
+          "the minimap frame never fills the game map",
+        );
       await live.bringToFront();
       broadcast({
         type: "notification_trigger",
@@ -295,10 +306,11 @@ test(
       { background: "#332e2e", left: "#5ed100", right: "#ff0101" },
       colors.snapshot().revision,
     );
-    await pinned.waitForFunction(
-      () =>
-        getComputedStyle(document.querySelector(".sb-left")).backgroundColor ===
-        "rgb(51, 46, 46)",
+    await pinned.waitForFunction(() =>
+      getComputedStyle(
+        document.querySelector(".sb-frame"),
+        "::before",
+      ).backgroundImage.includes("51, 46, 46"),
     );
     const accent = await pinned
       .locator(".sb-left")
@@ -306,7 +318,7 @@ test(
     assert.equal(
       accent,
       "rgb(94, 209, 0)",
-      "Classic uses the saved team color as an accent on its neutral ribbon",
+      "Classic keeps the saved team accent on its framed rail",
     );
     assert.equal(
       await pinned
@@ -345,7 +357,7 @@ test(
           ),
       ),
       true,
-      "Classic keeps the left logo gutter covered with the shared frame",
+      "Classic covers the left logo slot while its raised rail leaves the HUD open",
     );
     assert.equal(
       await pinned
@@ -354,7 +366,7 @@ test(
       "rgba(0, 0, 0, 0)",
       "uploaded tournament logo has no added white box",
     );
-    assert.equal((await pinned.locator(".lower").boundingBox()).y, 62);
+    assert.equal((await pinned.locator(".lower").boundingBox()).y, 80);
     const winRail = await pinned.locator(".sb-win").first().boundingBox();
     assert.ok(
       winRail.width > winRail.height * 3,
@@ -420,6 +432,13 @@ test(
       broadcast({ type: "roster_theme_update", ...themes.snapshot() });
       await ready(live, id);
       assert.equal(await live.locator("#sb-tournament-logo").isVisible(), true);
+      if (id === "classic") {
+        const center = await live.locator("#sb-tournament-logo").boundingBox();
+        assert.ok(
+          center.y + center.height > 134 && center.y + center.height <= 190,
+          "Classic logo projects below the 134px rail like the supplied frame",
+        );
+      }
       if (process.env.MLBB_CAPTURE_DIR)
         await live.screenshot({
           omitBackground: true,

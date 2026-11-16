@@ -77,7 +77,7 @@
       const details = {
         classic:
           output() === "scoreboard"
-            ? "Charcoal competition frame · cut-corner logos · segmented series marks"
+            ? "Angled charcoal rail · gold frame · minimap outline"
             : "Original orange / red / white display2 layout",
         arena:
           output() === "scoreboard"
