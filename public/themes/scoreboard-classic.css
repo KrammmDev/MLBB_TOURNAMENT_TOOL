@@ -73,18 +73,32 @@ body {
   clip-path: polygon(0 0, 100% 0, calc(100% - 28px) 100%, 28px 100%);
 }
 .sb-banner {
+  width: 116px;
   height: 166px;
   background: var(--edge, var(--sb-border));
-  clip-path: polygon(0 0, 100% 0, 100% 86px, 88px 100%, 0 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 86px, 36px 100%, 0 100%);
 }
 .sb-banner-left {
-  left: 342px;
-  width: 168px;
+  left: 394px;
 }
 .sb-banner-right {
   left: 1415px;
   width: 116px;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 80px 100%, 0 86px);
+}
+/* Separate map connector: it never changes either logo holder's dimensions. */
+.scoreboard::before {
+  content: "";
+  position: absolute;
+  left: 340px;
+  top: 0;
+  width: 56px;
+  height: 166px;
+  box-sizing: border-box;
+  background: var(--header-bg, var(--sb-panel));
+  border-top: 3px solid var(--edge, var(--sb-border));
+  border-bottom: 3px solid var(--edge, var(--sb-border));
+  pointer-events: none;
 }
 .sb-banner::before {
   content: "";

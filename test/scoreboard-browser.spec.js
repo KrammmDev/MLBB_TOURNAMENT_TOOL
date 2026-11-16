@@ -347,24 +347,42 @@ test(
     );
     assert.equal(await pinned.locator("#sb-sponsors img").isVisible(), true);
     assert.equal(
-      await pinned.evaluate(() =>
-        document
-          .elementsFromPoint(365, 110)
-          .some(
-            (el) =>
-              el.classList.contains("sb-banner-left") ||
-              el.classList.contains("sb-frame"),
-          ),
-      ),
-      true,
-      "Classic covers the left logo slot while its raised rail leaves the HUD open",
-    );
-    assert.equal(
       await pinned
         .locator("#sb-tournament-logo")
         .evaluate((el) => getComputedStyle(el).backgroundColor),
       "rgba(0, 0, 0, 0)",
       "uploaded tournament logo has no added white box",
+    );
+    const leftHolder = await pinned.locator(".sb-banner-left").boundingBox();
+    const rightHolder = await pinned.locator(".sb-banner-right").boundingBox();
+    assert.equal(
+      leftHolder.width,
+      rightHolder.width,
+      "Classic team-logo holders have equal widths",
+    );
+    assert.equal(
+      leftHolder.height,
+      rightHolder.height,
+      "Classic team-logo holders have equal heights",
+    );
+    const connector = await pinned.locator(".scoreboard").evaluate((el) => {
+      const css = getComputedStyle(el, "::before");
+      return {
+        left: parseFloat(css.left),
+        width: parseFloat(css.width),
+        height: parseFloat(css.height),
+        color: css.backgroundColor,
+      };
+    });
+    assert.ok(
+      connector.left <= 342 && connector.left + connector.width >= leftHolder.x,
+      "the separate rectangle bridges the minimap and left holder",
+    );
+    assert.equal(connector.height, leftHolder.height);
+    assert.equal(
+      connector.color,
+      "rgb(51, 46, 46)",
+      "the connector masks the source with the saved panel color",
     );
     assert.equal((await pinned.locator(".lower").boundingBox()).y, 80);
     const winRail = await pinned.locator(".sb-win").first().boundingBox();
