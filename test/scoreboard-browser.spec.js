@@ -338,10 +338,14 @@ test(
       await pinned.evaluate(() =>
         document
           .elementsFromPoint(365, 110)
-          .some((el) => el.classList.contains("sb-banner-left")),
+          .some(
+            (el) =>
+              el.classList.contains("sb-banner-left") ||
+              el.classList.contains("sb-frame"),
+          ),
       ),
       true,
-      "Classic masks the native left logo gutter below the name ribbon",
+      "Classic keeps the left logo gutter covered with the shared frame",
     );
     assert.equal(
       await pinned
@@ -350,7 +354,19 @@ test(
       "rgba(0, 0, 0, 0)",
       "uploaded tournament logo has no added white box",
     );
-    assert.equal((await pinned.locator(".lower").boundingBox()).y, 52);
+    assert.equal((await pinned.locator(".lower").boundingBox()).y, 62);
+    const winRail = await pinned.locator(".sb-win").first().boundingBox();
+    assert.ok(
+      winRail.width > winRail.height * 4,
+      "Classic matches the horizontal series-marker reference",
+    );
+    assert.equal(
+      await pinned
+        .locator("#displayImage1")
+        .evaluate((el) => getComputedStyle(el).borderRadius),
+      "0px",
+      "team logos retain their original shape within rectangular panels",
+    );
 
     if (process.env.MLBB_CAPTURE_DIR)
       await pinned.screenshot({
