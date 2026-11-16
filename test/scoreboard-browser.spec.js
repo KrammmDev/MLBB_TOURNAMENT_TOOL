@@ -357,8 +357,8 @@ test(
     assert.equal((await pinned.locator(".lower").boundingBox()).y, 62);
     const winRail = await pinned.locator(".sb-win").first().boundingBox();
     assert.ok(
-      winRail.width > winRail.height * 4,
-      "Classic matches the horizontal series-marker reference",
+      winRail.width > winRail.height * 3,
+      "Classic keeps horizontal series markers within the shared format",
     );
     assert.equal(
       await pinned
