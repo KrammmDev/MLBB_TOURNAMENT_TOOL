@@ -423,7 +423,13 @@ test(
       "rgb(51, 46, 46)",
       "the connector masks the source with the saved panel color",
     );
-    assert.equal((await pinned.locator(".lower").boundingBox()).y, 80);
+    assert.equal((await pinned.locator(".lower").boundingBox()).y, 56);
+    for (const selector of [".name-box", ".score-dots"]) {
+      for (const box of await pinned.locator(selector).all()) {
+        const bounds = await box.boundingBox();
+        assert.ok(Math.abs(bounds.y + bounds.height / 2 - 95) < 1, `${selector} is vertically centered in the rail`);
+      }
+    }
     const winRail = await pinned.locator(".sb-win").first().boundingBox();
     assert.ok(
       winRail.width > winRail.height * 3,
@@ -492,8 +498,8 @@ test(
       if (id === "classic") {
         const center = await live.locator("#sb-tournament-logo").boundingBox();
         assert.ok(
-          center.y + center.height > 134 && center.y + center.height <= 190,
-          "Classic logo projects below the 134px rail like the supplied frame",
+          Math.abs(center.y + center.height / 2 - 95) < 1,
+          "Classic tournament logo is centered vertically in the taller rail",
         );
       }
       if (process.env.MLBB_CAPTURE_DIR)
