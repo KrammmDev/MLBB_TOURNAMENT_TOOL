@@ -159,28 +159,36 @@
   }
   function show(cue) {
     if (cue.type !== "notification_trigger") return;
-    if (cue.scope === "player") {
+    if (cue.scope === "player" || cue.scope === "team") {
+      const teamCue = cue.scope === "team";
       const event = model.event(cue.eventId);
       if (
         !event ||
         !["blue", "red"].includes(cue.teamSide) ||
-        typeof cue.playerName !== "string" ||
+        (teamCue
+          ? event.id !== "wipe-out"
+          : typeof cue.playerName !== "string") ||
         typeof cue.teamName !== "string"
       )
         return;
       reset();
       const version = generation;
       setTitle(event.label);
-      document.getElementById("notification-player").textContent =
-        cue.playerName;
-      loadRole(cue.playerRole, version);
+      document.getElementById("notification-player").textContent = teamCue
+        ? cue.teamName
+        : cue.playerName;
+      if (!teamCue) loadRole(cue.playerRole, version);
       banner.dataset.side = cue.teamSide;
+      banner.dataset.scope = cue.scope;
       banner.hidden = false;
       banner.dataset.phase = "holding";
-      loadArtwork(cue, version);
+      loadArtwork(
+        teamCue ? { teamLogo: cue.teamLogo, playerImages: [] } : cue,
+        version,
+      );
       if (!reduced()) enter();
       timeout = setTimeout(() => finish(version), 4000);
-      return; // Individual cues never load, play or depend on a WebM clip.
+      return; // Player/team lower-thirds never load, play or depend on a WebM clip.
     }
     const path = Object.hasOwn(model.videos, cue.videoId)
       ? model.videos[cue.videoId]
