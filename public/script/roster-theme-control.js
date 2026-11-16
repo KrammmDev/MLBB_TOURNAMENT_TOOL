@@ -85,7 +85,7 @@
             : "Subtle mirrored cards · navy/cyan stage",
         studio:
           output() === "scoreboard"
-            ? "Pearl desk · mirrored wings · slanted series markers"
+            ? "Championship rail · team-color wings · ivory crest"
             : "White team desks · slim center clock",
       };
       if (output() === "postdraft")
@@ -97,7 +97,10 @@
       const colors = {
         classic: ["#ffffff", "#ff7200", "#ff0101"],
         arena: ["#091827", "#1bc2d5", "#527fe8"],
-        studio: ["#f1f4f8", "#0757ed", "#e92237"],
+        studio:
+          output() === "scoreboard"
+            ? ["#101820", "#16c6d3", "#f23b58"]
+            : ["#f1f4f8", "#0757ed", "#e92237"],
       };
       for (const card of document.querySelectorAll(".theme-card")) {
         card.querySelector("p").textContent = details[card.dataset.themeId];

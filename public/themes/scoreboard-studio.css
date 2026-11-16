@@ -1,24 +1,43 @@
-body {
-  --sb-panel: #f1f4f8;
-  --sb-text: #18263a;
-  --sb-muted: #52637a;
-  --sb-left: #0757ed;
-  --sb-right: #e92237;
-  --sb-border: #d4dde7;
+@font-face {
+  font-family: "Studio Championship";
+  src: url("/Assets/Font/big_noodle_titling.ttf") format("truetype");
+  font-display: swap;
 }
-/* Pearl desk with mirrored wings; the native top-center HUD stays open. */
+body {
+  --sb-panel: #101820;
+  --sb-text: #f7f3e9;
+  --sb-muted: #b4bec7;
+  --sb-left: #16c6d3;
+  --sb-right: #f23b58;
+  --sb-border: #b9a879;
+}
+/* Championship rail: open native HUD, team-color wings and ivory crest. */
 .sb-frame {
   height: 132px;
-  background: var(--header-bg, var(--sb-panel));
+  background: linear-gradient(
+    110deg,
+    color-mix(in srgb, var(--header-bg, var(--sb-panel)) 88%, white),
+    var(--header-bg, var(--sb-panel)) 45%
+  );
+}
+.sb-frame::before {
+  content: "";
+  position: absolute;
+  left: 536px;
+  top: 55px;
+  width: 166px;
+  height: 77px;
+  background: #f7f3e9;
+  clip-path: polygon(0 0, 100% 0, 86% 100%, 14% 100%);
 }
 .sb-frame::after {
   top: 52px;
-  height: 3px;
+  height: 2px;
   background: var(--edge, var(--sb-border));
 }
 .sb-banner {
   height: 132px;
-  clip-path: polygon(0 0, 100% 0, 100% 108px, 92px 100%, 0 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 106px, 90px 100%, 0 100%);
 }
 .sb-banner-right {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 24px 100%, 0 108px);
@@ -26,11 +45,28 @@ body {
 .sb-banner::after {
   content: "";
   position: absolute;
-  inset: 0 3px 5px;
-  background: var(--header-bg, var(--sb-panel));
-  clip-path: polygon(0 0, 100% 0, 100% 106px, 89px 100%, 0 100%);
+  inset: 3px 3px 5px;
+  background: linear-gradient(
+    145deg,
+    color-mix(
+      in srgb,
+      var(--blue-accent, var(--sb-left)) 24%,
+      var(--header-bg, var(--sb-panel))
+    ),
+    var(--header-bg, var(--sb-panel)) 80%
+  );
+  clip-path: polygon(0 0, 100% 0, 100% 101px, 85px 100%, 0 100%);
 }
 .sb-banner-right::after {
+  background: linear-gradient(
+    215deg,
+    color-mix(
+      in srgb,
+      var(--red-accent, var(--sb-right)) 24%,
+      var(--header-bg, var(--sb-panel))
+    ),
+    var(--header-bg, var(--sb-panel)) 80%
+  );
   clip-path: polygon(0 0, 100% 0, 100% 100%, 21px 100%, 0 106px);
 }
 .sb-team-logo img {
@@ -57,7 +93,7 @@ body {
   left: 20px;
   right: 10px;
   bottom: 0;
-  height: 4px;
+  height: 7px;
   background: var(--blue-accent, var(--sb-left));
   clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
 }
@@ -68,7 +104,9 @@ body {
   transform: scaleX(-1);
 }
 .name-box {
-  font-size: 32px;
+  font-family: "Studio Championship", Impact, "Arial Narrow", sans-serif;
+  font-weight: 400;
+  font-size: 38px;
   letter-spacing: 1px;
   line-height: 1;
 }
@@ -95,9 +133,9 @@ body {
 }
 .sb-win {
   width: 12px;
-  height: 28px;
+  height: 32px;
   background: var(--edge, var(--sb-border));
-  opacity: 0.65;
+  opacity: 0.35;
   clip-path: polygon(0 0, 8px 0, 100% 100%, 4px 100%);
 }
 .sb-right .sb-win {
@@ -130,6 +168,9 @@ body {
   gap: 6px;
 }
 #matchinfo-main {
+  font-family: "Studio Championship", Impact, "Arial Narrow", sans-serif;
+  font-size: 28px;
+  font-weight: 400;
   letter-spacing: 1px;
 }
 #matchinfo-day {
