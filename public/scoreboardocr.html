@@ -15,20 +15,20 @@
         <div class="team-block blue-team">
           <div class="metrics">
             <div class="metric">
-              <span>LORD</span><strong id="bluelord">0</strong>
+              <span>LORD</span><strong id="bluelord">--</strong>
             </div>
             <div class="metric">
-              <span>TOWER</span><strong id="bluetower">0</strong>
+              <span>TOWER</span><strong id="bluetower">--</strong>
             </div>
             <div class="metric gold">
-              <span>GOLD</span><strong id="bluegold">0</strong>
+              <span>GOLD</span><strong id="bluegold">--</strong>
             </div>
           </div>
           <div class="team-footer">
             <div id="name-box-1" class="team-name">BLUE TEAM</div>
             <div id="blue-score-display" class="line-score"></div>
             <div id="homescore" class="kill-score">
-              <span id="homescore-value">1</span>
+              <span id="homescore-value">--</span>
               <div
                 id="blue-turtle-container"
                 class="turtle-container blue-turtle"
@@ -37,7 +37,7 @@
           </div>
         </div>
         <div class="center-block">
-          <!-- <div id="timer" class="timer"></div> -->
+          <div id="timer" class="timer">--:--</div>
           <div class="tournament-badge">
             <span class="badge-small">MATCH</span
             ><span class="badge-main">VS</span>
@@ -49,18 +49,18 @@
         <div class="team-block red-team">
           <div class="metrics">
             <div class="metric gold">
-              <span>GOLD</span><strong id="redgold">0</strong>
+              <span>GOLD</span><strong id="redgold">--</strong>
             </div>
             <div class="metric">
-              <span>TOWER</span><strong id="redtower">0</strong>
+              <span>TOWER</span><strong id="redtower">--</strong>
             </div>
             <div class="metric">
-              <span>LORD</span><strong id="redlord">0</strong>
+              <span>LORD</span><strong id="redlord">--</strong>
             </div>
           </div>
           <div class="team-footer">
             <div id="awayscore" class="kill-score">
-              <span id="awayscore-value">0</span>
+              <span id="awayscore-value">--</span>
               <div
                 id="red-turtle-container"
                 class="turtle-container red-turtle"
@@ -97,167 +97,10 @@
         <div id="name-box-14"></div>
       </div>
     </main>
-    <script src="script/displaynicknamelogo.js"></script>
-    <script src="script/scoreboaedocr.js"></script>
-    <script>
-      (() => {
-        const blueGoldEl = document.getElementById("bluegold");
-        const redGoldEl = document.getElementById("redgold");
-        const leadEl = document.getElementById("goldLead");
-        const valueEl = document.getElementById("goldleadValue");
-
-        function parseGold(value) {
-          const text = String(value ?? "0")
-            .trim()
-            .toUpperCase()
-            .replace(/,/g, "");
-          const number = Number.parseFloat(text.replace(/[^0-9.-]/g, "")) || 0;
-          if (text.includes("M")) return number * 1000000;
-          if (text.includes("K")) return number * 1000;
-          return number;
-        }
-
-        function formatLead(value, side) {
-          const amount = Math.abs(value);
-          let formattedAmount;
-
-          if (amount >= 1000000) {
-            formattedAmount = `${(amount / 1000000).toFixed(1)}M`;
-          } else if (amount >= 1000) {
-            formattedAmount = `${(amount / 1000).toFixed(1)}K`;
-          } else {
-            formattedAmount = Math.round(amount).toLocaleString("en-US");
-          }
-
-          return side === "blue"
-            ? `${formattedAmount}+`
-            : `+${formattedAmount}`;
-        }
-
-        function updateGoldLead() {
-          const difference =
-            parseGold(blueGoldEl?.textContent) -
-            parseGold(redGoldEl?.textContent);
-          leadEl.classList.remove("blue-lead", "red-lead", "even");
-          if (difference > 0) {
-            leadEl.classList.add("blue-lead");
-            valueEl.textContent = formatLead(difference, "blue");
-          } else if (difference < 0) {
-            leadEl.classList.add("red-lead");
-            valueEl.textContent = formatLead(difference, "red");
-          } else {
-            leadEl.classList.add("even");
-            valueEl.textContent = "";
-          }
-        }
-
-        const observer = new MutationObserver(updateGoldLead);
-        [blueGoldEl, redGoldEl].forEach((element) => {
-          if (element)
-            observer.observe(element, {
-              childList: true,
-              characterData: true,
-              subtree: true,
-            });
-        });
-        updateGoldLead();
-        setInterval(updateGoldLead, 500);
-      })();
-
-      // ===== MATCH INFO FETCHER =====
-      async function updateMatchInfoBar() {
-        try {
-          const response = await fetch("/api/matchdata");
-          const data = await response.json();
-
-          const mainEl = document.getElementById("matchinfo-main");
-          const dayEl = document.getElementById("matchinfo-day");
-          const matchEl = document.getElementById("matchinfo-match");
-
-          const info = (data && data.matchInfo) || {};
-
-          const stage = info.stage || (data && data.season) || "";
-          if (mainEl && stage) mainEl.textContent = stage.toUpperCase();
-
-          const group = info.group || (data && data.week) || "";
-          if (dayEl && group) dayEl.textContent = group.toUpperCase();
-
-          if (matchEl && (info.match || info.game)) {
-            const matchText = info.match || "MATCH 1";
-            const gameText = info.game || "GAME 1";
-            matchEl.textContent = `${matchText.toUpperCase()} - ${gameText.toUpperCase()}`;
-          }
-        } catch (e) {
-          console.error("Failed to fetch match info:", e);
-        }
-      }
-
-      // ===== TURTLE COUNTER FETCHER (SMART UPDATE, NO BLINK) =====
-      const TURTLE_ICON_PATH = "Assets/Other/turtle-icon.png";
-
-      // I-preload ang icon para hindi mag-load ulit tuwing gagawa ng bagong img
-      const preloadTurtle = new Image();
-      preloadTurtle.src = TURTLE_ICON_PATH;
-
-      function syncTurtleIcons(container, count) {
-        if (!container) return;
-
-        const currentCount = container.children.length;
-        if (count === currentCount) return;
-
-        if (count > currentCount) {
-          for (let i = currentCount; i < count; i++) {
-            const img = document.createElement("img");
-            img.src = TURTLE_ICON_PATH;
-            img.className = "turtle-icon-img";
-            img.alt = "Turtle";
-            img.decoding = "sync";
-            container.appendChild(img);
-          }
-        } else {
-          for (let i = currentCount; i > count; i--) {
-            if (container.lastChild) {
-              container.removeChild(container.lastChild);
-            }
-          }
-        }
-      }
-
-      async function updateTurtleCounters() {
-        try {
-          const response = await fetch("/api/matchdata");
-          const data = await response.json();
-
-          const blueContainer = document.getElementById(
-            "blue-turtle-container",
-          );
-          const redContainer = document.getElementById("red-turtle-container");
-
-          if (blueContainer && data.teamdata && data.teamdata.blueteam) {
-            const count = data.teamdata.blueteam.turtles || 0;
-            syncTurtleIcons(blueContainer, count);
-          }
-
-          if (redContainer && data.teamdata && data.teamdata.redteam) {
-            const count = data.teamdata.redteam.turtles || 0;
-            syncTurtleIcons(redContainer, count);
-          }
-        } catch (e) {
-          console.error("Failed to fetch turtle counts:", e);
-        }
-      }
-
-      // Initial calls
-      updateMatchInfoBar();
-      updateTurtleCounters();
-
-      // AUTO UPDATE EVERY 1 SECOND (Para hindi na kailangan i-refresh ang OBS)
-      setInterval(updateMatchInfoBar, 1000);
-      setInterval(updateTurtleCounters, 2000);
-
-      // I-expose ang functions para matawagan ng control panel
-      window.updateDisplay = updateMatchInfoBar;
-      window.updateTurtleCounters = updateTurtleCounters;
-    </script>
+    <script src="script/roster-model.js"></script>
+    <script src="script/match-state.js"></script>
+    <script src="script/match-client.js"></script>
+    <script src="script/ocr-model.js"></script>
+    <script src="script/ocr-scoreboard-client.js"></script>
   </body>
 </html>

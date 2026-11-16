@@ -18,9 +18,13 @@ async function sandbox(t, raw) {
   await fs.cp(path.join(source, "lib"), path.join(dir, "lib"), {
     recursive: true,
   });
+  await fs.cp(path.join(source, "ocr"), path.join(dir, "ocr"), {
+    recursive: true,
+  });
   await fs.mkdir(path.join(dir, "public/script"), { recursive: true });
   for (const script of [
     "match-state.js",
+    "ocr-model.js",
     "notification-model.js",
     "roster-model.js",
     "roster-themes.js",
@@ -80,6 +84,12 @@ test(
     const port = env.output().match(/Local:\s+http:\/\/localhost:(\d+)/)[1];
     const url = `http://127.0.0.1:${port}/api/matchdata`;
     assert.deepEqual(await (await fetch(url)).json(), data);
+    const ocrState = await (
+      await fetch(`http://127.0.0.1:${port}/api/ocr/state`)
+    ).json();
+    assert.equal(ocrState.source, "legacy");
+    assert.equal(ocrState.active, false);
+    assert.equal(ocrState.fields.timer.value, null);
     const socket = new WebSocket(`ws://127.0.0.1:${port}`);
     t.after(() => socket.terminate());
     await new Promise((resolve, reject) => {
@@ -107,7 +117,7 @@ test(
     assert.deepEqual(JSON.parse(await fs.readFile(env.file, "utf8")), data);
     const notificationUrl = `http://127.0.0.1:${port}/api/notification`;
     const command = {
-      eventId: "shutdown",
+      eventId: "first-blood",
       teamSide: "red",
       playerIndex: 4,
       expected: require("../public/script/notification-model").identity(
@@ -129,7 +139,7 @@ test(
       (message) => message.type === "notification_trigger",
     );
     assert.equal(cue.playerName, data.teamdata.redteam.playerlist[4].name);
-    assert.equal(cue.eventId, "shutdown");
+    assert.equal(cue.eventId, "first-blood");
     assert.equal(cue.videoId, null);
     assert.deepEqual(
       await (await fetch(url)).json(),
