@@ -237,3 +237,12 @@ td button {
     margin-top: 0;
   }
 }
+
+#video {
+  display: block;
+  width: 160px;
+  height: 90px;
+  object-fit: contain;
+  background: #030609;
+  border: 1px solid var(--line);
+}

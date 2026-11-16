@@ -18,11 +18,14 @@
     dirty = false,
     lastFrame = 0,
     frameCount = 0,
+    decodedFrames = null,
+    captureStalled = false,
     captureEpoch = 0,
     drag;
   let inFlight = false,
     polling = false,
     timer,
+    sampledFrame = null,
     lastLatency = 0;
   const message = (text, error = false) => {
     $("message").textContent = text;
@@ -54,7 +57,11 @@
   }
   function controls() {
     $("start").disabled =
-      !reference || dirty || !settings?.data.profile || inFlight;
+      !reference ||
+      dirty ||
+      captureStalled ||
+      !settings?.data.profile ||
+      inFlight;
     $("live").disabled =
       !sessionId ||
       !running ||
@@ -88,6 +95,9 @@
     image = null;
     reference = null;
     lastFrame = 0;
+    decodedFrames = null;
+    captureStalled = false;
+    sampledFrame = null;
     $("capture-info").textContent = "Capture disconnected";
     controls();
   }
@@ -99,6 +109,28 @@
       frameCount++;
       frameCallback(epoch);
     });
+  }
+  function observeDecodedFrames() {
+    // Video-frame callbacks follow presentation and can be suppressed by Chromium.
+    // Decode progress is independent evidence; a live track alone is not freshness.
+    const total = video.getVideoPlaybackQuality?.().totalVideoFrames;
+    if (!Number.isFinite(total)) return;
+    if (decodedFrames !== null && total > decodedFrames) {
+      lastFrame = performance.now();
+      frameCount = Math.max(frameCount, total);
+    }
+    decodedFrames = total;
+  }
+  function stallCapture() {
+    if (!captureStalled) {
+      captureStalled = true;
+      safe(stop)();
+      message(
+        "No decoded video frames. OCR paused; camera remains connected. Check OBS, then start preview again when frames return.",
+        true,
+      );
+    }
+    return false;
   }
   async function devices() {
     if (!navigator.mediaDevices)
@@ -163,10 +195,11 @@
     };
     lastFrame = performance.now();
     frameCount = 0;
-    if (!video.requestVideoFrameCallback) {
+    decodedFrames = video.getVideoPlaybackQuality?.().totalVideoFrames ?? null;
+    if (!video.requestVideoFrameCallback && !video.getVideoPlaybackQuality) {
       await disconnect();
       throw new Error(
-        "Use current Chrome or Edge with video-frame callbacks for capture health monitoring.",
+        "Use current Chrome or Edge with video frame/decode monitoring.",
       );
     }
     frameCallback(captureEpoch);
@@ -186,6 +219,28 @@
   }
   function snapshot() {
     if (!reference) return false;
+    if (!image) {
+      const track = stream?.getVideoTracks()[0];
+      if (!track || track.readyState === "ended") {
+        safe(disconnect)();
+        message(
+          "Camera track ended. Restart OBS Virtual Camera and reconnect.",
+          true,
+        );
+        return false;
+      }
+      observeDecodedFrames();
+      if (performance.now() - lastFrame > 5000) return stallCapture();
+      if (video.readyState < 2 || !video.videoWidth || !video.videoHeight)
+        return false;
+      if (captureStalled) {
+        captureStalled = false;
+        controls();
+        message(
+          "Video frames resumed. Verify the feed, then start preview again.",
+        );
+      }
+    }
     if (
       !image &&
       (video.videoWidth !== reference.width ||
@@ -193,14 +248,6 @@
     ) {
       safe(disconnect)();
       message("Capture resolution changed. Reconnect and recalibrate.", true);
-      return false;
-    }
-    if (!image && performance.now() - lastFrame > 3000) {
-      safe(disconnect)();
-      message(
-        "No fresh video frames. Capture stopped; verify OBS Virtual Camera.",
-        true,
-      );
       return false;
     }
     if (
@@ -410,7 +457,16 @@
     controls();
   }
   async function read() {
-    if (!running || inFlight || !snapshot()) return;
+    if (!running || inFlight) return;
+    if (!snapshot()) {
+      if (running) timer = setTimeout(read, 350);
+      return;
+    }
+    if (!image && sampledFrame === lastFrame) {
+      timer = setTimeout(read, 350);
+      return;
+    }
+    sampledFrame = lastFrame;
     inFlight = true;
     controls();
     const id = sessionId,
