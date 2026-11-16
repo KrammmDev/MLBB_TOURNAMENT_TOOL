@@ -432,8 +432,8 @@ test(
     }
     const winRail = await pinned.locator(".sb-win").first().boundingBox();
     assert.ok(
-      winRail.width > winRail.height * 3,
-      "Classic keeps horizontal series markers within the shared format",
+      winRail.height > winRail.width * 2,
+      "Classic uses tall slanted series markers",
     );
     assert.equal(
       await pinned

@@ -185,11 +185,15 @@ body {
   right: auto;
 }
 .sb-win {
-  width: 25px;
-  height: 6px;
+  width: 12px;
+  height: 40px;
   background: var(--sb-muted-readable, var(--sb-muted));
   opacity: 0.4;
-  clip-path: polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%);
+  clip-path: none;
+  transform: skewX(-10deg);
+}
+.sb-right .sb-win {
+  transform: skewX(10deg);
 }
 .sb-win.active {
   opacity: 1;
