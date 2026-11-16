@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Scoreboard OCR • Capture desk</title>
+    <link rel="stylesheet" href="themes/ocr-control.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <p class="eyebrow">BROADCAST / TELEMETRY</p>
+          <h1>Scoreboard OCR</h1>
+          <p>Calibrate the game feed. Verify the numbers. Then take it live.</p>
+        </div>
+        <nav>
+          <a href="hub.html">Command center</a
+          ><a href="scoreboardocr.html" target="_blank">Open overlay ↗</a>
+        </nav>
+      </header>
+      <p id="message" role="status">Loading OCR settings…</p>
+      <section class="toolbar">
+        <label
+          >Camera<select id="camera">
+            <option value="">Default camera</option>
+          </select></label
+        ><button id="devices">Refresh devices</button
+        ><button id="connect">Connect camera</button
+        ><button id="screen">Capture window</button
+        ><label class="file"
+          >Test image<input
+            id="image"
+            type="file"
+            accept="image/png,image/jpeg" /></label
+        ><button id="disconnect">Disconnect</button>
+      </section>
+      <p id="capture-info">
+        No source connected. Select OBS Virtual Camera on the server PC.
+      </p>
+      <p class="note">
+        Use a clean game feed in OBS Virtual Camera. Including this scoreboard
+        in the captured scene creates a feedback loop. Camera access needs
+        localhost or HTTPS; HTTP LAN addresses cannot open the camera.
+      </p>
+      <div class="workspace">
+        <section class="capture">
+          <div class="section-head">
+            <h2>Native frame</h2>
+            <button id="export-frame">Export PNG</button>
+          </div>
+          <p>
+            Choose a field, then drag tightly around its digits. This preview
+            scales visually; crops use the original frame.
+          </p>
+          <div class="frame">
+            <canvas
+              id="preview"
+              width="1920"
+              height="1080"
+              aria-label="Capture preview. Drag to select the selected field's region."
+            ></canvas>
+          </div>
+          <video id="video" muted playsinline hidden></video>
+        </section>
+        <aside>
+          <h2>Calibration</h2>
+          <label>Field<select id="field"></select></label>
+          <p id="region-info">No region drawn</p>
+          <label
+            >Preprocessing<select id="mode">
+              <option value="raw">Original color</option>
+              <option value="gray">Grayscale</option>
+              <option value="invert">Inverted grayscale</option>
+              <option value="threshold">Threshold (dark text)</option>
+            </select></label
+          >
+          <div class="pair">
+            <label
+              >Crop scale<select id="scale">
+                <option>1</option>
+                <option selected>2</option>
+                <option>3</option>
+              </select></label
+            ><label
+              >Threshold<input
+                id="threshold"
+                type="number"
+                min="0"
+                max="255"
+                value="160"
+            /></label>
+          </div>
+          <label
+            >Minimum engine score<input
+              id="minScore"
+              type="number"
+              min="50"
+              max="100"
+              value="85"
+          /></label>
+          <p class="note">
+            Engine score is a filter, not a measured accuracy percentage.
+            Compare each crop with the game.
+          </p>
+          <button id="remove">Remove this region</button>
+          <div class="pair">
+            <button id="save">Save calibration</button
+            ><button id="reload">Reload saved</button>
+          </div>
+          <h3>Crop inspection</h3>
+          <p>Raw pixels</p>
+          <canvas id="raw" width="1" height="1"></canvas>
+          <p>Processed pixels</p>
+          <canvas id="processed" width="1" height="1"></canvas
+          ><button id="export-crop">Export raw crop</button>
+        </aside>
+      </div>
+      <section>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">OPERATOR CONTROL</p>
+            <h2>Recognition & output</h2>
+          </div>
+          <span id="output-state">Output: loading</span>
+        </div>
+        <div class="toolbar">
+          <button id="start">Start preview / new game</button
+          ><button id="live" class="primary">Take custom OCR live</button
+          ><button id="stop">Stop recognition</button
+          ><button id="legacy">Use FalseOCR output</button>
+        </div>
+        <p id="session-info">No active capture session</p>
+        <p class="note">
+          Preview never changes the broadcast. Taking live resets readings for
+          confirmation. Missing or stale readings show “--”. New game, changed
+          HUD, changed device or resolution: stop, verify regions, and start
+          again. Manual values stay locked until Auto or a new session.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Raw text</th>
+                <th>Engine score</th>
+                <th>Accepted</th>
+                <th>State</th>
+                <th>Manual correction</th>
+              </tr>
+            </thead>
+            <tbody id="readings"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <script src="script/ocr-model.js"></script>
+    <script src="script/ocr-control.js"></script>
+  </body>
+</html>

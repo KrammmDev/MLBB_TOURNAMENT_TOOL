@@ -1,0 +1,239 @@
+:root {
+  color-scheme: dark;
+  font:
+    15px/1.5 system-ui,
+    sans-serif;
+  background: #0a1018;
+  color: #edf2f7;
+  --line: #2a3a4b;
+  --accent: #50dacb;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+main {
+  max-width: 1500px;
+  margin: auto;
+  padding: 28px;
+}
+header,
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+header {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+h1 {
+  font-size: 32px;
+  margin: 0;
+}
+h2 {
+  font-size: 19px;
+  margin: 0 0 12px;
+}
+h3 {
+  font-size: 15px;
+  margin-bottom: 0;
+}
+p {
+  color: #b4c3d2;
+  margin: 8px 0 16px;
+}
+.eyebrow {
+  letter-spacing: 0.16em;
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 700;
+  margin: 0 0 5px;
+}
+nav {
+  display: flex;
+  gap: 20px;
+}
+a {
+  color: var(--accent);
+}
+section,
+aside {
+  background: #101b27;
+  border: 1px solid var(--line);
+  padding: 20px;
+  margin: 16px 0;
+  border-radius: 8px;
+}
+.toolbar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: end;
+}
+.toolbar label {
+  margin: 0;
+}
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 310px;
+  gap: 16px;
+}
+.workspace section {
+  min-width: 0;
+}
+.frame {
+  background: #030609;
+  border: 1px solid var(--line);
+}
+#preview {
+  display: block;
+  width: 100%;
+  height: auto;
+  touch-action: none;
+  cursor: crosshair;
+}
+label {
+  display: block;
+  color: #c9d7e3;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+input,
+select,
+button,
+.file {
+  font: inherit;
+  color: inherit;
+  background: #192a3a;
+  border: 1px solid #3b5267;
+  border-radius: 4px;
+  padding: 10px;
+}
+input,
+select {
+  width: 100%;
+  display: block;
+  margin-top: 5px;
+}
+button {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 650;
+}
+button:hover {
+  border-color: var(--accent);
+}
+button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.primary {
+  background: var(--accent);
+  color: #061d20;
+}
+.pair {
+  display: flex;
+  gap: 8px;
+}
+.pair > * {
+  flex: 1;
+  min-width: 0;
+}
+aside > button {
+  margin-bottom: 12px;
+}
+.file {
+  cursor: pointer;
+  font-size: 13px;
+}
+.file input {
+  width: 180px;
+  padding: 2px;
+}
+.note {
+  font-size: 12px;
+  color: #93a8ba;
+}
+#message {
+  padding: 12px 16px;
+  background: #142b34;
+  border-left: 3px solid var(--accent);
+}
+#message.error {
+  border-color: #ff7b82;
+  background: #371f2a;
+  color: #ffd4d6;
+}
+#capture-info,
+#session-info {
+  font-family: ui-monospace, monospace;
+  font-size: 13px;
+}
+#raw,
+#processed {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  background: #080c11;
+  border: 1px solid var(--line);
+  image-rendering: pixelated;
+}
+.table-wrap {
+  overflow: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+th {
+  text-align: left;
+  color: #93a8ba;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+td,
+th {
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--line);
+}
+td input {
+  width: 92px;
+  display: inline-block;
+  margin: 0 5px 0 0;
+  padding: 7px;
+}
+td button {
+  padding: 7px;
+  margin: 2px;
+}
+.accepted {
+  color: var(--accent);
+}
+@media (max-width: 850px) {
+  main {
+    padding: 14px;
+  }
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+  header {
+    align-items: start;
+    flex-direction: column;
+  }
+  nav {
+    flex-wrap: wrap;
+  }
+  .toolbar > * {
+    max-width: 100%;
+  }
+  aside {
+    margin-top: 0;
+  }
+}

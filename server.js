@@ -22,6 +22,8 @@ const { loadColorStore, installColorRoutes } = require("./lib/broadcast-colors")
 const { loadBrandingStore, installBrandingRoutes } = require("./lib/scoreboard-branding");
 const { mirrorDraftTimer } = require("./lib/draft-timer");
 const { installNotificationRoutes } = require("./lib/notifications");
+const { loadOCRStore, installOCRRoutes } = require("./lib/ocr-store");
+const { createEngine: createOCREngine } = require("./ocr/engine");
 
 const app = express();
 const server = http.createServer(app);
@@ -390,6 +392,7 @@ async function loadCache() {
   console.log(">> In-Memory Cache Loaded!");
 }
 let matchStore;
+let ocrStore;
 let rosterThemeStore;
 let sponsorStore;
 let colorStore;
@@ -637,6 +640,7 @@ app.get("/api/players", async (req, res) => {
 });
 // --- MATCH DATA API ---
 installMatchRoutes(app, () => matchStore);
+installOCRRoutes(app, () => ocrStore);
 installRosterThemeRoutes(app, () => rosterThemeStore);
 installSponsorRoutes(app, () => sponsorStore, sponsorDirectory);
 installColorRoutes(app, () => colorStore);
@@ -1335,6 +1339,7 @@ async function start() {
     file: matchDataPath,
     onCommit: ({ data, revision }) => {
       cache.matchdata = data;
+      ocrStore?.matchChanged();
       broadcast({ type: "matchdata_update", data, revision });
       broadcast({ type: "update", data: { matchdata: data }, revision });
     },
@@ -1355,6 +1360,13 @@ async function start() {
     file: path.join(__dirname, "runtime", "scoreboard-branding.json"),
     onCommit: snapshot => broadcast({ type: "scoreboard_branding_update", ...snapshot }),
   });
+  ocrStore = await loadOCRStore({
+    file: path.join(__dirname, "runtime", "ocr.json"),
+    getMatch: () => matchStore.snapshot().data,
+    engine: createOCREngine(),
+    onChange: data => broadcast({ type: "ocr_update", data }),
+  });
+  server.once("close", () => ocrStore.close().catch(error => console.error("OCR shutdown:", error.message)));
   server.listen(port, "0.0.0.0", async () => {
     const boundPort = server.address().port;
     console.log("=============================================");
