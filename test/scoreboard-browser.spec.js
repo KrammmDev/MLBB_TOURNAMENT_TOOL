@@ -315,10 +315,27 @@ test(
     const accent = await pinned
       .locator(".sb-left")
       .evaluate((el) => getComputedStyle(el, "::before").backgroundColor);
+    const frameTrim = await pinned
+      .locator(".sb-frame")
+      .evaluate((el) => getComputedStyle(el).backgroundColor);
     assert.equal(
       accent,
-      "rgb(94, 209, 0)",
-      "Classic keeps the saved team accent on its framed rail",
+      frameTrim,
+      "Classic decorative rules use the frame trim even with a saved green team accent",
+    );
+    for (const selector of [".sb-banner-left", ".sb-banner-right"]) {
+      assert.equal(
+        await pinned
+          .locator(selector)
+          .evaluate((el) => getComputedStyle(el, "::after").backgroundColor),
+        frameTrim,
+      );
+    }
+    assert.equal(
+      await pinned
+        .locator(".map-edge-start")
+        .evaluate((el) => getComputedStyle(el).stopColor),
+      frameTrim,
     );
     assert.equal(
       await pinned
@@ -365,14 +382,14 @@ test(
       rightHolder.height,
       "Classic team-logo holders have equal heights",
     );
-    assert.equal(
+    assert.notEqual(
       await pinned
         .locator(".sb-banner-left")
         .evaluate((el) => getComputedStyle(el).clipPath),
       await pinned
         .locator(".sb-banner-right")
         .evaluate((el) => getComputedStyle(el).clipPath),
-      "CCA uses the identical TCU cut, not a mirrored holder",
+      "CCA and TCU have opposite-facing bevels with equal holder dimensions",
     );
     const connector = await pinned.locator(".scoreboard").evaluate((el) => {
       const css = getComputedStyle(el, "::before");
