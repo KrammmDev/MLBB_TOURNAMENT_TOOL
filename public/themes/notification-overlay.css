@@ -26,6 +26,10 @@ body {
 }
 #notification-stage {
   position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  pointer-events: none;
   width: 1920px;
   height: 1080px;
   transform-origin: top left;

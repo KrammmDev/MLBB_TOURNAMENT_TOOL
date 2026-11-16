@@ -28,3 +28,7 @@ The scoreboard uses its own saved scoreboard palette, rendered through a scorebo
 
 ## Production details and center logo
 Broadcast Themes now manages a patch/caster strip below the right tiles and a separate uploaded tournament logo at the scoreboard center, extending 25px below the frame. See [scoreboard-branding.md](scoreboard-branding.md) for control behavior, geometry, API and backup requirements.
+
+
+## Included killing notifications
+The canonical scoreboard source includes the existing notification renderer directly in a sibling transparent layer above the scoreboard. All three themes display General WebM, individual player, and team Wipe Out cues through the scoreboard's existing MatchDataClient subscription. No iframe or extra notification socket/poll is created. Notifications scale with the same 1920×1080 canvas, do not intercept hit targets, and clear on page hide. The shared standalone notification page remains compatible. In OBS, keep the scoreboard Browser Source and hide/remove the old separate notification source to prevent duplicates. No server restart or new service is required for this client-only integration.

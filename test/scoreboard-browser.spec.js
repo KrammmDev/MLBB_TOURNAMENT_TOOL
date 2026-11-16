@@ -150,6 +150,9 @@ test(
     async function page(url) {
       const page = await context.newPage();
       page.on("pageerror", (e) => errors.push(e.message));
+      let sockets = 0;
+      page.on("websocket", () => sockets++);
+      page.socketCount = () => sockets;
       await page.goto(base + url);
       return page;
     }
@@ -163,6 +166,17 @@ test(
         id,
       );
     await ready(live, "arena");
+    assert.equal(
+      live.socketCount(),
+      1,
+      "combined source uses the scoreboard's existing socket",
+    );
+    assert.equal(pinned.socketCount(), 1);
+    assert.equal(
+      live.frames().length,
+      1,
+      "notifications are embedded directly without an iframe",
+    );
     const draftOutput = await page("/draft-display.html");
     await draftOutput.waitForFunction(
       () => document.body.dataset.draftReady === "true",
@@ -188,6 +202,32 @@ test(
       await themes.select(id, themes.snapshot().revision);
       broadcast({ type: "roster_theme_update", ...themes.snapshot() });
       await ready(live, id);
+      await live.bringToFront();
+      broadcast({
+        type: "notification_trigger",
+        scope: "team",
+        eventId: "wipe-out",
+        teamSide: "blue",
+        teamName: data.teamdata.blueteam.teamname,
+        teamLogo: data.teamdata.blueteam.logo,
+        playerImages: [],
+        videoId: null,
+      });
+      await live.waitForFunction(
+        () => !document.getElementById("player-notification").hidden,
+      );
+      assert.equal(
+        await live.locator("#notification-player").textContent(),
+        data.teamdata.blueteam.teamname,
+      );
+      assert.equal(
+        await live.locator("#name-box-1").textContent(),
+        data.teamdata.blueteam.teamname,
+        "notification does not replace scoreboard bindings",
+      );
+      assert.equal(await live.locator("#videoPlayer").isVisible(), false);
+      await live.evaluate(() => NotificationOverlay.clear());
+      await pinned.evaluate(() => NotificationOverlay.clear());
       const sponsorBox = await live.locator("#sb-sponsors img").boundingBox(),
         infoBox = await live.locator("#match-display").boundingBox();
       assert.ok(

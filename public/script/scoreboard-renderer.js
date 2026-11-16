@@ -125,6 +125,13 @@
       },
       {
         onMessage(message) {
+          if (message.type === "notification_trigger") {
+            try {
+              root.NotificationOverlay?.accept(message);
+            } catch (error) {
+              console.error("Notification could not render:", error);
+            }
+          }
           root.BroadcastColorClient.accept(message);
           root.ScoreboardBrandingClient.accept(message);
           root.SponsorSlideshow.accept(message);
@@ -150,6 +157,7 @@
     stopMatch?.();
     stopMatch = null;
     root.BroadcastThemeClient.cancel();
+    root.NotificationOverlay?.clear();
   });
   root.addEventListener("pageshow", () => {
     if (stopped) start();
