@@ -20,38 +20,15 @@
     />
     <link
       rel="stylesheet"
-      href="/themes/notification-overlay.css?v=split-text-1"
+      href="/themes/notification-overlay.css?v=combined-1"
     />
   </head>
   <body>
-    <main id="notification-stage">
-      <video id="videoPlayer" playsinline>
-        <source id="videoSource" src="" type="video/webm" />
-      </video>
-      <section id="player-notification" hidden aria-live="polite">
-        <div class="notification-panel" aria-hidden="true"></div>
-        <div
-          id="notification-art"
-          class="notification-art"
-          aria-hidden="true"
-        ></div>
-        <div class="notification-copy">
-          <div class="notification-event" id="notification-event"></div>
-          <div class="notification-identity">
-            <span
-              id="notification-role"
-              class="notification-role"
-              hidden
-            ></span>
-            <div class="notification-player" id="notification-player"></div>
-          </div>
-        </div>
-      </section>
-    </main>
+    <main id="notification-stage"></main>
     <script src="/script/match-state.js"></script>
     <script src="/script/match-client.js"></script>
     <script src="/script/notification-model.js?v=team-wipe-1"></script>
     <script src="/script/roster-model.js"></script>
-    <script src="/script/notification-overlay.js?v=team-wipe-1"></script>
+    <script src="/script/notification-overlay.js?v=combined-1"></script>
   </body>
 </html>

@@ -6,6 +6,24 @@
     <title>Scoreboard</title>
     <link rel="stylesheet" href="/themes/scoreboard-base.css" />
     <link rel="stylesheet" href="/themes/sponsor-slideshow.css" />
+    <link
+      rel="stylesheet"
+      href="/themes/notification-overlay.css?v=combined-1"
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/otf"
+      href="/Assets/Font/Renegade%20Pursuit.otf"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/ttf"
+      href="/Assets/Font/big_noodle_titling.ttf"
+      crossorigin
+    />
   </head>
   <body>
     <main id="scoreboard-stage">
@@ -86,6 +104,7 @@
         <img id="sb-tournament-logo" alt="" hidden />
       </div>
     </main>
+    <div id="notification-stage" data-notification-embedded></div>
     <script src="/script/match-state.js"></script>
     <script src="/script/match-client.js"></script>
     <script src="/script/roster-model.js"></script>
@@ -95,6 +114,8 @@
     <script src="/script/roster-theme-client.js"></script>
     <script src="/script/sponsor-slideshow.js"></script>
     <script src="/script/scoreboard-branding-client.js"></script>
-    <script src="/script/scoreboard-renderer.js"></script>
+    <script src="/script/notification-model.js?v=team-wipe-1"></script>
+    <script src="/script/notification-overlay.js?v=combined-1"></script>
+    <script src="/script/scoreboard-renderer.js?v=combined-1"></script>
   </body>
 </html>
