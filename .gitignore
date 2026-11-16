@@ -1,2 +1,3 @@
 # Local broadcast selections are runtime state, not shared match fixtures.
 /runtime/
+/tools/platform-tools/

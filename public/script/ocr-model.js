@@ -151,7 +151,7 @@
       ref.height < 180 ||
       ref.width > 7680 ||
       ref.height > 4320 ||
-      !["camera", "screen", "image"].includes(ref.kind) ||
+      !["camera", "screen", "image", "usb"].includes(ref.kind) ||
       typeof ref.sourceKey !== "string" ||
       !ref.sourceKey ||
       ref.sourceKey.length > 512

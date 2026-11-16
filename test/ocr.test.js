@@ -109,6 +109,38 @@ test("OCR grammar keeps unknown separate from zero and preserves native geometry
     }),
   );
 });
+test("USB OCR requires the active phone lease and clears manual readings on USB loss", async (t) => {
+  let alive = true;
+  const x = await setup(t, {
+      usb: {
+        owns: (id, serial) => alive && id === "capture1" && serial === "PHONE1",
+      },
+    }),
+    { store } = x;
+  const profile = {
+    ...x.p,
+    reference: { ...x.p.reference, kind: "usb", sourceKey: "PHONE1" },
+  };
+  await store.configure({ profile }, store.settings().revision);
+  const command = {
+    generation: store.state().generation,
+    expected: M.context(x.match),
+    reference: profile.reference,
+  };
+  assert.throws(() => store.start(command), /Connect the calibrated USB phone/);
+  const session = store.start({ ...command, usbCaptureId: "capture1" });
+  store.live(session.sessionId);
+  store.manual({
+    generation: store.state().generation,
+    field: "blueKills",
+    value: "8",
+  });
+  assert.equal(store.state().fields.blueKills.value, 8);
+  alive = false;
+  store.usbStopped("capture1");
+  assert.equal(store.state().active, false);
+  assert.equal(store.state().fields.blueKills.value, null);
+});
 test("preview, consecutive confirmation, freshness, manual lock and game invalidation", async (t) => {
   const x = await setup(t),
     { store } = x;

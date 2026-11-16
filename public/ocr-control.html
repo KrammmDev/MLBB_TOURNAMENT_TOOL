@@ -20,6 +20,26 @@
         </nav>
       </header>
       <p id="message" role="status">Loading OCR settings…</p>
+      <section class="toolbar" aria-label="Android USB capture">
+        <label
+          >Android phone<select id="usb-device">
+            <option value="">Detect phones first</option>
+          </select></label
+        >
+        <button id="usb-detect">Detect phones</button>
+        <button id="usb-start">Start USB capture</button>
+        <p class="note">
+          No OBS needed. Connect the phone to this PC with a USB data cable,
+          enable USB debugging and allow this computer on the phone. Requires
+          Android Platform Tools.
+          <a
+            href="https://developer.android.com/tools/releases/platform-tools"
+            target="_blank"
+            rel="noopener"
+            >Setup download ↗</a
+          >
+        </p>
+      </section>
       <section class="toolbar">
         <label
           >Camera<select id="camera">
@@ -36,7 +56,8 @@
         ><button id="disconnect">Disconnect</button>
       </section>
       <p id="capture-info">
-        No source connected. Select OBS Virtual Camera on the server PC.
+        No source connected. Detect an Android USB phone, or connect a
+        camera/window.
       </p>
       <p class="note">
         Use a clean game feed in OBS Virtual Camera. Including this scoreboard

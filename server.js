@@ -24,6 +24,7 @@ const { mirrorDraftTimer } = require("./lib/draft-timer");
 const { installNotificationRoutes } = require("./lib/notifications");
 const { loadOCRStore, installOCRRoutes } = require("./lib/ocr-store");
 const { createEngine: createOCREngine } = require("./ocr/engine");
+const { createUSBCapture, installUSBRoutes } = require("./lib/usb-capture");
 
 const app = express();
 const server = http.createServer(app);
@@ -393,6 +394,7 @@ async function loadCache() {
 }
 let matchStore;
 let ocrStore;
+let usbCapture;
 let rosterThemeStore;
 let sponsorStore;
 let colorStore;
@@ -641,6 +643,7 @@ app.get("/api/players", async (req, res) => {
 // --- MATCH DATA API ---
 installMatchRoutes(app, () => matchStore);
 installOCRRoutes(app, () => ocrStore);
+installUSBRoutes(app, () => usbCapture);
 installRosterThemeRoutes(app, () => rosterThemeStore);
 installSponsorRoutes(app, () => sponsorStore, sponsorDirectory);
 installColorRoutes(app, () => colorStore);
@@ -1360,12 +1363,15 @@ async function start() {
     file: path.join(__dirname, "runtime", "scoreboard-branding.json"),
     onCommit: snapshot => broadcast({ type: "scoreboard_branding_update", ...snapshot }),
   });
+  usbCapture = createUSBCapture({ onStop: id => ocrStore?.usbStopped(id) });
   ocrStore = await loadOCRStore({
+    usb: usbCapture,
     file: path.join(__dirname, "runtime", "ocr.json"),
     getMatch: () => matchStore.snapshot().data,
     engine: createOCREngine(),
     onChange: data => broadcast({ type: "ocr_update", data }),
   });
+  server.once("close", () => usbCapture.close());
   server.once("close", () => ocrStore.close().catch(error => console.error("OCR shutdown:", error.message)));
   server.listen(port, "0.0.0.0", async () => {
     const boundPort = server.address().port;

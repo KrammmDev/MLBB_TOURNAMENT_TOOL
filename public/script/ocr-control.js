@@ -27,6 +27,12 @@
     timer,
     sampledFrame = null,
     lastLatency = 0;
+  let usbCaptureId = null,
+    usbSerial = "",
+    usbGeneration,
+    usbImage,
+    usbCapturedAt = 0,
+    usbTimer;
   const message = (text, error = false) => {
     $("message").textContent = text;
     $("message").classList.toggle("error", error);
@@ -88,7 +94,20 @@
   }
   async function disconnect() {
     ++captureEpoch;
+    clearTimeout(usbTimer);
+    const oldUSB = usbCaptureId;
+    usbCaptureId = null;
     await stop();
+    if (oldUSB) {
+      try {
+        await api("usb/stop", { captureId: oldUSB });
+      } catch {
+        /* Already stopped/expired. */
+      }
+    }
+    usbImage?.close();
+    usbImage = null;
+    usbCapturedAt = 0;
     stream?.getTracks().forEach((track) => track.stop());
     stream = null;
     video.srcObject = null;
@@ -109,6 +128,120 @@
       frameCount++;
       frameCallback(epoch);
     });
+  }
+  async function detectUSB() {
+    const result = await api("usb/devices", undefined, "GET");
+    usbGeneration = result.generation;
+    $("usb-device").replaceChildren(
+      new Option(
+        result.devices.length ? "Select phone" : "No USB phone detected",
+        "",
+      ),
+    );
+    for (const device of result.devices) {
+      const option = new Option(
+        `${device.model} • ${device.serial} • ${device.state}`,
+        device.serial,
+      );
+      option.disabled = device.state !== "device";
+      $("usb-device").add(option);
+    }
+    const ready = result.devices.filter((d) => d.state === "device");
+    if (ready.length === 1) $("usb-device").value = ready[0].serial;
+    message(
+      result.devices.some((d) => d.state === "unauthorized")
+        ? "Phone detected. Unlock it and Allow USB debugging, then Detect phones again."
+        : ready.length
+          ? "Phone ready. Open the game in landscape, then Start USB capture."
+          : "No authorized USB phone. Check USB debugging, a data-capable cable and Windows USB drivers.",
+    );
+  }
+  async function pullUSB(epoch) {
+    if (!usbCaptureId || epoch !== captureEpoch) return;
+    const id = usbCaptureId;
+    try {
+      const response = await fetch("/api/ocr/usb/frame", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ captureId: id }),
+        cache: "no-store",
+        signal: AbortSignal.timeout(10000),
+      });
+      if (!response.ok)
+        throw new Error(
+          (await response.json()).message || "USB frame unavailable",
+        );
+      const bitmap = await createImageBitmap(await response.blob());
+      if (epoch !== captureEpoch || id !== usbCaptureId) {
+        bitmap.close();
+        return;
+      }
+      usbImage?.close();
+      usbImage = bitmap;
+      usbCapturedAt = Number(response.headers.get("X-USB-Captured-At"));
+      if (!Number.isFinite(usbCapturedAt) || Date.now() - usbCapturedAt > 5000)
+        throw new Error("USB frame expired. Verify USB speed and retry.");
+      if (!reference)
+        reference = {
+          width: bitmap.width,
+          height: bitmap.height,
+          kind: "usb",
+          sourceKey: usbSerial,
+        };
+      if (
+        bitmap.width !== reference.width ||
+        bitmap.height !== reference.height
+      )
+        throw new Error(
+          "Phone rotation/resolution changed. Reconnect and recalibrate.",
+        );
+      lastFrame = performance.now();
+      frameCount++;
+      $("capture-info").textContent =
+        `USB ADB • native ${bitmap.width} × ${bitmap.height} • frame ${response.headers.get("X-USB-Frame-Id")} • capture ${response.headers.get("X-USB-Latency-Ms")}ms`;
+      if (captureStalled) {
+        captureStalled = false;
+        message(
+          "USB frames resumed. Verify the feed, then start preview again.",
+        );
+      }
+      controls();
+      usbTimer = setTimeout(() => pullUSB(epoch), 500);
+    } catch (error) {
+      if (epoch === captureEpoch && id === usbCaptureId) {
+        await disconnect();
+        message(error.message, true);
+      }
+    }
+  }
+  async function connectUSB() {
+    const serial = $("usb-device").value;
+    if (!serial)
+      throw new Error(
+        "Detect phones and select an authorized Android phone first.",
+      );
+    await disconnect();
+    const epoch = captureEpoch;
+    const result = await api("usb/start", {
+      serial,
+      generation: usbGeneration,
+    });
+    if (epoch !== captureEpoch) {
+      await api("usb/stop", { captureId: result.captureId });
+      return;
+    }
+    usbCaptureId = result.captureId;
+    usbSerial = result.serial;
+    frameCount = 0;
+    await pullUSB(epoch);
+    if (!reference) return;
+    dirty =
+      JSON.stringify(reference) !==
+      JSON.stringify(settings?.data.profile?.reference);
+    controls();
+    message(
+      "USB source connected. Check native regions, save calibration and start preview. No OBS is needed.",
+    );
   }
   function observeDecodedFrames() {
     // Video-frame callbacks follow presentation and can be suppressed by Chromium.
@@ -219,7 +352,9 @@
   }
   function snapshot() {
     if (!reference) return false;
-    if (!image) {
+    if (usbCaptureId) {
+      if (!usbImage || Date.now() - usbCapturedAt > 5000) return stallCapture();
+    } else if (!image) {
       const track = stream?.getVideoTracks()[0];
       if (!track || track.readyState === "ended") {
         safe(disconnect)();
@@ -243,6 +378,7 @@
     }
     if (
       !image &&
+      !usbCaptureId &&
       (video.videoWidth !== reference.width ||
         video.videoHeight !== reference.height)
     ) {
@@ -261,7 +397,7 @@
     }
     native
       .getContext("2d")
-      .drawImage(image || video, 0, 0, native.width, native.height);
+      .drawImage(usbImage || image || video, 0, 0, native.width, native.height);
     return true;
   }
   function crop(roi) {
@@ -470,7 +606,7 @@
     inFlight = true;
     controls();
     const id = sessionId,
-      capturedAt = Date.now(),
+      capturedAt = usbCaptureId ? usbCapturedAt : Date.now(),
       start = performance.now();
     try {
       const crops = Object.entries(regions).map(([field, roi]) => ({
@@ -526,6 +662,8 @@
       }
     };
   $("devices").onclick = safe(devices);
+  $("usb-detect").onclick = safe(detectUSB);
+  $("usb-start").onclick = safe(connectUSB);
   $("connect").onclick = safe(() => connect("camera"));
   $("screen").onclick = safe(() => connect("screen"));
   $("disconnect").onclick = safe(disconnect);
@@ -554,6 +692,7 @@
       generation: telemetry.generation,
       expected: telemetry.context,
       reference,
+      usbCaptureId,
     });
     sessionId = result.sessionId;
     telemetry = result.state;
@@ -630,6 +769,13 @@
   window.addEventListener("pagehide", () => {
     running = false;
     stream?.getTracks().forEach((t) => t.stop());
+    if (usbCaptureId)
+      fetch("/api/ocr/usb/stop", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ captureId: usbCaptureId }),
+        keepalive: true,
+      }).catch(() => {});
     if (sessionId)
       fetch("/api/ocr/stop", {
         method: "POST",
