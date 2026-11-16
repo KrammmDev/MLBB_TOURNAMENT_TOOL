@@ -143,15 +143,34 @@ test(
     const normal = await context.newPage(),
       six = await context.newPage(),
       overlay = await context.newPage(),
+      combined = await context.newPage(),
       errors = [];
-    for (const page of [normal, six, overlay])
+    let combinedSockets = 0;
+    combined.on("websocket", () => combinedSockets++);
+    for (const page of [normal, six, overlay, combined])
       page.on("pageerror", (error) => errors.push(error.message));
     await Promise.all([
       normal.goto(base + "/control.html"),
       six.goto(base + "/controlban6.html"),
       overlay.goto(base + "/notifdisplay.html"),
+      combined.goto(base + "/scoreboard.html?theme=arena"),
     ]);
     await overlay.bringToFront();
+    await combined.waitForFunction(
+      () => document.body.dataset.scoreboardReady === "true",
+      null,
+      { polling: 50 },
+    );
+    assert.equal(
+      combinedSockets,
+      1,
+      "scoreboard and notifications share one connection",
+    );
+    assert.equal(
+      combined.frames().length,
+      1,
+      "combined output has no child browser frame",
+    );
     for (const page of [normal, six]) {
       await page.waitForFunction(
         () =>
@@ -219,6 +238,16 @@ test(
       true,
     );
     assert.equal(cues.at(-1).videoId, "videoPlayer7");
+    await combined.waitForFunction(
+      () => !document.getElementById("videoPlayer").paused,
+      null,
+      { polling: 50 },
+    );
+    assert.equal(
+      await combined.locator("#player-notification").isHidden(),
+      true,
+      "combined general notification remains WebM only",
+    );
     await overlay.waitForFunction(
       () => document.getElementById("videoPlayer").style.display === "none",
     );
@@ -228,6 +257,19 @@ test(
       () =>
         document.getElementById("notification-player").textContent ===
           "North 1" && !document.getElementById("player-notification").hidden,
+    );
+    await combined.waitForFunction(
+      () =>
+        document.getElementById("notification-player").textContent ===
+          "North 1" && !document.getElementById("player-notification").hidden,
+      null,
+      { polling: 50 },
+    );
+    assert.equal(await combined.locator("#name-box-1").textContent(), "BLUE");
+    assert.equal(
+      await combined.locator("#videoPlayer").isVisible(),
+      false,
+      "combined player cue never plays general video",
     );
     assert.equal(
       await overlay.locator("#notification-team").count(),
@@ -332,6 +374,16 @@ test(
         ),
         omitBackground: true,
       });
+      await combined.bringToFront();
+      await combined.waitForTimeout(550);
+      await combined.screenshot({
+        path: path.join(
+          process.env.MLBB_CAPTURE_DIR,
+          "combined-scoreboard-notification.png",
+        ),
+        omitBackground: true,
+      });
+      await overlay.bringToFront();
     }
     await overlay.waitForFunction(() =>
       document
@@ -455,6 +507,18 @@ test(
           "team",
       );
       assert.equal(cues.at(-1).scope, "team");
+      await combined.waitForFunction(
+        (name) =>
+          document.getElementById("player-notification").dataset.scope ===
+            "team" &&
+          document.getElementById("notification-player").textContent === name,
+        name,
+        { polling: 50 },
+      );
+      assert.equal(
+        await combined.locator("#notification-role").isHidden(),
+        true,
+      );
       assert.equal(
         await overlay.locator("#notification-event").textContent(),
         "Wipe Out",

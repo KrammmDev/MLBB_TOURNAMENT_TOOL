@@ -4,6 +4,33 @@
   const model = root.NotificationModel;
   const safeImage = root.RosterModel.safeImage;
   const stage = document.getElementById("notification-stage");
+  if (!stage) return;
+  const embedded = stage.hasAttribute("data-notification-embedded");
+  // Shared static markup keeps standalone and scoreboard notifications identical.
+  stage.innerHTML = `
+      <video id="videoPlayer" playsinline>
+        <source id="videoSource" type="video/webm" />
+      </video>
+      <section id="player-notification" hidden aria-live="polite">
+        <div class="notification-panel" aria-hidden="true"></div>
+        <div
+          id="notification-art"
+          class="notification-art"
+          aria-hidden="true"
+        ></div>
+        <div class="notification-copy">
+          <div class="notification-event" id="notification-event"></div>
+          <div class="notification-identity">
+            <span
+              id="notification-role"
+              class="notification-role"
+              hidden
+            ></span>
+            <div class="notification-player" id="notification-player"></div>
+          </div>
+        </div>
+      </section>
+  `;
   const video = document.getElementById("videoPlayer");
   const source = document.getElementById("videoSource");
   const banner = document.getElementById("player-notification");
@@ -218,12 +245,15 @@
     );
   }
   root.addEventListener("resize", scale);
-  root.addEventListener("pagehide", () => {
-    stop?.();
-    stop = null;
-    reset();
-  });
-  root.addEventListener("pageshow", start);
+  root.NotificationOverlay = Object.freeze({ accept: show, clear: reset });
+  if (!embedded) {
+    root.addEventListener("pagehide", () => {
+      stop?.();
+      stop = null;
+      reset();
+    });
+    root.addEventListener("pageshow", start);
+    start();
+  }
   scale();
-  start();
 })(window);
