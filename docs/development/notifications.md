@@ -15,3 +15,9 @@ The lower-third opens horizontally from its center with a 360ms barn-door reveal
 The overlay reconnects through the existing match socket client and never replays stored cues. Refresh the controls and overlay sources after client updates. Restart the server when server-side notification code or the event catalog changes; this scoreboard integration itself is client-only. No database migration or new manual service is required. Keep uploaded assets and production match data unchanged.
 
 Verification uses isolated Express/WebSocket fixtures, all twelve general video IDs and all ten events for both teams/all slots, stale/malformed commands, server identity, live control/overlay wiring, interruption, player-photo/team-logo fallback, zero WebM requests for individual cues, entrance/exit timing, reconnect and responsive layouts. Actual Windows/OBS playback and audio policy still require checking on the broadcast PC.
+
+## General WebM playback and browser audio policy
+
+General clips first attempt their normal audio playback. A fresh browser source can reject audible autoplay with NotAllowedError; in that case retry the same clip muted so the notification remains visible. After a trusted interaction/audio permission, subsequent cues attempt normal audio again. Player/team lower-thirds remain silent and never load WebM. To allow audio in a browser preview, click inside that output page before the next cue; for OBS use the Browser Source's Interact window if its browser audio policy requires activation.
+
+Missing/unsupported assets and playback failures are logged with the configured file path in Console. Inspect `document.getElementById("notification-stage").dataset` for notificationState (idle/loading/playing/playing-muted/error), notificationVideoId and notificationError. These are local diagnostics, never on-air error text or a separate state authority.
