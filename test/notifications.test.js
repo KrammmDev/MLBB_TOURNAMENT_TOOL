@@ -93,6 +93,26 @@ test("notification API preserves general cues and resolves all player events wit
         );
         assert.deepEqual(cue, cues.at(-1));
       }
+  for (const teamSide of ["blue", "red"]) {
+    const result = await send({
+      scope: "team",
+      eventId: "wipe-out",
+      teamSide,
+      expected: model.teamIdentity(match, teamSide),
+      playerImages: ["/Assets/forged.png"],
+      playerName: "Forged",
+    });
+    assert.equal(result.status, 200);
+    const cue = result.body.notification;
+    assert.equal(cue.scope, "team");
+    assert.equal(cue.teamName, model.teamIdentity(match, teamSide).teamName);
+    assert.equal(cue.teamLogo, `/Assets/Team/${teamSide}.png`);
+    assert.equal(cue.playerName, "");
+    assert.equal(cue.playerIndex, null);
+    assert.equal(cue.playerRole, "");
+    assert.deepEqual(cue.playerImages, []);
+    assert.equal(cue.videoId, null);
+  }
   assert.deepEqual(match, original);
   assert.equal(
     new Set(cues.map((cue) => cue.id)).size,
@@ -102,6 +122,9 @@ test("notification API preserves general cues and resolves all player events wit
   const count = cues.length;
   for (const body of [
     {},
+    { scope: "team", eventId: "savage", teamSide: "blue" },
+    { scope: "team", eventId: "wipe-out", teamSide: "invalid" },
+    { scope: "team", eventId: "wipe-out", teamSide: "blue" },
     { videoId: "__proto__" },
     { eventId: "unknown" },
     { eventId: "savage", teamSide: "blue", playerIndex: 5 },
@@ -118,10 +141,18 @@ test("notification API preserves general cues and resolves all player events wit
   assert.equal((await send(command)).status, 409);
   match.teamdata.blueteam.playerlist[0].name =
     original.teamdata.blueteam.playerlist[0].name;
+  const teamCommand = {
+    scope: "team",
+    eventId: "wipe-out",
+    teamSide: "blue",
+    expected: model.teamIdentity(match, "blue"),
+  };
   match.game_number++;
+  assert.equal((await send(teamCommand)).status, 409);
   assert.equal((await send(command)).status, 409);
   match.game_number--;
   match.teamdata.blueteam.teamname = "Other team";
+  assert.equal((await send(teamCommand)).status, 409);
   assert.equal((await send(command)).status, 409);
   assert.equal(
     cues.length,

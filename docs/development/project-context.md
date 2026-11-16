@@ -75,3 +75,5 @@ Individual player notifications extend the existing /api/notification → notifi
 Notification typography refinement: remove the on-air team-name subtitle, enlarge event titles, and show the saved role icon immediately before the player name. Team identity remains in the cue for attribution and logo fallback. Missing/unknown roles omit the icon rather than guessing.
 
 Player notification motion uses a quick 360ms barn-door opening and two horizontal title slices: they converge from opposing directions on IN and separate on OUT. This replaces the prior accent burst/plate kick. Entrance motion settles within 480ms and the hold stays still; the existing 800ms reverse barn-door OUT remains. This is visual-only, with no sound or WebM for individual events.
+
+Team-level Wipe Out buttons now live in both team headers of the existing player-notification panel. They send guarded scope:team cues through the same notification endpoint/channel and show the selected team's logo/name with no player photo, role or WebM. Player-specific and general Wipe Out controls remain.

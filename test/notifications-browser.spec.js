@@ -159,6 +159,11 @@ test(
           window.ControlMatch?.get(),
       );
       assert.equal(await page.locator(".player-notif-event").count(), 100);
+      assert.equal(
+        await page.locator(".team-notif-event").count(),
+        2,
+        "each team has a dedicated Wipe Out button",
+      );
       const playerPanel = await page
         .locator("#player-notifications")
         .boundingBox();
@@ -428,6 +433,56 @@ test(
       await overlay.locator("#player-notification").getAttribute("data-side"),
       "red",
     );
+    for (const [page, side, name] of [
+      [normal, "blue", "BLUE"],
+      [six, "red", "RED"],
+    ]) {
+      const response = page.waitForResponse((response) =>
+        response.url().endsWith("/api/notification"),
+      );
+      await page.locator(`.team-notif-event[data-team-side="${side}"]`).click();
+      assert.equal((await response).status(), 200);
+      await overlay.waitForFunction(
+        (name) =>
+          document.getElementById("player-notification").dataset.scope ===
+            "team" &&
+          document.getElementById("notification-player").textContent === name,
+        name,
+      );
+      await overlay.waitForFunction(
+        () =>
+          document.getElementById("player-notification").dataset.artwork ===
+          "team",
+      );
+      assert.equal(cues.at(-1).scope, "team");
+      assert.equal(
+        await overlay.locator("#notification-event").textContent(),
+        "Wipe Out",
+      );
+      assert.match(
+        await overlay.locator("#notification-art img").getAttribute("src"),
+        new RegExp(`Team/${side}.png$`),
+      );
+      assert.equal(
+        await overlay.locator("#notification-role").isHidden(),
+        true,
+        "team cue has no player role",
+      );
+      assert.equal(
+        videoRequests,
+        generalVideoRequests,
+        "team wipe out never loads a WebM",
+      );
+      assert.equal(await overlay.locator("#videoPlayer").isVisible(), false);
+      if (process.env.MLBB_CAPTURE_DIR) {
+        await overlay.bringToFront();
+        await overlay.waitForTimeout(550);
+        await overlay.screenshot({
+          path: path.join(process.env.MLBB_CAPTURE_DIR, `wipe-out-${side}.png`),
+          omitBackground: true,
+        });
+      }
+    }
     // Repeated player events and interruption do not leak prior cue timeouts.
     await send(normal, "blue", 2, "shutdown");
     await overlay.waitForFunction(
