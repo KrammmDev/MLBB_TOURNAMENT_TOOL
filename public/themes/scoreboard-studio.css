@@ -6,43 +6,164 @@ body {
   --sb-right: #e92237;
   --sb-border: #d4dde7;
 }
-/* Square light desks: centered names with a separate row of square wins. */
+/* Pearl desk with mirrored wings; the native top-center HUD stays open. */
+.sb-frame {
+  height: 132px;
+  background: var(--header-bg, var(--sb-panel));
+}
+.sb-frame::after {
+  top: 52px;
+  height: 3px;
+  background: var(--edge, var(--sb-border));
+}
 .sb-banner {
-  height: 116px;
+  height: 132px;
+  clip-path: polygon(0 0, 100% 0, 100% 108px, 92px 100%, 0 100%);
+}
+.sb-banner-right {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 24px 100%, 0 108px);
 }
 .sb-banner::after {
   content: "";
   position: absolute;
-  inset: 0 0 4px;
-  background: var(--header-bg, #ffffff);
+  inset: 0 3px 5px;
+  background: var(--header-bg, var(--sb-panel));
+  clip-path: polygon(0 0, 100% 0, 100% 106px, 89px 100%, 0 100%);
+}
+.sb-banner-right::after {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 21px 100%, 0 106px);
+}
+.sb-team-logo img {
+  width: 84px;
+  height: 84px;
+}
+.lower {
+  top: 56px;
+  height: 76px;
+}
+.midscorename,
+.teamnamesc {
+  height: 76px;
 }
 .teamnamesc {
-  align-items: flex-start;
-  padding-top: 4px;
-  text-align: center;
+  align-items: center;
+  padding: 0 26px;
+  color: var(--sb-readable, var(--sb-text));
+  background: transparent;
 }
-.sb-left {
-  border-left: 1px solid var(--blue-accent, var(--sb-left));
+.teamnamesc::before {
+  content: "";
+  position: absolute;
+  left: 20px;
+  right: 10px;
+  bottom: 0;
+  height: 4px;
+  background: var(--blue-accent, var(--sb-left));
+  clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
 }
-.sb-right {
-  border-right: 1px solid var(--red-accent, var(--sb-right));
+.sb-right::before {
+  left: 10px;
+  right: 20px;
+  background: var(--red-accent, var(--sb-right));
+  transform: scaleX(-1);
 }
 .name-box {
-  font-size: 27px;
-  letter-spacing: 0;
+  font-size: 32px;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+.sb-left .tn {
+  padding-right: 82px;
+}
+.sb-right .tn {
+  padding-left: 82px;
 }
 .score-dots,
 .sb-right .score-dots {
   position: absolute;
-  bottom: 7px;
-  left: 50%;
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+  gap: 5px;
+}
+.score-dots {
+  right: 18px;
+}
+.sb-right .score-dots {
+  left: 18px;
   right: auto;
-  transform: translateX(-50%);
 }
 .sb-win {
-  width: 7px;
-  height: 7px;
+  width: 12px;
+  height: 28px;
+  background: var(--edge, var(--sb-border));
+  opacity: 0.65;
+  clip-path: polygon(0 0, 8px 0, 100% 100%, 4px 100%);
+}
+.sb-right .sb-win {
+  transform: scaleX(-1);
+}
+.sb-win.active {
+  opacity: 1;
+}
+#sb-tournament-logo {
+  left: 904px;
+  top: 60px;
+  width: 112px;
+  height: 64px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  background: transparent;
+}
+.logo.match-info {
+  height: 132px;
+}
+.matchinfo-content,
+#sb-sponsors {
+  height: 132px;
 }
 .matchinfo-content {
-  border-left: 3px solid var(--header-bg, #f1f4f8);
+  background: var(--header-bg, var(--sb-panel));
+  color: var(--sb-readable, var(--sb-text));
+  border-left: 1px solid var(--edge, var(--sb-border));
+  padding: 10px 10px 36px;
+  gap: 6px;
+}
+#matchinfo-main {
+  letter-spacing: 1px;
+}
+#matchinfo-day {
+  color: var(--sb-muted-readable, var(--sb-muted));
+}
+#match-display {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+  background: var(--red-accent, var(--sb-right));
+  color: var(--sb-info-text, #ffffff);
+  font-size: 12px;
+}
+#sb-sponsors {
+  border-left: 1px solid var(--edge, var(--sb-border));
+  border-bottom: 4px solid var(--red-accent, var(--sb-right));
+  box-sizing: border-box;
+  padding: 12px 18px;
+}
+#sb-production-strip {
+  top: 132px;
+  height: 24px;
+  font-size: 12px;
+}
+#sb-patch-label,
+#sb-caster-cell {
+  background: var(--header-bg, var(--sb-panel));
+  color: var(--sb-readable, var(--sb-text));
+  border-top: 1px solid var(--edge, var(--sb-border));
+  box-sizing: border-box;
 }
