@@ -334,6 +334,24 @@ test(
       "displayImage1",
     );
     assert.equal(await pinned.locator("#sb-sponsors img").isVisible(), true);
+    assert.equal(
+      await pinned.evaluate(() =>
+        document
+          .elementsFromPoint(365, 110)
+          .some((el) => el.classList.contains("sb-banner-left")),
+      ),
+      true,
+      "Classic masks the native left logo gutter below the name ribbon",
+    );
+    assert.equal(
+      await pinned
+        .locator("#sb-tournament-logo")
+        .evaluate((el) => getComputedStyle(el).backgroundColor),
+      "rgba(0, 0, 0, 0)",
+      "uploaded tournament logo has no added white box",
+    );
+    assert.equal((await pinned.locator(".lower").boundingBox()).y, 52);
+
     if (process.env.MLBB_CAPTURE_DIR)
       await pinned.screenshot({
         omitBackground: true,
