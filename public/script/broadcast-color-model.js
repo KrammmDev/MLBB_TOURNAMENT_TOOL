@@ -72,6 +72,14 @@
   defaults.scoreboard = Object.fromEntries(
     themes.map((id) => [id, { ...defaults.draft[id] }]),
   );
+  defaults.scoreboard.classic = {
+    background: "#171b23",
+    left: "#ff8a00",
+    right: "#ed2939",
+    text: "#f5f5f2",
+    muted: "#a9afb9",
+    border: "#343d49",
+  };
   defaults.postdraft = Object.fromEntries(
     themes.map((id) => [id, { ...defaults.draft[id] }]),
   );
