@@ -298,7 +298,22 @@ test(
     await pinned.waitForFunction(
       () =>
         getComputedStyle(document.querySelector(".sb-left")).backgroundColor ===
-        "rgb(94, 209, 0)",
+        "rgb(51, 46, 46)",
+    );
+    const accent = await pinned
+      .locator(".sb-left")
+      .evaluate((el) => getComputedStyle(el, "::before").backgroundColor);
+    assert.equal(
+      accent,
+      "rgb(94, 209, 0)",
+      "Classic uses the saved team color as an accent on its neutral ribbon",
+    );
+    assert.equal(
+      await pinned
+        .locator(".score-dots")
+        .first()
+        .evaluate((el) => getComputedStyle(el).backgroundColor),
+      "rgba(0, 0, 0, 0)",
     );
     for (const selector of [".upper", ".lower", ".uppermid"]) {
       const backgrounds = await pinned

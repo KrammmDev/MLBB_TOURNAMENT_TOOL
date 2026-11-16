@@ -6,39 +6,124 @@ body {
   --sb-right: #ff0101;
   --sb-border: #d6d6da;
 }
-/* Colored name plates and white logo shields: Classic's broadcast identity. */
+/* Classic: neutral broadcast ribbon, white logo plates and inset series ticks. */
 .sb-frame {
-  background: var(--header-bg, #ffffff);
+  background: var(--header-bg, var(--sb-panel));
+  clip-path: polygon(
+    52px 0,
+    186px 0,
+    206px 52px,
+    1032px 52px,
+    1052px 0,
+    100% 0,
+    100% 100%,
+    52px 100%
+  );
+}
+.sb-frame::after {
+  height: 1px;
+  opacity: 0.45;
 }
 .sb-banner {
-  height: 128px;
-  clip-path: polygon(0 0, 100% 0, 100% 92%, 50% 100%, 0 92%);
+  height: 122px;
+  box-sizing: border-box;
+  background: #ffffff;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    0 100%
+  );
+  border-top: 4px solid var(--blue-accent, var(--sb-left));
+}
+.sb-banner-right {
+  border-top-color: var(--red-accent, var(--sb-right));
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 8px 100%, 0 calc(100% - 8px));
 }
 .sb-banner::after {
   content: "";
   position: absolute;
-  inset: 0 0 5px;
-  background: var(--header-bg, #ffffff);
-}
-.sb-left {
+  inset: auto 0 0;
+  height: 3px;
   background: var(--blue-accent, var(--sb-left));
-  color: var(--sb-left-text, #ffffff);
 }
-.sb-right {
+.sb-banner-right::after {
   background: var(--red-accent, var(--sb-right));
-  color: var(--sb-right-text, #ffffff);
 }
-.sb-left .tn {
-  padding-left: 8px;
+.sb-team-logo img {
+  width: 84px;
+  height: 84px;
 }
-.sb-right .tn {
-  padding-right: 8px;
+.teamnamesc {
+  background: var(--header-bg, var(--sb-panel));
+  color: var(--sb-readable, var(--sb-text));
+  padding: 0 22px;
+  gap: 20px;
+}
+.teamnamesc::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 112px;
+  height: 4px;
+  background: var(--blue-accent, var(--sb-left));
+  clip-path: polygon(0 0, 100% 0, calc(100% - 7px) 100%, 0 100%);
+}
+.sb-right::before {
+  left: auto;
+  right: 0;
+  background: var(--red-accent, var(--sb-right));
+  clip-path: polygon(7px 0, 100% 0, 100% 100%, 0 100%);
+}
+.name-box {
+  font-size: 30px;
+  letter-spacing: 0.7px;
 }
 .score-dots {
-  background: var(--header-bg, #ffffff);
-  padding: 9px 8px;
+  padding: 0;
+  gap: 6px;
+  background: transparent;
 }
 .sb-win {
-  width: 5px;
-  height: 21px;
+  width: 9px;
+  height: 19px;
+  transform: skewX(-12deg);
+  background: var(--sb-muted-readable, var(--sb-muted));
+  opacity: 0.25;
+}
+.sb-right .sb-win {
+  transform: skewX(12deg);
+}
+.sb-win.active {
+  opacity: 1;
+}
+#sb-tournament-logo {
+  left: 894px;
+  top: 44px;
+  width: 132px;
+  height: 100px;
+  padding: 8px;
+  box-sizing: border-box;
+  background: #ffffff;
+  clip-path: polygon(
+    8px 0,
+    calc(100% - 8px) 0,
+    100% 8px,
+    100% calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    8px 100%,
+    0 calc(100% - 8px),
+    0 8px
+  );
+}
+.matchinfo-content {
+  gap: 8px;
+}
+.matchinfo-content > span {
+  letter-spacing: 0.7px;
+}
+#sb-production-strip {
+  height: 28px;
 }
