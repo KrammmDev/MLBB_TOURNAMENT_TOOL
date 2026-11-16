@@ -179,6 +179,7 @@
     }
     if (output === "scoreboard") {
       // Scoreboard owns a separate palette and never receives draft geometry rules.
+      vars("--sb-trim-text", readable(palette.text, palette.border));
       const mappings = {
         background: "--header-bg,--center-bg",
         left: "--blue-accent",
