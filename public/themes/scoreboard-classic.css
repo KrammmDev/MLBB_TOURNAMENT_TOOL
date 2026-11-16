@@ -22,7 +22,7 @@ body {
   pointer-events: none;
 }
 .sb-map-frame .map-edge-start {
-  stop-color: var(--blue-accent, var(--sb-left));
+  stop-color: var(--edge, var(--sb-border));
 }
 .sb-map-frame .map-edge-end {
   stop-color: var(--edge, var(--sb-border));
@@ -80,6 +80,7 @@ body {
 }
 .sb-banner-left {
   left: 394px;
+  clip-path: polygon(0 0, 100% 0, 100% 86px, 36px 100%, 0 100%);
 }
 .sb-banner-right {
   left: 1415px;
@@ -114,17 +115,16 @@ body {
 .sb-banner::after {
   content: "";
   position: absolute;
-  left: auto;
-  right: 0;
+  left: 0;
   top: 0;
   width: 3px;
   height: 100%;
-  background: var(--blue-accent, var(--sb-left));
+  background: var(--edge, var(--sb-border));
 }
 .sb-banner-right::after {
   left: auto;
   right: 0;
-  background: var(--red-accent, var(--sb-right));
+  background: var(--edge, var(--sb-border));
 }
 .sb-team-logo img {
   width: 84px;
@@ -149,13 +149,13 @@ body {
   right: 14px;
   bottom: 4px;
   height: 1px;
-  background: var(--blue-accent, var(--sb-left));
+  background: var(--edge, var(--sb-border));
   opacity: 0.75;
 }
 .sb-right::before {
   left: 14px;
   right: 32px;
-  background: var(--red-accent, var(--sb-right));
+  background: var(--edge, var(--sb-border));
 }
 .name-box {
   font-family: "Classic Display", Impact, "Arial Narrow", sans-serif;
