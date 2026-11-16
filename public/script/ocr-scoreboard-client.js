@@ -57,7 +57,18 @@
     const lead = $("goldLead"),
       value = $("goldleadValue");
     if (lead && value) {
-      const known = values.blueGold !== null && values.redGold !== null,
+      const blue = state?.fields?.blueGold,
+        red = state?.fields?.redGold;
+      const paired =
+        !custom ||
+        (blue?.locked && red?.locked) ||
+        (blue?.acceptedFrame &&
+          blue.acceptedFrame === red?.acceptedFrame &&
+          !blue.locked &&
+          !red.locked);
+      const known = Boolean(
+          paired && values.blueGold !== null && values.redGold !== null,
+        ),
         difference = known ? values.blueGold - values.redGold : 0;
       lead.hidden = !known;
       lead.classList.toggle("blue-lead", difference > 0);
