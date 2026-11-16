@@ -36,6 +36,7 @@
   const banner = document.getElementById("player-notification");
   const artwork = document.getElementById("notification-art");
   const role = document.getElementById("notification-role");
+  stage.dataset.notificationState = "idle";
   let generation = 0,
     timeout,
     stop;
@@ -57,6 +58,9 @@
     role.hidden = true;
     role.replaceChildren();
     banner.dataset.artwork = "none";
+    stage.dataset.notificationState = "idle";
+    stage.dataset.notificationVideoId = "";
+    delete stage.dataset.notificationError;
   }
   function setTitle(text) {
     const title = document.getElementById("notification-event");
@@ -226,13 +230,55 @@
     const clear = () => {
       if (version === generation) reset();
     };
+    const fail = (error) => {
+      if (version !== generation) return;
+      const reason =
+        error?.message || "Missing or unsupported notification video";
+      reset();
+      stage.dataset.notificationState = "error";
+      stage.dataset.notificationVideoId = cue.videoId;
+      stage.dataset.notificationError = `${path}: ${reason}`;
+      console.warn(`Notification video could not play: ${path}`, reason);
+    };
+    async function play() {
+      try {
+        await video.play();
+        if (version === generation) stage.dataset.notificationState = "playing";
+      } catch (error) {
+        if (version !== generation) return;
+        if (error.name !== "NotAllowedError") return fail(error);
+        // OBS/Chrome can reject sound autoplay on a fresh source; keep the visual cue on air.
+        video.muted = true;
+        try {
+          await video.play();
+          if (version !== generation) return;
+          stage.dataset.notificationState = "playing-muted";
+          console.warn(
+            "Notification audio autoplay was blocked; this cue is playing muted.",
+          );
+        } catch (retryError) {
+          fail(retryError);
+        }
+      }
+    }
+    stage.dataset.notificationState = "loading";
+    stage.dataset.notificationVideoId = cue.videoId;
     source.src = path;
-    video.onended = video.onerror = source.onerror = clear;
+    video.onended = clear;
+    video.onerror = source.onerror = () =>
+      fail(
+        video.error || new Error("Missing or unsupported notification video"),
+      );
+    video.muted = false;
     video.load();
     video.style.display = "block";
-    video.play()?.catch(clear);
-    timeout = setTimeout(clear, 15000);
+    timeout = setTimeout(
+      () => fail(new Error("Notification video timed out while playing")),
+      15000,
+    );
+    play();
   }
+
   function scale() {
     stage.style.transform = `scale(${Math.min(innerWidth / 1920, innerHeight / 1080)})`;
   }
