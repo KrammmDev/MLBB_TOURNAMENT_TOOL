@@ -1,6 +1,8 @@
 # General and individual player notifications
 
-Use the existing Notification section of `/control.html` or `/controlban6.html`. General Notifications retains the original objective/kill buttons and keyboard shortcuts. Use the Player controls jump link in General Notifications to reach the full-width panel below the existing console. Individual Player Notifications groups the current five-player lineup under each team, with First Blood, Double Kill, Triple Kill, Maniac, Savage, Turtle Slain, Lord Slain, Shutdown, Killing Spree and Wipe Out buttons on every player card.
+Use the existing Notification section of `/control.html` or `/controlban6.html`. General Notifications retains the original objective/kill buttons and keyboard shortcuts. Use the Player controls jump link in General Notifications to reach the full-width panel below the existing console. Each team header also has a dedicated **Wipe Out** button that requires no player selection. It shows the selected team’s logo and name using the same split-text/barn-door animation, without a portrait, role icon or WebM. This is a display cue only: selecting a team does not alter results or counters.
+
+Individual Player Notifications groups the current five-player lineup under each team, with First Blood, Double Kill, Triple Kill, Maniac, Savage, Turtle Slain, Lord Slain, Shutdown, Killing Spree and Wipe Out buttons on every player card.
 
 Save match/team/player edits before sending a player cue. The panel shows server acknowledgement or a visible failure; it does not claim that OBS played the cue. A stale lineup/game is rejected instead of attributing the event to the wrong player. The player panel follows committed match updates, including renames and side swaps. Repeating a button intentionally fires another cue. New cues interrupt the prior cue, matching legacy behavior.
 

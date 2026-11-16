@@ -20,7 +20,10 @@
         model.identity(data, side, index),
       ),
     );
-    const key = JSON.stringify(identities);
+    const teamIdentities = ["blue", "red"].map((side) =>
+      model.teamIdentity(data, side),
+    );
+    const key = JSON.stringify({ identities, teamIdentities });
     if (key === renderedKey) return;
     renderedKey = key;
     host.replaceChildren();
@@ -32,7 +35,24 @@
       heading.textContent =
         identities[s][0]?.teamName ||
         (side === "blue" ? "Blue team" : "Red team");
-      team.append(heading);
+      const header = document.createElement("div");
+      header.className = "team-notif-heading";
+      const wipe = document.createElement("button");
+      wipe.type = "button";
+      wipe.className = "team-notif-event";
+      wipe.dataset.teamSide = side;
+      const wipeLabel = model.event("wipe-out").label;
+      wipe.textContent = wipeLabel;
+      wipe.setAttribute(
+        "aria-label",
+        `${wipeLabel} — ${teamIdentities[s]?.teamName || side}`,
+      );
+      wipe.disabled = sending || !teamIdentities[s]?.teamName.trim();
+      wipe.addEventListener("click", () =>
+        send(side, null, "wipe-out", teamIdentities[s]),
+      );
+      header.append(heading, wipe);
+      team.append(header);
       for (let index = 0; index < 5; index++) {
         const identity = identities[s][index];
         const card = document.createElement("article");
@@ -78,7 +98,7 @@
     const state = session.status();
     if (state.blocked || state.pending || state.timers || state.dirty) {
       report(
-        "Save or reload your match edits before sending a player notification.",
+        "Save or reload your match edits before sending a notification.",
         true,
       );
       return;
@@ -87,18 +107,29 @@
     host
       .querySelectorAll("button")
       .forEach((button) => (button.disabled = true));
-    report(`Sending ${model.event(eventId).label} for ${expected.playerName}…`);
+    const scope = playerIndex === null ? "team" : "player";
+    report(
+      `Sending ${model.event(eventId).label} for ${expected.playerName || expected.teamName}…`,
+    );
     try {
       const response = await fetch("/api/notification", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ eventId, teamSide, playerIndex, expected }),
+        body: JSON.stringify({
+          scope,
+          eventId,
+          teamSide,
+          playerIndex,
+          expected,
+        }),
       });
       const result = await response.json();
       if (!response.ok)
         throw new Error(result.message || "Notification was not sent");
       const cue = result.notification;
-      report(`Sent · ${cue.playerName} · ${cue.teamName} — ${cue.eventLabel}`);
+      report(
+        `Sent · ${cue.scope === "team" ? cue.teamName : cue.playerName + " · " + cue.teamName} — ${cue.eventLabel}`,
+      );
     } catch (error) {
       report(
         error.message || "Server unavailable. Notification was not sent.",
@@ -106,6 +137,11 @@
       );
     } finally {
       sending = false;
+      host.querySelectorAll(".team-notif-event").forEach((button) => {
+        button.disabled = !model
+          .teamIdentity(lineup, button.dataset.teamSide)
+          ?.teamName.trim();
+      });
       host.querySelectorAll(".player-notif-card").forEach((card) => {
         const identity = model.identity(
           lineup,
@@ -123,7 +159,7 @@
     render(data);
     if (status.textContent.trim() === "Loading players…")
       report(
-        "Ready · choose a player event to send it to the broadcast overlay.",
+        "Ready · choose a team or player event to send it to the broadcast overlay.",
       );
   });
 })(window);

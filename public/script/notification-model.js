@@ -40,6 +40,18 @@
     ].map(Object.freeze),
   );
   const event = (id) => events.find((item) => item.id === id);
+  function teamIdentity(data, side) {
+    const team =
+      data?.teamdata?.[
+        side === "blue" ? "blueteam" : side === "red" ? "redteam" : ""
+      ];
+    if (!team) return null;
+    return {
+      teamName: String(team.teamname || team.name || ""),
+      gameNumber: data.game_number ?? null,
+      matchInfo: data.matchInfo || {},
+    };
+  }
   function identity(data, side, index) {
     const team =
       data?.teamdata?.[
@@ -54,5 +66,5 @@
       matchInfo: data.matchInfo || {},
     };
   }
-  return Object.freeze({ events, event, videos, identity });
+  return Object.freeze({ events, event, videos, identity, teamIdentity });
 });
