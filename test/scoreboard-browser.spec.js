@@ -406,6 +406,9 @@ test(
       "the separate rectangle bridges the minimap and left holder",
     );
     const rail = await pinned.locator(".sb-frame").boundingBox();
+    assert.equal(rail.y, 56, "Classic rail grows upward by 24px");
+    assert.equal(rail.height, 78);
+    assert.equal(rail.y + rail.height, 134, "rail baseline stays fixed");
     assert.equal(
       connector.top + connector.height,
       rail.y + rail.height,
