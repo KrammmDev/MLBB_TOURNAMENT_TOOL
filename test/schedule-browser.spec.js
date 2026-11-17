@@ -79,13 +79,14 @@ test(
         revision: '"branding"',
       }),
     );
+    let sponsorLogos = [];
     app.get("/api/broadcast-sponsors", (q, s) =>
       s.json({
         data: {
           schemaVersion: 1,
           enabled: true,
           intervalSeconds: 5,
-          logos: [],
+          logos: sponsorLogos,
         },
         revision: '"sponsors"',
       }),
@@ -146,18 +147,12 @@ test(
         columns: getComputedStyle(document.getElementById("schedule-cards"))
           .gridTemplateColumns,
       }));
-      assert.equal(composition.videoX, id === "studio" ? 640 : 40);
-      assert.equal(
-        composition.scheduleX,
-        { classic: 1370, arena: 40, studio: 30 }[id],
-      );
+      assert.equal(composition.videoX, id === "arena" ? 400 : 10);
+      assert.equal(composition.scheduleX, id === "arena" ? 400 : 10);
       if (id === "arena")
         assert.equal(composition.columns.split(" ").length, 2);
 
-      assert.equal(
-        slot.width,
-        { classic: 1280, arena: 1120, studio: 1240 }[id],
-      );
+      assert.equal(slot.width, 1510);
       assert.equal(
         await page
           .locator("#schedule-video-window")
@@ -211,6 +206,45 @@ test(
       .locator(".schedule-card")
       .first()
       .waitFor({ state: "visible", timeout: 12000 });
+    shared["schedule-5"] = JSON.stringify({
+      show: true,
+      team1: "BLUE 5",
+      team2: "RED 5",
+    });
+    broadcast({ type: "update", data: { "schedule-5": shared["schedule-5"] } });
+    await page.waitForFunction(
+      () =>
+        document
+          .getElementById("schedule-cards")
+          .textContent.includes("BLUE 5"),
+      null,
+      { timeout: 12000 },
+    );
+    assert.equal(await page.locator("#schedule-casters").isVisible(), true);
+    await themes.select("classic", themes.snapshot().revision, "schedule");
+    await page.reload();
+    await page.waitForFunction(
+      () => document.body.dataset.scheduleTheme === "classic",
+    );
+    sponsorLogos = [
+      {
+        file: "00000000-0000-0000-0000-000000000003.png",
+        name: "Fixture partner",
+      },
+    ];
+    broadcast({
+      type: "broadcast_sponsors_update",
+      data: { enabled: true, logos: sponsorLogos },
+    });
+    await page.waitForFunction(
+      () =>
+        document.getElementById("schedule-heading").textContent === "PARTNERS",
+      null,
+      { timeout: 18000 },
+    );
+    assert.equal(await page.locator("#schedule-partners img").count(), 1);
+    assert.equal(await page.locator("#schedule-casters").isVisible(), true);
+    await themes.select("studio", themes.snapshot().revision, "schedule");
     const admin = await ctx.newPage();
     admin.on("pageerror", (e) => errors.push(e.message));
     await admin.goto(base + "/broadcast-themes.html");

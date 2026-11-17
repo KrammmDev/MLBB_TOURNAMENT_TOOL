@@ -107,9 +107,9 @@
       };
       if (output() === "schedule")
         Object.assign(details, {
-          classic: "Ember competition · right rail · lower clock deck",
-          arena: "Worlds-style match grid · right event tower",
-          studio: "Editorial masthead · match wedges · video canvas",
+          classic: "Right talent rail · partner/schedule deck",
+          arena: "Left talent rail · bottom match strips",
+          studio: "Ivory talent frame · bottom match strips",
         });
       if (output() === "postdraft")
         Object.assign(details, {
