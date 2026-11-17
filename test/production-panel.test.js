@@ -66,3 +66,20 @@ test("panel settings survive restart and corrupt state is preserved", async (t) 
   await assert.rejects(loadPanelStore({ file }), /safely/);
   assert.equal(await fs.readFile(file, "utf8"), "broken");
 });
+
+test("legacy panel configuration gains headline without resetting timer", () => {
+  const original = createPanelStore({ persist: async () => {} }).snapshot()
+    .data;
+  delete original.headline;
+  original.running = true;
+  original.startedAt = 1000;
+  original.valueMs = 123456;
+  const restored = createPanelStore({
+    initial: original,
+    persist: async () => {},
+  }).snapshot().data;
+  assert.equal(restored.headline, "");
+  assert.equal(restored.startedAt, 1000);
+  assert.equal(restored.valueMs, 123456);
+  assert.equal(restored.running, true);
+});

@@ -9,14 +9,32 @@
   </head>
   <body class="overlay">
     <div id="panel-stage" hidden>
-      <section class="broadcast-panel">
-        <div id="panel-sponsors" aria-label="Sponsors"></div>
+      <section
+        class="match-card"
+        aria-label="Current match and production timer"
+      >
+        <div id="panel-match-meta"></div>
+        <div class="panel-team panel-team-blue">
+          <img id="panel-blue-logo" alt="" /><span id="panel-blue-name"></span>
+        </div>
+        <strong class="panel-score" id="panel-blue-score">0</strong>
         <div class="timer-face">
           <span id="timer-label"></span><strong id="timer-value"></strong>
         </div>
+        <strong class="panel-score" id="panel-red-score">0</strong>
+        <div class="panel-team panel-team-red">
+          <img id="panel-red-logo" alt="" /><span id="panel-red-name"></span>
+        </div>
+      </section>
+      <section class="broadcast-panel">
+        <div id="panel-headline"></div>
+        <div id="panel-sponsors" aria-label="Sponsors"></div>
         <div id="ticker-window"><span id="ticker-text"></span></div>
       </section>
     </div>
+    <script src="/script/match-state.js"></script>
+    <script src="/script/match-client.js"></script>
+    <script src="/script/roster-model.js"></script>
     <script src="/script/production-timer-model.js"></script>
     <script src="/script/sponsor-slideshow.js"></script>
     <script src="/script/production-panel.js"></script>

@@ -11,6 +11,25 @@ const {
 test("control drives independent OBS overlay, colors, ticker, shared sponsors and refresh", async (t) => {
   const app = express(),
     store = createPanelStore({ persist: async () => {} });
+  const currentMatch = require("./fixtures").fixture();
+  Object.assign(currentMatch.teamdata.blueteam, {
+    teamname: "BLUE TEAM",
+    score: "2",
+    logo: "Assets/Team/blue.png",
+  });
+  Object.assign(currentMatch.teamdata.redteam, {
+    teamname: "RED TEAM",
+    score: "1",
+    logo: "Assets/Team/red.png",
+  });
+  app.get("/api/matchdata", (req, res) => res.json(currentMatch));
+  app.get("/Assets/Team/:file", (req, res) =>
+    res
+      .type("svg")
+      .send(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><circle cx="40" cy="40" r="38" fill="cyan"/></svg>',
+      ),
+  );
   app.use(express.json());
   installPanelRoutes(app, () => store);
   app.get("/api/broadcast-sponsors", (req, res) =>
@@ -39,12 +58,15 @@ test("control drives independent OBS overlay, colors, ticker, shared sponsors an
   app.use(express.static(path.join(__dirname, "../public")));
   const server = app.listen(0, "127.0.0.1");
   await new Promise((r) => server.once("listening", r));
+  const wss = new (require("ws").WebSocketServer)({ server });
   const browser = await chromium.launch({
     executablePath: process.env.MLBB_TEST_BROWSER || undefined,
     args: ["--no-sandbox"],
   });
   t.after(async () => {
     await browser.close();
+    for (const client of wss.clients) client.terminate();
+    await new Promise((r) => wss.close(r));
     await new Promise((r) => server.close(r));
   });
   const context = await browser.newContext(),
@@ -61,6 +83,9 @@ test("control drives independent OBS overlay, colors, ticker, shared sponsors an
   await overlay.goto(base + "/production-timer.html");
   await control.locator("[name=durationSeconds]").fill("30");
   await control.locator("[name=ticker]").fill("LIVE <script> text");
+  await control
+    .locator("[name=headline]")
+    .fill("WHO WILL BE THE NEW CHAMPION?");
   await control.locator("[name=accent]").fill("#ff00ff");
   await control.locator("button[type=submit]").click();
   await control.waitForFunction(
@@ -82,6 +107,34 @@ test("control drives independent OBS overlay, colors, ticker, shared sponsors an
     "#ff00ff",
   );
   await overlay.locator("#panel-sponsors img").waitFor();
+  await overlay.waitForFunction(
+    () =>
+      document.getElementById("panel-blue-name").textContent === "BLUE TEAM",
+  );
+  assert.equal(await overlay.locator("#panel-blue-score").textContent(), "2");
+  assert.equal(await overlay.locator("#panel-red-score").textContent(), "1");
+  assert.equal(
+    await overlay.locator("#panel-headline").textContent(),
+    "WHO WILL BE THE NEW CHAMPION?",
+  );
+  assert.ok(
+    (await overlay.locator("#panel-blue-logo").getAttribute("src")).endsWith(
+      "/Assets/Team/blue.png",
+    ),
+  );
+  const panelBefore = store.snapshot().data;
+  currentMatch.teamdata.blueteam.teamname = "UPDATED <b> TEAM";
+  currentMatch.teamdata.blueteam.score = "3";
+  for (const client of wss.clients)
+    client.send(
+      JSON.stringify({ type: "matchdata_update", data: currentMatch }),
+    );
+  await overlay.waitForFunction(
+    () => document.getElementById("panel-blue-score").textContent === "3",
+  );
+  assert.equal(await overlay.locator("#panel-blue-name b").count(), 0);
+  assert.deepEqual(store.snapshot().data, panelBefore);
+
   await control.locator("[data-action=start]").click();
   await control.waitForFunction(
     () => document.getElementById("timer-value").dataset.running === "true",

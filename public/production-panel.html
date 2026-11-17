@@ -12,7 +12,10 @@
       <header>
         <small>BROADCAST / STANDBY</small>
         <h1>Production timer</h1>
-        <p>One Browser Source for your timer, sponsors and scrolling text.</p>
+        <p>
+          Live match teams, timer, headline, sponsors and scrolling text in one
+          Browser Source.
+        </p>
         <a href="/production-timer.html" target="_blank">Open overlay ↗</a>
       </header>
       <p id="status" role="status">Loading…</p>
@@ -61,6 +64,12 @@
           resets and pauses the timer.
         </p>
         <label
+          >Headline (main banner)<input
+            name="headline"
+            maxlength="240"
+            placeholder="WHO WILL BE THE NEW CHAMPION?"
+        /></label>
+        <label
           >Scrolling text<textarea
             name="ticker"
             maxlength="2000"
@@ -79,6 +88,12 @@
         <button type="submit">Save panel settings</button>
       </form>
       <section>
+        <h2>Live match data</h2>
+        <p>
+          Team names, logos and series scores follow the current saved match
+          from <a href="/control.html" target="_blank">Control Panel ↗</a>. Edit
+          them there; this source only displays them.
+        </p>
         <h2>Sponsor logos</h2>
         <p>
           This overlay plays the same saved logos and rotation as Broadcast
@@ -92,9 +107,10 @@
         <h2>OBS Browser Source</h2>
         <input id="overlay-url" readonly aria-label="Overlay URL" />
         <p>
-          1920 × 1080. Transparent canvas with a bottom broadcast panel. This
-          timer runs independently of match and draft clocks. Start/Pause/Reset
-          are controlled here; source visibility does not restart it.
+          1920 × 1080. Transparent canvas: live matchup/timer at the top-left
+          and a headline/sponsor/ticker banner below. This timer runs
+          independently of match and draft clocks. Start/Pause/Reset are
+          controlled here; source visibility does not restart it.
         </p>
       </section>
       <iframe title="Overlay preview" src="/production-timer.html"></iframe>
