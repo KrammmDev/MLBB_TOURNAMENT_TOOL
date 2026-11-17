@@ -89,7 +89,7 @@ body {
 .schedule-card {
   height: 180px;
   border: 1px solid var(--sc-border);
-  border-radius: 18px 0 18px 0;
+  border-radius: 0;
   clip-path: none;
   background: linear-gradient(
     110deg,
@@ -133,7 +133,7 @@ body {
   width: 1140px;
   height: 641.25px;
   border: 4px solid var(--sc-border);
-  border-radius: 24px 4px 24px 4px;
+  border-radius: 0;
 }
 #schedule-talents {
   display: none;
@@ -151,7 +151,7 @@ body {
   gap: 15px;
   padding: 12px 20px;
   background: var(--sc-panel);
-  border-radius: 14px;
+  border-radius: 0;
 }
 #schedule-sponsor span {
   font:
@@ -163,24 +163,66 @@ body {
   height: 80px;
   object-fit: contain;
 }
+/* A crisp headline band and separate crawl, aligned to the video frame. */
 footer {
   left: 730px;
   top: 950px;
   width: 1140px;
-  height: 105px;
-  padding: 15px 25px;
-  background: var(--sc-panel);
-  border: 0;
-  border-radius: 14px;
+  height: 56px;
+  padding: 0 22px;
+  border: 1px solid var(--sc-border);
+  border-left: 7px solid var(--sc-left);
+  border-radius: 0;
   color: var(--sc-text);
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--sc-border) 55%, var(--sc-panel)),
+    var(--sc-border)
+  );
 }
 #schedule-footer {
   font:
-    700 25px Arial,
+    800 25px/1.2 Arial,
     sans-serif;
-  white-space: normal;
-  max-height: 75px;
-  line-height: 1.4;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+#schedule-ticker {
+  display: block;
+  position: absolute;
+  left: 730px;
+  top: 1017px;
+  width: 1140px;
+  height: 38px;
+  overflow: hidden;
+  border-top: 2px solid var(--sc-border);
+  background: var(--sc-panel);
+  color: var(--sc-text);
+}
+#schedule-ticker-track {
+  display: flex;
+  width: max-content;
+  animation: classic-schedule-crawl 25s linear infinite;
+}
+#schedule-ticker-track span {
+  flex-shrink: 0;
+  white-space: pre;
+  font:
+    24px/36px Arial,
+    sans-serif;
+}
+@keyframes classic-schedule-crawl {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #schedule-ticker-track {
+    animation: none;
+  }
 }
 #schedule-partners {
   height: 565px;
@@ -189,7 +231,7 @@ footer {
   gap: 18px;
   padding: 20px;
   background: var(--sc-panel);
-  border-radius: 16px;
+  border-radius: 0;
 }
 #schedule-partners img {
   max-width: 250px;
@@ -236,4 +278,25 @@ body[data-schedule-panel="matches"] #schedule-talents {
 }
 body[data-schedule-panel="talents"] .schedule-sidebar {
   display: none;
+}
+
+/* Subtle metallic detail follows the saved border color. */
+#schedule-event {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--sc-border) 45%, var(--sc-panel)),
+    var(--sc-border) 48%,
+    color-mix(in srgb, var(--sc-border) 80%, var(--sc-text)) 52%,
+    var(--sc-border)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.schedule-meta {
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--sc-border) 65%, var(--sc-panel)),
+    var(--sc-border)
+  );
 }
