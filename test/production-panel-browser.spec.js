@@ -194,6 +194,12 @@ test("control drives independent OBS overlay, colors, ticker, shared sponsors an
   await control.waitForFunction(
     () => document.getElementById("timer-value").dataset.running === "true",
   );
+  await control.locator('[data-add-seconds="60"]').click();
+  await control.waitForFunction(
+    () => document.getElementById("status").textContent === "Added 1 min.",
+  );
+  assert.equal(store.snapshot().data.running, true);
+  assert.ok(store.snapshot().data.valueMs > 80000);
   await overlay.reload();
   await overlay.waitForFunction(
     () => !document.getElementById("panel-stage").hidden,
@@ -249,6 +255,21 @@ test("control drives independent OBS overlay, colors, ticker, shared sponsors an
   );
   await control.waitForFunction(
     () => document.getElementById("timer-value").textContent === "00:30",
+  );
+  for (const seconds of [60, 180, 300, 600, 1800]) {
+    const before = store.snapshot().data.valueMs;
+    await control.locator(`[data-add-seconds="${seconds}"]`).click();
+    await control.waitForFunction(
+      (minutes) =>
+        document.getElementById("status").textContent ===
+        "Added " + minutes + " min.",
+      seconds / 60,
+    );
+    assert.equal(store.snapshot().data.valueMs, before + seconds * 1000);
+    assert.equal(store.snapshot().data.running, false);
+  }
+  await overlay.waitForFunction(
+    () => document.getElementById("timer-value").textContent === "49:30",
   );
   if (process.env.MLBB_CAPTURE_DIR) {
     const fs = require("node:fs/promises");

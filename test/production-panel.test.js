@@ -122,3 +122,66 @@ test("visibility cues retain timer anchors and reject invalid targets", async ()
     { status: 400 },
   );
 });
+
+test("quick time additions preserve clock state and reset duration", async () => {
+  let now = 1000,
+    fail = false;
+  const store = createPanelStore({
+    now: () => now,
+    persist: async () => {
+      if (fail) throw Error("disk full");
+    },
+  });
+  const change = (body) => store.change(body, store.snapshot().revision);
+  const duration = store.snapshot().data.durationSeconds;
+  for (const seconds of [60, 180, 300, 600, 1800]) {
+    const before = timer.milliseconds(store.snapshot().data, now);
+    await change({ action: "add-time", seconds });
+    assert.equal(
+      timer.milliseconds(store.snapshot().data, now),
+      before + seconds * 1000,
+    );
+    assert.equal(store.snapshot().data.running, false);
+    assert.equal(store.snapshot().data.startedAt, null);
+  }
+  await change({ action: "reset" });
+  assert.equal(store.snapshot().data.valueMs, duration * 1000);
+  await change({ action: "start" });
+  now += 1234;
+  const remaining = timer.milliseconds(store.snapshot().data, now);
+  await change({ action: "add-time", seconds: 60 });
+  assert.equal(store.snapshot().data.running, true);
+  assert.equal(
+    timer.milliseconds(store.snapshot().data, now),
+    remaining + 60000,
+  );
+  now += 500;
+  assert.equal(
+    timer.milliseconds(store.snapshot().data, now),
+    remaining + 59500,
+  );
+  now += 9999999;
+  await change({ action: "add-time", seconds: 180 });
+  assert.equal(timer.milliseconds(store.snapshot().data, now), 180000);
+  assert.equal(store.snapshot().data.durationSeconds, duration);
+  await change({ action: "settings", settings: { mode: "countup" } });
+  await change({ action: "start" });
+  now += 1200;
+  await change({ action: "add-time", seconds: 300 });
+  assert.equal(timer.milliseconds(store.snapshot().data, now), 301200);
+  const before = store.snapshot();
+  for (const seconds of [0, -60, 61, "60", null])
+    await assert.rejects(change({ action: "add-time", seconds }), {
+      status: 400,
+    });
+  await assert.rejects(
+    store.change({ action: "add-time", seconds: 60 }, "stale"),
+    { status: 409 },
+  );
+  fail = true;
+  await assert.rejects(
+    change({ action: "add-time", seconds: 60 }),
+    /disk full/,
+  );
+  assert.deepEqual(store.snapshot(), before);
+});
