@@ -236,3 +236,133 @@ iframe {
     flex-direction: column;
   }
 }
+/* Live match card and editorial lower third share the same Browser Source. */
+.match-card {
+  position: absolute;
+  left: 60px;
+  top: 50px;
+  width: 800px;
+  height: 190px;
+  margin: 0;
+  padding: 8px 20px 12px;
+  display: grid;
+  grid-template-columns: 130px 70px 1fr 70px 130px;
+  grid-template-rows: 34px 1fr;
+  gap: 0 8px;
+  background: var(--panel-bg);
+  color: var(--panel-text);
+  border: 0;
+  border-top: 4px solid var(--panel-accent);
+  border-radius: 0;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - 18px),
+    calc(100% - 18px) 100%,
+    18px 100%,
+    0 calc(100% - 18px)
+  );
+}
+#panel-match-meta {
+  grid-column: 1/-1;
+  grid-row: 1;
+  text-align: center;
+  font:
+    22px PanelDisplay,
+    Impact,
+    sans-serif;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.panel-team {
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+.panel-team-blue {
+  grid-column: 1;
+}
+.panel-team-red {
+  grid-column: 5;
+}
+.panel-team img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+.panel-team img[hidden] {
+  display: none;
+}
+.panel-team span {
+  font:
+    24px PanelDisplay,
+    Impact,
+    sans-serif;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.panel-score {
+  grid-row: 2;
+  align-self: center;
+  text-align: center;
+  font:
+    70px/1 PanelDisplay,
+    Impact,
+    sans-serif;
+}
+#panel-blue-score {
+  grid-column: 2;
+}
+#panel-red-score {
+  grid-column: 4;
+}
+.match-card .timer-face {
+  grid-column: 3;
+  grid-row: 2;
+  border: 0;
+  border-left: 1px solid var(--panel-accent);
+  border-right: 1px solid var(--panel-accent);
+  padding: 8px 12px;
+}
+.match-card .timer-face span {
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+.match-card .timer-face strong {
+  font-size: 62px;
+}
+.broadcast-panel {
+  height: 190px;
+  grid-template-columns: 1fr 300px;
+  grid-template-rows: 130px 60px;
+}
+.broadcast-panel.without-sponsors {
+  grid-template-columns: 1fr;
+}
+#panel-headline {
+  grid-column: 1;
+  grid-row: 1;
+  padding: 24px 36px;
+  display: flex;
+  align-items: center;
+  font:
+    48px/1.1 PanelDisplay,
+    Impact,
+    sans-serif;
+  letter-spacing: 1px;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+#panel-sponsors {
+  grid-column: 2;
+  grid-row: 1;
+  padding: 16px 26px;
+}

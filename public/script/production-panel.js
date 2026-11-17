@@ -18,6 +18,7 @@
     "format",
     "endText",
     "label",
+    "headline",
     "ticker",
     "tickerSeconds",
     "showSponsors",
@@ -45,6 +46,10 @@
     document.getElementById("timer-label").textContent = d.label;
     if (stage) {
       stage.hidden = false;
+      document.getElementById("panel-headline").textContent = d.headline || "";
+      document
+        .querySelector(".broadcast-panel")
+        .classList.toggle("without-sponsors", !d.showSponsors);
       document.getElementById("panel-sponsors").style.display = d.showSponsors
         ? ""
         : "none";
@@ -137,6 +142,37 @@
     scale();
     addEventListener("resize", scale);
     SponsorSlideshow.start(document.getElementById("panel-sponsors"));
+    MatchDataClient.subscribe(
+      ({ data }) => {
+        for (const side of ["blue", "red"]) {
+          const team = data.teamdata?.[side + "team"] || {};
+          document.getElementById("panel-" + side + "-name").textContent =
+            String(team.teamname || team.name || "");
+          const score = Number.parseInt(team.score, 10);
+          document.getElementById("panel-" + side + "-score").textContent =
+            Number.isFinite(score) ? String(score) : "0";
+          const image = document.getElementById("panel-" + side + "-logo");
+          const source = RosterModel.safeImage(team.logo);
+          image.hidden = !source;
+          if (source && image.getAttribute("data-source") !== source) {
+            image.dataset.source = source;
+            image.onerror = () => {
+              image.hidden = true;
+            };
+            image.src = source;
+          }
+        }
+        document.getElementById("panel-match-meta").textContent = [
+          data.matchInfo?.match || data.matchInfo?.stage,
+          "BO" + String(data.matchFormat || 3).replace(/^bo/i, ""),
+          data.matchInfo?.game,
+        ]
+          .filter(Boolean)
+          .join(" · ");
+      },
+      () => {},
+      { onMessage: (message) => SponsorSlideshow.accept(message) },
+    );
   } else {
     document.getElementById("overlay-url").value =
       location.origin + "/production-timer.html";
