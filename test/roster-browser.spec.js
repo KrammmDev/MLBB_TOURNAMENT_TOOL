@@ -73,6 +73,7 @@ test(
     const fixtureRoute = (route) => {
       const url = new URL(route.request().url());
       if (url.hostname !== "127.0.0.1") return route.abort();
+      if (/\/Assets\/Font\//i.test(url.pathname)) return route.continue();
       if (/\/Assets\//i.test(url.pathname))
         return route.fulfill({
           contentType: "image/svg+xml",
@@ -326,6 +327,8 @@ test(
     if (process.env.MLBB_CAPTURE_DIR) {
       const fs = require("node:fs/promises");
       await fs.mkdir(process.env.MLBB_CAPTURE_DIR, { recursive: true });
+      await active.evaluate(() => document.fonts.ready);
+      await active.waitForTimeout(500);
       await active.screenshot({
         path: path.join(process.env.MLBB_CAPTURE_DIR, "studio-roster.png"),
       });
