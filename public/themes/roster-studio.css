@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "Studio Roster Display";
+  src: url("/Assets/Font/big_noodle_titling.ttf") format("truetype");
+  font-display: swap;
+}
 :root {
   --studio-ink: #111925;
   --studio-paper: #eef3f8;
@@ -34,17 +39,18 @@ body {
 }
 .tournament-block {
   position: absolute;
-  left: 64px;
-  top: 70px;
-  width: 640px;
+  left: 1140px;
+  top: 88px;
+  width: 720px;
   border-left: 4px solid var(--studio-blue);
   padding: 0 0 0 24px;
 }
 .tournament-title {
-  font-size: 66px;
-  font-weight: 800;
+  font-family: "Studio Roster Display", Impact, sans-serif;
+  font-size: 72px;
+  font-weight: 400;
   line-height: 1.05;
-  letter-spacing: -2px;
+  letter-spacing: 2px;
   text-transform: uppercase;
   max-height: 210px;
 }
@@ -57,8 +63,8 @@ body {
 }
 .badge-block {
   position: absolute;
-  left: 64px;
-  top: 32px;
+  left: 1140px;
+  top: 40px;
   font-size: 14px;
   letter-spacing: 4px;
   color: var(--studio-muted);
@@ -66,12 +72,13 @@ body {
 }
 .scoreboard {
   position: absolute;
-  left: 64px;
-  top: 350px;
-  width: 660px;
+  left: 1140px;
+  top: 365px;
+  width: 720px;
   background: var(--studio-ink);
-  border: 1px solid #334356;
-  border-radius: 12px;
+  border: 0;
+  border-top: 2px solid var(--studio-blue);
+  border-radius: 0;
   overflow: hidden;
 }
 .match-info-bar {
@@ -79,7 +86,7 @@ body {
   justify-content: center;
   gap: 16px;
   padding: 18px 24px;
-  background: #1d2a3c;
+  background: color-mix(in srgb, var(--studio-ink) 82%, white);
   color: var(--studio-muted);
   font-size: 17px;
   letter-spacing: 3px;
@@ -92,7 +99,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 160px 1fr;
   align-items: center;
-  min-height: 230px;
+  min-height: 340px;
   padding: 24px;
   gap: 12px;
 }
@@ -104,8 +111,8 @@ body {
   gap: 18px;
 }
 .team-logo-box {
-  width: 90px;
-  height: 90px;
+  width: 130px;
+  height: 130px;
 }
 .team-logo-box img {
   width: 100%;
@@ -113,7 +120,8 @@ body {
   object-fit: contain;
 }
 .team-code {
-  font-size: 22px;
+  font-family: "Studio Roster Display", Impact, sans-serif;
+  font-size: 40px;
   font-weight: 700;
   letter-spacing: 1px;
 }
@@ -130,8 +138,9 @@ body {
   gap: 14px;
 }
 .score-num {
-  font-size: 70px;
-  font-weight: 800;
+  font-family: "Studio Roster Display", Impact, sans-serif;
+  font-size: 116px;
+  font-weight: 400;
   font-variant-numeric: tabular-nums;
 }
 .vs-text {
@@ -140,10 +149,11 @@ body {
 }
 .player-slideshow {
   position: absolute;
-  right: 60px;
-  top: 70px;
+  left: 40px;
+  right: auto;
+  top: 40px;
   width: 1040px;
-  height: 910px;
+  height: 840px;
 }
 .player-slide {
   position: absolute;
@@ -161,17 +171,17 @@ body {
   bottom: 0;
   width: 500px;
   overflow: hidden;
-  background: linear-gradient(180deg, #1d2a3c44, #111925cc);
-  border: 1px solid #435064;
-  border-radius: 12px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
 }
 .player-card.blue {
   left: 0;
-  border-top: 4px solid var(--studio-blue);
+  border-bottom: 5px solid var(--studio-blue);
 }
 .player-card.red {
   right: 0;
-  border-top: 4px solid var(--studio-red);
+  border-bottom: 5px solid var(--studio-red);
 }
 .player-card.solo {
   left: 270px;
@@ -179,7 +189,7 @@ body {
 }
 .player-image-wrapper {
   position: absolute;
-  inset: 0 0 122px;
+  inset: 0 0 88px;
 }
 .player-image {
   width: 100%;
@@ -192,10 +202,10 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  min-height: 122px;
+  min-height: 88px;
   display: flex;
   align-items: center;
-  padding: 24px;
+  padding: 18px 26px;
   background: var(--studio-ink);
   border-top: 1px solid #435064;
 }
@@ -206,7 +216,9 @@ body {
   width: 100%;
 }
 .player-name-text {
-  font-size: 35px;
+  font-family: "Studio Roster Display", Impact, sans-serif;
+  font-size: 38px;
+  letter-spacing: 1px;
   font-weight: 700;
   line-height: 1.1;
   text-transform: uppercase;
@@ -226,16 +238,17 @@ body {
 }
 .sponsor-block {
   position: absolute;
-  left: 64px;
-  top: 680px;
-  width: 660px;
+  left: 40px;
+  top: 920px;
+  width: 1240px;
   display: flex;
   align-items: center;
   gap: 24px;
-  min-height: 90px;
+  min-height: 108px;
   padding: 18px 24px;
-  background: #111925dd;
-  border-radius: 8px;
+  background: var(--studio-ink);
+  border-top: 2px solid var(--studio-blue);
+  border-radius: 0;
 }
 .sponsor-label {
   width: 150px;
@@ -252,14 +265,16 @@ body {
   max-height: 65px;
 }
 .sponsor-name img {
-  max-width: 400px;
+  max-width: 950px;
   max-height: 65px;
   object-fit: contain;
 }
 .countdown-block {
   position: absolute;
-  left: 64px;
-  top: 810px;
+  left: 1340px;
+  top: 920px;
+  width: 520px;
+  text-align: right;
 }
 .countdown-label {
   font-size: 12px;
@@ -274,9 +289,10 @@ body {
 }
 .bottom-banner {
   position: absolute;
-  left: 64px;
-  bottom: 52px;
-  width: 660px;
+  left: 1140px;
+  top: 790px;
+  bottom: auto;
+  width: 720px;
   display: flex;
   gap: 20px;
   align-items: center;
@@ -295,4 +311,61 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Full-page original stage: diagonal team fields and a quiet technical texture. */
+.overlay-stage {
+  isolation: isolate;
+  background:
+    radial-gradient(
+      ellipse at 8% 20%,
+      color-mix(in srgb, var(--studio-blue) 23%, transparent),
+      transparent 52%
+    ),
+    radial-gradient(
+      ellipse at 48% 82%,
+      color-mix(in srgb, var(--studio-red) 13%, transparent),
+      transparent 50%
+    ),
+    linear-gradient(
+      120deg,
+      var(--studio-ink),
+      color-mix(in srgb, var(--studio-ink) 82%, black)
+    );
+}
+.overlay-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: repeating-linear-gradient(
+    125deg,
+    transparent 0 118px,
+    #ffffff05 119px 120px
+  );
+  pointer-events: none;
+}
+.overlay-stage::after {
+  content: "";
+  position: absolute;
+  left: 1030px;
+  top: 0;
+  width: 28px;
+  height: 880px;
+  background: linear-gradient(var(--studio-blue), transparent);
+  transform: skewX(-12deg);
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: -1;
+}
+.player-card.blue .player-name-bar {
+  border-left: 7px solid var(--studio-blue);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 20px) 100%, 0 100%);
+}
+.player-card.red .player-name-bar {
+  border-right: 7px solid var(--studio-red);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 20px 100%);
+}
+.tournament-block:has(.tournament-title:empty):has(.tournament-subtitle:empty) {
+  display: none;
 }

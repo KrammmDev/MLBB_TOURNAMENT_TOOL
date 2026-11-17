@@ -294,6 +294,34 @@ test(
         .getElementById("theme-status")
         .textContent.startsWith("Preview ready"),
     );
+    const composition = await active.evaluate(() => {
+      const players = document
+        .querySelector(".player-slideshow")
+        .getBoundingClientRect();
+      const desk = document
+        .querySelector(".scoreboard")
+        .getBoundingClientRect();
+      const sponsor = getComputedStyle(
+        document.querySelector(".sponsor-block"),
+      );
+      return {
+        playerRight: players.right,
+        deskLeft: desk.left,
+        sponsorTop: sponsor.top,
+        stageBackground: getComputedStyle(document.getElementById("stage"))
+          .backgroundImage,
+      };
+    });
+    assert.ok(
+      composition.playerRight < composition.deskLeft,
+      "Studio featured players stay left of the match desk",
+    );
+    assert.equal(composition.sponsorTop, "920px");
+    assert.notEqual(
+      composition.stageBackground,
+      "none",
+      "Studio has a full-page stage",
+    );
     // Capture reproducible fixtures for visual review, not production branding approval.
     if (process.env.MLBB_CAPTURE_DIR) {
       const fs = require("node:fs/promises");

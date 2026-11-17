@@ -41,7 +41,8 @@
   }
   function buttons() {
     document.getElementById("preview-canvas-note").textContent =
-      output() === "postdraft"
+      output() === "postdraft" ||
+      (output() === "roster" && selected === "studio")
         ? "1920 × 1080 · full-page design"
         : "1920 × 1080 · transparent background";
     for (const card of document.querySelectorAll(".theme-card"))
@@ -123,7 +124,7 @@
       const details = {
         classic: "Asymmetric layout · warm orange accents",
         arena: "Three-column layout · grand-final framing",
-        studio: "Clean slate panels · blue and coral accents",
+        studio: "Featured duo · match desk · full-page stage",
       };
       const colors = {
         classic: ["#2a0a00", "#ff7200", "#ff0101"],
@@ -171,7 +172,7 @@
     detail.textContent = {
       classic: "Asymmetric layout · warm orange accents",
       arena: "Three-column layout · grand-final framing",
-      studio: "Clean slate panels · blue and coral accents",
+      studio: "Featured duo · match desk · full-page stage",
     }[preset.id];
     card.append(swatches, title, detail);
     card.onclick = () => choose(preset.id);
