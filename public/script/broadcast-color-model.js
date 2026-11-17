@@ -109,12 +109,12 @@
       border: "#28435b",
     },
     studio: {
-      background: "#f5f3ed",
-      left: "#e9ba30",
-      right: "#e92237",
-      text: "#18212b",
+      background: "#f6f6f3",
+      left: "#0a3fd6",
+      right: "#e8192c",
+      text: "#0a0a0a",
       muted: "#52637a",
-      border: "#c7ba91",
+      border: "#e9ba30",
     },
   };
   function validColors(colors) {
@@ -196,6 +196,8 @@
         if (colors[field]) vars("--sc-" + token, colors[field]);
       vars("--sc-text", readable(palette.text, palette.background));
       vars("--sc-accent-text", readable(palette.text, palette.left));
+      vars("--sc-left-text", readable("#ffffff", palette.left));
+      vars("--sc-right-text", readable("#ffffff", palette.right));
       vars("--sc-muted", readable(palette.muted, palette.background));
       return scope + "{" + variables.join(";") + "}";
     }
