@@ -183,8 +183,8 @@ test(
           };
         });
         assert.equal(geometry.direction, "column");
-        assert.equal(geometry.width, "14px");
-        assert.equal(geometry.height, "14px");
+        assert.equal(geometry.width, "12px");
+        assert.equal(geometry.height, "12px");
       }
     }
     // Original score bars animate dimensions for 300ms after a theme changes.
