@@ -56,6 +56,7 @@ test(
           durationSeconds: 90,
           label: "MATCH STARTS IN",
           headline: "THE NEXT CHAMPION",
+          ticker: "FOLLOW THE TOURNAMENT",
         },
       },
       panel.snapshot().revision,
@@ -149,18 +150,18 @@ test(
       }));
       assert.equal(
         composition.videoX,
-        { classic: 20, arena: 400, studio: 20 }[id],
+        { classic: 20, arena: 400, studio: 650 }[id],
       );
       assert.equal(
         composition.scheduleX,
-        { classic: 1350, arena: 400, studio: 20 }[id],
+        { classic: 1350, arena: 400, studio: 30 }[id],
       );
       if (id === "arena")
         assert.equal(composition.columns.split(" ").length, 2);
 
       assert.equal(
         slot.width,
-        { classic: 1280, arena: 1510, studio: 1408 }[id],
+        { classic: 1280, arena: 1510, studio: 1248 }[id],
       );
       assert.equal(
         await page
@@ -229,7 +230,9 @@ test(
       null,
       { timeout: 12000 },
     );
-    assert.equal(await page.locator("#schedule-casters").isVisible(), true);
+    await page
+      .locator("#schedule-casters")
+      .waitFor({ state: "visible", timeout: 18000 });
     await themes.select("classic", themes.snapshot().revision, "schedule");
     await page.reload();
     await page.waitForFunction(
@@ -254,6 +257,38 @@ test(
     assert.equal(await page.locator("#schedule-partners img").count(), 1);
     assert.equal(await page.locator("#schedule-casters").isVisible(), true);
     await themes.select("studio", themes.snapshot().revision, "schedule");
+    await page.reload();
+    await page.waitForFunction(
+      () =>
+        document.body.dataset.scheduleTheme === "studio" &&
+        !document.getElementById("schedule-sponsor").hidden,
+    );
+    assert.equal(await page.locator("#schedule-sponsor").isVisible(), true);
+    assert.ok(
+      (
+        await page.locator("#schedule-sponsor-logo").getAttribute("src")
+      ).endsWith(sponsorLogos[0].file),
+    );
+    const groups = await page
+      .locator("#schedule-ticker-track span")
+      .allTextContents();
+    assert.equal(groups.length, 2);
+    assert.equal(groups[0], groups[1]);
+    const animation = await page
+      .locator("#schedule-ticker-track")
+      .evaluate((e) => {
+        window.fixtureCrawl = e.getAnimations()[0];
+        return !!window.fixtureCrawl;
+      });
+    assert.equal(animation, true);
+    await page.waitForTimeout(1200);
+    assert.equal(
+      await page
+        .locator("#schedule-ticker-track")
+        .evaluate((e) => e.getAnimations()[0] === window.fixtureCrawl),
+      true,
+      "polling preserves crawl animation",
+    );
     const admin = await ctx.newPage();
     admin.on("pageerror", (e) => errors.push(e.message));
     await admin.goto(base + "/broadcast-themes.html");

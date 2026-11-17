@@ -14,7 +14,9 @@
     clockAnchor,
     stopped = false,
     reading = false,
-    feedVersion = 0;
+    feedVersion = 0,
+    tickerKey = "",
+    sponsorIndex = 0;
   const timers = [];
   const safe = root.RosterModel.safeImage;
   function parse(value) {
@@ -61,14 +63,19 @@
     }
     for (let i = 0; i < entries.length; i += 4)
       pages.push({ type: "matches", entries: entries.slice(i, i + 4) });
+    if (document.body.dataset.scheduleTheme === "studio" && casters)
+      pages.push({ type: "talents" });
     page = pages.length ? page % pages.length : 0;
     draw();
   }
   function draw() {
     const current = pages[page] || null,
       next = JSON.stringify(current);
-    if (next === key) return;
-    key = next;
+    const studio = document.body.dataset.scheduleTheme === "studio";
+    document.body.dataset.schedulePanel =
+      studio && current?.type === "talents" ? "talents" : "matches";
+    if (next + studio === key) return;
+    key = next + studio;
     const host = $("schedule-cards");
     host.replaceChildren();
     $("schedule-empty").hidden = !!current;
@@ -158,8 +165,50 @@
       : [];
     if (JSON.stringify(next) !== JSON.stringify(sponsors)) {
       sponsors = next;
+      sponsorIndex = 0;
+      sponsorLogo();
       rebuild();
     }
+  }
+  function sponsorLogo() {
+    const logo = sponsors[sponsorIndex % sponsors.length];
+    $("schedule-sponsor").hidden = !logo;
+    if (logo) {
+      const img = $("schedule-sponsor-logo");
+      const src = "/broadcast-sponsors/" + logo.file;
+      if (img.getAttribute("src") !== src) {
+        img.hidden = true;
+        img.onload = () => {
+          img.hidden = false;
+        };
+        img.onerror = () => {
+          img.hidden = true;
+        };
+        img.src = src;
+      }
+    }
+  }
+  function ticker(data) {
+    const text = typeof data.ticker === "string" ? data.ticker.trim() : "";
+    const next = JSON.stringify([text, data.tickerSeconds]);
+    $("schedule-ticker").hidden = !text;
+    if (tickerKey === next) return;
+    tickerKey = next;
+    const track = $("schedule-ticker-track");
+    track.replaceChildren();
+    if (!text) return;
+    // Two identical groups cover the viewport and meet at an exact loop boundary.
+    const group = document.createElement("span");
+    const copy = text + "   •   ";
+    group.textContent = copy;
+    track.append(group);
+    const measure = document.createElement("canvas").getContext("2d");
+    measure.font = "24px Arial";
+    while (measure.measureText(group.textContent).width < 1920)
+      group.textContent += copy;
+    track.append(group.cloneNode(true));
+    track.style.animationDuration =
+      Math.max(5, Math.min(300, Number(data.tickerSeconds) || 25)) + "s";
   }
   function tick() {
     if (!clock) return;
@@ -198,6 +247,7 @@
             clock = value;
             clockAnchor = performance.now();
             $("schedule-footer").textContent = value.data.headline || "";
+            ticker(value.data);
             tick();
           }
         }
@@ -296,6 +346,10 @@
   refresh();
   timers.push(
     setInterval(refresh, 1000),
+    setInterval(() => {
+      sponsorIndex++;
+      sponsorLogo();
+    }, 8000),
     setInterval(tick, 100),
     setInterval(theme, 15000),
     setInterval(() => {

@@ -1,4 +1,4 @@
-/* Ivory championship treatment around the right-talent / bottom-match format. */
+/* Season 18 broadcast format, using the tournament's own branding. */
 body {
   --sc-panel: #f5f3ed;
   --sc-left: #e9ba30;
@@ -7,197 +7,263 @@ body {
   --sc-muted: #52637a;
   --sc-border: #c7ba91;
 }
-#schedule-stage::before {
-  content: "";
-  position: absolute;
-  left: 1530px;
-  top: 0;
-  width: 390px;
-  height: 1080px;
-  background: linear-gradient(
-    130deg,
-    transparent 0 50%,
-    color-mix(in srgb, var(--sc-left) 20%, transparent) 50% 70%,
-    transparent 70%
-  );
-  pointer-events: none;
-}
-#schedule-talents h2 {
-  background: var(--sc-left);
-  color: var(--sc-accent-text, var(--sc-text));
-  border: 0;
-  letter-spacing: 4px;
-}
-.schedule-card {
-  border: 0;
-  background: var(--sc-panel);
-}
-.schedule-meta {
-  background: var(--sc-left);
-  color: var(--sc-accent-text, var(--sc-text));
-  border: 0;
-}
-.schedule-team {
-  padding-left: 12px;
-  border-left: 4px solid var(--sc-left);
-}
-.schedule-team:last-child {
-  padding-left: 0;
-  padding-right: 12px;
-  border-left: 0;
-  border-right: 4px solid var(--sc-right);
-}
-.schedule-countdown {
-  border: 0;
-  background: color-mix(in srgb, var(--sc-left) 16%, var(--sc-panel));
-  clip-path: polygon(20px 0, 100% 0, 100% 100%, 0 100%, 0 20px);
-}
-
-/* Championship stage: panoramic masthead, floating talent column, fixture ribbon. */
 #schedule-stage {
   background:
     linear-gradient(
-        110deg,
+        115deg,
         var(--sc-panel),
-        color-mix(in srgb, var(--sc-left) 12%, var(--sc-panel))
+        color-mix(in srgb, var(--sc-text) 6%, var(--sc-panel))
       )
-      left top/100% 140px no-repeat,
+      left top/100% 240px no-repeat,
     linear-gradient(
-        160deg,
-        var(--sc-panel),
-        color-mix(in srgb, var(--sc-right) 9%, var(--sc-panel))
+        125deg,
+        var(--sc-panel) 65%,
+        color-mix(in srgb, var(--sc-left) 14%, var(--sc-panel))
       )
-      right 140px/465px 810px no-repeat,
-    linear-gradient(
-        110deg,
-        var(--sc-panel),
-        color-mix(in srgb, var(--sc-left) 20%, var(--sc-panel))
-      )
-      left bottom/100% 130px no-repeat;
+      left 240px/630px 840px no-repeat,
+    linear-gradient(var(--sc-panel), var(--sc-panel)) right bottom/1290px 120px
+      no-repeat;
 }
 #schedule-stage::before {
+  content: "";
+  position: absolute;
   left: 0;
-  top: 0;
-  width: 14px;
-  height: 140px;
-  background: var(--sc-left);
+  top: 260px;
+  width: 120px;
+  height: 630px;
+  background: linear-gradient(
+    118deg,
+    transparent 22%,
+    var(--sc-left) 22% 26%,
+    transparent 26% 38%,
+    color-mix(in srgb, var(--sc-text) 85%, var(--sc-panel)) 38% 50%,
+    transparent 50%
+  );
+  pointer-events: none;
 }
 .schedule-header {
   left: 35px;
-  top: 15px;
-  width: 1345px;
-  height: 110px;
+  top: 35px;
+  width: 1390px;
+  height: 170px;
   flex-direction: row;
   justify-content: flex-start;
+  gap: 35px;
   text-align: left;
-  gap: 30px;
 }
 #schedule-brand {
-  width: 100px;
-  height: 100px;
+  width: 180px;
+  height: 170px;
+}
+.schedule-header > div {
+  min-width: 0;
+  flex: 1;
 }
 #schedule-event {
-  font-size: 60px;
-  max-height: 65px;
-  letter-spacing: 3px;
+  font-size: 92px;
+  line-height: 1;
+  max-height: 96px;
+  color: var(--sc-left);
+  letter-spacing: 2px;
+  text-shadow: 1px 2px 0 var(--sc-text);
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 #schedule-context {
-  font-size: 24px;
-  margin-top: 7px;
+  display: inline-block;
+  margin: 15px 0 0;
+  padding: 6px 25px;
+  background: var(--sc-text);
+  color: var(--sc-panel);
+  font:
+    700 24px Arial,
+    sans-serif;
+  letter-spacing: 1px;
 }
-#schedule-video-window {
-  left: 20px;
-  top: 150px;
-  width: 1408px;
-  height: 792px;
-  border: 2px solid var(--sc-border);
-}
-#schedule-talents {
-  left: 1475px;
-  top: 165px;
-  width: 415px;
-  height: 760px;
-}
-#schedule-talents h2 {
-  height: 48px;
-  font-size: 32px;
-  padding-top: 8px;
-  clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
-}
-#schedule-casters {
-  height: 710px;
-}
-.schedule-countdown {
-  left: 1465px;
-  top: 12px;
-  width: 435px;
-  height: 116px;
-  padding: 5px 15px;
-  text-align: right;
-  border-right: 8px solid var(--sc-right);
-  clip-path: none;
-  background: transparent;
-}
-.schedule-countdown span {
-  font-size: 21px;
-  letter-spacing: 3px;
-}
-.schedule-countdown strong {
-  font-size: 83px;
-  line-height: 0.95;
-}
-.schedule-sidebar {
-  left: 20px;
-  top: 959px;
-  width: 1880px;
-  height: 92px;
-}
-#schedule-heading {
-  display: none;
-}
-#schedule-cards {
-  grid-template-columns: repeat(4, 1fr);
+#schedule-sponsor {
+  display: flex;
+  position: absolute;
+  left: 1490px;
+  top: 45px;
+  width: 390px;
+  height: 155px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--sc-text) 5%, var(--sc-panel));
   gap: 12px;
 }
-.schedule-card {
+#schedule-sponsor > span {
+  width: 100%;
+  padding: 8px;
+  text-align: center;
+  background: var(--sc-left);
+  color: var(--sc-accent-text, var(--sc-text));
+  font:
+    700 19px Arial,
+    sans-serif;
+  letter-spacing: 1px;
+}
+#schedule-sponsor-logo {
+  width: 310px;
   height: 90px;
+  object-fit: contain;
+}
+#schedule-video-window {
+  left: 650px;
+  top: 255px;
+  width: 1248px;
+  height: 702px;
+  border: 4px solid var(--sc-border);
+}
+.schedule-sidebar {
+  left: 30px;
+  top: 280px;
+  width: 565px;
+  height: 500px;
+}
+#schedule-heading,
+#schedule-talents h2 {
+  display: block;
+  height: 58px;
+  margin: 0 0 12px;
+  padding: 11px 15px;
+  background: var(--sc-left);
+  color: var(--sc-accent-text, var(--sc-text));
+  border: 0;
+  text-align: center;
+  font:
+    800 27px Arial,
+    sans-serif;
+  letter-spacing: 0.5px;
+}
+#schedule-cards {
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.schedule-card {
+  height: 100px;
+  border: 1px solid var(--sc-border);
   clip-path: none;
-  border-bottom: 4px solid var(--sc-left);
+  background: var(--sc-panel);
 }
 .schedule-meta {
-  height: 26px;
-  font-size: 20px;
+  height: 28px;
   padding-top: 3px;
+  background: var(--sc-text);
+  color: var(--sc-panel);
+  font-size: 22px;
+  letter-spacing: 1px;
+  border: 0;
 }
 .schedule-versus {
-  height: 60px;
-  padding: 0 10px;
-  gap: 6px;
-  grid-template-columns: 1fr 100px 1fr;
+  height: 70px;
+  grid-template-columns: 1fr 115px 1fr;
+  gap: 8px;
+  padding: 0 12px;
 }
 .schedule-team {
-  gap: 8px;
-  padding-left: 0;
-  border: 0;
-}
-.schedule-team:last-child {
-  border: 0;
-  padding-right: 0;
-}
-.schedule-team span {
-  font-size: 28px;
+  gap: 10px;
 }
 .schedule-team img {
-  width: 32px;
-  height: 32px;
+  width: 48px;
+  height: 48px;
+}
+.schedule-team span {
+  font-size: 33px;
 }
 .schedule-score {
-  font-size: 40px;
+  font-size: 48px;
+  letter-spacing: 2px;
+}
+#schedule-talents {
+  left: 30px;
+  top: 280px;
+  width: 565px;
+  height: 500px;
+}
+#schedule-casters {
+  width: 565px;
+  height: 430px;
+  object-fit: contain;
+  object-position: center bottom;
+}
+body[data-schedule-panel="matches"] #schedule-talents {
+  display: none;
+}
+body[data-schedule-panel="talents"] .schedule-sidebar {
+  display: none;
+}
+.schedule-countdown {
+  left: 30px;
+  top: 815px;
+  width: 565px;
+  height: 220px;
+  background: transparent;
+  border: 0;
+  padding: 10px 0 0;
+}
+.schedule-countdown span {
+  font:
+    800 30px Arial,
+    sans-serif;
+  letter-spacing: 0;
+}
+.schedule-countdown strong {
+  font-size: 170px;
+  line-height: 1;
   letter-spacing: 2px;
 }
 footer {
-  left: 20px;
-  top: 1055px;
-  width: 1880px;
-  height: 25px;
+  left: 650px;
+  top: 975px;
+  width: 1248px;
+  height: 48px;
+  padding: 0 20px;
+  background: var(--sc-left);
+  color: var(--sc-accent-text, var(--sc-text));
+  border: 1px solid var(--sc-border);
+}
+#schedule-footer {
+  font:
+    800 24px Arial,
+    sans-serif;
+  letter-spacing: 0;
+}
+#schedule-ticker {
+  display: block;
+  position: absolute;
+  left: 650px;
+  top: 1032px;
+  width: 1248px;
+  height: 35px;
+  overflow: hidden;
+  border-top: 1px solid var(--sc-border);
+  color: var(--sc-text);
+}
+#schedule-ticker-track {
+  display: flex;
+  width: max-content;
+  animation: schedule-crawl 25s linear infinite;
+}
+#schedule-ticker-track span {
+  flex-shrink: 0;
+  white-space: pre;
+  font:
+    24px/35px Arial,
+    sans-serif;
+}
+@keyframes schedule-crawl {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #schedule-ticker-track {
+    animation: none;
+  }
+}
+
+#schedule-context:empty {
+  display: none;
 }
