@@ -38,4 +38,4 @@ Arena uses a championship header with a top-right clock, centered video opening,
 
 Classic uses square corners across fixtures, video frame, sponsor slot and lower panels. Beneath the video, a metallic headline band (y950, height56) and a separate seamless scrolling strip (y1017, height38) share the video’s x730/width1140 alignment. Both use the existing Production Timer headline/ticker settings and Schedule palette. The stage remains transparent.
 
-Classic match fixtures use an original S10-inspired broadcast treatment: compact metallic match tags, vertically arranged large team logos/names and a prominent outlined central score. Match-card, team and score surfaces stay transparent, with only labels and thin accent rules painted. Square corners, three-card pagination, existing match metadata and pan timing are retained.
+Classic retains its original horizontal logo/name–score–name/logo arrangement and light panel. Enhancements are limited to a softer panel tint and subtle card separation; square corners, metallic match bars, transparent canvas and existing geometry remain intact.
