@@ -6,6 +6,7 @@
   let shared = {},
     legacy = false,
     api = {},
+    sponsors = [],
     page = 0,
     pages = [],
     key = "",
@@ -25,6 +26,7 @@
   }
   function picture(node, value) {
     const src = safe(value);
+    if (node.dataset.source === src && src) return;
     node.hidden = !src;
     if (src && node.dataset.source !== src) {
       node.dataset.source = src;
@@ -50,10 +52,15 @@
       if (d.show === true) entries.push({ num: i, data: d });
       if (!casters && d.showCasters === true) casters = safe(d.castersImg);
     }
+    picture($("schedule-casters"), casters);
+    $("schedule-talents").hidden = !casters;
     pages = [];
+    if (document.body.dataset.scheduleTheme === "classic") {
+      for (let i = 0; i < sponsors.length; i += 6)
+        pages.push({ type: "partners", logos: sponsors.slice(i, i + 6) });
+    }
     for (let i = 0; i < entries.length; i += 4)
       pages.push({ type: "matches", entries: entries.slice(i, i + 4) });
-    if (casters && pages.length) pages.push({ type: "casters", src: casters });
     page = pages.length ? page % pages.length : 0;
     draw();
   }
@@ -65,11 +72,21 @@
     const host = $("schedule-cards");
     host.replaceChildren();
     $("schedule-empty").hidden = !!current;
-    $("schedule-casters").hidden = current?.type !== "casters";
     $("schedule-heading").textContent =
-      current?.type === "casters" ? "CASTERS" : "TODAY'S SCHEDULE";
-    if (current?.type === "casters")
-      picture($("schedule-casters"), current.src);
+      current?.type === "partners" ? "PARTNERS" : "TODAY'S SCHEDULE";
+    host.hidden = current?.type === "partners";
+    const partners = $("schedule-partners");
+    partners.hidden = current?.type !== "partners";
+    partners.replaceChildren();
+    for (const logo of current?.logos || []) {
+      const img = document.createElement("img");
+      img.alt = logo.name || "Partner";
+      img.src = "/broadcast-sponsors/" + logo.file;
+      img.onerror = () => {
+        img.hidden = true;
+      };
+      partners.append(img);
+    }
     for (const entry of current?.entries || []) {
       const d = entry.data,
         card = document.createElement("article");
@@ -119,9 +136,29 @@
         id = RosterThemes.selection((await r.json()).data, "schedule").themeId;
       }
       await BroadcastThemeClient.apply(id, "schedule");
-      if (!stopped) $("schedule-stage").hidden = false;
+      if (!stopped) {
+        $("schedule-stage").hidden = false;
+        rebuild();
+      }
     } catch {
       /* Keep loaded style during a disconnect. */
+    }
+  }
+  function acceptSponsors(data) {
+    if (!data || !Array.isArray(data.logos)) return;
+    const next = data.enabled
+      ? data.logos
+          .filter(
+            (logo) =>
+              logo &&
+              typeof logo.file === "string" &&
+              /^[a-f0-9-]{36}\.(png|jpg|webp|gif)$/.test(logo.file),
+          )
+          .slice(0, 20)
+      : [];
+    if (JSON.stringify(next) !== JSON.stringify(sponsors)) {
+      sponsors = next;
+      rebuild();
     }
   }
   function tick() {
@@ -137,6 +174,10 @@
     reading = true;
     const version = feedVersion;
     await Promise.allSettled([
+      (async () => {
+        const r = await fetch("/api/broadcast-sponsors", { cache: "no-store" });
+        if (r.ok && !stopped) acceptSponsors((await r.json()).data);
+      })(),
       (async () => {
         const r = await fetch("/api/schedule", { cache: "no-store" });
         if (r.ok && !stopped) {
@@ -216,7 +257,7 @@
       legacy = false;
       rebuild();
     } else if (m.type === "roster_theme_update" && !pinned) theme();
-    SponsorSlideshow.accept(m);
+    if (m.type === "broadcast_sponsors_update") acceptSponsors(m.data);
     BroadcastColorClient.accept(m);
   }
   function fit() {
@@ -239,7 +280,6 @@
   fit();
   branding();
   rebuild();
-  SponsorSlideshow.start($("schedule-sponsors"));
   const stopMatch = MatchDataClient.subscribe(
     ({ data }) => {
       $("schedule-context").textContent = [

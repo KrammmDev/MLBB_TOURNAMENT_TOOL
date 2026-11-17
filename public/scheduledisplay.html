@@ -15,14 +15,17 @@
           <span id="schedule-event">TODAY'S SCHEDULE</span>
           <p id="schedule-context"></p>
         </div>
-        <div id="schedule-sponsors" aria-label="Sponsors"></div>
       </header>
       <section class="schedule-sidebar">
         <h1 id="schedule-heading">TODAY'S SCHEDULE</h1>
         <div id="schedule-cards"></div>
         <div id="schedule-empty" hidden>No matches selected</div>
-        <img id="schedule-casters" alt="Casters" hidden />
+        <div id="schedule-partners" hidden></div>
       </section>
+      <aside id="schedule-talents" hidden>
+        <h2>TALENTS</h2>
+        <img id="schedule-casters" alt="Configured caster panel" hidden />
+      </aside>
       <div
         id="schedule-video-window"
         aria-label="Transparent opening for your OBS video source"
@@ -43,7 +46,6 @@
     <script src="/script/broadcast-color-client.js"></script>
     <script src="/script/roster-theme-client.js"></script>
     <script src="/script/production-timer-model.js"></script>
-    <script src="/script/sponsor-slideshow.js"></script>
     <script src="/script/schedule-renderer.js"></script>
   </body>
 </html>
