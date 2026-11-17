@@ -147,12 +147,21 @@ test(
         columns: getComputedStyle(document.getElementById("schedule-cards"))
           .gridTemplateColumns,
       }));
-      assert.equal(composition.videoX, id === "arena" ? 400 : 10);
-      assert.equal(composition.scheduleX, id === "arena" ? 400 : 10);
+      assert.equal(
+        composition.videoX,
+        { classic: 20, arena: 400, studio: 20 }[id],
+      );
+      assert.equal(
+        composition.scheduleX,
+        { classic: 1350, arena: 400, studio: 20 }[id],
+      );
       if (id === "arena")
         assert.equal(composition.columns.split(" ").length, 2);
 
-      assert.equal(slot.width, 1510);
+      assert.equal(
+        slot.width,
+        { classic: 1280, arena: 1510, studio: 1408 }[id],
+      );
       assert.equal(
         await page
           .locator("#schedule-video-window")
