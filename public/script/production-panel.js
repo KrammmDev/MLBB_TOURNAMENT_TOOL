@@ -189,7 +189,9 @@
           ? "Panel saved."
           : body.action === "visibility"
             ? "Overlay visibility updated."
-            : "Timer " + body.action + ".";
+            : body.action === "add-time"
+              ? "Added " + body.seconds / 60 + " min."
+              : "Timer " + body.action + ".";
     } catch (e) {
       status.textContent = e.message;
     } finally {
@@ -254,6 +256,13 @@
         (button) =>
           (button.onclick = () => command({ action: button.dataset.action })),
       );
+    document.querySelectorAll("[data-add-seconds]").forEach((button) => {
+      button.onclick = () =>
+        command({
+          action: "add-time",
+          seconds: Number(button.dataset.addSeconds),
+        });
+    });
     form.onsubmit = (e) => {
       e.preventDefault();
       const settings = {};

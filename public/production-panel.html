@@ -28,6 +28,17 @@
         ><button data-action="reset">Reset</button
         ><button id="reload">Reload settings</button>
       </div>
+      <section class="actions" aria-label="Add time to current timer">
+        <button type="button" data-add-seconds="60">+1 min</button>
+        <button type="button" data-add-seconds="180">+3 min</button>
+        <button type="button" data-add-seconds="300">+5 min</button>
+        <button type="button" data-add-seconds="600">+10 min</button>
+        <button type="button" data-add-seconds="1800">+30 min</button>
+      </section>
+      <p class="hint">
+        Adds time to the current timer while keeping it running or paused. Reset
+        still uses the saved duration.
+      </p>
       <section class="actions" aria-label="Overlay visibility">
         <button type="button" data-panel-target="showCurrentMatch">
           Hide Current Match
