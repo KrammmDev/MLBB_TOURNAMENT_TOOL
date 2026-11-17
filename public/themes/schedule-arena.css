@@ -1,3 +1,4 @@
+/* Nexus: video above a two-by-two match grid, with a standalone right event/clock tower. */
 body {
   --sc-panel: #091827;
   --sc-left: #1bc2d5;
@@ -6,7 +7,174 @@ body {
   --sc-muted: #8fcbdc;
   --sc-border: #28435b;
 }
+#schedule-stage {
+  background:
+    linear-gradient(
+        165deg,
+        var(--sc-panel),
+        color-mix(in srgb, var(--sc-right) 22%, var(--sc-panel))
+      )
+      right top/720px 100% no-repeat,
+    linear-gradient(
+        110deg,
+        var(--sc-panel),
+        color-mix(in srgb, var(--sc-left) 10%, var(--sc-panel))
+      )
+      left bottom/1200px 400px no-repeat;
+}
+#schedule-stage::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 720px;
+  height: 1080px;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    130deg,
+    transparent 0 130px,
+    color-mix(in srgb, var(--sc-left) 5%, transparent) 131px 134px
+  );
+}
+.schedule-header {
+  left: 1240px;
+  top: 60px;
+  width: 620px;
+  height: 300px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+#schedule-brand {
+  width: 120px;
+  height: 120px;
+}
+#schedule-event {
+  font-size: 76px;
+  letter-spacing: 3px;
+  white-space: normal;
+  line-height: 1;
+}
+#schedule-context {
+  font-size: 22px;
+  line-height: 1.5;
+}
+#schedule-sponsors {
+  position: absolute;
+  left: 0;
+  top: 680px;
+  width: 620px;
+  height: 130px;
+  margin: 0;
+}
+#schedule-video-window {
+  left: 40px;
+  top: 40px;
+  width: 1120px;
+  height: 630px;
+  border: 2px solid var(--sc-left);
+  box-shadow: 0 8px 0 color-mix(in srgb, var(--sc-right) 50%, var(--sc-panel));
+}
+.schedule-sidebar {
+  left: 40px;
+  top: 704px;
+  width: 1120px;
+  height: 350px;
+}
+h1 {
+  font-size: 38px;
+  text-align: left;
+  padding: 0 0 12px;
+  border: 0;
+  letter-spacing: 4px;
+  margin-bottom: 14px;
+}
+#schedule-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
 .schedule-card {
-  border-left: 4px solid var(--sc-left);
-  border-right: 4px solid var(--sc-right);
+  height: 120px;
+  border: 1px solid var(--sc-border);
+  border-bottom: 4px solid var(--sc-left);
+  clip-path: polygon(
+    18px 0,
+    100% 0,
+    100% calc(100% - 18px),
+    calc(100% - 18px) 100%,
+    0 100%,
+    0 18px
+  );
+  background: linear-gradient(
+    110deg,
+    color-mix(in srgb, var(--sc-left) 9%, var(--sc-panel)),
+    var(--sc-panel)
+  );
+}
+.schedule-meta {
+  height: 28px;
+  border: 0;
+  font-size: 21px;
+  letter-spacing: 2px;
+  text-align: left;
+  padding-left: 22px;
+  color: var(--sc-muted);
+}
+.schedule-versus {
+  height: 88px;
+  grid-template-columns: 1fr 115px 1fr;
+  padding: 4px 18px;
+}
+.schedule-team img {
+  width: 52px;
+  height: 52px;
+}
+.schedule-team span {
+  font-size: 30px;
+}
+.schedule-score {
+  font-size: 54px;
+}
+.schedule-team:first-child,
+.schedule-team:last-child {
+  border: 0;
+  padding: 0;
+}
+.schedule-countdown {
+  left: 1240px;
+  top: 412px;
+  width: 620px;
+  padding: 28px 0;
+  border-top: 2px solid var(--sc-left);
+  border-bottom: 2px solid var(--sc-border);
+  text-align: left;
+}
+.schedule-countdown span {
+  font-size: 34px;
+  letter-spacing: 4px;
+}
+.schedule-countdown strong {
+  font-size: 184px;
+  color: var(--sc-text);
+  letter-spacing: 4px;
+  line-height: 1;
+}
+footer {
+  left: 1240px;
+  top: 930px;
+  width: 620px;
+  height: 105px;
+  padding: 8px 20px;
+  border-left: 6px solid var(--sc-right);
+}
+#schedule-footer {
+  font-size: 34px;
+  line-height: 1.1;
+  white-space: normal;
+  max-height: 90px;
+}
+#schedule-casters {
+  height: 265px;
+  object-position: left center;
 }

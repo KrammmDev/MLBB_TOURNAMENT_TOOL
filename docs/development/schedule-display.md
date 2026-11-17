@@ -4,7 +4,7 @@
 
 The display consumes the existing `schedule-1` through `schedule-8` data from `schedulecontrol.html` through the server's shared-state init/update/clear messages. It never patches localStorage or sends storage state back to the server. Same-browser storage events remain a read-only fallback, and `/api/schedule` plus schedule_update are supported for the existing API feed. Only checked Show on Display entries appear; pages hold four matches and advance every eight seconds. The configured shared casters image adds a casters page after the matches. Scores, custom match/status text, names and safe logo sources remain live, using plain text for labels.
 
-Timer/label and footer headline come from Production Timer controls; visibility cues for that separate production overlay do not hide the schedule timer. Sponsors use the existing Broadcast Themes playlist. The uploaded tournament logo uses the existing scoreboard branding settings; title uses the existing shared tournament-title setting, falling back to TODAY'S SCHEDULE. Existing images, schedules and runtime settings are never overwritten by theme selection.
+Timer/label and footer headline come from Production Timer controls; visibility cues for that separate production overlay do not hide the schedule timer. Sponsors use the existing Broadcast Themes playlist. The uploaded tournament logo uses the existing scoreboard branding settings; title uses the existing shared tournament-title setting, falling back to MATCH DAY. Existing images, schedules and runtime settings are never overwritten by theme selection.
 
 ## OBS video window
 
@@ -12,10 +12,11 @@ Add a video/camera/media source **below** this Browser Source. The window is tra
 
 | Theme | Video source position | Video size |
 | --- | --- | --- |
-| Classic | x=40, y=40 | 1360×765 |
-| Arena / Studio | x=550, y=170 | 1330×748 |
+| Classic | x=40, y=40 | 1280×720 |
+| Arena | x=40, y=40 | 1120×630 |
+| Studio | x=640, y=220 | 1240×697.5 |
 
-Classic has a right schedule rail and bottom timer; Arena/Studio place the schedule/timer on the left and video on the right. Fit the source to the inner border in OBS. Browser previews show checkerboard through the window. Unconfigured logos/sponsors are hidden, and an empty schedule is identified explicitly.
+Classic uses an ember competition rail on the right and a lower clock deck. Arena places a two-column match grid below the left video, with an event/timer/sponsor tower on the right. Studio uses a large editorial masthead, left matchup wedges and right video canvas. Fit the source to the inner border in OBS. Browser previews show checkerboard through the window. Unconfigured logos/sponsors are hidden, and an empty schedule is identified explicitly.
 
 ## Validation
 

@@ -37,7 +37,7 @@
   function branding() {
     const title = shared["tournament-title"];
     $("schedule-event").textContent =
-      typeof title === "string" && title.trim() ? title : "TODAY'S SCHEDULE";
+      typeof title === "string" && title.trim() ? title : "MATCH DAY";
   }
   function rebuild() {
     const entries = [];
@@ -173,10 +173,17 @@
             /^[a-f0-9-]{36}\.(png|jpg|webp|gif)$/.test(file)
           ) {
             const img = $("schedule-brand");
-            img.hidden = false;
-            img.onerror = () => (img.hidden = true);
             const src = "/scoreboard-logos/" + file;
-            if (img.getAttribute("src") !== src) img.src = src;
+            if (img.getAttribute("src") !== src) {
+              img.hidden = true;
+              img.onload = () => {
+                img.hidden = false;
+              };
+              img.onerror = () => {
+                img.hidden = true;
+              };
+              img.src = src;
+            } else img.hidden = !(img.complete && img.naturalWidth > 0);
           } else $("schedule-brand").hidden = true;
         }
       })(),
