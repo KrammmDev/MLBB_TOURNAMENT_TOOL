@@ -133,8 +133,9 @@
       for (let i = 0; i < sponsors.length; i += 6)
         pages.push({ type: "partners", logos: sponsors.slice(i, i + 6) });
     }
-    for (let i = 0; i < entries.length; i += 4)
-      pages.push({ type: "matches", entries: entries.slice(i, i + 4) });
+    const pageSize = document.body.dataset.scheduleTheme === "studio" ? 4 : 3;
+    for (let i = 0; i < entries.length; i += pageSize)
+      pages.push({ type: "matches", entries: entries.slice(i, i + pageSize) });
     if (document.body.dataset.scheduleTheme === "studio" && casters)
       pages.push({ type: "talents" });
     page = pages.length ? page % pages.length : 0;

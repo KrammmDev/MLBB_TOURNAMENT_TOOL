@@ -150,18 +150,18 @@ test(
       }));
       assert.equal(
         composition.videoX,
-        { classic: 20, arena: 400, studio: 650 }[id],
+        { classic: 730, arena: 350, studio: 650 }[id],
       );
       assert.equal(
         composition.scheduleX,
-        { classic: 1350, arena: 400, studio: 30 }[id],
+        { classic: 50, arena: 20, studio: 30 }[id],
       );
       if (id === "arena")
-        assert.equal(composition.columns.split(" ").length, 2);
+        assert.equal(composition.columns.split(" ").length, 3);
 
       assert.equal(
         slot.width,
-        { classic: 1280, arena: 1510, studio: 1248 }[id],
+        { classic: 1140, arena: 1220, studio: 1248 }[id],
       );
       assert.equal(
         await page
@@ -169,6 +169,30 @@ test(
           .evaluate((e) => getComputedStyle(e).backgroundColor),
         "rgba(0, 0, 0, 0)",
       );
+      assert.equal(
+        await page
+          .locator("#schedule-stage")
+          .evaluate((e) => getComputedStyle(e).backgroundColor),
+        "rgba(0, 0, 0, 0)",
+      );
+      assert.equal(
+        await page
+          .locator("#schedule-stage")
+          .evaluate((e) => getComputedStyle(e).backgroundImage),
+        "none",
+      );
+      if (id !== "studio") {
+        await page.waitForFunction(
+          () => document.querySelectorAll(".schedule-card").length === 3,
+        );
+        const cardBoxes = await page
+          .locator(".schedule-card")
+          .evaluateAll((nodes) =>
+            nodes.map((n) => ({ x: n.offsetLeft, y: n.offsetTop })),
+          );
+        if (id === "arena") assert.equal(cardBoxes[0].y, cardBoxes[2].y);
+        else assert.ok(cardBoxes[2].y > cardBoxes[0].y);
+      }
       if (process.env.MLBB_CAPTURE_DIR) {
         await fs.mkdir(process.env.MLBB_CAPTURE_DIR, { recursive: true });
         await page.evaluate(() => document.fonts.ready);
@@ -306,7 +330,7 @@ test(
       { timeout: 18000 },
     );
     assert.equal(await page.locator("#schedule-partners img").count(), 1);
-    assert.equal(await page.locator("#schedule-casters").isVisible(), true);
+    assert.equal(await page.locator("#schedule-casters").isVisible(), false);
     await themes.select("studio", themes.snapshot().revision, "schedule");
     await page.reload();
     await page.waitForFunction(
