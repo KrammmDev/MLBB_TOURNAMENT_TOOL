@@ -44,6 +44,7 @@
             roster: "Roster",
             scoreboard: "Scoreboard",
             postdraft: "Post-draft",
+            schedule: "Schedule",
           }[context.output]
       : "Select a preview";
   }

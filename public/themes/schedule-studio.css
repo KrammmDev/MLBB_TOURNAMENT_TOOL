@@ -1,0 +1,23 @@
+body {
+  --sc-panel: #f5f3ed;
+  --sc-left: #e9ba30;
+  --sc-right: #e92237;
+  --sc-text: #18212b;
+  --sc-muted: #52637a;
+  --sc-border: #c7ba91;
+}
+.schedule-header {
+  border-bottom: 2px solid var(--sc-border);
+}
+.schedule-card {
+  background: var(--sc-panel);
+  border-bottom: 4px solid var(--sc-left);
+}
+.schedule-meta {
+  background: color-mix(in srgb, var(--sc-left) 55%, var(--sc-panel));
+}
+h1 {
+  border-bottom: 0;
+  background: color-mix(in srgb, var(--sc-left) 65%, var(--sc-panel));
+  clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+}

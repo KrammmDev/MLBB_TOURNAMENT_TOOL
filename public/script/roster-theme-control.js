@@ -6,22 +6,26 @@
     previous = document.getElementById("previous-theme");
   const outputSelect = document.getElementById("preview-output");
   const output = () =>
-    outputSelect.value === "postdraft"
-      ? "postdraft"
-      : outputSelect.value === "scoreboard"
-        ? "scoreboard"
-        : outputSelect.value.startsWith("draft")
-          ? "draft"
-          : "roster";
+    outputSelect.value === "schedule"
+      ? "schedule"
+      : outputSelect.value === "postdraft"
+        ? "postdraft"
+        : outputSelect.value === "scoreboard"
+          ? "scoreboard"
+          : outputSelect.value.startsWith("draft")
+            ? "draft"
+            : "roster";
   const format = () => (outputSelect.value === "draft-six" ? "six" : "normal");
   function outputURL() {
-    return output() === "postdraft"
-      ? "/postdraft2.html"
-      : output() === "scoreboard"
-        ? "/scoreboard.html"
-        : output() === "roster"
-          ? "/broadcast-overlay.html"
-          : "/draft-display.html?format=" + format();
+    return output() === "schedule"
+      ? "/scheduledisplay.html"
+      : output() === "postdraft"
+        ? "/postdraft2.html"
+        : output() === "scoreboard"
+          ? "/scoreboard.html"
+          : output() === "roster"
+            ? "/broadcast-overlay.html"
+            : "/draft-display.html?format=" + format();
   }
   function updateURL() {
     document.getElementById("output-url").value = location.origin + outputURL();
@@ -41,9 +45,11 @@
   }
   function buttons() {
     document.getElementById("preview-canvas-note").textContent =
-      output() === "postdraft"
-        ? "1920 × 1080 · full-page design"
-        : "1920 × 1080 · transparent background";
+      output() === "schedule"
+        ? "1920 × 1080 · transparent video window"
+        : output() === "postdraft"
+          ? "1920 × 1080 · full-page design"
+          : "1920 × 1080 · transparent background";
     for (const card of document.querySelectorAll(".theme-card"))
       card.disabled = saving || !snapshot;
     activate.textContent =
@@ -53,6 +59,7 @@
         scoreboard: "Scoreboard",
         roster: "Roster",
         postdraft: "Post-draft",
+        schedule: "Schedule",
       }[output()] +
       " only";
     activate.disabled =
@@ -98,6 +105,12 @@
             ? "Championship rail · team-color wings · ivory crest"
             : "White team desks · slim center clock",
       };
+      if (output() === "schedule")
+        Object.assign(details, {
+          classic: "Right schedule rail · orange competition frame",
+          arena: "Left schedule rail · navy/cyan video frame",
+          studio: "Ivory event frame · schedule rail · show timer",
+        });
       if (output() === "postdraft")
         Object.assign(details, {
           classic: "Stacked team rows · player cutouts over heroes",
@@ -112,6 +125,12 @@
             ? ["#101820", "#16c6d3", "#f23b58"]
             : ["#f1f4f8", "#0757ed", "#e92237"],
       };
+      if (output() === "schedule")
+        Object.assign(colors, {
+          classic: ["#351008", "#ff7200", "#e92237"],
+          arena: ["#091827", "#1bc2d5", "#527fe8"],
+          studio: ["#f5f3ed", "#e9ba30", "#e92237"],
+        });
       for (const card of document.querySelectorAll(".theme-card")) {
         card.querySelector("p").textContent = details[card.dataset.themeId];
         [...card.querySelectorAll(".swatches i")].forEach(

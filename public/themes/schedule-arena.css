@@ -1,0 +1,12 @@
+body {
+  --sc-panel: #091827;
+  --sc-left: #1bc2d5;
+  --sc-right: #527fe8;
+  --sc-text: #f2f7fc;
+  --sc-muted: #8fcbdc;
+  --sc-border: #28435b;
+}
+.schedule-card {
+  border-left: 4px solid var(--sc-left);
+  border-right: 4px solid var(--sc-right);
+}

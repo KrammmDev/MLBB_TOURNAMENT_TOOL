@@ -53,9 +53,11 @@
           ? theme.draftStyles
           : output === "scoreboard"
             ? theme.scoreboardStyles
-            : output === "postdraft"
-              ? theme.postdraftStyles
-              : theme.styles;
+            : output === "schedule"
+              ? theme.scheduleStyles
+              : output === "postdraft"
+                ? theme.postdraftStyles
+                : theme.styles;
       await Promise.all(
         styles.map(
           (href) =>
