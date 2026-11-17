@@ -256,3 +256,8 @@ footer {
     transition: none !important;
   }
 }
+
+#schedule-sponsor,
+#schedule-ticker {
+  display: none;
+}

@@ -109,7 +109,7 @@
         Object.assign(details, {
           classic: "Competition board · stacked right fixtures",
           arena: "Left talent rail · bottom match strips",
-          studio: "Championship masthead · four-match ribbon",
+          studio: "Season 18 format · left schedule/talents · right video",
         });
       if (output() === "postdraft")
         Object.assign(details, {
