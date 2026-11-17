@@ -70,7 +70,19 @@ test("panel settings survive restart and corrupt state is preserved", async (t) 
 test("legacy panel configuration gains headline without resetting timer", () => {
   const original = createPanelStore({ persist: async () => {} }).snapshot()
     .data;
-  delete original.headline;
+  for (const key of [
+    "headline",
+    "showCurrentMatch",
+    "showLowerThird",
+    "lowerBackground",
+    "headlineColor",
+    "tickerBackground",
+    "tickerColor",
+    "sponsorBackground",
+  ])
+    delete original[key];
+  original.background = "#123456";
+  original.text = "#fedcba";
   original.running = true;
   original.startedAt = 1000;
   original.valueMs = 123456;
@@ -79,7 +91,34 @@ test("legacy panel configuration gains headline without resetting timer", () => 
     persist: async () => {},
   }).snapshot().data;
   assert.equal(restored.headline, "");
+  assert.equal(restored.lowerBackground, "#123456");
+  assert.equal(restored.headlineColor, "#fedcba");
+  assert.equal(restored.showCurrentMatch, true);
+  assert.equal(restored.showLowerThird, true);
   assert.equal(restored.startedAt, 1000);
   assert.equal(restored.valueMs, 123456);
   assert.equal(restored.running, true);
+});
+
+test("visibility cues retain timer anchors and reject invalid targets", async () => {
+  const store = createPanelStore({ persist: async () => {}, now: () => 1000 });
+  await store.change({ action: "start" }, store.snapshot().revision);
+  const before = store.snapshot().data;
+  await store.change(
+    { action: "visibility", target: "showCurrentMatch", visible: false },
+    store.snapshot().revision,
+  );
+  const next = store.snapshot().data;
+  assert.equal(next.startedAt, before.startedAt);
+  assert.equal(next.running, true);
+  assert.equal(next.valueMs, before.valueMs);
+  assert.equal(next.showCurrentMatch, false);
+  assert.equal(next.showLowerThird, true);
+  await assert.rejects(
+    store.change(
+      { action: "visibility", target: "bad", visible: false },
+      store.snapshot().revision,
+    ),
+    { status: 400 },
+  );
 });

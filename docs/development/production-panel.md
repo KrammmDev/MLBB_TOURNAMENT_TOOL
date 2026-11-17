@@ -11,3 +11,8 @@ Sponsors reuse `SponsorSlideshow` and the existing `/api/broadcast-sponsors` pla
 Verification: `node --test test/production-panel.test.js` and `MLBB_TEST_BROWSER=/usr/bin/chromium node --test test/production-panel-browser.spec.js`. Actual Windows/OBS playback remains production-machine verification.
 
 Existing saved panel files gain an empty headline field without resetting their timer anchor. Headline is editable plain text (up to 240 characters); sponsor logos remain in a compact slot. Match updates never mutate production timer state.
+
+
+## Visibility and colors
+
+The compact current-match card is 560×136 on the 1920×1080 canvas. Hide/Show Current Match and Hide/Show Lower Third are independent saved cues with fade/slide transitions in both directions (reduced-motion users get an immediate change). Hiding never pauses or resets the clock; refresh retains visibility without flashing the hidden panels. Current-match background/text and the shared accent have their existing controls. Lower third background, headline text, scrolling strip background/text and sponsor slot background each have dedicated color controls. Legacy settings inherit their saved background/text for the new fields, with a white sponsor slot, and retain their timing anchors.

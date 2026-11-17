@@ -87,6 +87,12 @@ test("control drives independent OBS overlay, colors, ticker, shared sponsors an
     .locator("[name=headline]")
     .fill("WHO WILL BE THE NEW CHAMPION?");
   await control.locator("[name=accent]").fill("#ff00ff");
+  await control.locator("[name=lowerBackground]").fill("#112233");
+  await control.locator("[name=headlineColor]").fill("#ffeedd");
+  await control.locator("[name=tickerBackground]").fill("#223344");
+  await control.locator("[name=tickerColor]").fill("#aabbcc");
+  await control.locator("[name=sponsorBackground]").fill("#ddeeff");
+
   await control.locator("button[type=submit]").click();
   await control.waitForFunction(
     () => document.getElementById("status").textContent === "Panel saved.",
@@ -107,6 +113,26 @@ test("control drives independent OBS overlay, colors, ticker, shared sponsors an
     "#ff00ff",
   );
   await overlay.locator("#panel-sponsors img").waitFor();
+  const areaColors = await overlay.evaluate(() => ({
+    lower: getComputedStyle(document.querySelector(".broadcast-panel"))
+      .backgroundColor,
+    headline: getComputedStyle(document.getElementById("panel-headline")).color,
+    tickerBackground: getComputedStyle(document.getElementById("ticker-window"))
+      .backgroundColor,
+    ticker: getComputedStyle(document.getElementById("ticker-window")).color,
+    sponsor: getComputedStyle(document.getElementById("panel-sponsors"))
+      .backgroundColor,
+    matchWidth: getComputedStyle(document.querySelector(".match-card")).width,
+  }));
+  assert.deepEqual(areaColors, {
+    lower: "rgb(17, 34, 51)",
+    headline: "rgb(255, 238, 221)",
+    tickerBackground: "rgb(34, 51, 68)",
+    ticker: "rgb(170, 187, 204)",
+    sponsor: "rgb(221, 238, 255)",
+    matchWidth: "560px",
+  });
+
   await overlay.waitForFunction(
     () =>
       document.getElementById("panel-blue-name").textContent === "BLUE TEAM",
@@ -144,6 +170,42 @@ test("control drives independent OBS overlay, colors, ticker, shared sponsors an
     () => !document.getElementById("panel-stage").hidden,
   );
   assert.ok(store.snapshot().data.running);
+  const timerAnchor = store.snapshot().data.startedAt;
+  await control.locator('[data-panel-target="showCurrentMatch"]').click();
+  await overlay.waitForFunction(
+    () =>
+      getComputedStyle(document.querySelector(".match-card")).opacity === "0",
+  );
+  assert.equal(store.snapshot().data.running, true);
+  assert.equal(store.snapshot().data.startedAt, timerAnchor);
+  assert.equal(store.snapshot().data.showLowerThird, true);
+  await overlay.reload();
+  await overlay.waitForFunction(
+    () => !document.getElementById("panel-stage").hidden,
+  );
+  assert.equal(
+    await overlay.locator(".match-card").getAttribute("aria-hidden"),
+    "true",
+  );
+  await control.locator('[data-panel-target="showCurrentMatch"]').click();
+  await overlay.waitForFunction(
+    () =>
+      getComputedStyle(document.querySelector(".match-card")).opacity === "1",
+  );
+  await control.locator('[data-panel-target="showLowerThird"]').click();
+  await overlay.waitForFunction(
+    () =>
+      getComputedStyle(document.querySelector(".broadcast-panel")).opacity ===
+      "0",
+  );
+  assert.equal(store.snapshot().data.showCurrentMatch, true);
+  await control.locator('[data-panel-target="showLowerThird"]').click();
+  await overlay.waitForFunction(
+    () =>
+      getComputedStyle(document.querySelector(".broadcast-panel")).opacity ===
+      "1",
+  );
+
   await control.locator("[data-action=pause]").click();
   await control.waitForFunction(
     () => document.getElementById("status").textContent === "Timer pause.",

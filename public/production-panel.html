@@ -28,6 +28,14 @@
         ><button data-action="reset">Reset</button
         ><button id="reload">Reload settings</button>
       </div>
+      <section class="actions" aria-label="Overlay visibility">
+        <button type="button" data-panel-target="showCurrentMatch">
+          Hide Current Match
+        </button>
+        <button type="button" data-panel-target="showLowerThird">
+          Hide Lower Third
+        </button>
+      </section>
       <form id="settings">
         <div class="fields">
           <label
@@ -54,9 +62,30 @@
               max="300"
               required /></label
           ><label
-            >Panel background<input name="background" type="color" /></label
-          ><label>Text color<input name="text" type="color" /></label
+            >Current match background<input
+              name="background"
+              type="color" /></label
+          ><label>Current match text<input name="text" type="color" /></label
           ><label>Accent color<input name="accent" type="color" /></label>
+        </div>
+        <div class="fields">
+          <label
+            >Lower third background<input name="lowerBackground" type="color"
+          /></label>
+          <label
+            >Headline text<input name="headlineColor" type="color"
+          /></label>
+          <label
+            >Scroll strip background<input name="tickerBackground" type="color"
+          /></label>
+          <label
+            >Scrolling text color<input name="tickerColor" type="color"
+          /></label>
+          <label
+            >Sponsor slot background<input
+              name="sponsorBackground"
+              type="color"
+          /></label>
         </div>
         <p class="hint">
           Format: %0h = hours, %0m = minutes, %0s = seconds. Without hours,

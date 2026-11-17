@@ -26,6 +26,11 @@
     "background",
     "text",
     "accent",
+    "lowerBackground",
+    "headlineColor",
+    "tickerBackground",
+    "tickerColor",
+    "sponsorBackground",
   ];
   function apply(value, fill = false) {
     snapshot = value;
@@ -43,9 +48,43 @@
     document.documentElement.style.setProperty("--panel-bg", d.background);
     document.documentElement.style.setProperty("--panel-text", d.text);
     document.documentElement.style.setProperty("--panel-accent", d.accent);
+    for (const [key, token] of Object.entries({
+      lowerBackground: "--lower-bg",
+      headlineColor: "--headline-color",
+      tickerBackground: "--ticker-bg",
+      tickerColor: "--ticker-color",
+      sponsorBackground: "--sponsor-bg",
+    }))
+      document.documentElement.style.setProperty(token, d[key]);
+    for (const button of document.querySelectorAll("[data-panel-target]")) {
+      const visible = d[button.dataset.panelTarget];
+      button.textContent =
+        (visible ? "Hide " : "Show ") +
+        (button.dataset.panelTarget === "showCurrentMatch"
+          ? "Current Match"
+          : "Lower Third");
+      button.setAttribute("aria-pressed", String(visible));
+    }
     document.getElementById("timer-label").textContent = d.label;
     if (stage) {
+      const firstFrame = stage.hidden;
+      if (firstFrame) stage.classList.add("no-panel-motion");
       stage.hidden = false;
+      for (const [selector, visible] of [
+        [".match-card", d.showCurrentMatch],
+        [".broadcast-panel", d.showLowerThird],
+      ]) {
+        const node = document.querySelector(selector);
+        node.classList.toggle("panel-off", !visible);
+        node.setAttribute("aria-hidden", String(!visible));
+      }
+      if (firstFrame)
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() =>
+            stage.classList.remove("no-panel-motion"),
+          ),
+        );
+
       document.getElementById("panel-headline").textContent = d.headline || "";
       document
         .querySelector(".broadcast-panel")
@@ -128,7 +167,9 @@
       status.textContent =
         body.action === "settings"
           ? "Panel saved."
-          : "Timer " + body.action + ".";
+          : body.action === "visibility"
+            ? "Overlay visibility updated."
+            : "Timer " + body.action + ".";
     } catch (e) {
       status.textContent = e.message;
     } finally {
@@ -177,6 +218,16 @@
     document.getElementById("overlay-url").value =
       location.origin + "/production-timer.html";
     document.getElementById("reload").onclick = () => read(true);
+    document.querySelectorAll("[data-panel-target]").forEach(
+      (button) =>
+        (button.onclick = () =>
+          snapshot &&
+          command({
+            action: "visibility",
+            target: button.dataset.panelTarget,
+            visible: !snapshot.data[button.dataset.panelTarget],
+          })),
+    );
     document
       .querySelectorAll("[data-action]")
       .forEach(
