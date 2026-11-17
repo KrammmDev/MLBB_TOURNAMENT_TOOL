@@ -205,3 +205,35 @@ footer {
   border-right: 3px solid var(--sc-right);
   padding-right: 8px;
 }
+
+/* The left deck alternates schedules and the configured caster image. */
+#schedule-talents {
+  display: block;
+  left: 50px;
+  top: 270px;
+  width: 640px;
+  height: 650px;
+}
+#schedule-talents h2 {
+  height: 42px;
+  margin: 0 0 12px;
+  padding: 8px 18px;
+  border: 0;
+  background: var(--sc-left);
+  color: var(--sc-left-text, #fff);
+  font-size: 28px;
+  letter-spacing: 2px;
+  text-align: left;
+}
+#schedule-casters {
+  width: 640px;
+  height: 585px;
+  object-fit: contain;
+  object-position: center bottom;
+}
+body[data-schedule-panel="matches"] #schedule-talents {
+  display: none;
+}
+body[data-schedule-panel="talents"] .schedule-sidebar {
+  display: none;
+}

@@ -323,14 +323,21 @@ test(
       type: "broadcast_sponsors_update",
       data: { enabled: true, logos: sponsorLogos },
     });
-    await page.waitForFunction(
-      () =>
-        document.getElementById("schedule-heading").textContent === "PARTNERS",
-      null,
-      { timeout: 18000 },
+    await page
+      .locator("#schedule-casters")
+      .waitFor({ state: "visible", timeout: 30000 });
+    assert.equal(
+      await page.locator("#schedule-talents h2").textContent(),
+      "CASTERS",
     );
-    assert.equal(await page.locator("#schedule-partners img").count(), 1);
-    assert.equal(await page.locator("#schedule-casters").isVisible(), false);
+    assert.equal(await page.locator(".schedule-sidebar").isVisible(), false);
+    assert.equal(await page.locator("#schedule-partners img").count(), 0);
+    assert.equal(await page.locator("#schedule-sponsor").isVisible(), true);
+    assert.ok(
+      (await page.locator("#schedule-casters").getAttribute("src")).endsWith(
+        "Assets/casters.png",
+      ),
+    );
     await themes.select("studio", themes.snapshot().revision, "schedule");
     await page.reload();
     await page.waitForFunction(
