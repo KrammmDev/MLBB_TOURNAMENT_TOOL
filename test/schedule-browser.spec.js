@@ -185,6 +185,14 @@ test(
         await page.waitForFunction(
           () => document.querySelectorAll(".schedule-card").length === 3,
         );
+        if (id === "classic")
+          assert.equal(
+            await page
+              .locator(".schedule-card")
+              .first()
+              .evaluate((e) => getComputedStyle(e).borderRadius),
+            "0px",
+          );
         const cardBoxes = await page
           .locator(".schedule-card")
           .evaluateAll((nodes) =>
@@ -337,6 +345,44 @@ test(
       (await page.locator("#schedule-casters").getAttribute("src")).endsWith(
         "Assets/casters.png",
       ),
+    );
+    for (const selector of [
+      "#schedule-video-window",
+      "#schedule-sponsor",
+      "footer",
+    ]) {
+      assert.equal(
+        await page
+          .locator(selector)
+          .first()
+          .evaluate((e) => getComputedStyle(e).borderRadius),
+        "0px",
+      );
+    }
+    assert.equal(await page.locator("#schedule-ticker").isVisible(), true);
+    const classicGroups = await page
+      .locator("#schedule-ticker-track span")
+      .allTextContents();
+    assert.equal(classicGroups.length, 2);
+    assert.equal(classicGroups[0], classicGroups[1]);
+    const footerBox = await page.locator("footer").boundingBox();
+    const tickerBox = await page.locator("#schedule-ticker").boundingBox();
+    assert.equal(footerBox.x, tickerBox.x);
+    assert.ok(footerBox.y + footerBox.height < tickerBox.y);
+    assert.ok(tickerBox.y + tickerBox.height <= 1080);
+    await page
+      .locator("#schedule-ticker-track")
+      .evaluate((e) => (window.classicCrawl = e.getAnimations()[0]));
+    await page.waitForTimeout(1100);
+    assert.equal(
+      await page
+        .locator("#schedule-ticker-track")
+        .evaluate(
+          (e) =>
+            !!window.classicCrawl &&
+            e.getAnimations()[0] === window.classicCrawl,
+        ),
+      true,
     );
     await themes.select("studio", themes.snapshot().revision, "schedule");
     await page.reload();

@@ -35,3 +35,5 @@ Match cards pan individually in order with a 200ms stagger. TODAY’S SCHEDULE s
 ## Arena and Classic reference formats
 
 Arena uses a championship header with a top-right clock, centered video opening, three-match bottom ribbon and bottom-right shared sponsor. Classic uses an oversized playoffs title/clock, three stacked left fixtures, right video and lower sponsor/headline panels. Both canvases are transparent without decorative scenery or full-stage paint. Colored panels remain visible and follow the six palette fields. Studio keeps its existing custom layout. Arena/Classic paginate three matches; Studio paginates four. Classic alternates its left fixtures with the configured CASTERS image; Arena keeps an optional narrow talent slot beside the video.
+
+Classic uses square corners across fixtures, video frame, sponsor slot and lower panels. Beneath the video, a metallic headline band (y950, height56) and a separate seamless scrolling strip (y1017, height38) share the video’s x730/width1140 alignment. Both use the existing Production Timer headline/ticker settings and Schedule palette. The stage remains transparent.
