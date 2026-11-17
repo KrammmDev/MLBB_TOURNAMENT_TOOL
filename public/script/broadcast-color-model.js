@@ -195,6 +195,7 @@
       }))
         if (colors[field]) vars("--sc-" + token, colors[field]);
       vars("--sc-text", readable(palette.text, palette.background));
+      vars("--sc-accent-text", readable(palette.text, palette.left));
       vars("--sc-muted", readable(palette.muted, palette.background));
       return scope + "{" + variables.join(";") + "}";
     }

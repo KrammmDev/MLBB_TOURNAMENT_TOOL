@@ -1,3 +1,4 @@
+/* Apex: editorial event masthead, bold white match wedges and a right video canvas. */
 body {
   --sc-panel: #f5f3ed;
   --sc-left: #e9ba30;
@@ -6,18 +7,165 @@ body {
   --sc-muted: #52637a;
   --sc-border: #c7ba91;
 }
+#schedule-stage {
+  background:
+    linear-gradient(var(--sc-panel), var(--sc-panel)) left top/610px 100%
+      no-repeat,
+    linear-gradient(var(--sc-panel), var(--sc-panel)) right top/1310px 190px
+      no-repeat,
+    linear-gradient(var(--sc-panel), var(--sc-panel)) right bottom/1310px 140px
+      no-repeat;
+}
+#schedule-stage::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 190px;
+  width: 610px;
+  height: 890px;
+  background: linear-gradient(
+    125deg,
+    color-mix(in srgb, var(--sc-left) 28%, transparent),
+    transparent
+  );
+  clip-path: polygon(0 0, 20% 0, 100% 74%, 100% 100%, 0 22%);
+  pointer-events: none;
+}
 .schedule-header {
-  border-bottom: 2px solid var(--sc-border);
+  left: 35px;
+  top: 24px;
+  width: 1845px;
+  height: 150px;
+  border-bottom: 0;
+  gap: 30px;
 }
-.schedule-card {
-  background: var(--sc-panel);
-  border-bottom: 4px solid var(--sc-left);
+#schedule-brand {
+  width: 140px;
+  height: 140px;
 }
-.schedule-meta {
-  background: color-mix(in srgb, var(--sc-left) 55%, var(--sc-panel));
+#schedule-event {
+  font-size: 100px;
+  letter-spacing: 3px;
+  line-height: 1;
+}
+#schedule-context {
+  font-size: 24px;
+  letter-spacing: 3px;
+  display: inline-block;
+  border-left: 10px solid var(--sc-left);
+  padding-left: 16px;
+}
+#schedule-context:empty {
+  display: none;
+}
+#schedule-sponsors {
+  width: 300px;
+  height: 120px;
+  border-bottom: 5px solid var(--sc-left);
+}
+#schedule-video-window {
+  left: 640px;
+  top: 220px;
+  width: 1240px;
+  height: 697.5px;
+  border: 4px solid var(--sc-panel);
+  outline: 2px solid var(--sc-border);
+}
+.schedule-sidebar {
+  left: 30px;
+  top: 242px;
+  width: 550px;
+  height: 580px;
 }
 h1 {
-  border-bottom: 0;
-  background: color-mix(in srgb, var(--sc-left) 65%, var(--sc-panel));
-  clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+  border: 0;
+  background: var(--sc-left);
+  color: var(--sc-accent-text, var(--sc-text));
+  font-size: 48px;
+  letter-spacing: 2px;
+  margin: 0 0 18px;
+  text-align: left;
+  padding: 12px 20px;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 20px) 100%, 0 100%);
+}
+#schedule-cards {
+  gap: 14px;
+}
+.schedule-card {
+  height: 112px;
+  border: 0;
+  border-bottom: 2px solid var(--sc-border);
+  clip-path: none;
+  background: transparent;
+}
+.schedule-meta {
+  height: 28px;
+  padding: 4px 18px;
+  border: 0;
+  text-align: left;
+  font-size: 22px;
+  background: var(--sc-left);
+  color: var(--sc-accent-text, var(--sc-text));
+}
+.schedule-versus {
+  height: 82px;
+  grid-template-columns: 1fr 115px 1fr;
+  padding: 0;
+  gap: 0;
+}
+.schedule-team {
+  height: 100%;
+  padding: 8px 12px !important;
+  background: color-mix(in srgb, var(--sc-left) 10%, var(--sc-panel));
+  border: 0 !important;
+  gap: 8px;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 15px) 100%, 0 100%);
+}
+.schedule-team:last-child {
+  background: color-mix(in srgb, var(--sc-right) 10%, var(--sc-panel));
+  clip-path: polygon(15px 0, 100% 0, 100% 100%, 0 100%);
+}
+.schedule-team img {
+  width: 52px;
+  height: 52px;
+}
+.schedule-team span {
+  font-size: 32px;
+}
+.schedule-score {
+  font-size: 58px;
+  letter-spacing: 1px;
+}
+.schedule-countdown {
+  left: 30px;
+  top: 850px;
+  width: 550px;
+  border: 0;
+  text-align: left;
+  padding: 0 20px;
+}
+.schedule-countdown span {
+  font-size: 34px;
+  letter-spacing: 2px;
+}
+.schedule-countdown strong {
+  font-size: 132px;
+  line-height: 1;
+  letter-spacing: 3px;
+}
+footer {
+  left: 640px;
+  top: 958px;
+  width: 1240px;
+  height: 90px;
+  background: color-mix(in srgb, var(--sc-left) 16%, var(--sc-panel));
+  border-left: 14px solid var(--sc-left);
+  padding: 12px 28px;
+}
+#schedule-footer {
+  font-size: 38px;
+  letter-spacing: 1px;
+}
+#schedule-casters {
+  height: 475px;
 }

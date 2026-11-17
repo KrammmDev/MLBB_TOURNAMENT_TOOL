@@ -107,9 +107,9 @@
       };
       if (output() === "schedule")
         Object.assign(details, {
-          classic: "Right schedule rail · orange competition frame",
-          arena: "Left schedule rail · navy/cyan video frame",
-          studio: "Ivory event frame · schedule rail · show timer",
+          classic: "Ember competition · right rail · lower clock deck",
+          arena: "Worlds-style match grid · right event tower",
+          studio: "Editorial masthead · match wedges · video canvas",
         });
       if (output() === "postdraft")
         Object.assign(details, {

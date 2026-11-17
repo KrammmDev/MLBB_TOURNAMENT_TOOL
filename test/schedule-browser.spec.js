@@ -74,7 +74,7 @@ test(
           schemaVersion: 1,
           patchLabel: "",
           casterNames: "",
-          logoFile: null,
+          logoFile: "00000000-0000-0000-0000-000000000002.png",
         },
         revision: '"branding"',
       }),
@@ -140,7 +140,24 @@ test(
         id,
       );
       const slot = await page.locator("#schedule-video-window").boundingBox();
-      assert.equal(slot.width, id === "classic" ? 1360 : 1330);
+      const composition = await page.evaluate(() => ({
+        videoX: document.getElementById("schedule-video-window").offsetLeft,
+        scheduleX: document.querySelector(".schedule-sidebar").offsetLeft,
+        columns: getComputedStyle(document.getElementById("schedule-cards"))
+          .gridTemplateColumns,
+      }));
+      assert.equal(composition.videoX, id === "studio" ? 640 : 40);
+      assert.equal(
+        composition.scheduleX,
+        { classic: 1370, arena: 40, studio: 30 }[id],
+      );
+      if (id === "arena")
+        assert.equal(composition.columns.split(" ").length, 2);
+
+      assert.equal(
+        slot.width,
+        { classic: 1280, arena: 1120, studio: 1240 }[id],
+      );
       assert.equal(
         await page
           .locator("#schedule-video-window")
@@ -160,6 +177,16 @@ test(
         });
       }
     }
+    await page.waitForFunction(() => {
+      const img = document.getElementById("schedule-brand");
+      return img.getAttribute("src") && img.complete && img.naturalWidth === 0;
+    });
+    await page.waitForTimeout(1100);
+    assert.equal(
+      await page.locator("#schedule-brand").isVisible(),
+      false,
+      "failed branding stays hidden across polling",
+    );
     shared["schedule-1"] = JSON.stringify({
       ...JSON.parse(shared["schedule-1"]),
       team1: "EDITED <b> NAME",
