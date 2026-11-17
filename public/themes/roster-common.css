@@ -40,4 +40,47 @@ body[data-roster-theme="classic"] .player-lane-icon {
   }
 }
 
-.sponsor-block.no-label { grid-template-columns: 1fr; }
+.sponsor-block.no-label {
+  grid-template-columns: 1fr;
+}
+
+/* Legacy presets explicitly hid countdowns; an acknowledged production clock is visible. */
+body[data-roster-production-timer="true"] .countdown-block {
+  display: block !important;
+}
+body[data-roster-theme="classic"][data-roster-production-timer="true"]
+  .countdown-block {
+  position: absolute;
+  left: 40px;
+  top: 750px;
+  width: 785px;
+  text-align: center;
+  z-index: 10;
+}
+body[data-roster-theme="classic"] .countdown-label {
+  font-size: 24px;
+  letter-spacing: 3px;
+  color: var(--studio-muted, #c4d0dc);
+}
+body[data-roster-theme="classic"] .countdown-timer {
+  font-size: 76px;
+  line-height: 1.2;
+  color: var(--studio-paper, #ffffff);
+  font-variant-numeric: tabular-nums;
+}
+body[data-roster-theme="arena"][data-roster-production-timer="true"]
+  .countdown-block {
+  top: 710px;
+}
+body[data-roster-theme="arena"][data-roster-production-timer="true"]
+  .countdown-label {
+  font-size: 26px;
+  transform: none;
+  font-family: inherit;
+  font-style: normal;
+}
+body[data-roster-theme="arena"][data-roster-production-timer="true"]
+  .countdown-timer {
+  font-size: 100px;
+  line-height: 1.1;
+}

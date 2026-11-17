@@ -16,3 +16,8 @@ Existing saved panel files gain an empty headline field without resetting their 
 ## Visibility and colors
 
 The compact current-match card is 560×136 on the 1920×1080 canvas. Hide/Show Current Match and Hide/Show Lower Third are independent saved cues with fade/slide transitions in both directions (reduced-motion users get an immediate change). Hiding never pauses or resets the clock; refresh retains visibility without flashing the hidden panels. Current-match background/text and the shared accent have their existing controls. Lower third background, headline text, scrolling strip background/text and sponsor slot background each have dedicated color controls. Legacy settings inherit their saved background/text for the new fields, with a white sponsor slot, and retain their timing anchors.
+
+
+## Roster timer display
+
+Roster outputs (Classic, Arena and Studio, including legacy URLs) also display the acknowledged production timer and its label. They follow the same Start/Pause/Reset, format and end text from Production Timer controls. The Roster timer remains visible even when Current Match or Lower Third is hidden in the production overlay. If the production-timer API is unavailable before the first acknowledged read, the original roster countdown-target remains the compatibility fallback. No match/draft clock is written.

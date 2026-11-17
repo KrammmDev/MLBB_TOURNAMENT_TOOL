@@ -41,7 +41,28 @@ test(
       onCommit: (snapshot) =>
         broadcast({ type: "roster_theme_update", ...snapshot }),
     });
+    const {
+      createPanelStore,
+      installPanelRoutes,
+    } = require("../lib/production-panel");
+    const production = createPanelStore({ persist: async () => {} });
+    await production.change(
+      {
+        action: "settings",
+        settings: { durationSeconds: 90, label: "MATCH STARTS IN" },
+      },
+      production.snapshot().revision,
+    );
+    await production.change(
+      { action: "visibility", target: "showCurrentMatch", visible: false },
+      production.snapshot().revision,
+    );
+    await production.change(
+      { action: "visibility", target: "showLowerThird", visible: false },
+      production.snapshot().revision,
+    );
     app.use(express.json());
+    installPanelRoutes(app, () => production);
     installMatchRoutes(app, () => match);
     installRosterThemeRoutes(app, () => themes);
     app.use(express.static(path.join(__dirname, "../public")));
@@ -363,6 +384,33 @@ test(
       "none",
       "Studio stage stays transparent",
     );
+    for (const page of [active, classic, arena]) {
+      await page.waitForFunction(
+        () =>
+          document.getElementById("countdown-timer").textContent === "01:30",
+      );
+      assert.equal(await page.locator(".countdown-block").isVisible(), true);
+      assert.equal(
+        await page.locator(".countdown-label").textContent(),
+        "MATCH STARTS IN",
+      );
+    }
+    await production.change(
+      { action: "start" },
+      production.snapshot().revision,
+    );
+    await active.waitForFunction(
+      () => document.getElementById("countdown-timer").textContent !== "01:30",
+    );
+    await production.change(
+      { action: "reset" },
+      production.snapshot().revision,
+    );
+    await active.waitForFunction(
+      () => document.getElementById("countdown-timer").textContent === "01:30",
+    );
+    assert.equal(production.snapshot().data.showCurrentMatch, false);
+    assert.equal(production.snapshot().data.showLowerThird, false);
     // Capture reproducible fixtures for visual review, not production branding approval.
     if (process.env.MLBB_CAPTURE_DIR) {
       const fs = require("node:fs/promises");
