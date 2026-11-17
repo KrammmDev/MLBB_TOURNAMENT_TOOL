@@ -25,3 +25,7 @@ Classic places four stacked fixtures in a right competition board with talents b
 ## Studio custom palette
 
 Studio uses the supplied metallic-bar CSS with a transparent canvas and no canvas decoration. Panel background controls card/sponsor surfaces; left and right team accents control their side gradients; Borders controls metallic bars and the video frame. Primary text controls scores and the timer; secondary text controls the timer label. Gold gradients derive from the border variable instead of fixed hex colors. Existing saved palettes remain saved; reset the Studio Schedule palette to use the new blue/red/gold defaults.
+
+## Schedule slideshow motion
+
+Pages hold for eight seconds between transitions. Each transition pans the outgoing panel left over 450ms, swaps the page, then pans the next panel in from the right over 450ms. Only the schedule/talent deck moves; the video, clock and branding stay fixed. Live data edits cancel an in-progress pan and render immediately. Reduced-motion mode swaps without animation. Adjust PAGE_HOLD_MS and PAN_MS in schedule-renderer.js to change the hold and transition durations.
