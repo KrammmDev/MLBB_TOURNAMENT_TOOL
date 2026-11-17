@@ -318,6 +318,27 @@ test(
       "Studio featured players stay left of the match desk",
     );
     assert.equal(composition.sponsorTop, "920px");
+    const textPalette = await active.evaluate(() => {
+      const style = document.createElement("style");
+      style.textContent = BroadcastColorModel.style("studio", "roster", {
+        left: "#00ff00",
+        right: "#ff0000",
+        text: "#ffeedd",
+      });
+      document.head.append(style);
+      const values = [
+        "#team1-code",
+        "#team2-code",
+        "#blue-score",
+        "#red-score",
+      ].map(
+        (selector) => getComputedStyle(document.querySelector(selector)).color,
+      );
+      style.remove();
+      return values;
+    });
+    assert.deepEqual(textPalette, Array(4).fill("rgb(255, 238, 221)"));
+
     const matchup = await active.evaluate(() => {
       const rect = (selector) => {
         const r = document.querySelector(selector).getBoundingClientRect();

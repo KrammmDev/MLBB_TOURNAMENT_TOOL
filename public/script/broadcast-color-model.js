@@ -388,10 +388,6 @@
             `.player-card.${side} .player-name-box,.player-card.${side} .player-name-bar`,
             `background:linear-gradient(90deg,${colors[field]},${shade(colors[field], 0.75)})`,
           );
-          rule(
-            `.team-col:${side === "blue" ? "first" : "last"}-child .team-code`,
-            `color:${colors[field]}`,
-          );
           rule(`.player-card.${side}`, `border-top-color:${colors[field]}`);
           if (id === "arena")
             rule(
@@ -401,6 +397,11 @@
               `background:linear-gradient(90deg,${shade(colors[field], 0.35)},${shade(colors[field], 0.65)})`,
             );
         }
+      // Roster identity and series scores belong to Primary text, not side accents.
+      rule(
+        ".team-col:first-child .team-code,.team-col:last-child .team-code,#blue-score,#red-score",
+        `color:${palette.text}`,
+      );
       if (id === "classic" && (colors.left || colors.right))
         rule(
           ".match-info-bar",
