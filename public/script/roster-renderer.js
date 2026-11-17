@@ -37,6 +37,9 @@
     let stopMatch = null,
       themePoll = null,
       tickTimer = null,
+      productionPoll = null,
+      productionRequest = null,
+      productionClock = null,
       slideTimer = null,
       stopped = false,
       themeReadGeneration = 0;
@@ -104,10 +107,61 @@
       const candidate = Number(stored("countdown-target"));
       target = Number.isFinite(candidate) ? candidate : 0;
       const countdown = document.querySelector(".countdown-block");
-      if (countdown) countdown.style.display = target > 0 ? "" : "none";
+      if (countdown)
+        countdown.style.display = productionClock || target > 0 ? "" : "none";
       tick();
     }
+    async function readProductionTimer() {
+      if (stopped || productionRequest || !root.ProductionTimer) return;
+      const controller = new AbortController();
+      productionRequest = controller;
+      const timeout = setTimeout(() => controller.abort(), 3000);
+      try {
+        const response = await fetch("/api/production-panel", {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        if (!response.ok) return;
+        const value = await response.json();
+        if (
+          stopped ||
+          controller !== productionRequest ||
+          !Number.isFinite(value.serverNow) ||
+          !value.data ||
+          typeof value.data.running !== "boolean"
+        )
+          return;
+        document.body.dataset.rosterProductionTimer = "true";
+        productionClock = {
+          data: value.data,
+          serverNow: value.serverNow,
+          anchor: performance.now(),
+        };
+        const block = document.querySelector(".countdown-block");
+        if (block) block.style.display = "";
+        tick();
+      } catch {
+        /* Retain a running acknowledged clock while disconnected. */
+      } finally {
+        clearTimeout(timeout);
+        if (productionRequest === controller) productionRequest = null;
+      }
+    }
     function tick() {
+      if (productionClock && root.ProductionTimer) {
+        text(
+          "countdown-timer",
+          root.ProductionTimer.text(
+            productionClock.data,
+            productionClock.serverNow +
+              performance.now() -
+              productionClock.anchor,
+          ),
+        );
+        const label = document.querySelector(".countdown-label");
+        if (label) label.textContent = productionClock.data.label;
+        return;
+      }
       const seconds = Math.max(0, Math.floor((target - Date.now()) / 1000));
       text(
         "countdown-timer",
@@ -301,7 +355,9 @@
         },
         { onMessage },
       );
-      tickTimer = setInterval(tick, 1000);
+      readProductionTimer();
+      productionPoll = setInterval(readProductionTimer, 1000);
+      tickTimer = setInterval(tick, 100);
       slideTimer = setInterval(() => {
         if (pairs.length > 1) {
           index = (index + 1) % pairs.length;
@@ -318,6 +374,9 @@
       stopMatch?.();
       root.RosterThemeClient.cancel();
       clearInterval(tickTimer);
+      clearInterval(productionPoll);
+      productionRequest?.abort();
+      productionRequest = null;
       clearInterval(slideTimer);
       clearInterval(themePoll);
       for (const timer of leaveTimers.values()) clearTimeout(timer);
