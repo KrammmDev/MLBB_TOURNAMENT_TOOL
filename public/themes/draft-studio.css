@@ -81,7 +81,7 @@
 .teamnameholder2 {
   top: 6px;
   left: 64px;
-  width: 162px;
+  width: 130px;
   height: 32px;
   padding: 0;
   background: none;
@@ -102,18 +102,24 @@
 }
 #blue-score-display,
 #red-score-display {
-  top: 43px;
+  top: 34px;
+  transform: translateY(-50%);
+  flex-direction: column;
+  gap: 3px;
 }
 #blue-score-display {
-  left: -176px;
+  left: -22px;
 }
 #red-score-display {
-  right: -176px;
+  right: -22px;
 }
 #blue-score-display .dot,
 #red-score-display .dot {
-  width: 19px;
-  height: 4px;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  transform: none;
+  border-radius: 0;
 }
 .match-info-display {
   top: 270px;
