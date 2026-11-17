@@ -113,3 +113,40 @@ test("roster identity includes full image URL and renders safe image sources", (
     assert.equal(model.safeImage(src), "");
   assert.ok(model.pairs(data)[0].blue.images.includes("/Assets/player/b.png"));
 });
+
+test("output selections isolate look/history, survive restart and preserve legacy look", async (t) => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "mlbb-output-theme-"));
+  t.after(() => fs.rm(dir, { recursive: true, force: true }));
+  const file = path.join(dir, "theme.json");
+  const store = await loadRosterThemeStore({ file });
+  await store.select("arena", store.snapshot().revision);
+  await store.select("studio", store.snapshot().revision, "draft");
+  const catalog = require("../public/script/roster-themes");
+  let config = store.snapshot().data;
+  assert.equal(catalog.selection(config, "draft").themeId, "studio");
+  for (const output of ["roster", "scoreboard", "postdraft"])
+    assert.equal(catalog.selection(config, output).themeId, "arena");
+  await store.select("classic", store.snapshot().revision, "scoreboard");
+  const restarted = await loadRosterThemeStore({ file });
+  config = restarted.snapshot().data;
+  assert.deepEqual(catalog.selection(config, "scoreboard"), {
+    themeId: "classic",
+    previousThemeId: "arena",
+  });
+  assert.deepEqual(catalog.selection(config, "draft"), {
+    themeId: "studio",
+    previousThemeId: "arena",
+  });
+  const before = restarted.snapshot();
+  await assert.rejects(
+    restarted.select("studio", before.revision, "bad-output"),
+    { status: 400 },
+  );
+  assert.deepEqual(restarted.snapshot(), before);
+  const copy = restarted.snapshot();
+  copy.data.selections.draft.themeId = "classic";
+  assert.equal(
+    catalog.selection(restarted.snapshot().data, "draft").themeId,
+    "studio",
+  );
+});

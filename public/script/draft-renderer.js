@@ -398,7 +398,9 @@
         if (!response.ok) throw Error("Theme unavailable");
         const snapshot = await response.json();
         if (version === themeVersion && !stopped)
-          await selectTheme(snapshot.data.themeId);
+          await selectTheme(
+            window.RosterThemes.selection(snapshot.data, "draft").themeId,
+          );
       } catch (error) {
         console.error(error.message);
         if (!stopped) node("draft-stage").style.visibility = "";
@@ -428,7 +430,9 @@
         }
       } else if (message.type === "roster_theme_update" && !legacy && !pinned) {
         themeVersion++;
-        selectTheme(message.data.themeId);
+        selectTheme(
+          window.RosterThemes.selection(message.data, "draft").themeId,
+        );
       }
     }
     function fit() {

@@ -709,6 +709,46 @@ test(
       "/api/broadcast-colors",
       "/api/broadcast-colors",
     ]);
+    await admin.locator("#reload-settings").click();
+    await admin.waitForFunction(() =>
+      document
+        .getElementById("theme-status")
+        .textContent.startsWith("Preview ready"),
+    );
+    await admin.locator("#preview-output").selectOption("draft-six");
+    await admin.waitForFunction(() =>
+      document
+        .getElementById("theme-status")
+        .textContent.startsWith("Preview ready"),
+    );
+    await admin.locator('[data-theme-id="arena"]').click();
+    await admin.waitForFunction(
+      () => !document.getElementById("activate-theme").disabled,
+    );
+    assert.equal(
+      await admin.locator("#activate-theme").textContent(),
+      "Use for Draft only",
+    );
+    await admin.locator("#activate-theme").click();
+    await admin.waitForFunction(() =>
+      document
+        .getElementById("theme-status")
+        .textContent.includes("selection saved"),
+    );
+    broadcast({ type: "roster_theme_update", ...themes.snapshot() });
+    await ready(live, "studio");
+    assert.equal(themes.snapshot().data.selections.draft.themeId, "arena");
+    assert.equal(
+      themes.snapshot().data.selections.scoreboard.themeId,
+      "studio",
+    );
+    await live.reload();
+    await ready(live, "studio");
+    await admin.locator("#preview-output").selectOption("scoreboard");
+    assert.equal(await admin.locator("#active-theme").textContent(), "Studio");
+    await admin.locator("#preview-output").selectOption("draft-normal");
+    assert.equal(await admin.locator("#active-theme").textContent(), "Arena");
+    assert.equal(JSON.stringify(match.snapshot()), before);
     assert.deepEqual(errors, []);
   },
 );

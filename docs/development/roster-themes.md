@@ -38,3 +38,9 @@ Scoreboard source correction: use scoreboard.html for the three gameplay-HUD lay
 
 ## Post-draft coverage
 The catalog also supports postdraft2.html with three layouts, native hero GIFs and independent postdraft colors. See [postdraft-display.md](postdraft-display.md).
+
+### Independent output selection
+
+The theme panel saves the selected output only: `roster`, `draft` (both normal and six-ban formats), `scoreboard`, or `postdraft`. Each has its own `themeId` and `previousThemeId` under `data.selections`. Existing schemaVersion 1 files without selections retain their current global look; the first scoped save initializes all four outputs from that look before changing just the requested output. Colors remain independently scoped as before.
+
+PUT `/api/broadcast-theme` with `{themeId, output}` and the current `If-Match` revision. All renderers resolve the selection for their own output on initial load, reconnect and update events. Explicit `?theme=` previews remain pinned. The legacy request without `output` retains its global behavior for older callers; the current UI always sends an output. Revision conflicts require reloading settings; failed persistence never activates the requested look.
