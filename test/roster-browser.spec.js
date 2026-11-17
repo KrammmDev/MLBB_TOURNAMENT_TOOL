@@ -337,10 +337,10 @@ test(
     assert.ok(Math.abs(matchup.right.center - matchup.scores.center) < 1);
     assert.ok(Math.abs(matchup.name.y - matchup.format.y) < 1);
 
-    assert.notEqual(
+    assert.equal(
       composition.stageBackground,
       "none",
-      "Studio has a full-page stage",
+      "Studio stage stays transparent",
     );
     // Capture reproducible fixtures for visual review, not production branding approval.
     if (process.env.MLBB_CAPTURE_DIR) {
