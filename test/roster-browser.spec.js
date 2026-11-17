@@ -318,6 +318,25 @@ test(
       "Studio featured players stay left of the match desk",
     );
     assert.equal(composition.sponsorTop, "920px");
+    const matchup = await active.evaluate(() => {
+      const rect = (selector) => {
+        const r = document.querySelector(selector).getBoundingClientRect();
+        return { x: r.x, y: r.y, right: r.right, center: r.y + r.height / 2 };
+      };
+      return {
+        left: rect("#team1-logo"),
+        right: rect("#team2-logo"),
+        scores: rect(".score-col"),
+        name: rect("#team1-code"),
+        format: rect("#match-format"),
+      };
+    });
+    assert.ok(matchup.left.right <= matchup.scores.x);
+    assert.ok(matchup.scores.right <= matchup.right.x);
+    assert.ok(Math.abs(matchup.left.center - matchup.scores.center) < 1);
+    assert.ok(Math.abs(matchup.right.center - matchup.scores.center) < 1);
+    assert.ok(Math.abs(matchup.name.y - matchup.format.y) < 1);
+
     assert.notEqual(
       composition.stageBackground,
       "none",
