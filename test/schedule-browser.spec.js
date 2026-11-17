@@ -193,6 +193,23 @@ test(
               .evaluate((e) => getComputedStyle(e).borderRadius),
             "0px",
           );
+        if (id === "classic") {
+          const cardPaint = await page
+            .locator(".schedule-card")
+            .first()
+            .evaluate((e) => ({
+              bg: getComputedStyle(e).backgroundColor,
+              image: getComputedStyle(e).backgroundImage,
+              team: getComputedStyle(e.querySelector(".schedule-team"))
+                .flexDirection,
+              score: getComputedStyle(e.querySelector(".schedule-score"))
+                .fontSize,
+            }));
+          assert.equal(cardPaint.bg, "rgba(0, 0, 0, 0)");
+          assert.equal(cardPaint.image, "none");
+          assert.equal(cardPaint.team, "column");
+          assert.equal(cardPaint.score, "64px");
+        }
         const cardBoxes = await page
           .locator(".schedule-card")
           .evaluateAll((nodes) =>
