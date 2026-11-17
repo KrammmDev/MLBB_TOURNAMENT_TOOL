@@ -172,6 +172,21 @@ test(
         });
       });
     }
+    for (const page of [normal, six]) {
+      for (const selector of ["#blue-score-display", "#red-score-display"]) {
+        const geometry = await page.locator(selector).evaluate((el) => {
+          const dot = el.querySelector(".dot");
+          return {
+            direction: getComputedStyle(el).flexDirection,
+            width: getComputedStyle(dot).width,
+            height: getComputedStyle(dot).height,
+          };
+        });
+        assert.equal(geometry.direction, "column");
+        assert.equal(geometry.width, "14px");
+        assert.equal(geometry.height, "14px");
+      }
+    }
     // Original score bars animate dimensions for 300ms after a theme changes.
     await classic.waitForTimeout(400);
     assert.deepEqual(await geometry(classic), await geometry(legacy));
