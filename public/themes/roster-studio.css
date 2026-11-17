@@ -237,10 +237,10 @@ body {
   letter-spacing: 2px;
 }
 .team-col:first-child .team-code {
-  color: var(--studio-blue);
+  color: var(--studio-paper);
 }
 .team-col:last-child .team-code {
-  color: var(--studio-red);
+  color: var(--studio-paper);
 }
 .score-col {
   grid-column: 2;
@@ -261,10 +261,10 @@ body {
   font-variant-numeric: tabular-nums;
 }
 #blue-score {
-  color: var(--studio-blue);
+  color: var(--studio-paper);
 }
 #red-score {
-  color: var(--studio-red);
+  color: var(--studio-paper);
 }
 .vs-text {
   font:
