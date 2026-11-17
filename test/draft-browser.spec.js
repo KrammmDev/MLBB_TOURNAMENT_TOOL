@@ -183,8 +183,34 @@ test(
           };
         });
         assert.equal(geometry.direction, "column");
-        assert.equal(geometry.width, "12px");
-        assert.equal(geometry.height, "12px");
+        assert.equal(geometry.width, "10px");
+        assert.equal(geometry.height, "10px");
+        const bounds = await page.locator(selector).boundingBox();
+        const header = await page
+          .locator(".upperlowermid .teamlogo-wrap")
+          .first()
+          .boundingBox();
+        assert.ok(
+          bounds.y >= header.y + 6,
+          "score stack has top breathing room",
+        );
+        assert.ok(
+          bounds.y + bounds.height <= header.y + header.height - 6,
+          "score stack stays inside header",
+        );
+      }
+    }
+    for (const page of [normal, six]) {
+      const header = await page
+        .locator(".upperlowermid .teamlogo-wrap")
+        .first()
+        .boundingBox();
+      for (const selector of [".teamnameholder1", ".teamnameholder2"]) {
+        const name = await page.locator(selector).boundingBox();
+        assert.ok(
+          Math.abs(name.y + name.height / 2 - header.y - header.height / 2) < 1,
+          "Studio team name is centered vertically",
+        );
       }
     }
     // Original score bars animate dimensions for 300ms after a theme changes.
