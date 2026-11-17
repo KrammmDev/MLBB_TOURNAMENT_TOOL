@@ -93,20 +93,20 @@
   );
   defaults.schedule = {
     classic: {
-      background: "#351008",
-      left: "#ff7200",
-      right: "#e92237",
-      text: "#ffffff",
-      muted: "#ffcfad",
-      border: "#ff924a",
+      background: "#f4f1fc",
+      left: "#5838e8",
+      right: "#e9213a",
+      text: "#211a4b",
+      muted: "#72638f",
+      border: "#f2ce45",
     },
     arena: {
-      background: "#091827",
-      left: "#1bc2d5",
-      right: "#527fe8",
-      text: "#f2f7fc",
-      muted: "#8fcbdc",
-      border: "#28435b",
+      background: "#f2f4fa",
+      left: "#164af4",
+      right: "#e9213a",
+      text: "#101a38",
+      muted: "#52637a",
+      border: "#4874ff",
     },
     studio: {
       background: "#f6f6f3",

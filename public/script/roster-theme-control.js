@@ -107,8 +107,8 @@
       };
       if (output() === "schedule")
         Object.assign(details, {
-          classic: "Competition board · stacked right fixtures",
-          arena: "Left talent rail · bottom match strips",
+          classic: "Playoffs · left fixtures · right video",
+          arena: "Championship header · central video · bottom fixtures",
           studio: "Season 18 format · left schedule/talents · right video",
         });
       if (output() === "postdraft")
