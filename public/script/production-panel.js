@@ -94,11 +94,31 @@
         : "none";
       const ticker = document.getElementById("ticker-window");
       ticker.hidden = !d.showTicker || !d.ticker;
-      const key = JSON.stringify([d.ticker, d.tickerSeconds]);
+      const key = JSON.stringify([d.ticker, d.tickerSeconds, d.showTicker]);
       if (key !== tickerKey) {
         tickerKey = key;
         const text = document.getElementById("ticker-text");
-        text.textContent = d.ticker;
+        text.replaceChildren();
+        if (d.ticker && d.showTicker) {
+          const group = document.createElement("span");
+          group.className = "ticker-group";
+          text.append(group);
+          const unit = document.createElement("span");
+          unit.className = "ticker-unit";
+          unit.textContent = d.ticker;
+          group.append(unit);
+          // Fill at least one viewport, then duplicate exactly one full group.
+          const width = ticker.clientWidth || 1800;
+          let repeats = 1;
+          while (group.offsetWidth < width && repeats++ < 100) {
+            const copy = unit.cloneNode(true);
+            copy.setAttribute("aria-hidden", "true");
+            group.append(copy);
+          }
+          const duplicate = group.cloneNode(true);
+          duplicate.setAttribute("aria-hidden", "true");
+          text.append(duplicate);
+        }
         text.getAnimations().forEach((a) => a.cancel());
         text.style.animation = "none";
         void text.offsetWidth;

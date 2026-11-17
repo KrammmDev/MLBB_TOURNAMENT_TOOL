@@ -21,3 +21,5 @@ The compact current-match card is 560×136 on the 1920×1080 canvas. Hide/Show C
 ## Roster timer display
 
 Roster outputs (Classic, Arena and Studio, including legacy URLs) also display the acknowledged production timer and its label. They follow the same Start/Pause/Reset, format and end text from Production Timer controls. The Roster timer remains visible even when Current Match or Lower Third is hidden in the production overlay. If the production-timer API is unavailable before the first acknowledged read, the original roster countdown-target remains the compatibility fallback. No match/draft clock is written.
+
+The ticker fills at least one viewport with safe repeated text, duplicates that group, and translates by exactly one group width per cycle. This keeps the wrap seamless for short and long text without a viewport-sized blank reset. Colors, timer polling and panel visibility cues do not restart the ticker. Reduced-motion mode shows one static readable copy.
