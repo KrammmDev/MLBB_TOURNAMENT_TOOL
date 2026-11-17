@@ -33,56 +33,7 @@ body {
   overflow: hidden;
   transform-origin: 0 0;
   isolation: isolate;
-  background:
-    linear-gradient(
-      122deg,
-      transparent 0 34%,
-      color-mix(in srgb, var(--studio-blue) 12%, transparent) 34% 45%,
-      transparent 45%
-    ),
-    radial-gradient(
-      ellipse at 22% 30%,
-      color-mix(in srgb, var(--studio-blue) 28%, transparent),
-      transparent 55%
-    ),
-    linear-gradient(
-      105deg,
-      var(--studio-ink),
-      color-mix(in srgb, var(--studio-ink) 70%, black)
-    );
-}
-.overlay-stage::before {
-  content: "ROSTER";
-  position: absolute;
-  left: -40px;
-  top: 20px;
-  font:
-    400 330px/1 "Studio Roster Display",
-    Impact,
-    sans-serif;
-  letter-spacing: 10px;
-  transform: rotate(-8deg);
-  color: transparent;
-  -webkit-text-stroke: 2px
-    color-mix(in srgb, var(--studio-blue) 22%, transparent);
-  z-index: -1;
-  pointer-events: none;
-}
-.overlay-stage::after {
-  content: "";
-  position: absolute;
-  right: -130px;
-  top: -80px;
-  width: 950px;
-  height: 1200px;
-  border: 36px solid color-mix(in srgb, var(--studio-blue) 14%, transparent);
-  transform: skewX(-15deg);
-  z-index: -1;
-  pointer-events: none;
-}
-.hidden,
-.bg-base {
-  display: none !important;
+  background: transparent;
 }
 /* Player cutouts are the headline, with no enclosing rectangular cards. */
 .player-slideshow {
@@ -195,8 +146,8 @@ body {
   text-transform: uppercase;
   max-height: 160px;
 }
-.tournament-title:empty::before {
-  content: "MATCH ROSTER";
+.tournament-title:empty {
+  display: none;
 }
 .tournament-subtitle {
   margin-top: 20px;
