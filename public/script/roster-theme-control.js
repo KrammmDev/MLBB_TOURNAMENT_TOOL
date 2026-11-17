@@ -107,9 +107,9 @@
       };
       if (output() === "schedule")
         Object.assign(details, {
-          classic: "Right talent rail · partner/schedule deck",
+          classic: "Competition board · stacked right fixtures",
           arena: "Left talent rail · bottom match strips",
-          studio: "Ivory talent frame · bottom match strips",
+          studio: "Championship masthead · four-match ribbon",
         });
       if (output() === "postdraft")
         Object.assign(details, {

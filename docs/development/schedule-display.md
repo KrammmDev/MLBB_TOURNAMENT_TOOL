@@ -16,7 +16,7 @@ Add a video/camera/media source **below** this Browser Source. The window is tra
 | Arena   | x=400, y=10           | 1510×849.375 |
 | Studio  | x=10, y=10            | 1510×849.375 |
 
-Classic and Studio place logo and talents in the right rail, with a large timer below. Arena mirrors this composition with a left talent rail and timer. Match strips fill the bottom deck beneath the video. Configure the combined talent image and Show Casters in Schedule Control. Fit the source to the inner border in OBS. Browser previews show checkerboard through the window. Unconfigured logos/sponsors are hidden, and an empty schedule is identified explicitly.
+Classic places four stacked fixtures in a right competition board with talents below the left video and the timer below the fixtures. Arena uses a left talent rail and timer, with two-by-two match strips below the right video. Studio uses a panoramic event masthead with a compact top-right clock, a right talent column and a four-match bottom ribbon. Configure the combined talent image and Show Casters in Schedule Control. Fit the source to the inner border in OBS. Browser previews show checkerboard through the window. Unconfigured logos/sponsors are hidden, and an empty schedule is identified explicitly.
 
 ## Validation
 

@@ -35,3 +35,139 @@ body {
 #schedule-partners {
   background: color-mix(in srgb, var(--sc-panel) 90%, white);
 }
+
+/* Competition board: stacked right-hand fixtures and a lower talent desk. */
+#schedule-stage {
+  background:
+    linear-gradient(
+        125deg,
+        var(--sc-panel),
+        color-mix(in srgb, var(--sc-right) 20%, var(--sc-panel))
+      )
+      right top/590px 100% no-repeat,
+    linear-gradient(
+        110deg,
+        var(--sc-panel),
+        color-mix(in srgb, var(--sc-left) 18%, var(--sc-panel))
+      )
+      left bottom/1330px 320px no-repeat;
+}
+#schedule-stage::before {
+  left: 1330px;
+  width: 590px;
+}
+#schedule-video-window {
+  left: 20px;
+  top: 20px;
+  width: 1280px;
+  height: 720px;
+}
+.schedule-header {
+  left: 1350px;
+  top: 20px;
+  width: 550px;
+  height: 180px;
+  flex-direction: row;
+  text-align: left;
+  gap: 25px;
+}
+#schedule-brand {
+  width: 120px;
+  height: 120px;
+}
+#schedule-event {
+  font-size: 42px;
+}
+#schedule-context {
+  font-size: 22px;
+}
+.schedule-sidebar {
+  left: 1350px;
+  top: 230px;
+  width: 550px;
+  height: 590px;
+}
+#schedule-cards {
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+.schedule-card {
+  height: 118px;
+  clip-path: polygon(
+    16px 0,
+    100% 0,
+    100% calc(100% - 16px),
+    calc(100% - 16px) 100%,
+    0 100%,
+    0 16px
+  );
+}
+.schedule-meta {
+  height: 30px;
+  font-size: 23px;
+  padding-top: 3px;
+}
+.schedule-versus {
+  height: 84px;
+  grid-template-columns: 1fr 120px 1fr;
+  padding: 0 12px;
+  gap: 8px;
+}
+.schedule-team {
+  gap: 8px;
+}
+.schedule-team span {
+  font-size: 30px;
+}
+.schedule-score {
+  font-size: 48px;
+}
+#schedule-talents {
+  left: 25px;
+  top: 770px;
+  width: 1260px;
+  height: 255px;
+  display: flex;
+  align-items: center;
+  gap: 35px;
+}
+#schedule-talents h2 {
+  width: 220px;
+  height: auto;
+  font-size: 46px;
+  text-align: left;
+  letter-spacing: 6px;
+}
+#schedule-casters {
+  width: 980px;
+  height: 255px;
+  object-position: center bottom;
+}
+.schedule-countdown {
+  left: 1350px;
+  top: 850px;
+  width: 550px;
+  height: 210px;
+  border-left: 8px solid var(--sc-left);
+  border-top: 0;
+}
+.schedule-countdown strong {
+  font-size: 150px;
+}
+footer {
+  left: 20px;
+  top: 1040px;
+  width: 1280px;
+  height: 40px;
+}
+#schedule-partners {
+  height: 510px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+#schedule-partners img {
+  width: 100%;
+  max-width: 220px;
+  height: 120px;
+}
