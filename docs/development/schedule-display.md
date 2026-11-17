@@ -21,3 +21,7 @@ Classic places four stacked fixtures in a right competition board with talents b
 ## Validation
 
 `MLBB_TEST_BROWSER=/usr/bin/chromium node --test test/schedule-browser.spec.js` checks live shared-state edits, safe labels, four-slot pagination and talent display, production timer, all three theme geometries, video transparency, panel activation and theme/color isolation. Existing store and other output browser suites cover compatibility. Actual video alignment/branding is verified on the production machine.
+
+## Studio custom palette
+
+Studio uses the supplied metallic-bar CSS with a transparent canvas and no canvas decoration. Panel background controls card/sponsor surfaces; left and right team accents control their side gradients; Borders controls metallic bars and the video frame. Primary text controls scores and the timer; secondary text controls the timer label. Gold gradients derive from the border variable instead of fixed hex colors. Existing saved palettes remain saved; reset the Studio Schedule palette to use the new blue/red/gold defaults.

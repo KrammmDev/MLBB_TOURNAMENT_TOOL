@@ -325,6 +325,55 @@ test(
       left: "#cc44aa",
     });
     assert.equal(colors.snapshot().data.palettes.arena.scoreboard, undefined);
+    await colors.save(
+      "studio",
+      "schedule",
+      {
+        background: "#123456",
+        left: "#aa22cc",
+        right: "#22aa44",
+        text: "#fefefe",
+        muted: "#bbccdd",
+        border: "#dd8822",
+      },
+      colors.snapshot().revision,
+    );
+    await themes.select("studio", themes.snapshot().revision, "schedule");
+    await page.reload();
+    await page.waitForFunction(
+      () =>
+        document.body.dataset.scheduleTheme === "studio" &&
+        getComputedStyle(document.body).getPropertyValue("--sc-left").trim() ===
+          "#aa22cc",
+    );
+    const paints = await page.evaluate(() => {
+      const style = (id) => getComputedStyle(document.querySelector(id));
+      return {
+        canvas: style("#schedule-stage").backgroundColor,
+        canvasImage: style("#schedule-stage").backgroundImage,
+        decoration: getComputedStyle(
+          document.querySelector("#schedule-stage"),
+          "::before",
+        ).display,
+        left: style(".schedule-team:first-child").backgroundImage,
+        right: style(".schedule-team:last-child").backgroundImage,
+        gold: style("#schedule-heading").backgroundImage,
+        timer: style("#schedule-timer").color,
+        muted: style("#schedule-timer-label").color,
+        sponsor: style("#schedule-sponsor").backgroundImage,
+        frame: style("#schedule-video-window").borderTopColor,
+      };
+    });
+    assert.equal(paints.canvas, "rgba(0, 0, 0, 0)");
+    assert.equal(paints.canvasImage, "none");
+    assert.equal(paints.decoration, "none");
+    assert.ok(paints.left.includes("170, 34, 204"));
+    assert.ok(paints.right.includes("34, 170, 68"));
+    assert.ok(paints.gold.includes("221, 136, 34"));
+    assert.equal(paints.timer, "rgb(254, 254, 254)");
+    assert.equal(paints.muted, "rgb(187, 204, 221)");
+    assert.ok(paints.sponsor.includes("18, 52, 86"));
+    assert.equal(paints.frame, "rgb(221, 136, 34)");
     assert.deepEqual(errors, []);
   },
 );
