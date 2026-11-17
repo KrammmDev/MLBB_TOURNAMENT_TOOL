@@ -209,6 +209,28 @@ test(
         "3",
       ),
     );
+    await page.waitForFunction(
+      () =>
+        document
+          .querySelector(".schedule-sidebar")
+          .getAnimations()
+          .some(
+            (a) =>
+              a.playState === "running" &&
+              a.effect
+                .getKeyframes()
+                .some((f) => f.transform === "translateX(-50px)"),
+          ),
+      null,
+      { timeout: 12000 },
+    );
+    assert.equal(
+      await page
+        .locator("#schedule-timer")
+        .evaluate((e) => e.getAnimations().length),
+      0,
+      "page pan does not animate the clock",
+    );
     await page
       .locator("#schedule-casters")
       .waitFor({ state: "visible", timeout: 12000 });

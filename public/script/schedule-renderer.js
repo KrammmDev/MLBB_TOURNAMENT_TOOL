@@ -18,6 +18,58 @@
     tickerKey = "",
     sponsorIndex = 0;
   const timers = [];
+  const PAGE_HOLD_MS = 8000,
+    PAN_MS = 450;
+  let panAnimation = null,
+    panVersion = 0;
+  function activeDeck() {
+    return document.body.dataset.scheduleTheme === "studio" &&
+      document.body.dataset.schedulePanel === "talents"
+      ? $("schedule-talents")
+      : document.querySelector(".schedule-sidebar");
+  }
+  async function advancePage() {
+    if (stopped || pages.length < 2 || panAnimation) return;
+    const version = panVersion;
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduced) {
+      panAnimation = activeDeck().animate(
+        [
+          { opacity: 1, transform: "translateX(0)" },
+          { opacity: 0, transform: "translateX(-50px)" },
+        ],
+        {
+          duration: PAN_MS,
+          easing: "cubic-bezier(.4,0,1,1)",
+          fill: "forwards",
+        },
+      );
+      try {
+        await panAnimation.finished;
+      } catch {
+        return;
+      }
+      if (stopped || version !== panVersion) return;
+    }
+    page = (page + 1) % pages.length;
+    draw();
+    if (!reduced && !stopped) {
+      panAnimation = activeDeck().animate(
+        [
+          { opacity: 0, transform: "translateX(50px)" },
+          { opacity: 1, transform: "translateX(0)" },
+        ],
+        { duration: PAN_MS, easing: "cubic-bezier(.22,1,.36,1)" },
+      );
+      const animation = panAnimation;
+      try {
+        await animation.finished;
+      } catch {
+        return;
+      }
+      if (panAnimation === animation) panAnimation = null;
+    }
+  }
   const safe = root.RosterModel.safeImage;
   function parse(value) {
     try {
@@ -77,6 +129,11 @@
     document.body.dataset.schedulePanel =
       studio && current?.type === "talents" ? "talents" : "matches";
     if (next + studio === key) return;
+    panVersion++;
+    if (panAnimation) {
+      panAnimation.cancel();
+      panAnimation = null;
+    }
     key = next + studio;
     const host = $("schedule-cards");
     host.replaceChildren();
@@ -126,15 +183,8 @@
       card.append(meta, row);
       host.append(card);
     }
-    if (!matchMedia("(prefers-reduced-motion: reduce)").matches)
-      host.animate(
-        [
-          { opacity: 0, transform: "translateY(12px)" },
-          { opacity: 1, transform: "none" },
-        ],
-        { duration: 450, easing: "cubic-bezier(.22,1,.36,1)" },
-      );
   }
+
   async function theme() {
     if (stopped) return;
     try {
@@ -354,12 +404,7 @@
     }, 8000),
     setInterval(tick, 100),
     setInterval(theme, 15000),
-    setInterval(() => {
-      if (pages.length > 1) {
-        page = (page + 1) % pages.length;
-        draw();
-      }
-    }, 8000),
+    setInterval(advancePage, PAGE_HOLD_MS + PAN_MS * 2),
   );
   addEventListener("resize", fit);
   addEventListener("storage", (e) => {
@@ -369,6 +414,8 @@
   });
   addEventListener("pagehide", () => {
     stopped = true;
+    panVersion++;
+    if (panAnimation) panAnimation.cancel();
     timers.forEach(clearInterval);
     stopMatch();
     BroadcastThemeClient.cancel();
