@@ -188,7 +188,7 @@ test(
     await stale.waitForFunction(
       () => document.getElementById("theme-status").dataset.error === "true",
     );
-    assert.equal(themes.snapshot().data.themeId, "studio");
+    assert.equal(themes.snapshot().data.selections.roster.themeId, "studio");
     await admin.locator("#previous-theme").click();
     await admin.waitForFunction(
       () => !document.getElementById("activate-theme").disabled,

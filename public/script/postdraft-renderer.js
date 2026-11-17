@@ -247,7 +247,9 @@
       if (response.ok) {
         const value = await response.json();
         if (!stopped && version === themeVersion)
-          await apply(value.data?.themeId);
+          await apply(
+            window.RosterThemes.selection(value.data, "postdraft").themeId,
+          );
       }
     } catch {
     } finally {
@@ -278,7 +280,9 @@
           }
           if (message.type === "roster_theme_update" && !pinned) {
             themeVersion++;
-            apply(message.data?.themeId);
+            apply(
+              window.RosterThemes.selection(message.data, "postdraft").themeId,
+            );
           }
           if (
             message.type === "draftdata_update" ||

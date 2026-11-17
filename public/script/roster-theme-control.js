@@ -46,13 +46,23 @@
         : "1920 × 1080 · transparent background";
     for (const card of document.querySelectorAll(".theme-card"))
       card.disabled = saving || !snapshot;
+    activate.textContent =
+      "Use for " +
+      {
+        draft: "Draft",
+        scoreboard: "Scoreboard",
+        roster: "Roster",
+        postdraft: "Post-draft",
+      }[output()] +
+      " only";
     activate.disabled =
       saving ||
       !previewReady ||
       colorEditing ||
       !snapshot ||
-      selected === snapshot.data.themeId;
-    previous.disabled = saving || !snapshot?.data.previousThemeId;
+      selected === catalog.selection(snapshot.data, output()).themeId;
+    previous.disabled =
+      saving || !catalog.selection(snapshot?.data, output()).previousThemeId;
     reloadButton.disabled = saving;
     outputSelect.disabled = saving;
   }
@@ -204,9 +214,9 @@
     try {
       snapshot = await read();
       document.getElementById("active-theme").textContent = theme(
-        snapshot.data.themeId,
+        catalog.selection(snapshot.data, output()).themeId,
       ).label;
-      choose(snapshot.data.themeId);
+      choose(catalog.selection(snapshot.data, output()).themeId);
     } catch (error) {
       status("Cannot load settings. Check the server and reload.", true);
       buttons();
@@ -224,7 +234,7 @@
           "Content-Type": "application/json",
           "If-Match": editRevision,
         },
-        body: JSON.stringify({ themeId: selected }),
+        body: JSON.stringify({ themeId: selected, output: output() }),
       });
       const result = await response.json();
       if (!response.ok)
@@ -232,7 +242,7 @@
       snapshot = result;
       editRevision = result.revision;
       document.getElementById("active-theme").textContent = theme(
-        result.data.themeId,
+        catalog.selection(result.data, output()).themeId,
       ).label;
       status("Broadcast selection saved.");
     } catch (error) {
@@ -244,14 +254,20 @@
     }
   };
   previous.onclick = () => {
-    if (snapshot?.data.previousThemeId) choose(snapshot.data.previousThemeId);
+    if (catalog.selection(snapshot?.data, output()).previousThemeId)
+      choose(catalog.selection(snapshot.data, output()).previousThemeId);
   };
   reloadButton.onclick = reload;
   const url = document.getElementById("output-url");
   updateURL();
   outputSelect.onchange = () => {
     updateURL();
-    if (selected) choose(selected);
+    if (snapshot) {
+      document.getElementById("active-theme").textContent = theme(
+        catalog.selection(snapshot.data, output()).themeId,
+      ).label;
+      choose(catalog.selection(snapshot.data, output()).themeId);
+    }
   };
   document.getElementById("copy-url").onclick = async () => {
     try {

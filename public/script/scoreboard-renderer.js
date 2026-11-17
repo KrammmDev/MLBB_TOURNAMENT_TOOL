@@ -108,7 +108,9 @@
       if (!response.ok) return;
       const snapshot = await response.json();
       if (!stopped && version === themeVersion)
-        await apply(snapshot.data?.themeId);
+        await apply(
+          window.RosterThemes.selection(snapshot.data, "scoreboard").themeId,
+        );
     } catch {
       /* Retain current graphics during an outage. */
     } finally {
@@ -137,7 +139,9 @@
           root.SponsorSlideshow.accept(message);
           if (message.type === "roster_theme_update" && !pinned) {
             themeVersion++;
-            apply(message.data?.themeId);
+            apply(
+              window.RosterThemes.selection(message.data, "scoreboard").themeId,
+            );
           }
         },
       },

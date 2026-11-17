@@ -6,6 +6,14 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   const shared = "/themes/roster-common.css";
   return Object.freeze({
+    selection(config, output) {
+      return (
+        config?.selections?.[output] || {
+          themeId: config?.themeId || "classic",
+          previousThemeId: config?.previousThemeId || null,
+        }
+      );
+    },
     schemaVersion: 1,
     rendererVersion: 1,
     output: "roster", // Compatibility field; outputs declares current coverage.

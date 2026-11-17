@@ -263,7 +263,9 @@
         if (!response.ok) throw Error("Theme settings unavailable");
         const snapshot = await response.json();
         if (request === themeReadGeneration && !stopped)
-          await select(snapshot.data.themeId);
+          await select(
+            window.RosterThemes.selection(snapshot.data, "roster").themeId,
+          );
       } catch (error) {
         console.error(error.message);
         if (!stopped) el("stage").style.visibility = "";
@@ -273,7 +275,7 @@
       root.BroadcastColorClient?.accept(message);
       if (message.type === "roster_theme_update" && !pinned) {
         themeReadGeneration++;
-        select(message.data.themeId);
+        select(window.RosterThemes.selection(message.data, "roster").themeId);
       }
       if (message.type === "init" || message.type === "update") {
         const source = message.data || {};
