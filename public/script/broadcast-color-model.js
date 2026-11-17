@@ -6,7 +6,7 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
   const themes = ["classic", "arena", "studio"],
-    outputs = ["roster", "draft", "scoreboard", "postdraft"];
+    outputs = ["roster", "draft", "scoreboard", "postdraft", "schedule"];
   const fields = {
     background: "Panel background",
     left: "Left team accent",
@@ -91,6 +91,32 @@
   defaults.postdraft = Object.fromEntries(
     themes.map((id) => [id, { ...defaults.draft[id] }]),
   );
+  defaults.schedule = {
+    classic: {
+      background: "#351008",
+      left: "#ff7200",
+      right: "#e92237",
+      text: "#ffffff",
+      muted: "#ffcfad",
+      border: "#ff924a",
+    },
+    arena: {
+      background: "#091827",
+      left: "#1bc2d5",
+      right: "#527fe8",
+      text: "#f2f7fc",
+      muted: "#8fcbdc",
+      border: "#28435b",
+    },
+    studio: {
+      background: "#f5f3ed",
+      left: "#e9ba30",
+      right: "#e92237",
+      text: "#18212b",
+      muted: "#52637a",
+      border: "#c7ba91",
+    },
+  };
   function validColors(colors) {
     return (
       colors !== null &&
@@ -160,6 +186,18 @@
       );
     const vars = (names, value) =>
       names.split(",").forEach((name) => variables.push(name + ":" + value));
+    if (output === "schedule") {
+      for (const [field, token] of Object.entries({
+        background: "panel",
+        left: "left",
+        right: "right",
+        border: "border",
+      }))
+        if (colors[field]) vars("--sc-" + token, colors[field]);
+      vars("--sc-text", readable(palette.text, palette.background));
+      vars("--sc-muted", readable(palette.muted, palette.background));
+      return scope + "{" + variables.join(";") + "}";
+    }
     if (output === "postdraft") {
       for (const [field, token] of Object.entries({
         background: "panel",

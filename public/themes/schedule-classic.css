@@ -1,0 +1,74 @@
+body {
+  --sc-panel: #351008;
+  --sc-left: #ff7200;
+  --sc-right: #e92237;
+  --sc-text: #fff;
+  --sc-muted: #ffcfad;
+  --sc-border: #ff924a;
+}
+#schedule-stage {
+  background:
+    linear-gradient(
+        135deg,
+        var(--sc-panel),
+        color-mix(in srgb, var(--sc-left) 50%, var(--sc-panel))
+      )
+      right top/510px 100% no-repeat,
+    linear-gradient(
+        120deg,
+        var(--sc-panel),
+        color-mix(in srgb, var(--sc-right) 35%, var(--sc-panel))
+      )
+      left bottom/1410px 255px no-repeat;
+}
+.schedule-header {
+  left: 1440px;
+  top: 35px;
+  width: 440px;
+  height: 145px;
+  gap: 15px;
+}
+#schedule-brand {
+  width: 80px;
+  height: 80px;
+}
+#schedule-event {
+  font-size: 38px;
+  max-width: 340px;
+  white-space: normal;
+}
+#schedule-context {
+  font-size: 16px;
+}
+#schedule-sponsors {
+  position: absolute;
+  left: -1400px;
+  top: 810px;
+  width: 260px;
+  height: 100px;
+}
+.schedule-sidebar {
+  left: 1440px;
+  top: 200px;
+  width: 440px;
+}
+.schedule-countdown {
+  left: 1440px;
+  top: 850px;
+  width: 440px;
+}
+#schedule-video-window {
+  left: 40px;
+  top: 40px;
+  width: 1360px;
+  height: 765px;
+}
+footer {
+  left: 340px;
+  top: 880px;
+  width: 1060px;
+  height: 120px;
+}
+.schedule-corner {
+  display: none;
+}

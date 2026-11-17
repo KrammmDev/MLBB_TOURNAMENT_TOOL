@@ -1,0 +1,225 @@
+"use strict";
+const test = require("node:test"),
+  assert = require("node:assert/strict"),
+  fs = require("node:fs/promises"),
+  os = require("node:os"),
+  path = require("node:path"),
+  express = require("express"),
+  { WebSocketServer } = require("ws"),
+  { chromium } = require("playwright");
+const {
+    createRosterThemeStore,
+    installRosterThemeRoutes,
+  } = require("../lib/roster-theme-store"),
+  { loadColorStore, installColorRoutes } = require("../lib/broadcast-colors"),
+  { createPanelStore, installPanelRoutes } = require("../lib/production-panel");
+test(
+  "schedule themes reuse live schedule controls, casters, timer and isolated theme/color selection",
+  { timeout: 60000 },
+  async (t) => {
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "schedule-test-"));
+    const app = express(),
+      server = app.listen(0, "127.0.0.1");
+    await new Promise((r) => server.once("listening", r));
+    const wss = new WebSocketServer({ server });
+    const broadcast = (m) => {
+      for (const c of wss.clients) c.send(JSON.stringify(m));
+    };
+    const shared = { "tournament-title": "FIXTURE CHAMPIONSHIP" };
+    for (let i = 1; i <= 4; i++)
+      shared["schedule-" + i] = JSON.stringify({
+        show: true,
+        time: "MATCH " + i + " · BO3",
+        team1: "BLUE " + i,
+        team2: "RED " + i,
+        score1: "2",
+        score2: "1",
+        logo1: "Assets/Team/a.png",
+        logo2: "Assets/Team/b.png",
+        showCasters: i === 1,
+        castersImg: i === 1 ? "Assets/casters.png" : "",
+      });
+    const themes = createRosterThemeStore({
+        initial: { schemaVersion: 1, themeId: "studio", previousThemeId: null },
+        persist: async () => {},
+        onCommit: (s) => broadcast({ type: "roster_theme_update", ...s }),
+      }),
+      colors = await loadColorStore({
+        file: path.join(dir, "colors.json"),
+        onCommit: (s) => broadcast({ type: "broadcast_colors_update", ...s }),
+      }),
+      panel = createPanelStore({ persist: async () => {} });
+    await panel.change(
+      {
+        action: "settings",
+        settings: {
+          durationSeconds: 90,
+          label: "MATCH STARTS IN",
+          headline: "THE NEXT CHAMPION",
+        },
+      },
+      panel.snapshot().revision,
+    );
+    app.use(express.json());
+    installRosterThemeRoutes(app, () => themes);
+    installColorRoutes(app, () => colors);
+    installPanelRoutes(app, () => panel);
+    app.get("/api/schedule", (q, s) => s.json({}));
+    app.get("/api/matchdata", (q, s) =>
+      s.json(require("./fixtures").fixture()),
+    );
+    app.get("/api/scoreboard-branding", (q, s) =>
+      s.json({
+        data: {
+          schemaVersion: 1,
+          patchLabel: "",
+          casterNames: "",
+          logoFile: null,
+        },
+        revision: '"branding"',
+      }),
+    );
+    app.get("/api/broadcast-sponsors", (q, s) =>
+      s.json({
+        data: {
+          schemaVersion: 1,
+          enabled: true,
+          intervalSeconds: 5,
+          logos: [],
+        },
+        revision: '"sponsors"',
+      }),
+    );
+    app.get(/^\/Assets\/(?!Font\/)/, (q, s) =>
+      s
+        .type("svg")
+        .send(
+          '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="50" cy="50" r="40" fill="teal"/></svg>',
+        ),
+    );
+    app.use(express.static(path.join(__dirname, "../public")));
+    wss.on("connection", (s) =>
+      s.send(JSON.stringify({ type: "init", data: shared })),
+    );
+    const browser = await chromium.launch({
+      executablePath: process.env.MLBB_TEST_BROWSER || undefined,
+      args: ["--no-sandbox"],
+    });
+    t.after(async () => {
+      await browser.close();
+      for (const c of wss.clients) c.terminate();
+      await new Promise((r) => wss.close(r));
+      await new Promise((r) => server.close(r));
+      await fs.rm(dir, { recursive: true, force: true });
+    });
+    const ctx = await browser.newContext({
+        viewport: { width: 1920, height: 1080 },
+      }),
+      page = await ctx.newPage(),
+      errors = [];
+    page.on("pageerror", (e) => errors.push(e.message));
+    const base = "http://127.0.0.1:" + server.address().port;
+    await page.goto(base + "/scheduledisplay.html");
+    await page.waitForFunction(
+      () =>
+        document.body.dataset.scheduleReady === "true" &&
+        document.querySelectorAll(".schedule-card").length === 4,
+    );
+    assert.equal(await page.locator("#schedule-timer").textContent(), "01:30");
+    assert.equal(
+      await page.locator("#schedule-footer").textContent(),
+      "THE NEXT CHAMPION",
+    );
+    for (const id of ["classic", "arena", "studio"]) {
+      await themes.select(id, themes.snapshot().revision, "schedule");
+      await page.reload();
+      await page.waitForFunction(
+        (id) =>
+          document.body.dataset.scheduleTheme === id &&
+          document.body.dataset.scheduleReady === "true",
+        id,
+      );
+      const slot = await page.locator("#schedule-video-window").boundingBox();
+      assert.equal(slot.width, id === "classic" ? 1360 : 1330);
+      assert.equal(
+        await page
+          .locator("#schedule-video-window")
+          .evaluate((e) => getComputedStyle(e).backgroundColor),
+        "rgba(0, 0, 0, 0)",
+      );
+      if (process.env.MLBB_CAPTURE_DIR) {
+        await fs.mkdir(process.env.MLBB_CAPTURE_DIR, { recursive: true });
+        await page.evaluate(() => document.fonts.ready);
+        await page.waitForTimeout(500);
+        await page.screenshot({
+          path: path.join(
+            process.env.MLBB_CAPTURE_DIR,
+            "schedule-" + id + ".png",
+          ),
+          omitBackground: true,
+        });
+      }
+    }
+    shared["schedule-1"] = JSON.stringify({
+      ...JSON.parse(shared["schedule-1"]),
+      team1: "EDITED <b> NAME",
+      score1: "3",
+    });
+    broadcast({ type: "update", data: { "schedule-1": shared["schedule-1"] } });
+    await page.waitForFunction(
+      () =>
+        document.querySelector(".schedule-team span")?.textContent ===
+        "EDITED <b> NAME",
+    );
+    assert.equal(await page.locator(".schedule-team b").count(), 0);
+    assert.ok(
+      (await page.locator(".schedule-score").first().textContent()).startsWith(
+        "3",
+      ),
+    );
+    await page
+      .locator("#schedule-casters")
+      .waitFor({ state: "visible", timeout: 12000 });
+    await page
+      .locator(".schedule-card")
+      .first()
+      .waitFor({ state: "visible", timeout: 12000 });
+    const admin = await ctx.newPage();
+    admin.on("pageerror", (e) => errors.push(e.message));
+    await admin.goto(base + "/broadcast-themes.html");
+    await admin.locator("#preview-output").selectOption("schedule");
+    await admin.waitForFunction(() =>
+      document
+        .getElementById("theme-status")
+        .textContent.startsWith("Preview ready"),
+    );
+    assert.equal(
+      await admin.locator("#color-scope").textContent(),
+      "Studio · Schedule",
+    );
+    await admin.locator("[data-theme-id=arena]").click();
+    await admin.waitForFunction(
+      () => !document.getElementById("activate-theme").disabled,
+    );
+    await admin.locator("#activate-theme").click();
+    await admin.waitForFunction(() =>
+      document
+        .getElementById("theme-status")
+        .textContent.includes("selection saved"),
+    );
+    assert.equal(themes.snapshot().data.selections.roster.themeId, "studio");
+    assert.equal(themes.snapshot().data.selections.schedule.themeId, "arena");
+    await admin.locator("#color-hex-left").fill("#cc44aa");
+    await admin.locator("#save-colors").click();
+    await page.waitForFunction(
+      () =>
+        getComputedStyle(document.body).getPropertyValue("--sc-left").trim() ===
+        "#cc44aa",
+    );
+    assert.deepEqual(colors.snapshot().data.palettes.arena.schedule, {
+      left: "#cc44aa",
+    });
+    assert.equal(colors.snapshot().data.palettes.arena.scoreboard, undefined);
+    assert.deepEqual(errors, []);
+  },
+);

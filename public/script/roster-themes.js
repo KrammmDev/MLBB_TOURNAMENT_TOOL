@@ -17,7 +17,7 @@
     schemaVersion: 1,
     rendererVersion: 1,
     output: "roster", // Compatibility field; outputs declares current coverage.
-    outputs: ["roster", "draft", "scoreboard", "postdraft"],
+    outputs: ["roster", "draft", "scoreboard", "postdraft", "schedule"],
     canvas: { width: 1920, height: 1080 },
     themes: [
       {
@@ -48,13 +48,14 @@
     ].map((theme) =>
       Object.freeze({
         ...theme,
-        outputs: ["roster", "draft", "scoreboard", "postdraft"],
+        outputs: ["roster", "draft", "scoreboard", "postdraft", "schedule"],
         draftStyles: [
           "/display2.css",
           "/themes/draft-base.css",
           ...(theme.id === "classic" ? [] : ["/themes/draft-compact.css"]),
           "/themes/draft-" + theme.id + ".css",
         ],
+        scheduleStyles: ["/themes/schedule-" + theme.id + ".css"],
         postdraftStyles: ["/themes/postdraft-" + theme.id + ".css"],
         scoreboardStyles: ["/themes/scoreboard-" + theme.id + ".css"],
         requiredAssets: [],

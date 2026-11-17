@@ -18,8 +18,8 @@
           <p class="eyebrow">BROADCAST GRAPHICS</p>
           <h1>One system. Three looks.</h1>
           <p class="intro">
-            Preview roster or draft graphics with your current match data, then
-            select a look for that output only.
+            Preview roster, draft, scoreboard, post-draft or schedule graphics,
+            then select a look for that output only.
           </p>
         </div>
         <div class="selection">
@@ -37,6 +37,7 @@
           <label for="preview-output">Output</label>
           <select id="preview-output">
             <option value="roster">Roster</option>
+            <option value="schedule">Schedule / holding screen</option>
             <option value="draft-normal">Draft</option>
             <option value="postdraft">Post-draft</option>
             <option value="scoreboard">In-game scoreboard</option>
@@ -71,8 +72,9 @@
           <strong id="color-scope">Select a preview</strong>
         </div>
         <p>
-          Roster, draft, scoreboard and post-draft colors are saved separately
-          for each theme. Changes affect only the preview until you save.
+          Roster, draft, scoreboard, post-draft and schedule colors are saved
+          separately for each theme. Changes affect only the preview until you
+          save.
         </p>
         <form id="color-form">
           <div id="color-fields" class="color-fields"></div>
@@ -229,9 +231,9 @@
         </button>
       </section>
       <footer>
-        Themes cover roster, draft, scoreboard and post-draft outputs. MVP and
-        postgame retain their existing appearance. Legacy display URLs stay
-        fixed.
+        Themes cover roster, draft, scoreboard, post-draft and schedule outputs.
+        MVP and postgame retain their existing appearance. Legacy display URLs
+        stay fixed.
       </footer>
     </main>
     <script src="/script/roster-themes.js"></script>
