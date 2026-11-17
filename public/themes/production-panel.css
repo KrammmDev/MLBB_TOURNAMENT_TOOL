@@ -158,7 +158,7 @@ iframe {
   min-width: 0;
   min-height: 0;
   padding: 22px 60px;
-  background: #fff;
+  background: var(--sponsor-bg, #fff);
 }
 .sponsor-pan-track > img {
   width: 100%;
@@ -365,4 +365,79 @@ iframe {
   grid-column: 2;
   grid-row: 1;
   padding: 16px 26px;
+}
+
+/* Independent colors and compact match geometry. */
+.broadcast-panel {
+  background: var(--lower-bg, var(--panel-bg));
+}
+#panel-headline {
+  color: var(--headline-color, var(--panel-text));
+}
+#ticker-window {
+  background: var(--ticker-bg, var(--panel-bg));
+  color: var(--ticker-color, var(--panel-text));
+}
+.match-card {
+  width: 560px;
+  height: 136px;
+  padding: 4px 12px 8px;
+  grid-template-columns: 80px 50px 1fr 50px 80px;
+  grid-template-rows: 26px 1fr;
+  gap: 0 6px;
+}
+#panel-match-meta {
+  font-size: 16px;
+}
+.panel-team {
+  gap: 5px;
+}
+.panel-team img {
+  width: 48px;
+  height: 48px;
+}
+.panel-team span {
+  font-size: 18px;
+}
+.panel-score {
+  font-size: 48px;
+}
+.match-card .timer-face {
+  padding: 6px 8px;
+}
+.match-card .timer-face span {
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+.match-card .timer-face strong {
+  font-size: 42px;
+}
+.match-card,
+.broadcast-panel {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 420ms ease,
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity;
+}
+.match-card.panel-off {
+  opacity: 0;
+  transform: translateY(-24px);
+  pointer-events: none;
+}
+.broadcast-panel.panel-off {
+  opacity: 0;
+  transform: translateY(30px);
+  pointer-events: none;
+}
+.no-panel-motion .match-card,
+.no-panel-motion .broadcast-panel {
+  transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .match-card,
+  .broadcast-panel {
+    transition: none;
+  }
 }
