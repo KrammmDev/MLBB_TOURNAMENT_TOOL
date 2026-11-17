@@ -206,9 +206,9 @@ test(
                 .fontSize,
             }));
           assert.equal(cardPaint.bg, "rgba(0, 0, 0, 0)");
-          assert.equal(cardPaint.image, "none");
-          assert.equal(cardPaint.team, "column");
-          assert.equal(cardPaint.score, "64px");
+          assert.ok(cardPaint.image.startsWith("linear-gradient("));
+          assert.equal(cardPaint.team, "row");
+          assert.equal(cardPaint.score, "58px");
         }
         const cardBoxes = await page
           .locator(".schedule-card")
