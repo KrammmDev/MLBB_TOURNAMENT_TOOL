@@ -24,6 +24,7 @@ async function sandbox(t, raw) {
   await fs.mkdir(path.join(dir, "public/script"), { recursive: true });
   for (const script of [
     "match-state.js",
+    "production-timer-model.js",
     "ocr-model.js",
     "notification-model.js",
     "roster-model.js",
@@ -84,6 +85,11 @@ test(
     const port = env.output().match(/Local:\s+http:\/\/localhost:(\d+)/)[1];
     const url = `http://127.0.0.1:${port}/api/matchdata`;
     assert.deepEqual(await (await fetch(url)).json(), data);
+    const panel = await (
+      await fetch(`http://127.0.0.1:${port}/api/production-panel`)
+    ).json();
+    assert.equal(panel.data.mode, "countdown");
+    assert.equal(panel.data.running, false);
     const ocrState = await (
       await fetch(`http://127.0.0.1:${port}/api/ocr/state`)
     ).json();

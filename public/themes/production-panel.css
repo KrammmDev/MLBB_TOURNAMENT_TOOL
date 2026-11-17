@@ -1,0 +1,238 @@
+@font-face {
+  font-family: PanelDisplay;
+  src: url("/Assets/Font/big_noodle_titling.ttf") format("truetype");
+  font-display: swap;
+}
+* {
+  box-sizing: border-box;
+}
+:root {
+  --panel-bg: #101820;
+  --panel-text: #fff;
+  --panel-accent: #5ed7ef;
+}
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+body.control {
+  background: #0b1017;
+  color: #edf3fa;
+}
+main {
+  max-width: 1140px;
+  margin: 40px auto;
+  padding: 0 24px;
+}
+a {
+  color: #5ed7ef;
+}
+header {
+  padding: 26px 0;
+}
+header small {
+  letter-spacing: 3px;
+  color: #5ed7ef;
+}
+h1 {
+  font-size: 40px;
+  margin: 12px 0;
+}
+section,
+form {
+  margin: 20px 0;
+  padding: 24px;
+  background: #141e2b;
+  border: 1px solid #324256;
+  border-radius: 8px;
+}
+.timer-preview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--panel-text);
+  background: var(--panel-bg);
+  border-left: 5px solid var(--panel-accent);
+}
+.timer-preview strong {
+  font:
+    72px PanelDisplay,
+    Impact,
+    sans-serif;
+}
+.fields {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+label {
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+}
+input,
+select,
+textarea,
+button {
+  font: inherit;
+  padding: 12px;
+  border: 1px solid #3b5068;
+  border-radius: 4px;
+  background: #0d1723;
+  color: #eef3fa;
+}
+input:not([type="checkbox"]),
+textarea {
+  width: 100%;
+}
+input[type="color"] {
+  height: 48px;
+  padding: 5px;
+}
+button {
+  cursor: pointer;
+  background: #20475a;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.actions label {
+  display: flex;
+  align-items: center;
+}
+.hint,
+section p {
+  line-height: 1.6;
+  color: #abbccd;
+}
+iframe {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border: 1px solid #324256;
+  background: repeating-conic-gradient(#25303d 0% 25%, #19212c 0% 50%) 0/24px
+    24px;
+}
+.overlay {
+  overflow: hidden;
+  background: transparent;
+}
+.overlay #panel-stage {
+  position: absolute;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: 0 0;
+}
+.broadcast-panel {
+  position: absolute;
+  left: 60px;
+  bottom: 50px;
+  width: 1800px;
+  height: 220px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  display: grid;
+  grid-template-columns: 1fr 490px;
+  grid-template-rows: 160px 60px;
+  background: var(--panel-bg);
+  color: var(--panel-text);
+  box-shadow: inset 0 4px var(--panel-accent);
+  clip-path: polygon(
+    22px 0,
+    100% 0,
+    100% calc(100% - 22px),
+    calc(100% - 22px) 100%,
+    0 100%,
+    0 22px
+  );
+}
+#panel-sponsors {
+  min-width: 0;
+  min-height: 0;
+  padding: 22px 60px;
+  background: #fff;
+}
+.sponsor-pan-track > img {
+  width: 100%;
+  height: 100%;
+}
+.timer-face {
+  grid-column: 2;
+  grid-row: 1;
+  padding: 16px 34px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-left: 5px solid var(--panel-accent);
+}
+.timer-face span {
+  font:
+    26px PanelDisplay,
+    Impact,
+    sans-serif;
+  letter-spacing: 3px;
+}
+.timer-face strong {
+  font:
+    88px/1.05 PanelDisplay,
+    Impact,
+    sans-serif;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#ticker-window {
+  grid-column: 1/-1;
+  grid-row: 2;
+  overflow: hidden;
+  border-top: 1px solid color-mix(in srgb, var(--panel-accent) 40%, transparent);
+  display: flex;
+  align-items: center;
+}
+#ticker-window[hidden] {
+  display: none;
+}
+#ticker-text {
+  display: block;
+  flex-shrink: 0;
+  min-width: 100%;
+  padding-left: 1800px;
+  white-space: nowrap;
+  font-size: 24px;
+  letter-spacing: 1px;
+  animation: panel-scroll var(--scroll-time, 25s) linear infinite;
+}
+@keyframes panel-scroll {
+  to {
+    transform: translateX(-100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #ticker-text {
+    animation: none;
+    padding-left: 30px;
+    white-space: normal;
+  }
+}
+@media (max-width: 700px) {
+  .fields {
+    grid-template-columns: 1fr;
+  }
+  main {
+    padding: 0 14px;
+  }
+  .timer-preview {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
