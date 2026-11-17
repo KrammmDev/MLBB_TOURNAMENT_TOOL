@@ -99,7 +99,7 @@ test("control drives independent OBS overlay, colors, ticker, shared sponsors an
   );
   await overlay.waitForFunction(
     () =>
-      document.getElementById("ticker-text").textContent ===
+      document.querySelector("#ticker-text .ticker-unit")?.textContent ===
       "LIVE <script> text",
   );
   assert.equal(await overlay.locator("#ticker-text script").count(), 0);
@@ -113,6 +113,35 @@ test("control drives independent OBS overlay, colors, ticker, shared sponsors an
     "#ff00ff",
   );
   await overlay.locator("#panel-sponsors img").waitFor();
+  const loop = await overlay.evaluate(() => {
+    const track = document.getElementById("ticker-text");
+    const groups = track.querySelectorAll(".ticker-group");
+    const animation = track.getAnimations()[0];
+    animation.pause();
+    const duration = animation.effect.getTiming().duration;
+    animation.currentTime = duration - 0.1;
+    const before = groups[1].getBoundingClientRect().x;
+    animation.currentTime = duration + 0.1;
+    const after = groups[0].getBoundingClientRect().x;
+    const result = {
+      groups: groups.length,
+      sameWidth: groups[0].offsetWidth === groups[1].offsetWidth,
+      fillsViewport:
+        groups[0].offsetWidth >=
+        document.getElementById("ticker-window").clientWidth,
+      seamShift: Math.abs(after - before),
+    };
+    animation.play();
+    return result;
+  });
+  assert.equal(loop.groups, 2);
+  assert.equal(loop.sameWidth, true);
+  assert.equal(loop.fillsViewport, true);
+  assert.ok(
+    loop.seamShift < 1,
+    "ticker wraps at the same text position without a blank reset",
+  );
+
   const areaColors = await overlay.evaluate(() => ({
     lower: getComputedStyle(document.querySelector(".broadcast-panel"))
       .backgroundColor,
