@@ -29,3 +29,5 @@ Studio uses the supplied metallic-bar CSS with a transparent canvas and no canva
 ## Schedule slideshow motion
 
 Pages hold for eight seconds between transitions. Each transition pans the outgoing panel left over 450ms, swaps the page, then pans the next panel in from the right over 450ms. Only the schedule/talent deck moves; the video, clock and branding stay fixed. Live data edits cancel an in-progress pan and render immediately. Reduced-motion mode swaps without animation. Adjust PAGE_HOLD_MS and PAN_MS in schedule-renderer.js to change the hold and transition durations.
+
+Match cards pan individually in order with a 200ms stagger. TODAY’S SCHEDULE stays stationary when switching between match pages; it only joins the transition when switching to another panel such as talents or partners. The cycle reserves the full stagger duration plus an eight-second hold.

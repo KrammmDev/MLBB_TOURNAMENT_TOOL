@@ -22,28 +22,52 @@
     PAN_MS = 450;
   let panAnimation = null,
     panVersion = 0;
-  function activeDeck() {
-    return document.body.dataset.scheduleTheme === "studio" &&
-      document.body.dataset.schedulePanel === "talents"
-      ? $("schedule-talents")
-      : document.querySelector(".schedule-sidebar");
+  const CARD_STAGGER_MS = 200;
+  function panTargets(current, changePanel) {
+    if (current?.type === "matches") {
+      const cards = [...$("schedule-cards").children];
+      // The title stays fixed across match pages, and only moves for a panel change.
+      return changePanel ? [$("schedule-heading"), ...cards] : cards;
+    }
+    return [
+      current?.type === "talents"
+        ? $("schedule-talents")
+        : document.querySelector(".schedule-sidebar"),
+    ];
+  }
+  function pan(nodes, entering) {
+    const animations = nodes.map((node, index) =>
+      node.animate(
+        entering
+          ? [
+              { opacity: 0, transform: "translateX(50px)" },
+              { opacity: 1, transform: "translateX(0)" },
+            ]
+          : [
+              { opacity: 1, transform: "translateX(0)" },
+              { opacity: 0, transform: "translateX(-50px)" },
+            ],
+        {
+          duration: PAN_MS,
+          delay: index * CARD_STAGGER_MS,
+          easing: "cubic-bezier(.22,1,.36,1)",
+          fill: entering ? "backwards" : "forwards",
+        },
+      ),
+    );
+    return {
+      finished: Promise.all(animations.map((a) => a.finished)),
+      cancel: () => animations.forEach((a) => a.cancel()),
+    };
   }
   async function advancePage() {
     if (stopped || pages.length < 2 || panAnimation) return;
     const version = panVersion;
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const nextPage = (page + 1) % pages.length;
+    const changePanel = pages[page]?.type !== pages[nextPage]?.type;
     if (!reduced) {
-      panAnimation = activeDeck().animate(
-        [
-          { opacity: 1, transform: "translateX(0)" },
-          { opacity: 0, transform: "translateX(-50px)" },
-        ],
-        {
-          duration: PAN_MS,
-          easing: "cubic-bezier(.4,0,1,1)",
-          fill: "forwards",
-        },
-      );
+      panAnimation = pan(panTargets(pages[page], changePanel), false);
       try {
         await panAnimation.finished;
       } catch {
@@ -51,16 +75,10 @@
       }
       if (stopped || version !== panVersion) return;
     }
-    page = (page + 1) % pages.length;
+    page = nextPage;
     draw();
     if (!reduced && !stopped) {
-      panAnimation = activeDeck().animate(
-        [
-          { opacity: 0, transform: "translateX(50px)" },
-          { opacity: 1, transform: "translateX(0)" },
-        ],
-        { duration: PAN_MS, easing: "cubic-bezier(.22,1,.36,1)" },
-      );
+      panAnimation = pan(panTargets(pages[page], changePanel), true);
       const animation = panAnimation;
       try {
         await animation.finished;
@@ -404,7 +422,7 @@
     }, 8000),
     setInterval(tick, 100),
     setInterval(theme, 15000),
-    setInterval(advancePage, PAGE_HOLD_MS + PAN_MS * 2),
+    setInterval(advancePage, PAGE_HOLD_MS + (PAN_MS + CARD_STAGGER_MS * 4) * 2),
   );
   addEventListener("resize", fit);
   addEventListener("storage", (e) => {

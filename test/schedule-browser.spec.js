@@ -15,7 +15,7 @@ const {
   { createPanelStore, installPanelRoutes } = require("../lib/production-panel");
 test(
   "schedule themes reuse live schedule controls, casters, timer and isolated theme/color selection",
-  { timeout: 60000 },
+  { timeout: 90000 },
   async (t) => {
     const dir = await fs.mkdtemp(path.join(os.tmpdir(), "schedule-test-"));
     const app = express(),
@@ -212,7 +212,7 @@ test(
     await page.waitForFunction(
       () =>
         document
-          .querySelector(".schedule-sidebar")
+          .querySelector(".schedule-card")
           .getAnimations()
           .some(
             (a) =>
@@ -244,6 +244,35 @@ test(
       team2: "RED 5",
     });
     broadcast({ type: "update", data: { "schedule-5": shared["schedule-5"] } });
+    await page.waitForFunction(
+      () =>
+        document
+          .querySelector(".schedule-card")
+          ?.getAnimations()
+          .some(
+            (a) =>
+              a.playState === "running" &&
+              a.effect
+                .getKeyframes()
+                .some((f) => f.transform === "translateX(-50px)"),
+          ),
+      null,
+      { timeout: 12000 },
+    );
+    const sequence = await page.evaluate(() => ({
+      delays: [...document.querySelectorAll(".schedule-card")].map(
+        (e) => e.getAnimations()[0]?.effect.getTiming().delay,
+      ),
+      heading: document.getElementById("schedule-heading").getAnimations()
+        .length,
+    }));
+    assert.deepEqual(sequence.delays, [0, 200, 400, 600]);
+    assert.equal(
+      sequence.heading,
+      0,
+      "schedule heading stays still between match pages",
+    );
+
     await page.waitForFunction(
       () =>
         document
