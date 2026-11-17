@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Production timer control</title>
+    <link rel="stylesheet" href="/themes/production-panel.css" />
+  </head>
+  <body class="control">
+    <main>
+      <a href="/hub.html">← Production hub</a>
+      <header>
+        <small>BROADCAST / STANDBY</small>
+        <h1>Production timer</h1>
+        <p>One Browser Source for your timer, sponsors and scrolling text.</p>
+        <a href="/production-timer.html" target="_blank">Open overlay ↗</a>
+      </header>
+      <p id="status" role="status">Loading…</p>
+      <section class="timer-preview">
+        <span id="timer-label"></span><strong id="timer-value">00:00</strong>
+      </section>
+      <div class="actions">
+        <button data-action="start">Start / Resume</button
+        ><button data-action="pause">Pause</button
+        ><button data-action="reset">Reset</button
+        ><button id="reload">Reload settings</button>
+      </div>
+      <form id="settings">
+        <div class="fields">
+          <label
+            >Mode<select name="mode">
+              <option value="countdown">Countdown</option>
+              <option value="countup">Countup</option>
+            </select></label
+          ><label
+            >Duration (seconds)<input
+              name="durationSeconds"
+              type="number"
+              min="1"
+              max="604800"
+              required /></label
+          ><label
+            >Time format<input name="format" maxlength="80" required /></label
+          ><label>End text<input name="endText" maxlength="120" /></label
+          ><label>Timer label<input name="label" maxlength="120" /></label
+          ><label
+            >Scroll duration (seconds)<input
+              name="tickerSeconds"
+              type="number"
+              min="5"
+              max="300"
+              required /></label
+          ><label
+            >Panel background<input name="background" type="color" /></label
+          ><label>Text color<input name="text" type="color" /></label
+          ><label>Accent color<input name="accent" type="color" /></label>
+        </div>
+        <p class="hint">
+          Format: %0h = hours, %0m = minutes, %0s = seconds. Without hours,
+          minutes show the total (for example 61:00). Changing mode or duration
+          resets and pauses the timer.
+        </p>
+        <label
+          >Scrolling text<textarea
+            name="ticker"
+            maxlength="2000"
+            rows="3"
+          ></textarea>
+        </label>
+        <div class="actions">
+          <label
+            ><input name="showSponsors" type="checkbox" /> Show shared sponsor
+            slideshow</label
+          ><label
+            ><input name="showTicker" type="checkbox" /> Show scrolling
+            text</label
+          >
+        </div>
+        <button type="submit">Save panel settings</button>
+      </form>
+      <section>
+        <h2>Sponsor logos</h2>
+        <p>
+          This overlay plays the same saved logos and rotation as Broadcast
+          Themes.
+        </p>
+        <a href="/broadcast-themes.html" target="_blank"
+          >Manage / upload sponsor logos ↗</a
+        >
+      </section>
+      <section>
+        <h2>OBS Browser Source</h2>
+        <input id="overlay-url" readonly aria-label="Overlay URL" />
+        <p>
+          1920 × 1080. Transparent canvas with a bottom broadcast panel. This
+          timer runs independently of match and draft clocks. Start/Pause/Reset
+          are controlled here; source visibility does not restart it.
+        </p>
+      </section>
+      <iframe title="Overlay preview" src="/production-timer.html"></iframe>
+    </main>
+    <script src="/script/production-timer-model.js"></script>
+    <script src="/script/production-panel.js"></script>
+  </body>
+</html>

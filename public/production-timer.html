@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Production timer overlay</title>
+    <link rel="stylesheet" href="/themes/production-panel.css" />
+    <link rel="stylesheet" href="/themes/sponsor-slideshow.css" />
+  </head>
+  <body class="overlay">
+    <div id="panel-stage" hidden>
+      <section class="broadcast-panel">
+        <div id="panel-sponsors" aria-label="Sponsors"></div>
+        <div class="timer-face">
+          <span id="timer-label"></span><strong id="timer-value"></strong>
+        </div>
+        <div id="ticker-window"><span id="ticker-text"></span></div>
+      </section>
+    </div>
+    <script src="/script/production-timer-model.js"></script>
+    <script src="/script/sponsor-slideshow.js"></script>
+    <script src="/script/production-panel.js"></script>
+  </body>
+</html>
