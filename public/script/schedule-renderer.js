@@ -129,14 +129,13 @@
     picture($("schedule-casters"), casters);
     $("schedule-talents").hidden = !casters;
     pages = [];
-    if (document.body.dataset.scheduleTheme === "classic") {
-      for (let i = 0; i < sponsors.length; i += 6)
-        pages.push({ type: "partners", logos: sponsors.slice(i, i + 6) });
-    }
     const pageSize = document.body.dataset.scheduleTheme === "studio" ? 4 : 3;
     for (let i = 0; i < entries.length; i += pageSize)
       pages.push({ type: "matches", entries: entries.slice(i, i + pageSize) });
-    if (document.body.dataset.scheduleTheme === "studio" && casters)
+    if (
+      ["studio", "classic"].includes(document.body.dataset.scheduleTheme) &&
+      casters
+    )
       pages.push({ type: "talents" });
     page = pages.length ? page % pages.length : 0;
     draw();
@@ -144,7 +143,12 @@
   function draw() {
     const current = pages[page] || null,
       next = JSON.stringify(current);
-    const studio = document.body.dataset.scheduleTheme === "studio";
+    const studio = ["studio", "classic"].includes(
+      document.body.dataset.scheduleTheme,
+    );
+    if (document.body.dataset.scheduleTheme === "classic")
+      document.querySelector("#schedule-talents h2").textContent = "CASTERS";
+    else document.querySelector("#schedule-talents h2").textContent = "TALENTS";
     document.body.dataset.schedulePanel =
       studio && current?.type === "talents" ? "talents" : "matches";
     if (next + studio === key) return;
