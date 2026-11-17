@@ -195,6 +195,8 @@
       }))
         if (colors[field]) vars("--sc-" + token, colors[field]);
       vars("--sc-text", readable(palette.text, palette.background));
+      vars("--sc-card-text", readable(palette.text, "#101820"));
+      vars("--sc-card-muted", readable(palette.muted, "#101820"));
       vars("--sc-accent-text", readable(palette.text, palette.left));
       vars("--sc-left-text", readable("#ffffff", palette.left));
       vars("--sc-right-text", readable("#ffffff", palette.right));

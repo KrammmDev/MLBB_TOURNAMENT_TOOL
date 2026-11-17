@@ -182,7 +182,15 @@
       card.className = "schedule-card";
       const meta = document.createElement("div");
       meta.className = "schedule-meta";
-      meta.textContent = d.time || "MATCH " + entry.num;
+      const matchLabel = String(d.time || "MATCH " + entry.num);
+      const series = matchLabel.match(/\bBO\s*([1-9][0-9]?)\b/i);
+      meta.textContent =
+        document.body.dataset.scheduleTheme === "classic" && series
+          ? matchLabel
+              .replace(series[0], "")
+              .replace(/\s*[·|–-]\s*$/, "")
+              .trim() || "MATCH " + entry.num
+          : matchLabel;
       const row = document.createElement("div");
       row.className = "schedule-versus";
       for (let i = 1; i <= 2; i++) {
@@ -204,6 +212,22 @@
         }
       }
       card.append(meta, row);
+      if (document.body.dataset.scheduleTheme === "classic") {
+        const format = document.createElement("span");
+        format.className = "schedule-series";
+        format.textContent = series ? "BO" + series[1] : "";
+        format.hidden = !series;
+        card.append(format);
+        // Reuse the safe logo URL as a subtle team watermark.
+        for (let i = 1; i <= 2; i++) {
+          const mark = document.createElement("img");
+          mark.className = "schedule-watermark schedule-watermark-" + i;
+          mark.alt = "";
+          mark.setAttribute("aria-hidden", "true");
+          picture(mark, d["logo" + i]);
+          card.prepend(mark);
+        }
+      }
       host.append(card);
     }
   }

@@ -39,3 +39,5 @@ Arena uses a championship header with a top-right clock, centered video opening,
 Classic uses square corners across fixtures, video frame, sponsor slot and lower panels. Beneath the video, a metallic headline band (y950, height56) and a separate seamless scrolling strip (y1017, height38) share the video’s x730/width1140 alignment. Both use the existing Production Timer headline/ticker settings and Schedule palette. The stage remains transparent.
 
 Classic retains its original horizontal logo/name–score–name/logo arrangement and light panel. Enhancements are limited to a softer panel tint and subtle card separation; square corners, metallic match bars, transparent canvas and existing geometry remain intact.
+
+Classic fixture tiles now use dark surfaces, vertical team logos/names at each end, a large central score, match label above and BO format below. BO labels are extracted from the existing match/status text when present; no series format is invented. Subtle watermarks reuse safe team logo sources. Card accents use the team palette fields and the label uses Borders. Card text gets readable contrast on the dark surface. The canvas stays transparent.

@@ -205,10 +205,19 @@ test(
               score: getComputedStyle(e.querySelector(".schedule-score"))
                 .fontSize,
             }));
-          assert.equal(cardPaint.bg, "rgba(0, 0, 0, 0)");
-          assert.ok(cardPaint.image.startsWith("linear-gradient("));
-          assert.equal(cardPaint.team, "row");
-          assert.equal(cardPaint.score, "58px");
+          assert.notEqual(cardPaint.bg, "rgba(0, 0, 0, 0)");
+          assert.equal(cardPaint.image, "none");
+          assert.equal(cardPaint.team, "column");
+          assert.equal(cardPaint.score, "78px");
+          assert.equal(
+            await page.locator(".schedule-series").first().textContent(),
+            "BO3",
+          );
+          assert.equal(
+            await page.locator(".schedule-meta").first().textContent(),
+            "MATCH 1",
+          );
+          assert.equal(await page.locator(".schedule-watermark").count(), 6);
         }
         const cardBoxes = await page
           .locator(".schedule-card")
