@@ -41,7 +41,9 @@
   function branding() {
     const title = shared["tournament-title"];
     $("schedule-event").textContent =
-      typeof title === "string" && title.trim() ? title : "MATCH DAY";
+      typeof title === "string" && title.trim()
+        ? title
+        : "15TH LCUAA ESPORTS MLBB";
   }
   function rebuild() {
     const entries = [];
