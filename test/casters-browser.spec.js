@@ -152,6 +152,20 @@ test(
     );
     const loadsBeforeEdit = feedLoads;
     assert.equal(
+      await overlay.locator("#casterWindow1 iframe").getAttribute("src"),
+      "https://vdo.ninja/?view=athena-test&solo=1&room=Test123",
+    );
+    assert.equal(
+      await overlay.locator("#casterWindow2 iframe").getAttribute("src"),
+      "https://vdo.ninja/?view=wolf-test",
+    );
+    const receiverBox = await overlay
+      .locator("#casterWindow1 iframe")
+      .boundingBox();
+    assert.equal(receiverBox.width, 840);
+    assert.equal(receiverBox.height, 560);
+
+    assert.equal(
       casters.snapshot().data.casters[0].name,
       "Athena",
       "Show frame saves current details without a separate Save click",
