@@ -18,6 +18,7 @@
   }
   const motionDuration = 650,
     motions = new Map();
+  let deskTimer = null;
   let previousAir = null,
     previousVisible = false;
   const feeds = [
@@ -76,6 +77,17 @@
         })),
       };
     const draftVisible = data.draftVisible === true;
+    const previousDraft = stage.dataset.draftVisible;
+    if (previousDraft !== undefined && previousDraft !== String(draftVisible)) {
+      clearTimeout(deskTimer);
+      const moving = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+      stage.dataset.deskTransition = String(moving);
+      if (moving)
+        deskTimer = setTimeout(() => {
+          stage.dataset.deskTransition = "false";
+          deskTimer = null;
+        }, motionDuration);
+    }
     stage.dataset.draftVisible = String(draftVisible);
     const draftHost = $("casterDraft");
     draftHost.setAttribute("aria-hidden", String(!draftVisible));
@@ -309,6 +321,7 @@
   addEventListener("resize", fit);
   addEventListener("pagehide", () => {
     stopped = true;
+    clearTimeout(deskTimer);
     brandingVersion++;
     for (const animation of motions.values()) animation.cancel();
     feeds.forEach((f, i) => {

@@ -541,7 +541,44 @@ test(
       () => !document.getElementById("caster-draft-hide").disabled,
     );
     await control.click("#caster-draft-hide");
+    await overlay.waitForFunction(
+      () =>
+        document.getElementById("casterStage").dataset.deskTransition ===
+        "true",
+    );
+    assert.equal(
+      await overlay
+        .locator(".cc-top")
+        .evaluate((e) => getComputedStyle(e).height),
+      "1080px",
+      "opaque backing stays across camera holes during restoration",
+    );
+    assert.ok(
+      await overlay.evaluate(
+        () =>
+          Number(
+            getComputedStyle(document.getElementById("casterDraft")).zIndex,
+          ) <
+          Number(
+            getComputedStyle(document.getElementById("casterDesk")).zIndex,
+          ),
+      ),
+      "fading draft stays behind moving cameras",
+    );
+    await overlay.screenshot({ path: "/tmp/caster-draft-hide-transition.png" });
     await overlay.locator("#casterDraft").waitFor({ state: "hidden" });
+    await overlay.waitForFunction(
+      () =>
+        document.getElementById("casterStage").dataset.deskTransition ===
+        "false",
+    );
+    assert.equal(
+      await overlay
+        .locator(".cc-top")
+        .evaluate((e) => getComputedStyle(e).height),
+      "230px",
+      "normal transparent camera layout returns after movement",
+    );
     await overlay
       .locator("#casterDesk")
       .evaluate((e) => Promise.all(e.getAnimations().map((a) => a.finished)));
