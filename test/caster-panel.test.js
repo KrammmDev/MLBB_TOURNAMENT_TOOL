@@ -59,9 +59,17 @@ test("VDO links accept receive-only Ninja URLs and normalize legacy caster setti
   ]) {
     assert.equal(safeURL(value), "");
   }
-  assert.ok(embedURL("https://vdo.ninja/?view=alpha").includes("autostart"));
+  assert.equal(
+    embedURL("https://vdo.ninja/?view=alpha"),
+    "https://vdo.ninja/?view=alpha",
+  );
   const roomLink = "https://vdo.ninja/?view=alpha&solo=1&room=Test123";
   assert.equal(safeURL(roomLink), roomLink);
+  assert.equal(
+    embedURL(roomLink),
+    roomLink,
+    "preserve the working solo view URL without injected options",
+  );
   assert.equal(new URL(embedURL(roomLink)).searchParams.get("room"), "Test123");
   const legacy = {
     schemaVersion: 1,

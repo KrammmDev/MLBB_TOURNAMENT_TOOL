@@ -26,12 +26,7 @@
     }
   }
   function embedURL(value) {
-    const url = safeURL(value);
-    if (!url) return "";
-    const u = new URL(url);
-    u.searchParams.set("autostart", "");
-    u.searchParams.set("cleanoutput", "");
-    return u.href;
+    return safeURL(value);
   }
   return { safeURL, embedURL };
 });
