@@ -17,37 +17,9 @@ body[data-casters-theme="arena"] {
       transparent 114px 210px
     );
 }
-.cc-header {
-  left: 220px;
-  width: 1480px;
-  top: 35px;
-  height: 155px;
-  border: 0;
-  background: linear-gradient(
-    110deg,
-    #040a20dd,
-    var(--cc-background),
-    #040a20dd
-  );
-  clip-path: polygon(0 0, 100% 0, calc(100% - 45px) 100%, 45px 100%);
-  padding: 20px 65px;
-}
-.cc-header h1 {
-  font-size: 48px;
-  max-width: 1100px;
-}
-.cc-eyebrow {
-  color: var(--cc-left);
-  font-size: 13px;
-}
-.cc-live {
-  top: 53px;
-  right: 60px;
-  border: 0;
-  background: var(--cc-right);
-  color: var(--cc-text);
-  font-size: 13px;
-  clip-path: polygon(12px 0, 100% 0, 100% 100%, 0 100%, 0 12px);
+.cc-header,
+.cc-footer {
+  display: none;
 }
 .cc-camera {
   outline: 3px solid var(--cc-border);
@@ -132,14 +104,4 @@ body[data-casters-theme="arena"] {
 }
 .cc-two .cc-handle {
   background: linear-gradient(90deg, var(--cc-left), var(--cc-right));
-}
-.cc-footer {
-  top: 1000px;
-  left: 330px;
-  right: 330px;
-  padding-top: 20px;
-  border-top: 1px solid var(--cc-left);
-  color: var(--cc-text);
-  font-size: 15px;
-  letter-spacing: 5px;
 }
