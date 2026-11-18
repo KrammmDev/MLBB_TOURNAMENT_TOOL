@@ -6,14 +6,7 @@ body {
   --sc-text: #101a38;
   --sc-muted: #52637a;
   --sc-border: #4874ff;
-  --arena-metal: linear-gradient(
-    115deg,
-    color-mix(in srgb, var(--sc-panel) 96%, white) 0%,
-    color-mix(in srgb, var(--sc-panel) 87%, var(--sc-text)) 35%,
-    var(--sc-panel) 49%,
-    color-mix(in srgb, var(--sc-panel) 92%, var(--sc-text)) 51%,
-    color-mix(in srgb, var(--sc-panel) 98%, white) 100%
-  );
+  --arena-metal: var(--sc-panel);
   --arena-edge:
     inset 0 1px 0 rgb(255 255 255 / 65%), inset 0 -1px 0 rgb(0 0 0 / 15%);
 }
@@ -167,6 +160,7 @@ body {
   color: var(--sc-text);
 }
 #schedule-cards {
+  overflow: hidden;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
