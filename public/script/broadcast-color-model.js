@@ -144,12 +144,12 @@
   );
   defaults.casters = {
     classic: {
-      background: "#0d1422",
-      left: "#d9bd7b",
-      right: "#aa8746",
-      text: "#edf1f6",
-      muted: "#a1afc2",
-      border: "#d9bd7b",
+      background: "#080c12",
+      left: "#c8ff42",
+      right: "#39c6ff",
+      text: "#f6f8fc",
+      muted: "#92a0b5",
+      border: "#28384a",
     },
     arena: {
       background: "#061a52",
