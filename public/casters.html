@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Online Casters</title>
+    <link rel="stylesheet" href="/themes/casters-base.css" />
+  </head>
+  <body>
+    <main id="casterStage" aria-label="Online caster broadcast frame">
+      <div id="casterFrame" class="caster-frame" aria-hidden="true">
+        <div class="cc-fill cc-top"></div>
+        <div class="cc-fill cc-bottom"></div>
+        <div class="cc-fill cc-left"></div>
+        <div class="cc-fill cc-mid"></div>
+        <div class="cc-fill cc-right"></div>
+        <header class="cc-header">
+          <span class="cc-eyebrow">MOBILE LEGENDS: BANG BANG</span>
+          <h1 id="casterTournament">15TH LCUAA ESPORTS MLBB</h1>
+          <span class="cc-live">CASTER DESK</span>
+        </header>
+        <div
+          id="casterWindow1"
+          class="cc-camera cc-camera-one"
+          aria-label="Transparent left camera window"
+        ></div>
+        <div
+          id="casterWindow2"
+          class="cc-camera cc-camera-two"
+          aria-label="Transparent right camera window"
+        ></div>
+        <div id="casterNames" class="cc-names" aria-hidden="false">
+          <article class="cc-nameplate cc-one">
+            <div class="cc-role" id="casterRole1"></div>
+            <div class="cc-name" id="casterName1"></div>
+            <div class="cc-handle" id="casterHandle1"></div>
+          </article>
+          <article class="cc-nameplate cc-two">
+            <div class="cc-role" id="casterRole2"></div>
+            <div class="cc-name" id="casterName2"></div>
+            <div class="cc-handle" id="casterHandle2"></div>
+          </article>
+        </div>
+        <footer class="cc-footer">
+          <span>LIVE COMMENTARY</span><span>MLBB / ESPORTS</span>
+        </footer>
+      </div>
+    </main>
+    <script src="/script/roster-themes.js"></script>
+    <script src="/script/broadcast-color-model.js"></script>
+    <script src="/script/broadcast-color-client.js"></script>
+    <script src="/script/roster-theme-client.js"></script>
+    <script src="/script/match-state.js"></script>
+    <script src="/script/match-client.js"></script>
+    <script src="/script/caster-vdo-model.js"></script>
+    <script src="/script/casters.js"></script>
+  </body>
+</html>

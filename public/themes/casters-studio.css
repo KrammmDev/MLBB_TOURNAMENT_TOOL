@@ -1,0 +1,76 @@
+body[data-casters-theme="studio"] {
+  --cc-background: #f2f2f0;
+  --cc-left: #ed3524;
+  --cc-right: #f1cf50;
+  --cc-text: #161616;
+  --cc-muted: #535353;
+  --cc-border: #b9bbc2;
+}
+.cc-top {
+  border-top: 14px solid var(--cc-left);
+}
+.cc-header {
+  border: 0;
+  text-align: center;
+  align-items: center;
+}
+.cc-header h1 {
+  font-size: 48px;
+}
+.cc-live {
+  position: static;
+  background: var(--cc-left);
+  color: #fff;
+  border: 0;
+  padding: 5px 15px;
+  font-size: 13px;
+}
+.cc-eyebrow {
+  font-size: 13px;
+}
+.cc-camera {
+  outline-color: var(--cc-left);
+  outline-width: 5px;
+}
+.cc-nameplate {
+  top: 790px;
+  height: 150px;
+  background: var(--cc-text);
+  color: var(--cc-background);
+  border-bottom: 12px solid var(--cc-left);
+  padding-left: 180px;
+}
+.cc-role {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 180px;
+  height: 138px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cc-right);
+  color: #151515;
+  padding: 12px;
+  letter-spacing: 2px;
+  text-align: center;
+}
+.cc-name {
+  height: 82px;
+  padding-top: 22px;
+}
+.cc-handle {
+  color: var(--cc-background);
+}
+.cc-two {
+  padding-left: 0;
+  padding-right: 180px;
+  text-align: right;
+}
+.cc-two .cc-role {
+  left: auto;
+  right: 0;
+}
+.cc-footer {
+  border-top: 3px solid var(--cc-left);
+}

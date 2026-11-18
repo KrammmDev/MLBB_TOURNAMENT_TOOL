@@ -1,0 +1,56 @@
+body[data-casters-theme="classic"] {
+  --cc-background: #0d1422;
+  --cc-left: #d9bd7b;
+  --cc-right: #aa8746;
+  --cc-text: #edf1f6;
+  --cc-muted: #a1afc2;
+  --cc-border: #d9bd7b;
+}
+.cc-header {
+  text-align: center;
+  align-items: center;
+}
+.cc-live {
+  top: 20px;
+}
+.cc-header h1 {
+  max-width: 1250px;
+}
+.cc-camera {
+  outline-width: 2px;
+  box-shadow: 0 -7px var(--cc-left);
+}
+.cc-nameplate {
+  text-align: center;
+  border-top: 3px solid var(--cc-left);
+  border-bottom: 1px solid var(--cc-border);
+  width: 700px;
+  background: linear-gradient(
+    110deg,
+    var(--cc-background),
+    var(--cc-background)
+  );
+}
+.cc-one {
+  left: 160px;
+}
+.cc-two {
+  left: 1060px;
+}
+.cc-name {
+  color: var(--cc-text);
+}
+.cc-role {
+  background: var(--cc-left);
+  color: var(--cc-accent-text, #111);
+  width: 240px;
+  margin: auto;
+}
+.cc-top {
+  background-image: linear-gradient(
+    120deg,
+    transparent 45%,
+    #ffffff04 45% 55%,
+    transparent 55%
+  );
+}

@@ -1,0 +1,56 @@
+body[data-casters-theme="arena"] {
+  --cc-background: #061a52;
+  --cc-left: #16c8ef;
+  --cc-right: #2361ff;
+  --cc-text: #fff;
+  --cc-muted: #9dd9f2;
+  --cc-border: #2388ff;
+}
+.cc-header {
+  border-bottom: 0;
+  padding-left: 25px;
+  border-left: 7px solid var(--cc-left);
+}
+.cc-live {
+  background: var(--cc-right);
+  border: 0;
+  color: var(--cc-text);
+  clip-path: polygon(15px 0, 100% 0, 100% 100%, 0 100%, 0 15px);
+}
+.cc-camera {
+  outline-width: 3px;
+}
+.cc-top,
+.cc-bottom {
+  background-image: linear-gradient(
+    125deg,
+    transparent 0 55%,
+    #ffffff08 55% 57%,
+    transparent 57% 68%,
+    #16c8ef0d 68% 74%,
+    transparent 74%
+  );
+}
+.cc-nameplate {
+  background: var(--cc-right);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 55px) 100%, 0 100%);
+  border-left: 8px solid var(--cc-left);
+  width: 700px;
+}
+.cc-two {
+  left: 1130px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 55px 100%);
+  border-left: 0;
+  border-right: 8px solid var(--cc-left);
+  text-align: right;
+}
+.cc-name {
+  background: var(--cc-text);
+  color: var(--cc-background);
+}
+.cc-handle {
+  color: var(--cc-text);
+}
+.cc-role {
+  color: var(--cc-text);
+}
