@@ -195,3 +195,58 @@
   white-space: nowrap;
   color: var(--mw-text, #edf1f6);
 }
+
+.pg-line-score {
+  flex: 0 0 180px;
+  text-align: center;
+  color: var(--mw-left, #d8be83);
+}
+.pg-line-score > span {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 3px;
+  margin-bottom: 3px;
+}
+.pg-line-score strong {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  font:
+    700 40px/1 WinnerTeam,
+    Arial,
+    sans-serif;
+}
+.pg-line-score i {
+  font-style: normal;
+  font-size: 26px;
+  color: var(--mw-muted, #92a3bd);
+}
+
+.pg-score-marks {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 49px;
+  justify-content: center;
+}
+.pg-win-mark {
+  display: block;
+  width: 10px;
+  height: 29px;
+  transform: skewX(-15deg);
+  background: transparent;
+  border: 1px solid var(--mw-muted, #92a3bd);
+  opacity: 0.4;
+}
+.pg-win-mark.is-won {
+  background: var(--mw-left, #d8be83);
+  border-color: var(--mw-left, #d8be83);
+  opacity: 1;
+}
+.pg-line-score strong {
+  gap: 12px;
+}
+.pg-line-score i {
+  font-size: 18px;
+}
