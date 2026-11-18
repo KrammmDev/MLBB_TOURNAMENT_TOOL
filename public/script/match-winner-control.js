@@ -13,7 +13,7 @@
     busy = false;
   const labels = {
     background: "Canvas background",
-    left: "Gold / victory accent",
+    left: "Victory accent",
     right: "Team panel color",
     text: "Team names / primary text",
     muted: "Secondary text",
@@ -102,6 +102,18 @@
       busy = false;
       paint();
     }
+  }
+  if (output === "postgame") {
+    const preset = document.createElement("button");
+    preset.id = "silver-green-preset";
+    preset.textContent = "Silver / Green preset";
+    preset.onclick = () => {
+      if (busy || !snapshot) return;
+      colors = { ...model.defaults.postgame.arena };
+      paint();
+      status.textContent = "Silver / Green preview — save to apply to OBS.";
+    };
+    save.before(preset);
   }
   save.onclick = () => persist({ ...colors });
   reset.onclick = () => persist({});
