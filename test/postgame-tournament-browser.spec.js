@@ -110,22 +110,47 @@ test(
     assert.equal(await page.locator(".pg-line-score").count(), 0);
     const reflection = () =>
       page
-        .locator("#pgBlueMarks .pg-win-mark")
-        .first()
-        .evaluate((e) => getComputedStyle(e, "::after").transform);
+        .locator(".pg-header")
+        .evaluate((e) => getComputedStyle(e).backgroundPosition);
     const beforeReflection = await reflection();
     await page.waitForTimeout(200);
     assert.notEqual(
       await reflection(),
       beforeReflection,
-      "bar reflection moves",
+      "frame reflection moves",
     );
+    assert.equal(
+      await page
+        .locator(".pg-win-mark")
+        .first()
+        .evaluate((e) => getComputedStyle(e, "::after").animationName),
+      "none",
+    );
+    assert.equal(
+      await page
+        .locator("#resultsWindow")
+        .evaluate((e) => getComputedStyle(e).backgroundImage),
+      "none",
+    );
+    for (const selector of [
+      ".pg-header",
+      ".pg-team",
+      ".pg-rail",
+      ".pg-footer",
+    ]) {
+      assert.equal(
+        await page
+          .locator(selector)
+          .first()
+          .evaluate((e) => getComputedStyle(e).animationName),
+        "pg-frame-shine",
+      );
+    }
     await page.emulateMedia({ reducedMotion: "reduce" });
     assert.equal(
       await page
-        .locator("#pgBlueMarks .pg-win-mark")
-        .first()
-        .evaluate((e) => getComputedStyle(e, "::after").animationName),
+        .locator(".pg-header")
+        .evaluate((e) => getComputedStyle(e).animationName),
       "none",
     );
     await page.emulateMedia({ reducedMotion: "no-preference" });
