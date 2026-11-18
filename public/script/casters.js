@@ -16,6 +16,10 @@
   function fit() {
     stage.style.transform = `scale(${Math.min(innerWidth / 1920, innerHeight / 1080)})`;
   }
+  const motionDuration = 650,
+    motions = new Map();
+  let previousAir = null,
+    previousVisible = false;
   const feeds = [
     { timer: null, source: "" },
     { timer: null, source: "" },
@@ -36,7 +40,8 @@
       ) {
         clearTimeout(state.timer);
         remove();
-      } else if (state.timer === null) state.timer = setTimeout(remove, 450);
+      } else if (state.timer === null)
+        state.timer = setTimeout(remove, motionDuration);
       return;
     }
     clearTimeout(state.timer);
@@ -70,6 +75,17 @@
           name: c.name || "CASTER " + (i + 1),
         })),
       };
+    const activeAir = data.casters.map((c) => c.onAir !== false);
+    const animateScene =
+      previousAir !== null &&
+      (previousVisible || data.visible) &&
+      activeAir.some((active, i) => active !== previousAir[i]);
+    const elements = [...document.querySelectorAll(".cc-camera,.cc-nameplate")];
+    const before = animateScene
+      ? new Map(elements.map((el) => [el, el.getBoundingClientRect()]))
+      : null;
+    if (animateScene)
+      for (const animation of motions.values()) animation.cancel();
     stage.dataset.activeCount = String(
       data.casters.filter((c) => c.onAir !== false).length,
     );
@@ -93,6 +109,61 @@
         $("caster" + id + (i + 1)).textContent =
           typeof c[field] === "string" ? c[field] : "";
     });
+    if (
+      animateScene &&
+      !matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      for (const el of elements) {
+        const index =
+          el.classList.contains("cc-camera-two") ||
+          el.classList.contains("cc-two")
+            ? 1
+            : 0;
+        const was = previousAir[index],
+          active = activeAir[index];
+        if (!was && !active) continue;
+        const old = before.get(el),
+          now = el.getBoundingClientRect(),
+          dx = old.x - now.x,
+          dy = old.y - now.y,
+          sx = old.width / now.width,
+          sy = old.height / now.height;
+        const origin = `translate(${dx}px,${dy}px) scale(${sx},${sy})`,
+          direction = index === 0 ? -1 : 1;
+        const frames = !active
+          ? [
+              { transform: origin, opacity: 1, visibility: "visible" },
+              {
+                transform: `translate(${dx + direction * 80}px,${dy}px) scale(${sx},${sy})`,
+                opacity: 0,
+                visibility: "visible",
+              },
+            ]
+          : !was
+            ? [
+                {
+                  transform: `translate(${direction * 80}px,0) scale(.98)`,
+                  opacity: 0,
+                  visibility: "visible",
+                },
+                { transform: "none", opacity: 1, visibility: "visible" },
+              ]
+            : [
+                { transform: origin, opacity: 1 },
+                { transform: "none", opacity: 1 },
+              ];
+        const animation = el.animate(frames, {
+          duration: motionDuration,
+          easing: "cubic-bezier(.22,1,.36,1)",
+        });
+        motions.set(el, animation);
+        animation.onfinish = () => {
+          if (motions.get(el) === animation) motions.delete(el);
+        };
+      }
+    }
+    previousAir = activeAir;
+    previousVisible = data.visible;
     frame.classList.toggle("is-visible", data.visible);
     frame.setAttribute("aria-hidden", String(!data.visible));
     names.classList.toggle("is-visible", data.namesVisible);
@@ -168,6 +239,7 @@
   addEventListener("resize", fit);
   addEventListener("pagehide", () => {
     stopped = true;
+    for (const animation of motions.values()) animation.cancel();
     feeds.forEach((f, i) => {
       clearTimeout(f.timer);
       $("casterWindow" + (i + 1))

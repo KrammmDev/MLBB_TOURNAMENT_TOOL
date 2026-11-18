@@ -242,6 +242,23 @@ test(
     );
     await control.click("#caster-2-off-air");
     await overlay.waitForFunction(
+      () => document.getElementById("casterStage").dataset.activeCount === "1",
+    );
+    assert.equal(
+      await overlay
+        .locator("#casterWindow1")
+        .evaluate((e) =>
+          e.getAnimations().some((a) => a.effect.getTiming().duration === 650),
+        ),
+      true,
+      "solo layout uses a compositor transition",
+    );
+    assert.equal(
+      await overlay.locator("#casterWindow2 iframe").count(),
+      1,
+      "feed stays attached during its exit animation",
+    );
+    await overlay.waitForFunction(
       () => document.querySelectorAll(".cc-camera iframe").length === 1,
     );
     await overlay.locator("#casterWindow2").waitFor({ state: "hidden" });
@@ -317,6 +334,14 @@ test(
     await overlay.waitForFunction(
       () => document.querySelectorAll(".cc-camera iframe").length === 2,
     );
+    await control.waitForFunction(()=>!document.getElementById("caster-2-off-air").disabled);
+    await control.click("#caster-2-off-air");
+    await overlay.waitForFunction(()=>document.getElementById("casterStage").dataset.activeCount==="1");
+    await control.waitForFunction(()=>!document.getElementById("caster-2-on-air").disabled);
+    await control.click("#caster-2-on-air");
+    await overlay.waitForFunction(()=>document.getElementById("casterStage").dataset.activeCount==="2");
+    await overlay.waitForTimeout(750);
+    assert.equal(await overlay.locator(".cc-camera iframe").count(),2,"rapid reversal cancels pending feed removal");
     await overlay.emulateMedia({ reducedMotion: "reduce" });
     assert.equal(
       await overlay
