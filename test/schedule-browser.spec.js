@@ -204,6 +204,44 @@ test(
             ),
           true,
         );
+        const reflection = await page
+          .locator(".schedule-header")
+          .evaluate((e) => {
+            const animation = e
+              .getAnimations({ subtree: true })
+              .find((a) => a.animationName === "arena-metal-reflection");
+            animation.pause();
+            animation.currentTime = 500;
+            const first = getComputedStyle(e, "::after").transform;
+            animation.currentTime = 1800;
+            const second = getComputedStyle(e, "::after").transform;
+            animation.play();
+            return {
+              first,
+              second,
+              pointer: getComputedStyle(e, "::after").pointerEvents,
+            };
+          });
+        assert.notEqual(
+          reflection.first,
+          reflection.second,
+          "metal reflection travels across the panel",
+        );
+        assert.equal(reflection.pointer, "none");
+        assert.equal(
+          await page
+            .locator("#schedule-video-window")
+            .evaluate((e) => e.getAnimations().length),
+          0,
+        );
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        assert.equal(
+          await page
+            .locator(".schedule-header")
+            .evaluate((e) => getComputedStyle(e, "::after").animationName),
+          "none",
+        );
+        await page.emulateMedia({ reducedMotion: "no-preference" });
         const casters = await page.locator("#schedule-talents").boundingBox();
         assert.ok(casters.x + casters.width < slot.x);
         assert.equal(casters.width, 620);

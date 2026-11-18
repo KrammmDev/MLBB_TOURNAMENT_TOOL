@@ -304,3 +304,83 @@ footer {
 #schedule-partners {
   height: 145px;
 }
+
+/* A narrow reflection travels across the metal; the panel itself stays still. */
+.schedule-header,
+.schedule-countdown,
+#schedule-talents h2,
+#schedule-heading,
+.schedule-card,
+#schedule-sponsor {
+  isolation: isolate;
+  overflow: hidden;
+}
+#schedule-talents h2,
+#schedule-heading,
+.schedule-card {
+  position: relative;
+}
+.schedule-header::after,
+.schedule-countdown::after,
+#schedule-talents h2::after,
+#schedule-heading::after,
+.schedule-card::after,
+#schedule-sponsor::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    110deg,
+    transparent 45%,
+    rgb(255 255 255 / 15%) 48%,
+    rgb(255 255 255 / 85%) 50%,
+    rgb(255 255 255 / 20%) 51%,
+    transparent 55%
+  );
+  transform: translateX(-110%);
+  animation: arena-metal-reflection 6s linear infinite;
+  animation-delay: -1s;
+}
+.schedule-countdown::after {
+  animation-delay: -1.5s;
+}
+#schedule-talents h2::after {
+  animation-delay: -2s;
+}
+#schedule-heading::after {
+  animation-delay: -2.5s;
+}
+.schedule-card:nth-child(1)::after {
+  animation-delay: -0.5s;
+}
+.schedule-card:nth-child(2)::after {
+  animation-delay: -1s;
+}
+.schedule-card:nth-child(3)::after {
+  animation-delay: -1.5s;
+}
+#schedule-sponsor::after {
+  animation-delay: -2s;
+}
+@keyframes arena-metal-reflection {
+  0% {
+    transform: translateX(-110%);
+  }
+  60%,
+  100% {
+    transform: translateX(110%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .schedule-header::after,
+  .schedule-countdown::after,
+  #schedule-talents h2::after,
+  #schedule-heading::after,
+  .schedule-card::after,
+  #schedule-sponsor::after {
+    animation: none;
+    opacity: 0;
+  }
+}
