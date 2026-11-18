@@ -146,19 +146,21 @@ test(
     );
     const shine = () =>
       page
-        .locator(".winning-team")
+        .locator(".tournament-rail")
         .evaluate((e) => getComputedStyle(e, "::after").transform);
     const beforeShine = await shine();
     await page.waitForTimeout(300);
-    assert.notEqual(
-      await shine(),
-      beforeShine,
-      "metallic reflection moves over time",
+    assert.notEqual(await shine(), beforeShine, "narrow rail light moves");
+    assert.equal(
+      await page
+        .locator(".winning-team")
+        .evaluate((e) => getComputedStyle(e).animationName),
+      "none",
     );
     assert.equal(
       await page
-        .locator(".losing-team")
-        .evaluate((e) => getComputedStyle(e).animationName),
+        .locator(".winning-team")
+        .evaluate((e) => getComputedStyle(e, "::after").display),
       "none",
     );
     for (const socket of wss.clients)

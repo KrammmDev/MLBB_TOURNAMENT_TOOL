@@ -65,13 +65,13 @@ test(
       () =>
         getComputedStyle(document.body)
           .getPropertyValue("--mw-background")
-          .trim() === "#ffffff",
+          .trim() === "#080e1b",
     );
     assert.equal(
       await page
         .locator(".pg-header")
-        .evaluate((e) => getComputedStyle(e).backgroundSize),
-      "1920px 1080px",
+        .evaluate((e) => getComputedStyle(e).backgroundImage),
+      "none",
     );
     assert.equal(
       await page
@@ -128,7 +128,7 @@ test(
     assert.equal(await page.locator(".pg-line-score").count(), 0);
     const reflection = () =>
       page
-        .locator(".pg-header")
+        .locator(".pg-rail")
         .evaluate((e) => getComputedStyle(e, "::after").transform);
     const beforeReflection = await reflection();
     await page.waitForTimeout(200);
@@ -156,13 +156,13 @@ test(
           .locator(selector)
           .first()
           .evaluate((e) => getComputedStyle(e, "::after").animationName),
-        "mw-metal-sweep",
+        "none",
       );
     }
     await page.emulateMedia({ reducedMotion: "reduce" });
     assert.equal(
       await page
-        .locator(".pg-header")
+        .locator(".pg-rail")
         .evaluate((e) => getComputedStyle(e, "::after").animationName),
       "none",
     );
@@ -264,7 +264,10 @@ test(
       () => !document.getElementById("save").disabled,
     );
     await control.click("#silver-green-preset");
-    assert.equal(await control.locator("#color-background").inputValue(), "#ffffff");
+    assert.equal(
+      await control.locator("#color-background").inputValue(),
+      "#ffffff",
+    );
     assert.equal(store.snapshot().data.palettes.arena?.postgame, undefined);
     await control.locator("#color-left").evaluate((e) => {
       e.value = "#11cc44";

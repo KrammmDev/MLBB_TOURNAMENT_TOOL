@@ -109,7 +109,14 @@
     preset.textContent = "Silver / Green preset";
     preset.onclick = () => {
       if (busy || !snapshot) return;
-      colors = { ...model.defaults.postgame.arena };
+      colors = {
+        background: "#ffffff",
+        left: "#29b300",
+        right: "#d9dcda",
+        text: "#0a0a0a",
+        muted: "#111111",
+        border: "#b8babe",
+      };
       paint();
       status.textContent = "Silver / Green preview — save to apply to OBS.";
     };
