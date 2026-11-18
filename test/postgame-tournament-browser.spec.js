@@ -37,6 +37,9 @@ test(
     app.use(express.json());
     installColorRoutes(app, () => store);
     app.get("/api/matchdata", (q, s) => s.json(data));
+    app.get("/api/scoreboard-branding", (q, s) =>
+      s.json({ data: { patchLabel: "STARWARD DECADE 1009" } }),
+    );
     app.use(express.static(path.join(__dirname, "../public")));
     wss.on("connection", (s) =>
       s.on("message", (raw) => writes.push(String(raw))),
@@ -66,6 +69,11 @@ test(
       "BLUE TITANS",
     );
     assert.equal(await page.locator("#pgRedResult").textContent(), "DEFEAT");
+    await page.waitForFunction(
+      () =>
+        document.getElementById("pgPatch").textContent ===
+        "STARWARD DECADE 1009",
+    );
     assert.equal(await page.locator("#pgMatch").textContent(), "GRAND FINALS");
     assert.equal(
       await page.locator("#pgStageDay").textContent(),
@@ -121,6 +129,15 @@ test(
     const send = (m) => {
       for (const s of wss.clients) s.send(JSON.stringify(m));
     };
+    send({
+      type: "scoreboard_branding_update",
+      data: { patchLabel: "PATCH <b>2.0</b>" },
+    });
+    await page.waitForFunction(
+      () =>
+        document.getElementById("pgPatch").textContent === "PATCH <b>2.0</b>",
+    );
+    assert.equal(await page.locator("#pgPatch b").count(), 0);
     data.winmatches = "red";
     data.game_number = 3;
     data.matchInfo = {
@@ -275,6 +292,13 @@ test(
       );
       assert.equal(await page.locator("#pgRedMarks .is-won").count(), 1);
     }
+    assert.equal(
+      await page.locator("#pgPatch").textContent(),
+      "PATCH <b>2.0</b>",
+      "match updates retain broadcast patch label",
+    );
+    send({ type: "scoreboard_branding_update", data: { patchLabel: "" } });
+    await page.locator("#pgPatch").waitFor({ state: "hidden" });
     await page.screenshot({
       path: "/tmp/postgame-tournament.png",
       omitBackground: true,

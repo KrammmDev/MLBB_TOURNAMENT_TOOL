@@ -187,7 +187,7 @@
 .pg-footer > span {
   color: var(--mw-muted, #92a3bd);
 }
-#pgWinner {
+#pgPatch {
   margin-left: auto;
   max-width: 650px;
   overflow: hidden;

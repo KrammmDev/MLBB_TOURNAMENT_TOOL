@@ -21,3 +21,5 @@ Fill direction mirrors the teams: blue wins start at the leftmost marker, red wi
 Only the narrow seven-pixel tournament border light and text-clipped POST GAME title shine loop. Match Winner likewise keeps its narrow border light and VICTORY text shine. Broad panel sweeps and border glow animations are removed. The default navy palette is restored; existing saved palettes remain intact. Silver / Green remains an optional preset, not an automatic theme change. The capture window is transparent and all BO/score behavior remains unchanged.
 
 Footer branding follows the existing Control Panel Match, Stage and Group / Day inputs via `matchInfo.match`, `matchInfo.stage` and `matchInfo.group`. Example: GRAND FINALS KNOCKOUT STAGE DAY 1. Empty fields hide without placeholder text; changes update live and render as plain text.
+
+The right footer displays Broadcast Theme → Patch / broadcast label (`patchLabel` from `/api/scoreboard-branding`), replacing winner text. It loads on opening, follows `scoreboard_branding_update` events immediately and polls every five seconds for recovery. Empty labels hide. Match updates do not overwrite it; labels render as plain text.
