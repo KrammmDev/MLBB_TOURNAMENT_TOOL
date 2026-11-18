@@ -454,3 +454,12 @@ body {
     -webkit-text-fill-color: var(--mw-left, #d8be83);
   }
 }
+
+/* Keep animation limited to the narrow rail and VICTORY letters. */
+.winning-team {
+  animation: none;
+}
+.winning-team::after {
+  display: none;
+  animation: none;
+}

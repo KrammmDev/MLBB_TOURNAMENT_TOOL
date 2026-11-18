@@ -12,6 +12,4 @@ The result uses a MPL/M-Series-inspired navy, metallic silver and gold treatment
 
 Open `/matchwinner-control.html` to preview and save background, victory accent, team panel, primary/secondary text and border colors. Colors use the independent `arena/matchwinner` scope in `/api/broadcast-colors`, with revision-guarded saves and live WebSocket updates plus polling recovery. Restart the Node server after installing this change so its shared color model accepts the new output.
 
-Loop effects: a narrow reflection crosses the winning card every seven seconds; the victory label has a six-second light sweep, the winner border softly pulses, and a light travels down the tournament rail. All loops pause when the result is hidden and stop under reduced-motion preference. The defeated card stays static and grey.
-
-The VICTORY light sweep is clipped to the letter shapes; it does not draw a rectangle behind the title. Both team cards use solid palette colors without static diagonal metallic patterns. The moving winner-card reflection remains.
+Loop effects are limited to the narrow seven-pixel tournament rail light and a six-second shine clipped to the VICTORY letter shapes. There are no broad winner-card reflections or pulsing border glows. Loops pause when the result is hidden and stop under reduced-motion preference. Both team cards keep solid saved palette colors; the defeated team stays grayscale.

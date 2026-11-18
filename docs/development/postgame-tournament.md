@@ -18,6 +18,4 @@ Result groups mirror the latest reference: blue-side bars then label, red-side l
 
 Fill direction mirrors the teams: blue wins start at the leftmost marker, red wins start at the rightmost marker. Both fill inward toward their result labels.
 
-The frame reuses Match Winner's exact animation keyframes: seven-second narrow panel reflections, four-second winner border glow, six-second text-clipped POST GAME shine and six-second tournament rail light. Reflections remain behind content and clipped inside header/team/footer panels; nothing covers the transparent capture opening. Score bars stay solid. Reduced motion disables all effects.
-
-The default Post Game palette is silver/white with green accents, dark text and light team panels. A single full-canvas silver gradient is aligned across the opaque frame pieces; the opening stays transparent. Existing saved colors are retained. To apply this reference look over an older saved palette, use **Silver / Green preset**, then **Save colors** in Post Game Tournament Colors. All six colors remain editable. Match Winner palettes are unchanged.
+Only the narrow seven-pixel tournament border light and text-clipped POST GAME title shine loop. Match Winner likewise keeps its narrow border light and VICTORY text shine. Broad panel sweeps and border glow animations are removed. The default navy palette is restored; existing saved palettes remain intact. Silver / Green remains an optional preset, not an automatic theme change. The capture window is transparent and all BO/score behavior remains unchanged.

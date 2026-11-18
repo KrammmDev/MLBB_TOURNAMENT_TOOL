@@ -139,17 +139,7 @@
     ]),
   );
   defaults.postgame = Object.fromEntries(
-    themes.map((id) => [
-      id,
-      {
-        background: "#ffffff",
-        left: "#29b300",
-        right: "#d9dcda",
-        text: "#0a0a0a",
-        muted: "#111111",
-        border: "#b8babe",
-      },
-    ]),
+    themes.map((id) => [id, { ...defaults.matchwinner[id] }]),
   );
   function validColors(colors) {
     return (
@@ -223,8 +213,6 @@
     if (output === "matchwinner" || output === "postgame") {
       for (const field of Object.keys(fields))
         vars("--mw-" + field, palette[field]);
-      if (output === "postgame")
-        vars("--pg-metal-mid", shade(palette.background, 0.72));
       vars("--mw-left-dark", shade(palette.left, 0.72));
       vars("--mw-right-dark", shade(palette.right, 0.45));
       vars("--mw-accent-text", readable("#0a1120", palette.left));
