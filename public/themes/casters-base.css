@@ -301,3 +301,60 @@ body {
 .cc-mark .cc-tournament-logo[hidden] {
   display: none;
 }
+
+/* Keep the receiver documents mounted while the whole desk moves above draft. */
+.cc-desk {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transform-origin: 0 0;
+  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cc-draft {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 1920px;
+  height: 430px;
+  overflow: hidden;
+  z-index: 2;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(80px);
+  transition:
+    opacity 0.65s,
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s 0.65s;
+}
+.cc-draft iframe {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 1920px;
+  height: 1080px;
+  border: 0;
+  background: transparent;
+}
+#casterStage[data-draft-visible="true"] .cc-desk {
+  transform: translate(211.2px, -140px) scale(0.78);
+}
+#casterStage[data-draft-visible="true"] .cc-draft {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
+}
+#casterStage[data-draft-visible="true"] .cc-header,
+#casterStage[data-draft-visible="true"] .cc-footer,
+#casterStage[data-draft-visible="true"] .cc-fill:not(.cc-top) {
+  display: none;
+}
+#casterStage[data-draft-visible="true"] .cc-top {
+  height: 1080px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cc-desk,
+  .cc-draft {
+    transition: none;
+  }
+}

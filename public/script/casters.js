@@ -75,6 +75,18 @@
           name: c.name || "CASTER " + (i + 1),
         })),
       };
+    const draftVisible = data.draftVisible === true;
+    stage.dataset.draftVisible = String(draftVisible);
+    const draftHost = $("casterDraft");
+    draftHost.setAttribute("aria-hidden", String(!draftVisible));
+    if (draftVisible && !draftHost.firstElementChild) {
+      const draftFrame = document.createElement("iframe");
+      draftFrame.title = "Live tournament draft";
+      const format = new URLSearchParams(location.search).get("format");
+      draftFrame.src =
+        "/draft-display.html?audio=0" + (format === "six" ? "&format=six" : "");
+      draftHost.append(draftFrame);
+    }
     const activeAir = data.casters.map((c) => c.onAir !== false);
     const animateScene =
       previousAir !== null &&
@@ -124,8 +136,11 @@
         if (!was && !active) continue;
         const old = before.get(el),
           now = el.getBoundingClientRect(),
-          dx = old.x - now.x,
-          dy = old.y - now.y,
+          layoutScale =
+            el.parentElement.getBoundingClientRect().width /
+              el.parentElement.offsetWidth || 1,
+          dx = (old.x - now.x) / layoutScale,
+          dy = (old.y - now.y) / layoutScale,
           sx = old.width / now.width,
           sy = old.height / now.height;
         const origin = `translate(${dx}px,${dy}px) scale(${sx},${sy})`,

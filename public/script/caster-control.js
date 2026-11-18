@@ -7,6 +7,8 @@
       "caster-hide",
       "caster-names-show",
       "caster-names-hide",
+      "caster-draft-show",
+      "caster-draft-hide",
     ],
     fields = [];
   let snapshot = null,
@@ -87,6 +89,8 @@
         (snapshot.data.visible ? "shown" : "hidden") +
         "; names " +
         (snapshot.data.namesVisible ? "shown" : "hidden") +
+        "; draft " +
+        (snapshot.data.draftVisible ? "shown below casters" : "hidden") +
         ".";
     } catch (e) {
       $("caster-status").textContent = e.message;
@@ -135,6 +139,8 @@
         (value.data.visible ? "shown" : "hidden") +
         "; names " +
         (value.data.namesVisible ? "shown" : "hidden") +
+        "; draft " +
+        (value.data.draftVisible ? "shown below casters" : "hidden") +
         ".";
     } catch (e) {
       $("caster-status").textContent = e.message;
@@ -149,6 +155,8 @@
   $("caster-hide").onclick = () => save({ visible: false });
   $("caster-names-show").onclick = () => save({ namesVisible: true });
   $("caster-names-hide").onclick = () => save({ namesVisible: false });
+  $("caster-draft-show").onclick = () => save({ draftVisible: true });
+  $("caster-draft-hide").onclick = () => save({ draftVisible: false });
   $("caster-reload").onclick = read;
   read();
 })();

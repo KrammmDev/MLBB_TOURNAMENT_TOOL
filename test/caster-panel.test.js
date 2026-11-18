@@ -16,9 +16,11 @@ test("caster settings persist independently and reject stale or invalid writes",
     store = await loadCasterStore({ file });
   let snapshot = store.snapshot();
   assert.equal(snapshot.data.visible, false);
+  assert.equal(snapshot.data.draftVisible, false);
   const next = {
     ...snapshot.data,
     visible: true,
+    draftVisible: true,
     casters: [
       { name: " Athena ", handle: "@athena", role: "SHOUTCASTER" },
       { name: "Wolf", handle: "@wolfcasts", role: "ANALYST" },
@@ -26,6 +28,11 @@ test("caster settings persist independently and reject stale or invalid writes",
   };
   snapshot = await store.save(next, snapshot.revision);
   assert.equal(snapshot.data.casters[0].name, "Athena");
+  assert.equal(snapshot.data.draftVisible, true);
+  await assert.rejects(
+    store.save({ ...next, draftVisible: "yes" }, snapshot.revision),
+    (e) => e.status === 400,
+  );
   await assert.rejects(store.save(next, '"stale"'), (e) => e.status === 409);
   await assert.rejects(
     store.save({ ...next, casters: [] }, snapshot.revision),
@@ -81,6 +88,7 @@ test("VDO links accept receive-only Ninja URLs and normalize legacy caster setti
     ],
   };
   const store = createCasterStore({ initial: legacy, persist: async () => {} });
+  assert.equal(store.snapshot().data.draftVisible, false);
   assert.equal(store.snapshot().data.casters[0].onAir, true);
   assert.equal(store.snapshot().data.casters[0].vdoUrl, "");
   const next = store.snapshot().data;
