@@ -108,6 +108,26 @@ test(
     assert.equal(await page.locator("#pgRedName b").count(), 0);
     assert.equal(await page.locator("#pgRedResult").textContent(), "VICTORY");
     assert.equal(await page.locator(".pg-line-score").count(), 0);
+    assert.equal(
+      await page
+        .locator("#pgBlue")
+        .evaluate((e) => getComputedStyle(e).opacity),
+      "1",
+    );
+    assert.equal(
+      await page
+        .locator("#pgBlueMarks .pg-win-mark")
+        .first()
+        .evaluate((e) => getComputedStyle(e).borderLeftWidth),
+      "2px",
+    );
+    assert.equal(
+      await page
+        .locator("#pgBlueMarks .pg-win-mark")
+        .first()
+        .evaluate((e) => getComputedStyle(e).opacity),
+      "1",
+    );
 
     assert.equal(await page.locator("#pgBlueMarks .pg-win-mark").count(), 3);
     assert.equal(await page.locator("#pgBlueMarks .is-won").count(), 1);
