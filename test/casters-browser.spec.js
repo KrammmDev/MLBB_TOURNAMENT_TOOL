@@ -205,6 +205,14 @@ test(
           "rgba(0, 0, 0, 0)",
         );
       }
+      await overlay
+        .locator("#casterFrame")
+        .evaluate((e) => Promise.all(e.getAnimations().map((a) => a.finished)));
+      await overlay.waitForFunction(() =>
+        Array.from(document.querySelectorAll(".cc-camera iframe")).every(
+          (f) => f.contentWindow,
+        ),
+      );
       await overlay.screenshot({
         path: "/tmp/casters-" + id + ".png",
         omitBackground: true,
@@ -334,14 +342,26 @@ test(
     await overlay.waitForFunction(
       () => document.querySelectorAll(".cc-camera iframe").length === 2,
     );
-    await control.waitForFunction(()=>!document.getElementById("caster-2-off-air").disabled);
+    await control.waitForFunction(
+      () => !document.getElementById("caster-2-off-air").disabled,
+    );
     await control.click("#caster-2-off-air");
-    await overlay.waitForFunction(()=>document.getElementById("casterStage").dataset.activeCount==="1");
-    await control.waitForFunction(()=>!document.getElementById("caster-2-on-air").disabled);
+    await overlay.waitForFunction(
+      () => document.getElementById("casterStage").dataset.activeCount === "1",
+    );
+    await control.waitForFunction(
+      () => !document.getElementById("caster-2-on-air").disabled,
+    );
     await control.click("#caster-2-on-air");
-    await overlay.waitForFunction(()=>document.getElementById("casterStage").dataset.activeCount==="2");
+    await overlay.waitForFunction(
+      () => document.getElementById("casterStage").dataset.activeCount === "2",
+    );
     await overlay.waitForTimeout(750);
-    assert.equal(await overlay.locator(".cc-camera iframe").count(),2,"rapid reversal cancels pending feed removal");
+    assert.equal(
+      await overlay.locator(".cc-camera iframe").count(),
+      2,
+      "rapid reversal cancels pending feed removal",
+    );
     await overlay.emulateMedia({ reducedMotion: "reduce" });
     assert.equal(
       await overlay

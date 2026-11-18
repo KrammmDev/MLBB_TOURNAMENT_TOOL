@@ -6,51 +6,140 @@ body[data-casters-theme="arena"] {
   --cc-muted: #9dd9f2;
   --cc-border: #2388ff;
 }
-.cc-header {
-  border-bottom: 0;
-  padding-left: 25px;
-  border-left: 7px solid var(--cc-left);
-}
-.cc-live {
-  background: var(--cc-right);
-  border: 0;
-  color: var(--cc-text);
-  clip-path: polygon(15px 0, 100% 0, 100% 100%, 0 100%, 0 15px);
-}
-.cc-camera {
-  outline-width: 3px;
-}
 .cc-top,
 .cc-bottom {
-  background-image: linear-gradient(
-    125deg,
-    transparent 0 55%,
-    #ffffff08 55% 57%,
-    transparent 57% 68%,
-    #16c8ef0d 68% 74%,
-    transparent 74%
+  background-image:
+    radial-gradient(ellipse at 50% 0, #1599ff38, transparent 65%),
+    repeating-linear-gradient(
+      132deg,
+      transparent 0 110px,
+      #ffffff05 111px 113px,
+      transparent 114px 210px
+    );
+}
+.cc-header {
+  left: 220px;
+  width: 1480px;
+  top: 35px;
+  height: 155px;
+  border: 0;
+  background: linear-gradient(
+    110deg,
+    #040a20dd,
+    var(--cc-background),
+    #040a20dd
   );
+  clip-path: polygon(0 0, 100% 0, calc(100% - 45px) 100%, 45px 100%);
+  padding: 20px 65px;
+}
+.cc-header h1 {
+  font-size: 48px;
+  max-width: 1100px;
+}
+.cc-eyebrow {
+  color: var(--cc-left);
+  font-size: 13px;
+}
+.cc-live {
+  top: 53px;
+  right: 60px;
+  border: 0;
+  background: var(--cc-right);
+  color: var(--cc-text);
+  font-size: 13px;
+  clip-path: polygon(12px 0, 100% 0, 100% 100%, 0 100%, 0 12px);
+}
+.cc-camera {
+  outline: 3px solid var(--cc-border);
+  box-shadow:
+    inset 0 0 0 7px #06102b,
+    0 -5px var(--cc-left);
+}
+.cc-camera::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 3px solid var(--cc-border);
+  z-index: 2;
 }
 .cc-nameplate {
-  background: var(--cc-right);
+  top: 825px;
+  width: 790px;
+  height: 130px;
+  background: transparent;
+  border: 0;
+  padding-left: 140px;
   clip-path: polygon(0 0, 100% 0, calc(100% - 55px) 100%, 0 100%);
-  border-left: 8px solid var(--cc-left);
-  width: 700px;
 }
 .cc-two {
-  left: 1130px;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 55px 100%);
-  border-left: 0;
-  border-right: 8px solid var(--cc-left);
+  left: 1040px;
+  padding-left: 0;
+  padding-right: 140px;
   text-align: right;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 55px 100%);
+}
+.cc-mark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 140px;
+  height: 92px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #080c15;
+  color: #fff;
+  font:
+    700 italic 30px CasterHeading,
+    Arial,
+    sans-serif;
+  letter-spacing: -1px;
+  border-bottom: 4px solid var(--cc-left);
+}
+.cc-two .cc-mark {
+  left: auto;
+  right: 0;
 }
 .cc-name {
+  height: 92px;
+  padding: 34px 28px 9px;
   background: var(--cc-text);
   color: var(--cc-background);
-}
-.cc-handle {
-  color: var(--cc-text);
+  font-size: 42px;
 }
 .cc-role {
+  position: absolute;
+  top: 9px;
+  left: 168px;
+  padding: 0;
+  height: 18px;
+  z-index: 2;
+  color: var(--cc-background);
+  font-size: 11px;
+  letter-spacing: 3px;
+}
+.cc-two .cc-role {
+  left: auto;
+  right: 168px;
+}
+.cc-handle {
+  height: 38px;
+  padding: 7px 28px;
+  background: linear-gradient(90deg, var(--cc-right), var(--cc-left));
   color: var(--cc-text);
+  font-size: 18px;
+}
+.cc-two .cc-handle {
+  background: linear-gradient(90deg, var(--cc-left), var(--cc-right));
+}
+.cc-footer {
+  top: 1000px;
+  left: 330px;
+  right: 330px;
+  padding-top: 20px;
+  border-top: 1px solid var(--cc-left);
+  color: var(--cc-text);
+  font-size: 15px;
+  letter-spacing: 5px;
 }
