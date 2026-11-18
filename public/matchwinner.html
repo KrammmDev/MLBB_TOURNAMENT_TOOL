@@ -14,30 +14,43 @@
         aria-live="polite"
         aria-hidden="true"
       >
-        <img
-          id="winnerWatermark"
-          class="winner-watermark"
-          alt=""
-          aria-hidden="true"
-          hidden
-        />
-        <header class="winner-rail">
-          <span class="result-label">MATCH RESULT</span>
-          <span id="gameNumber" class="game-number">GAME 1</span>
-        </header>
-        <div class="winner-body">
-          <div class="team-logo" id="winnerLogoSlot">
-            <img id="winnerLogoImg" alt="Winning team logo" hidden />
+        <aside class="tournament-rail">
+          <span>MLBB · MATCH RESULT</span>
+          <div id="tournamentName">15TH LCUAA ESPORTS MLBB</div>
+          <span>PROVE YOUR LEGACY</span>
+        </aside>
+        <div class="result-sheet">
+          <header class="winner-rail">
+            <div class="victory-heading">VICTORY</div>
+            <span id="gameNumber">GAME 1</span>
+          </header>
+          <div class="result-meta">
+            <span>MOBILE LEGENDS: BANG BANG</span
+            ><span>OFFICIAL MATCH RESULT</span>
           </div>
-          <div class="winner-copy">
-            <p class="winner-kicker">VICTORY</p>
-            <h1 class="winner-title">MATCH WINNER</h1>
-            <div class="winner-divider" aria-hidden="true"></div>
-            <div id="winnerName" class="team-name"></div>
+          <div class="winner-body">
+            <article class="team-card winning-team">
+              <span class="result-tag">VICTORY</span>
+              <div class="team-logo" id="winnerLogoSlot">
+                <img id="winnerLogoImg" alt="Winning team logo" hidden />
+              </div>
+              <div id="winnerName" class="team-name"></div>
+            </article>
+            <div class="versus">
+              <span>MATCH</span><strong>VS</strong><span>RESULT</span>
+            </div>
+            <article class="team-card losing-team">
+              <span class="result-tag">DEFEAT</span>
+              <div class="team-logo" id="loserLogoSlot">
+                <img id="loserLogoImg" alt="Losing team logo" hidden />
+              </div>
+              <div id="loserName" class="team-name"></div>
+            </article>
           </div>
-        </div>
-        <div class="winner-bottom" aria-hidden="true">
-          <span></span><span></span><span></span>
+          <footer class="result-footer">
+            <strong>MATCH WINNER</strong><span id="winnerFooter"></span
+            ><span>MLBB / ESPORTS</span>
+          </footer>
         </div>
       </section>
     </main>
