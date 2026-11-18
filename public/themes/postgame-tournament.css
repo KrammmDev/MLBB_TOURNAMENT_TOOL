@@ -218,10 +218,10 @@
   background: #85888f;
 }
 #pgBlueMarks .pg-win-mark {
-  transform: skewX(25deg);
+  transform: skewX(-25deg);
 }
 #pgRedMarks .pg-win-mark {
-  transform: skewX(-25deg);
+  transform: skewX(25deg);
 }
 .pg-win-mark.is-won {
   background: var(--mw-left, #d8be83);
