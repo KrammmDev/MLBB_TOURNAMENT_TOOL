@@ -1,5 +1,6 @@
 (function () {
   "use strict";
+  const output = document.body.dataset.colorOutput || "matchwinner";
   const model = window.BroadcastColorModel,
     frame = document.getElementById("preview"),
     status = document.getElementById("status"),
@@ -23,7 +24,7 @@
       {
         type: "broadcast-colors-preview",
         id: "arena",
-        output: "matchwinner",
+        output,
         colors,
       },
       location.origin,
@@ -31,7 +32,7 @@
   }
   function paint() {
     for (const [field, input] of inputs)
-      input.value = colors[field] || model.defaults.matchwinner.arena[field];
+      input.value = colors[field] || model.defaults[output].arena[field];
     save.disabled = reset.disabled = busy || !snapshot;
     reload.disabled = busy;
     for (const input of inputs.values()) input.disabled = busy || !snapshot;
@@ -61,7 +62,7 @@
       const r = await fetch("/api/broadcast-colors", { cache: "no-store" });
       if (!r.ok) throw Error("Unable to load colors");
       snapshot = await r.json();
-      colors = { ...(snapshot.data.palettes.arena?.matchwinner || {}) };
+      colors = { ...(snapshot.data.palettes.arena?.[output] || {}) };
       status.textContent = "Saved colors loaded.";
     } catch (e) {
       status.textContent = e.message;
@@ -83,7 +84,7 @@
         },
         body: JSON.stringify({
           themeId: "arena",
-          output: "matchwinner",
+          output,
           colors: next,
         }),
       });
@@ -93,7 +94,7 @@
           result.message || "Save failed. Reload saved colors before retrying.",
         );
       snapshot = result;
-      colors = { ...(result.data.palettes.arena?.matchwinner || {}) };
+      colors = { ...(result.data.palettes.arena?.[output] || {}) };
       status.textContent = "Saved — OBS updated.";
     } catch (e) {
       status.textContent = e.message;

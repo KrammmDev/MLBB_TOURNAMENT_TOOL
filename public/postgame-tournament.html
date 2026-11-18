@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Post Game Tournament</title>
+    <link rel="stylesheet" href="/themes/match-winner.css" />
+    <link rel="stylesheet" href="/themes/postgame-tournament.css" />
+  </head>
+  <body data-postgame-theme="arena">
+    <main id="postgameStage">
+      <aside class="pg-rail">
+        <span>MLBB · TOURNAMENT</span>
+        <div id="pgTournament">15TH LCUAA ESPORTS MLBB</div>
+        <span>POST GAME / MATCH ANALYSIS</span>
+      </aside>
+      <header class="pg-header">
+        <div class="pg-heading">
+          <h1>POST GAME</h1>
+          <span id="pgGame">GAME 1</span>
+        </div>
+        <div class="pg-teams">
+          <div class="pg-team" id="pgBlue">
+            <img id="pgBlueLogo" alt="Blue team logo" hidden /><strong
+              id="pgBlueName"
+              >BLUE TEAM</strong
+            ><span id="pgBlueResult"></span>
+          </div>
+          <span class="pg-vs">VS</span>
+          <div class="pg-team" id="pgRed">
+            <span id="pgRedResult"></span
+            ><strong id="pgRedName">RED TEAM</strong
+            ><img id="pgRedLogo" alt="Red team logo" hidden />
+          </div>
+        </div>
+      </header>
+      <div class="pg-left-fill" aria-hidden="true"></div>
+      <div class="pg-right-fill" aria-hidden="true"></div>
+      <div
+        id="resultsWindow"
+        aria-label="Transparent window for captured MLBB post-game results"
+      ></div>
+      <footer class="pg-footer">
+        <strong>MATCH ANALYSIS</strong><span>MOBILE LEGENDS: BANG BANG</span
+        ><span id="pgWinner">POST GAME RESULTS</span>
+      </footer>
+    </main>
+    <script src="/script/match-state.js"></script>
+    <script src="/script/match-client.js"></script>
+    <script src="/script/roster-model.js"></script>
+    <script src="/script/broadcast-color-model.js"></script>
+    <script src="/script/broadcast-color-client.js"></script>
+    <script src="/script/postgame-tournament.js"></script>
+  </body>
+</html>
