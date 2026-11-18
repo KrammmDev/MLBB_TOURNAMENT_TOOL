@@ -301,8 +301,11 @@ test(
         ]) {
           const camera = await overlay.locator(cameraId).boundingBox();
           const plate = await overlay.locator(plateClass).boundingBox();
-          assert.equal(plate.x, camera.x);
-          assert.equal(plate.width, camera.width);
+          assert.equal(
+            plate.x,
+            camera.x + (plateClass === ".cc-two" ? camera.width / 2 : 0),
+          );
+          assert.equal(plate.width, camera.width / 2);
           assert.equal(
             plate.y + plate.height,
             camera.y + camera.height,
@@ -434,7 +437,7 @@ test(
         const plate = await overlay.locator(".cc-one").boundingBox();
         assert.equal(plate.y + plate.height, camera.y + camera.height);
         assert.equal(plate.x, camera.x);
-        assert.equal(plate.width, camera.width);
+        assert.equal(plate.width, camera.width / 2);
       }
     }
     assert.equal(
@@ -467,6 +470,20 @@ test(
     );
     await control.waitForFunction(
       () => !document.getElementById("caster-2-off-air").disabled,
+    );
+    await theme.select("classic", theme.snapshot().revision, "casters");
+    await overlay.waitForFunction(
+      () => document.body.dataset.castersTheme === "classic",
+    );
+    const soloRightCamera = await overlay
+      .locator("#casterWindow2")
+      .boundingBox();
+    const soloRightPlate = await overlay.locator(".cc-two").boundingBox();
+    assert.equal(soloRightPlate.width, soloRightCamera.width / 2);
+    assert.equal(
+      soloRightPlate.x + soloRightPlate.width,
+      soloRightCamera.x + soloRightCamera.width,
+      "right solo holder remains at the video's right edge",
     );
     await control.click("#caster-2-off-air");
     await overlay.waitForFunction(
@@ -560,6 +577,10 @@ test(
       "Classic holder stays inside video in combined draft mode",
     );
     await overlay.screenshot({ path: "/tmp/classic-inset-draft.png" });
+    assert.ok(
+      Math.abs(compactClassicPlate.width - compactClassicCamera.width / 2) < 1,
+      "Classic draft-mode name holder stays half width",
+    );
     // Every saved draft look must fit, including Arena's taller team header.
     await theme.select("arena", theme.snapshot().revision, "casters");
     await overlay.waitForFunction(

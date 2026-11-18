@@ -80,11 +80,11 @@ body[data-casters-theme="classic"] {
 }
 .cc-nameplate {
   --cc-side: var(--cc-left);
-  top: 580px;
+  top: 620px;
   left: 90px;
-  width: 840px;
-  height: 140px;
-  padding: 0 28px 0 150px;
+  width: 420px;
+  height: 100px;
+  padding: 0 18px 0 104px;
   background: linear-gradient(
     110deg,
     color-mix(in srgb, var(--cc-background) 88%, white),
@@ -105,16 +105,16 @@ body[data-casters-theme="classic"] {
 }
 .cc-two {
   --cc-side: var(--cc-right);
-  left: 990px;
-  padding: 0 150px 0 28px;
+  left: 1410px;
+  padding: 0 104px 0 18px;
   text-align: right;
 }
 .cc-mark {
   position: absolute;
   left: 0;
   top: 0;
-  width: 126px;
-  height: 135px;
+  width: 88px;
+  height: 95px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -128,25 +128,36 @@ body[data-casters-theme="classic"] {
   border-left: 1px solid var(--cc-border);
 }
 .cc-role {
-  height: 34px;
-  padding: 11px 0 0;
+  height: 24px;
+  padding: 7px 0 0;
   color: var(--cc-side);
-  font-size: 12px;
-  letter-spacing: 4px;
+  font-size: 10px;
+  letter-spacing: 2px;
   text-transform: uppercase;
 }
 .cc-name {
-  height: 64px;
+  height: 44px;
   padding: 0;
-  font-size: 48px;
-  line-height: 64px;
+  font-size: 32px;
+  line-height: 44px;
   font-weight: 800;
   color: var(--cc-text);
 }
 .cc-handle {
-  height: 34px;
+  height: 25px;
   padding: 0;
   color: var(--cc-muted);
-  font-size: 18px;
-  line-height: 30px;
+  font-size: 15px;
+  line-height: 23px;
+}
+
+body[data-casters-theme="classic"]
+  #casterStage[data-active-count="1"]
+  .cc-nameplate.is-on-air {
+  width: 600px;
+}
+body[data-casters-theme="classic"]
+  #casterStage[data-active-count="1"]
+  .cc-two.is-on-air {
+  left: 960px;
 }
