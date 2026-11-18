@@ -16,7 +16,8 @@
     reading = false,
     feedVersion = 0,
     tickerKey = "",
-    sponsorIndex = 0;
+    sponsorIndex = 0,
+    drawnTheme = null;
   const timers = [];
   const PAGE_HOLD_MS = 8000,
     PAN_MS = 450;
@@ -36,16 +37,17 @@
     ];
   }
   function pan(nodes, entering) {
+    const axis = document.body.dataset.scheduleTheme === "arena" ? "Y" : "X";
     const animations = nodes.map((node, index) =>
       node.animate(
         entering
           ? [
-              { opacity: 0, transform: "translateX(50px)" },
-              { opacity: 1, transform: "translateX(0)" },
+              { opacity: 0, transform: `translate${axis}(50px)` },
+              { opacity: 1, transform: `translate${axis}(0)` },
             ]
           : [
-              { opacity: 1, transform: "translateX(0)" },
-              { opacity: 0, transform: "translateX(-50px)" },
+              { opacity: 1, transform: `translate${axis}(0)` },
+              { opacity: 0, transform: `translate${axis}(-50px)` },
             ],
         {
           duration: PAN_MS,
@@ -151,13 +153,16 @@
     else document.querySelector("#schedule-talents h2").textContent = "TALENTS";
     document.body.dataset.schedulePanel =
       studio && current?.type === "talents" ? "talents" : "matches";
-    if (next + studio === key) return;
+    const themeId = document.body.dataset.scheduleTheme;
+    if (next + themeId === key) return;
+    const initialArena = themeId === "arena" && drawnTheme !== themeId;
+    drawnTheme = themeId;
     panVersion++;
     if (panAnimation) {
       panAnimation.cancel();
       panAnimation = null;
     }
-    key = next + studio;
+    key = next + themeId;
     const host = $("schedule-cards");
     host.replaceChildren();
     $("schedule-empty").hidden = !!current;
@@ -229,6 +234,19 @@
         }
       }
       host.append(card);
+    }
+    if (
+      initialArena &&
+      host.children.length &&
+      !matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      panAnimation = pan([...host.children], true);
+      const animation = panAnimation;
+      animation.finished
+        .then(() => {
+          if (panAnimation === animation) panAnimation = null;
+        })
+        .catch(() => {});
     }
   }
 

@@ -15,7 +15,7 @@ const {
   { createPanelStore, installPanelRoutes } = require("../lib/production-panel");
 test(
   "schedule themes reuse live schedule controls, casters, timer and isolated theme/color selection",
-  { timeout: 90000 },
+  { timeout: 105000 },
   async (t) => {
     const dir = await fs.mkdtemp(path.join(os.tmpdir(), "schedule-test-"));
     const app = express(),
@@ -249,19 +249,86 @@ test(
           await page.locator("#schedule-talents h2").textContent(),
           "CASTERS",
         );
+        await page.waitForFunction(
+          () =>
+            document
+              .querySelector(".schedule-card")
+              ?.getAnimations()
+              .some(
+                (a) =>
+                  a.playState === "running" &&
+                  a.effect
+                    .getKeyframes()
+                    .some((f) => f.transform === "translateY(-50px)"),
+              ),
+          null,
+          { timeout: 12000 },
+        );
+        const upward = await page.evaluate(() => ({
+          delays: [...document.querySelectorAll(".schedule-card")].map(
+            (e) =>
+              e
+                .getAnimations()
+                .find((a) =>
+                  a.effect
+                    .getKeyframes()
+                    .some((f) => f.transform === "translateY(-50px)"),
+                )
+                ?.effect.getTiming().delay,
+          ),
+          heading: document.getElementById("schedule-heading").getAnimations()
+            .length,
+        }));
+        assert.deepEqual(upward.delays, [0, 200, 400]);
+        assert.equal(upward.heading, 0);
+        await page.waitForFunction(
+          () =>
+            document
+              .querySelector(".schedule-card")
+              ?.getAnimations()
+              .some((a) =>
+                a.effect
+                  .getKeyframes()
+                  .some((f) => f.transform === "translateY(50px)"),
+              ),
+          null,
+          { timeout: 3000 },
+        );
+        await page.reload();
+        await page.waitForFunction(
+          () =>
+            document.body.dataset.scheduleTheme === "arena" &&
+            document.querySelectorAll(".schedule-card").length === 3,
+        );
+        assert.ok(
+          await page
+            .locator(".schedule-card")
+            .evaluateAll((nodes) =>
+              nodes.some((e) =>
+                e
+                  .getAnimations()
+                  .some((a) =>
+                    a.effect
+                      .getKeyframes()
+                      .some((f) => f.transform === "translateY(50px)"),
+                  ),
+              ),
+            ),
+          "initial Arena display also rises in",
+        );
         for (const selector of [
           ".schedule-header",
           ".schedule-countdown",
           ".schedule-card",
           "#schedule-sponsor",
         ]) {
-          assert.ok(
-            (
-              await page
-                .locator(selector)
-                .first()
-                .evaluate((e) => getComputedStyle(e).backgroundImage)
-            ).startsWith("linear-gradient("),
+          assert.equal(
+            await page
+              .locator(selector)
+              .first()
+              .evaluate((e) => getComputedStyle(e).backgroundImage),
+            "none",
+            "stationary diagonal metallic highlight is removed",
           );
         }
       }

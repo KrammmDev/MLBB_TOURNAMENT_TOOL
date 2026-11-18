@@ -47,3 +47,5 @@ Arena now uses a metallic broadcast-desk finish: silver surfaces with palette-dr
 Arena hides the separate headline band. Its schedule and sponsor row starts at y890 (145px tall); a full-width seamless ticker runs below at x20/y1043, width1880 and height27, spanning TODAY’S SCHEDULE through the sponsor slot. Text and duration come from the existing Production Timer ticker settings. Classic and Studio keep their headline bands.
 
 Arena’s metallic panels include a narrow reflection that sweeps across each panel on a six-second loop, with offset phases. Only the reflection moves; it is clipped inside each panel, behind text/logos, and does not affect the video opening, card pan transitions or ticker. Reduced-motion preference disables the reflection.
+
+Arena’s base panel surfaces are now flat palette colors, removing the stationary diagonal sheen. The moving reflection is retained. Arena cards enter upward from below, staggered by 200ms, including initial display; page changes also exit upward. The heading stays still between match pages. Classic and Studio retain horizontal card transitions.
