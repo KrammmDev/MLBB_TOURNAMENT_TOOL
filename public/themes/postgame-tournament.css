@@ -138,7 +138,7 @@
 }
 .pg-team.is-defeated {
   filter: grayscale(1);
-  opacity: 0.5;
+  opacity: 1;
 }
 .pg-vs {
   font-size: 26px;
@@ -211,10 +211,10 @@
 }
 .pg-win-mark {
   display: block;
-  width: 6px;
-  height: 26px;
-  border: 1px solid currentColor;
-  opacity: 0.3;
+  width: 10px;
+  height: 30px;
+  border: 2px solid currentColor;
+  opacity: 1;
   background: transparent;
 }
 #pgBlueMarks .pg-win-mark {
@@ -224,6 +224,22 @@
   transform: skewX(-25deg);
 }
 .pg-win-mark.is-won {
-  background: currentColor;
+  background: var(--mw-left, #d8be83);
+  border-color: var(--mw-left, #d8be83);
   opacity: 1;
+}
+
+.pg-team.is-defeated > img,
+.pg-team.is-defeated > strong {
+  opacity: 0.6;
+}
+.pg-result-group {
+  color: var(--mw-text, #edf1f6) !important;
+  font-weight: 700;
+}
+.pg-score-marks {
+  color: var(--mw-text, #edf1f6);
+}
+.pg-win-mark.is-won {
+  box-shadow: 0 0 7px var(--mw-left, #d8be83);
 }
