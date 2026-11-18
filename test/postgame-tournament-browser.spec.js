@@ -107,22 +107,20 @@ test(
     );
     assert.equal(await page.locator("#pgRedName b").count(), 0);
     assert.equal(await page.locator("#pgRedResult").textContent(), "VICTORY");
-    assert.equal(await page.locator("#pgBlueScore .is-won").count(), 1);
-    assert.equal(await page.locator("#pgRedScore .is-won").count(), 2);
-    assert.equal(await page.locator("#pgBlueScore .pg-win-mark").count(), 3);
-    assert.equal((await page.locator("#pgBlueScore").textContent()).trim(), "");
-    data.matchFormat = 7;
-    data.teamdata.redteam.score = "0";
-    send({ type: "matchdata_update", data });
-    await page.waitForFunction(
-      () =>
-        document.querySelectorAll("#pgRedScore .pg-win-mark").length === 4 &&
-        document.querySelectorAll("#pgRedScore .is-won").length === 0,
+    assert.equal(await page.locator(".pg-line-score").count(), 0);
+    assert.equal(
+      await page
+        .locator("#pgBlueResult")
+        .evaluate((e) => getComputedStyle(e, "::before").content),
+      '\"\"',
     );
     assert.equal(
-      await page.locator("#pgTournament").textContent(),
-      "LCUAA CHAMPIONSHIP",
+      await page
+        .locator("#pgRedResult")
+        .evaluate((e) => getComputedStyle(e, "::after").content),
+      '\"\"',
     );
+    assert.equal(await page.locator("#pgBlueResult").textContent(), "DEFEAT");
     await page.screenshot({
       path: "/tmp/postgame-tournament.png",
       omitBackground: true,
