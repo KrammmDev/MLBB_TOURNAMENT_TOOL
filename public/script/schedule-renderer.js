@@ -100,15 +100,25 @@
   }
   function picture(node, value) {
     const src = safe(value);
-    if (node.dataset.source === src && src) return;
-    node.hidden = !src;
-    if (src && node.dataset.source !== src) {
-      node.dataset.source = src;
-      node.onerror = () => {
-        node.hidden = true;
-      };
-      node.src = src;
+    if (!src) {
+      node.hidden = true;
+      node.removeAttribute("src");
+      delete node.dataset.source;
+      return;
     }
+    if (node.dataset.source === src) {
+      node.hidden = !(node.complete && node.naturalWidth > 0);
+      return;
+    }
+    node.hidden = true;
+    node.dataset.source = src;
+    node.onload = () => {
+      node.hidden = !(node.complete && node.naturalWidth > 0);
+    };
+    node.onerror = () => {
+      node.hidden = true;
+    };
+    node.src = src;
   }
   function branding() {
     const title = shared["tournament-title"];
