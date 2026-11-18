@@ -313,3 +313,18 @@
   border-left: 0;
   box-shadow: inset 7px 0 var(--mw-left, #d8be83);
 }
+
+#pgMatch,
+#pgStageDay {
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+#pgMatch {
+  max-width: 400px;
+}
+#pgStageDay {
+  max-width: 650px;
+}

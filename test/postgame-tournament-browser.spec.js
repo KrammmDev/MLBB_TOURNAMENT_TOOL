@@ -15,6 +15,11 @@ test(
     const wss = new WebSocketServer({ server }),
       writes = [];
     let data = require("./fixtures").fixture();
+    data.matchInfo = {
+      match: "GRAND FINALS",
+      stage: "KNOCKOUT STAGE",
+      group: "DAY 1",
+    };
     data.winmatches = "blue";
     data.matchFormat = 5;
     data.teamdata.blueteam.score = "1";
@@ -61,6 +66,11 @@ test(
       "BLUE TITANS",
     );
     assert.equal(await page.locator("#pgRedResult").textContent(), "DEFEAT");
+    assert.equal(await page.locator("#pgMatch").textContent(), "GRAND FINALS");
+    assert.equal(
+      await page.locator("#pgStageDay").textContent(),
+      "KNOCKOUT STAGE DAY 1",
+    );
     await page.waitForFunction(
       () =>
         getComputedStyle(document.body)
@@ -113,6 +123,11 @@ test(
     };
     data.winmatches = "red";
     data.game_number = 3;
+    data.matchInfo = {
+      match: "<b>FINALS</b>",
+      stage: "PLAYOFFS",
+      group: "DAY 2",
+    };
     data.teamdata.redteam.score = "2";
     data.teamdata.redteam.teamname = "<b>CHAMPIONS</b>";
     send({ type: "matchdata_update", data });
@@ -124,6 +139,12 @@ test(
       () => document.getElementById("pgGame").textContent === "GAME 3",
     );
     assert.equal(await page.locator("#pgRedName b").count(), 0);
+    assert.equal(await page.locator("#pgMatch").textContent(), "<b>FINALS</b>");
+    assert.equal(await page.locator("#pgMatch b").count(), 0);
+    assert.equal(
+      await page.locator("#pgStageDay").textContent(),
+      "PLAYOFFS DAY 2",
+    );
     assert.equal(await page.locator("#pgRedResult").textContent(), "VICTORY");
     assert.equal(await page.locator(".pg-line-score").count(), 0);
     const reflection = () =>
