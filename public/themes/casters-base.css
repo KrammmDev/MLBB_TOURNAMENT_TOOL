@@ -215,14 +215,12 @@ body {
   }
 }
 
+/* Layout snaps once; JS animates compositor transforms between the old and new rectangles. */
 .cc-camera {
   overflow: hidden;
-  transition:
-    left 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.45s,
-    transform 0.45s,
-    visibility 0s;
+  transform-origin: 0 0;
+  transition: none;
+  will-change: transform, opacity;
 }
 .cc-camera iframe {
   position: absolute;
@@ -232,19 +230,17 @@ body {
   border: 0;
   background: #000;
 }
+.cc-nameplate {
+  transform: none;
+  transform-origin: 0 0;
+  transition: none !important;
+  will-change: transform, opacity;
+}
 .cc-camera.is-off-air,
-.cc-nameplate.is-off-air {
+#casterNames .cc-nameplate.is-off-air {
   opacity: 0;
   visibility: hidden;
-  transform: translateX(-100px);
-  transition:
-    opacity 0.45s,
-    transform 0.45s,
-    visibility 0s 0.45s;
-}
-.cc-camera-two.is-off-air,
-.cc-two.is-off-air {
-  transform: translateX(100px);
+  transform: none;
 }
 #casterStage[data-active-count="1"] .cc-left {
   width: 360px;
@@ -256,10 +252,7 @@ body {
 #casterStage[data-active-count="1"] .cc-mid {
   display: none;
 }
-#casterStage[data-active-count="1"] .cc-camera.is-on-air {
-  left: 360px;
-  width: 1200px;
-}
+#casterStage[data-active-count="1"] .cc-camera.is-on-air,
 #casterStage[data-active-count="1"] .cc-nameplate.is-on-air {
   left: 360px;
   width: 1200px;
@@ -271,25 +264,29 @@ body {
 #casterStage[data-active-count="0"] .cc-right {
   display: none;
 }
+.caster-frame {
+  transition:
+    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s 0.65s;
+}
+.caster-frame.is-visible {
+  transition-delay: 0s;
+}
+.cc-names {
+  transform: translateY(24px);
+  transition:
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s 0.65s;
+}
+.cc-names.is-visible {
+  transform: none;
+  transition-delay: 0s;
+}
 @media (prefers-reduced-motion: reduce) {
-  .cc-camera,
-  .cc-camera.is-off-air,
-  .cc-nameplate.is-off-air {
+  .caster-frame,
+  .cc-names {
     transition: none;
-    transform: none;
-  }
-}
-
-#casterNames .cc-nameplate.is-off-air {
-  opacity: 0;
-  visibility: hidden;
-  transform: translateX(-100px);
-}
-#casterNames .cc-two.is-off-air {
-  transform: translateX(100px);
-}
-@media (prefers-reduced-motion: reduce) {
-  #casterNames .cc-nameplate.is-off-air {
     transform: none;
   }
 }
