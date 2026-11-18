@@ -160,10 +160,10 @@ test(
         assert.equal(composition.columns.split(" ").length, 3);
       if (id === "arena") {
         const fonts = await page.evaluate(async () => {
-          const russo = await document.fonts.load('400 36px "Arena Russo"');
+          const chakra = await document.fonts.load('700 42px "Arena Chakra"');
           const oxanium = await document.fonts.load('700 22px "Arena Oxanium"');
           return {
-            russo: russo.some((f) => f.status === "loaded"),
+            chakra: chakra.some((f) => f.status === "loaded"),
             oxanium: oxanium.some((f) => f.status === "loaded"),
             title: getComputedStyle(document.getElementById("schedule-event"))
               .fontFamily,
@@ -171,9 +171,9 @@ test(
               .fontFamily,
           };
         });
-        assert.equal(fonts.russo, true);
+        assert.equal(fonts.chakra, true);
         assert.equal(fonts.oxanium, true);
-        assert.ok(fonts.title.includes("Arena Russo"));
+        assert.ok(fonts.title.includes("Arena Chakra"));
         assert.ok(fonts.timer.includes("Arena Oxanium"));
         assert.equal(
           slot.x + slot.width,
