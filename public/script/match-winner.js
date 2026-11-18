@@ -125,8 +125,10 @@
     }
   }
   fit();
+  root.BroadcastColorClient.activate("arena", "matchwinner");
   const unsubscribe = root.MatchDataClient.subscribe(apply, () => {}, {
     onMessage(message) {
+      root.BroadcastColorClient.accept(message);
       if (message.type === "clear")
         document.getElementById("tournamentName").textContent =
           "15TH LCUAA ESPORTS MLBB";

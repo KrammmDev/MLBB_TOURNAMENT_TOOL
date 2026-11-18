@@ -6,7 +6,14 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
   const themes = ["classic", "arena", "studio"],
-    outputs = ["roster", "draft", "scoreboard", "postdraft", "schedule"];
+    outputs = [
+      "roster",
+      "draft",
+      "scoreboard",
+      "postdraft",
+      "schedule",
+      "matchwinner",
+    ];
   const fields = {
     background: "Panel background",
     left: "Left team accent",
@@ -117,6 +124,19 @@
       border: "#e9ba30",
     },
   };
+  defaults.matchwinner = Object.fromEntries(
+    themes.map((id) => [
+      id,
+      {
+        background: "#080e1b",
+        left: "#d8be83",
+        right: "#203550",
+        text: "#edf1f6",
+        muted: "#92a3bd",
+        border: "#899bb4",
+      },
+    ]),
+  );
   function validColors(colors) {
     return (
       colors !== null &&
@@ -186,6 +206,14 @@
       );
     const vars = (names, value) =>
       names.split(",").forEach((name) => variables.push(name + ":" + value));
+    if (output === "matchwinner") {
+      for (const field of Object.keys(fields))
+        vars("--mw-" + field, palette[field]);
+      vars("--mw-left-dark", shade(palette.left, 0.72));
+      vars("--mw-right-dark", shade(palette.right, 0.45));
+      vars("--mw-accent-text", readable("#0a1120", palette.left));
+      return scope + "{" + variables.join(";") + "}";
+    }
     if (output === "schedule") {
       for (const [field, token] of Object.entries({
         background: "panel",

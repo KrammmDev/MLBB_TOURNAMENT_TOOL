@@ -21,6 +21,9 @@ test(
       next();
     });
     app.get("/api/matchdata", (q, s) => s.json(data));
+    app.get("/api/broadcast-colors", (q, s) =>
+      s.json({ revision: '"1"', data: { schemaVersion: 2, palettes: {} } }),
+    );
     app.get("/Assets/Team/missing.png", (q, s) => {
       missingRequests++;
       s.sendStatus(404);
@@ -102,6 +105,52 @@ test(
         !document.getElementById("winnerLogoImg").hidden,
     );
     assert.equal(await page.locator("#gameNumber").textContent(), "GAME 2");
+    await page.locator("#winnerWrapper").evaluate(e => Promise.all(e.getAnimations().map(a=>a.finished)));
+    assert.deepEqual(await page.locator("#winnerWrapper").boundingBox(), {
+      x: 0,
+      y: 0,
+      width: 1920,
+      height: 1080,
+    });
+    for (const socket of wss.clients)
+      socket.send(
+        JSON.stringify({
+          type: "broadcast_colors_update",
+          data: {
+            schemaVersion: 2,
+            palettes: {
+              arena: {
+                matchwinner: {
+                  background: "#331144",
+                  left: "#00ff88",
+                  right: "#224466",
+                  text: "#ffffff",
+                  muted: "#bbccee",
+                  border: "#cc33aa",
+                },
+              },
+            },
+          },
+        }),
+      );
+    await page.waitForFunction(
+      () =>
+        getComputedStyle(document.body)
+          .getPropertyValue("--mw-background")
+          .trim() === "#331144",
+    );
+    assert.equal(
+      await page
+        .locator("#winnerWrapper")
+        .evaluate((e) => getComputedStyle(e).backgroundColor),
+      "rgb(51, 17, 68)",
+    );
+    assert.equal(
+      await page
+        .locator(".losing-team")
+        .evaluate((e) => getComputedStyle(e).filter),
+      "grayscale(1)",
+    );
     assert.equal(await page.locator("#loserName").textContent(), "RED PHOENIX");
     assert.equal(
       await page
@@ -254,5 +303,86 @@ test(
     assert.equal(await page.locator("#gameNumber").textContent(), "GAME 4");
     assert.deepEqual(writes, [], "winner overlay never writes match state");
     assert.deepEqual(errors, []);
+  },
+);
+
+test(
+  "winner color control persists an independent palette and resets it",
+  { timeout: 20000 },
+  async (t) => {
+    const app = express(),
+      server = app.listen(0, "127.0.0.1");
+    await new Promise((r) => server.once("listening", r));
+    const {
+      createColorStore,
+      installColorRoutes,
+    } = require("../lib/broadcast-colors");
+    const store = createColorStore({
+      file: "/tmp/winner-colors-test.json",
+      persist: async () => {},
+      initial: {
+        schemaVersion: 2,
+        palettes: { arena: { schedule: { left: "#112233" } } },
+      },
+    });
+    app.use(express.json());
+    installColorRoutes(app, () => store);
+    const data = require("./fixtures").fixture();
+    data.winmatches = "blue";
+    app.get("/api/matchdata", (q, s) => s.json(data));
+    app.use(express.static(path.join(__dirname, "../public")));
+    const wss = new WebSocketServer({ server });
+    const browser = await chromium.launch({
+      executablePath: process.env.MLBB_TEST_BROWSER || undefined,
+      args: ["--no-sandbox"],
+    });
+    t.after(async () => {
+      await browser.close();
+      for (const s of wss.clients) s.terminate();
+      await new Promise((r) => wss.close(r));
+      await new Promise((r) => server.close(r));
+    });
+    const page = await browser.newPage();
+    await page.goto(
+      "http://127.0.0.1:" + server.address().port + "/matchwinner-control.html",
+    );
+    await page.waitForFunction(() => !document.getElementById("save").disabled);
+    await page.locator("#color-background").evaluate((e) => {
+      e.value = "#334455";
+      e.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    const preview = page.frameLocator("#preview");
+    await preview.locator("body").evaluate(
+      (e) =>
+        new Promise((resolve) => {
+          const tick = () =>
+            getComputedStyle(e).getPropertyValue("--mw-background").trim() ===
+            "#334455"
+              ? resolve()
+              : setTimeout(tick, 20);
+          tick();
+        }),
+    );
+    assert.equal(
+      store.snapshot().data.palettes.arena.matchwinner,
+      undefined,
+      "preview does not save",
+    );
+    await page.click("#save");
+    await page.waitForFunction(
+      () =>
+        document.getElementById("status").textContent ===
+        "Saved — OBS updated.",
+    );
+    assert.equal(
+      store.snapshot().data.palettes.arena.matchwinner.background,
+      "#334455",
+    );
+    assert.deepEqual(store.snapshot().data.palettes.arena.schedule, {
+      left: "#112233",
+    });
+    await page.click("#reset");
+    await page.waitForFunction(() => !document.getElementById("save").disabled);
+    assert.deepEqual(store.snapshot().data.palettes.arena.matchwinner, {});
   },
 );
