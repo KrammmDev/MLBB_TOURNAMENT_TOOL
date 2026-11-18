@@ -303,10 +303,12 @@ test(
           const plate = await overlay.locator(plateClass).boundingBox();
           assert.equal(plate.x, camera.x);
           assert.equal(plate.width, camera.width);
-          assert.ok(
-            plate.y > camera.y + camera.height,
-            "Classic angular plates sit below camera frames",
+          assert.equal(
+            plate.y + plate.height,
+            camera.y + camera.height,
+            "Classic name holders sit inside the camera's lower edge",
           );
+          assert.ok(plate.y >= camera.y);
           assert.notEqual(
             await overlay
               .locator(plateClass)
@@ -427,6 +429,13 @@ test(
         360,
         "solo camera stays centered in every theme",
       );
+      if (id === "classic") {
+        const camera = await overlay.locator("#casterWindow1").boundingBox();
+        const plate = await overlay.locator(".cc-one").boundingBox();
+        assert.equal(plate.y + plate.height, camera.y + camera.height);
+        assert.equal(plate.x, camera.x);
+        assert.equal(plate.width, camera.width);
+      }
     }
     assert.equal(
       await overlay.locator("#casterWindow2 iframe").count(),
@@ -533,6 +542,24 @@ test(
       .locator("#timer")
       .filter({ hasText: "17" })
       .waitFor();
+    await theme.select("classic", theme.snapshot().revision, "casters");
+    await overlay.waitForFunction(
+      () => document.body.dataset.castersTheme === "classic",
+    );
+    const compactClassicCamera = await overlay
+      .locator("#casterWindow1")
+      .boundingBox();
+    const compactClassicPlate = await overlay.locator(".cc-one").boundingBox();
+    assert.ok(
+      Math.abs(
+        compactClassicPlate.y +
+          compactClassicPlate.height -
+          compactClassicCamera.y -
+          compactClassicCamera.height,
+      ) < 1,
+      "Classic holder stays inside video in combined draft mode",
+    );
+    await overlay.screenshot({ path: "/tmp/classic-inset-draft.png" });
     // Every saved draft look must fit, including Arena's taller team header.
     await theme.select("arena", theme.snapshot().revision, "casters");
     await overlay.waitForFunction(
