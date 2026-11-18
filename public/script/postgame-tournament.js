@@ -82,6 +82,14 @@
           : "DEFEAT"
         : "";
     }
+    const info = data?.matchInfo || {};
+    const clean = (value) => (typeof value === "string" ? value.trim() : "");
+    $("pgMatch").textContent = clean(info.match);
+    $("pgMatch").hidden = !$("pgMatch").textContent;
+    $("pgStageDay").textContent = [clean(info.stage), clean(info.group)]
+      .filter(Boolean)
+      .join(" ");
+    $("pgStageDay").hidden = !$("pgStageDay").textContent;
     $("pgGame").textContent = "GAME " + (data?.game_number || 1);
     $("pgWinner").textContent =
       side === "blue" || side === "red"
