@@ -256,47 +256,48 @@
 #pgRedMarks {
   flex-direction: row-reverse;
 }
-/* Reflection is clipped by each slanted score bar. */
-.pg-win-mark {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-}
-.pg-win-mark::after {
-  content: "";
-  position: absolute;
-  inset: -100% 0;
-  background: linear-gradient(
-    180deg,
-    transparent 35%,
-    rgba(255, 255, 255, 0.55) 50%,
-    transparent 65%
+
+/* Reflections animate only on opaque frame pieces, leaving the capture opening clear. */
+.pg-header,
+.pg-team,
+.pg-rail,
+.pg-footer,
+.pg-left-fill,
+.pg-right-fill {
+  background-image: linear-gradient(
+    110deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.13) 48%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 62%
   );
-  pointer-events: none;
-  transform: translateY(-70%);
-  animation: pg-bar-shine 4.5s linear infinite;
+  background-size: 300% 100%;
+  background-position: 150% 0;
+  animation: pg-frame-shine 7s linear infinite;
 }
-.pg-win-mark:nth-child(2)::after {
-  animation-delay: 0.12s;
+.pg-team {
+  animation-delay: 0.2s;
 }
-.pg-win-mark:nth-child(3)::after {
-  animation-delay: 0.24s;
+.pg-footer {
+  animation-delay: 0.4s;
 }
-.pg-win-mark:nth-child(4)::after {
-  animation-delay: 0.36s;
-}
-@keyframes pg-bar-shine {
+@keyframes pg-frame-shine {
   0% {
-    transform: translateY(-70%);
+    background-position: 150% 0;
   }
-  45%,
+  60%,
   100% {
-    transform: translateY(70%);
+    background-position: -150% 0;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .pg-win-mark::after {
+  .pg-header,
+  .pg-team,
+  .pg-rail,
+  .pg-footer,
+  .pg-left-fill,
+  .pg-right-fill {
     animation: none;
-    display: none;
+    background-image: none;
   }
 }

@@ -18,4 +18,4 @@ Result groups mirror the latest reference: blue-side bars then label, red-side l
 
 Fill direction mirrors the teams: blue wins start at the leftmost marker, red wins start at the rightmost marker. Both fill inward toward their result labels.
 
-Each slanted score bar has a clipped metallic reflection looping every 4.5 seconds, slightly staggered between bars. The gray/accent base fill remains intact. Reduced motion hides the reflection.
+A seven-second metallic reflection loops across the opaque frame surfaces: header, team strips, tournament rail, footer and side fillers. It does not cover the transparent capture opening. Score bars remain solid with no dedicated animation. Reduced motion disables the reflection.
