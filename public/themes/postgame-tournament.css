@@ -241,14 +241,14 @@
 }
 
 #pgBlueMarks {
-  order: 2;
+  order: 1;
 }
 #pgBlueResult {
-  order: 1;
+  order: 2;
 }
 #pgRedMarks {
-  order: 1;
+  order: 2;
 }
 #pgRedResult {
-  order: 2;
+  order: 1;
 }

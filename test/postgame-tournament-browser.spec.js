@@ -108,17 +108,21 @@ test(
     assert.equal(await page.locator("#pgRedName b").count(), 0);
     assert.equal(await page.locator("#pgRedResult").textContent(), "VICTORY");
     assert.equal(await page.locator(".pg-line-score").count(), 0);
+    const blueMarkBox=await page.locator("#pgBlueMarks").boundingBox(), blueLabelBox=await page.locator("#pgBlueResult").boundingBox();
+    const redMarkBox=await page.locator("#pgRedMarks").boundingBox(),redLabelBox=await page.locator("#pgRedResult").boundingBox();
+    assert.ok(blueMarkBox.x+blueMarkBox.width<blueLabelBox.x,"left bars precede result text");
+    assert.ok(redLabelBox.x+redLabelBox.width<redMarkBox.x,"right bars follow result text");
     assert.equal(
       await page
         .locator("#pgBlueMarks")
         .evaluate((e) => getComputedStyle(e).order),
-      "2",
+      "1",
     );
     assert.equal(
       await page
         .locator("#pgRedMarks")
         .evaluate((e) => getComputedStyle(e).order),
-      "1",
+      "2",
     );
     assert.equal(
       await page
