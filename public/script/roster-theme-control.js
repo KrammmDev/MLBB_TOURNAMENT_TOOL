@@ -108,7 +108,7 @@
       if (output() === "schedule")
         Object.assign(details, {
           classic: "Playoffs · left fixtures · right video",
-          arena: "Championship header · central video · bottom fixtures",
+          arena: "Metallic broadcast desk · right video · caster panel",
           studio: "Season 18 format · left schedule/talents · right video",
         });
       if (output() === "postdraft")

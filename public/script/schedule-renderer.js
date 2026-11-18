@@ -146,7 +146,7 @@
     const studio = ["studio", "classic"].includes(
       document.body.dataset.scheduleTheme,
     );
-    if (document.body.dataset.scheduleTheme === "classic")
+    if (["classic", "arena"].includes(document.body.dataset.scheduleTheme))
       document.querySelector("#schedule-talents h2").textContent = "CASTERS";
     else document.querySelector("#schedule-talents h2").textContent = "TALENTS";
     document.body.dataset.schedulePanel =

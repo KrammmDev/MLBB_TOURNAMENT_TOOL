@@ -150,7 +150,7 @@ test(
       }));
       assert.equal(
         composition.videoX,
-        { classic: 730, arena: 350, studio: 650 }[id],
+        { classic: 730, arena: 680, studio: 650 }[id],
       );
       assert.equal(
         composition.scheduleX,
@@ -158,6 +158,35 @@ test(
       );
       if (id === "arena")
         assert.equal(composition.columns.split(" ").length, 3);
+      if (id === "arena") {
+        assert.equal(
+          slot.x + slot.width,
+          1900,
+          "video keeps a 20px right margin",
+        );
+        const casters = await page.locator("#schedule-talents").boundingBox();
+        assert.ok(casters.x + casters.width < slot.x);
+        assert.equal(casters.width, 620);
+        assert.equal(
+          await page.locator("#schedule-talents h2").textContent(),
+          "CASTERS",
+        );
+        for (const selector of [
+          ".schedule-header",
+          ".schedule-countdown",
+          ".schedule-card",
+          "#schedule-sponsor",
+        ]) {
+          assert.ok(
+            (
+              await page
+                .locator(selector)
+                .first()
+                .evaluate((e) => getComputedStyle(e).backgroundImage)
+            ).startsWith("linear-gradient("),
+          );
+        }
+      }
 
       assert.equal(
         slot.width,
