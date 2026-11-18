@@ -50,4 +50,4 @@ Studio’s default palette is violet/gold. Existing saved custom palettes are pr
 
 Classic’s default palette is carbon/lime/cyan. Existing saved Classic custom colors are retained; select Classic / Online Casters and use **Reset to default → Save colors** for the new palette. Its header and footer stay hidden in normal, solo and draft modes.
 
-Classic’s full-width name holders overlay the lower 140px of each video window at Y580, aligned to its bottom edge. Roles, names, handles and tournament logo tiles stay inside the camera in normal, solo and combined draft layouts.
+Classic’s compact name holders overlay the lower 100px of each video window at Y620. They cover half the video width (420px in duo, 600px in solo), anchored left for caster 1 and right for caster 2. Roles, names, handles and tournament logo tiles stay inside the camera in normal, solo and combined draft layouts.
