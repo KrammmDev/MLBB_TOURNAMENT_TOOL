@@ -75,9 +75,12 @@ body[data-casters-theme="classic"] {
   pointer-events: none;
   z-index: 2;
 }
+.cc-names {
+  z-index: 3;
+}
 .cc-nameplate {
   --cc-side: var(--cc-left);
-  top: 744px;
+  top: 580px;
   left: 90px;
   width: 840px;
   height: 140px;

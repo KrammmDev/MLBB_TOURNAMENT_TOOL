@@ -2,7 +2,7 @@
 
 Open **Broadcast Theme → Output → Online Casters** to preview and select three designs independently of other outputs:
 
-- Classic: carbon esports backdrop, lime/cyan corner rails and angular nameplates with tournament logo tiles; no header or footer.
+- Classic: carbon esports backdrop, lime/cyan corner rails and inset angular nameplates with tournament logo tiles; no header or footer.
 - Arena: electric blue frame with angular mirrored white nameplates.
 - Studio: violet-to-lavender event backdrop, gold 16:9 camera frames, centered tournament logo and inset purple name tabs.
 
@@ -49,3 +49,5 @@ Hide frame never starts a new receiver while hidden. URL changes while hidden re
 Studio’s default palette is violet/gold. Existing saved custom palettes are preserved; use **Reset to default**, then **Save colors**, with Studio / Online Casters selected to apply the new default palette. The header uses the same tournament-logo upload; no event logo from the reference is bundled. Studio name tabs show caster names; handles and roles remain saved for the other looks.
 
 Classic’s default palette is carbon/lime/cyan. Existing saved Classic custom colors are retained; select Classic / Online Casters and use **Reset to default → Save colors** for the new palette. Its header and footer stay hidden in normal, solo and draft modes.
+
+Classic’s full-width name holders overlay the lower 140px of each video window at Y580, aligned to its bottom edge. Roles, names, handles and tournament logo tiles stay inside the camera in normal, solo and combined draft layouts.
