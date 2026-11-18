@@ -91,18 +91,47 @@
       .join(" ");
     $("pgStageDay").hidden = !$("pgStageDay").textContent;
     $("pgGame").textContent = "GAME " + (data?.game_number || 1);
-    $("pgWinner").textContent =
-      side === "blue" || side === "red"
-        ? "WINNER · " +
-          $(side === "blue" ? "pgBlueName" : "pgRedName").textContent
-        : "POST GAME RESULTS";
     stage.dataset.ready = "true";
     fit();
   }
+  let brandingVersion = 0,
+    brandingPending = false;
+  function branding(data) {
+    if (stopped || typeof data?.patchLabel !== "string") return;
+    $("pgPatch").textContent = data.patchLabel.trim();
+    $("pgPatch").hidden = !$("pgPatch").textContent;
+  }
+  async function readBranding() {
+    if (stopped || brandingPending) return;
+    brandingPending = true;
+    const version = brandingVersion,
+      controller = new AbortController(),
+      timeout = setTimeout(() => controller.abort(), 3000);
+    try {
+      const response = await fetch("/api/scoreboard-branding", {
+        cache: "no-store",
+        signal: controller.signal,
+      });
+      if (response.ok) {
+        const value = await response.json();
+        if (version === brandingVersion) branding(value.data);
+      }
+    } catch {
+    } finally {
+      clearTimeout(timeout);
+      brandingPending = false;
+    }
+  }
+  readBranding();
+  const brandingPoll = setInterval(readBranding, 5000);
   root.BroadcastColorClient.activate("arena", "postgame");
   const unsubscribe = root.MatchDataClient.subscribe(apply, () => {}, {
     onMessage(message) {
       root.BroadcastColorClient.accept(message);
+      if (message.type === "scoreboard_branding_update") {
+        brandingVersion++;
+        branding(message.data);
+      }
       if (
         message.type === "clear" ||
         message.type === "init" ||
@@ -126,6 +155,8 @@
   });
   addEventListener("pagehide", () => {
     stopped = true;
+    brandingVersion++;
+    clearInterval(brandingPoll);
     unsubscribe();
   });
   addEventListener("pageshow", (e) => {
