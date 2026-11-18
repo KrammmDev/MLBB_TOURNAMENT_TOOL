@@ -204,12 +204,65 @@
       themePending = false;
     }
   }
+  let brandingVersion = 0,
+    brandingPending = false;
+  function branding(data) {
+    if (
+      stopped ||
+      !data ||
+      !(
+        data.logoFile === null ||
+        (typeof data.logoFile === "string" &&
+          /^[a-f0-9-]{36}\.(png|jpg|webp|gif)$/.test(data.logoFile))
+      )
+    )
+      return;
+    const src = data.logoFile ? "/scoreboard-branding/" + data.logoFile : "";
+    for (const image of document.querySelectorAll(".cc-tournament-logo")) {
+      if (image.dataset.source === src) continue;
+      image.dataset.source = src;
+      image.hidden = true;
+      image.onload = () => {
+        if (image.dataset.source === src) image.hidden = false;
+      };
+      image.onerror = () => {
+        if (image.dataset.source === src) image.hidden = true;
+      };
+      if (src) image.src = src;
+      else image.removeAttribute("src");
+    }
+  }
+  async function readBranding() {
+    if (stopped || brandingPending) return;
+    brandingPending = true;
+    const started = brandingVersion,
+      controller = new AbortController(),
+      timeout = setTimeout(() => controller.abort(), 3000);
+    try {
+      const r = await fetch("/api/scoreboard-branding", {
+        cache: "no-store",
+        signal: controller.signal,
+      });
+      if (r.ok) {
+        const value = await r.json();
+        if (started === brandingVersion) branding(value.data);
+      }
+    } catch {
+    } finally {
+      clearTimeout(timeout);
+      brandingPending = false;
+    }
+  }
   const unsubscribe = root.MatchDataClient.subscribe(
     () => {},
     () => {},
     {
       onMessage(m) {
         root.BroadcastColorClient.accept(m);
+        if (m.type === "scoreboard_branding_update") {
+          brandingVersion++;
+          branding(m.data);
+        }
         if (m.type === "caster_panel_update") {
           version++;
           apply(m.data);
@@ -232,13 +285,16 @@
   fit();
   theme();
   read();
+  readBranding();
   const poll = setInterval(() => {
     read();
+    readBranding();
     if (!pinned) theme();
   }, 5000);
   addEventListener("resize", fit);
   addEventListener("pagehide", () => {
     stopped = true;
+    brandingVersion++;
     for (const animation of motions.values()) animation.cancel();
     feeds.forEach((f, i) => {
       clearTimeout(f.timer);
