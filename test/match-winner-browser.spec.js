@@ -82,6 +82,8 @@ test(
         .evaluate((e) => getComputedStyle(e).backgroundColor),
       "rgba(0, 0, 0, 0)",
     );
+    data.teamdata.redteam.teamname = "RED PHOENIX";
+    data.teamdata.redteam.logo = "Assets/Team/red.png";
     data.winmatches = "blue";
     data.game_number = 2;
     data.teamdata.blueteam.teamname = "BLUE TITANS";
@@ -100,6 +102,31 @@ test(
         !document.getElementById("winnerLogoImg").hidden,
     );
     assert.equal(await page.locator("#gameNumber").textContent(), "GAME 2");
+    assert.equal(await page.locator("#loserName").textContent(), "RED PHOENIX");
+    assert.equal(
+      await page
+        .locator(".losing-team")
+        .evaluate((e) => getComputedStyle(e).filter),
+      "grayscale(1)",
+    );
+    assert.equal(
+      await page
+        .locator(".winning-team")
+        .evaluate((e) => getComputedStyle(e).filter),
+      "none",
+    );
+    for (const socket of wss.clients)
+      socket.send(
+        JSON.stringify({
+          type: "update",
+          data: { "tournament-title": "LCUAA ESPORTS CHAMPIONSHIP" },
+        }),
+      );
+    await page.waitForFunction(
+      () =>
+        document.getElementById("tournamentName").textContent ===
+        "LCUAA ESPORTS CHAMPIONSHIP",
+    );
     assert.equal(
       await page.locator("#winnerWrapper").getAttribute("data-side"),
       "blue",
@@ -159,6 +186,16 @@ test(
     );
     assert.equal(await page.locator("#winnerLogoImg").isVisible(), false);
     assert.equal(await page.evaluate(() => window.winnerReveals), 2);
+    assert.equal(
+      await page.locator("#loserName").textContent(),
+      "CITY UNIVERSITY <b>CHAMPIONS</b> ESPORTS TEAM",
+    );
+    assert.equal(
+      await page
+        .locator(".winning-team")
+        .evaluate((e) => getComputedStyle(e).order),
+      "3",
+    );
     const failed = missingRequests;
     send();
     await page.waitForTimeout(200);
@@ -191,6 +228,11 @@ test(
       "reduced motion skips entrance animation",
     );
     await page.setViewportSize({ width: 960, height: 540 });
+    await page.waitForFunction(
+      () =>
+        document.getElementById("winnerStage").getBoundingClientRect().width ===
+        960,
+    );
     const box = await page.locator("#winnerWrapper").boundingBox();
     assert.ok(
       box.x >= 0 &&

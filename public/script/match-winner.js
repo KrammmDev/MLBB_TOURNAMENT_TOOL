@@ -5,21 +5,28 @@
     wrapper = document.getElementById("winnerWrapper"),
     name = document.getElementById("winnerName"),
     logo = document.getElementById("winnerLogoImg"),
-    watermark = document.getElementById("winnerWatermark");
+    loserLogo = document.getElementById("loserLogoImg");
+  let loserSource = "";
   let cue = "",
     logoSource = "",
     reveal = null,
     stopped = false;
   function fitName() {
-    let size = 72;
-    name.style.fontSize = size + "px";
-    while (
-      size > 28 &&
-      (name.scrollWidth > name.clientWidth ||
-        name.scrollHeight > name.clientHeight)
-    ) {
-      size -= 2;
-      name.style.fontSize = size + "px";
+    for (const node of [
+      name,
+      document.getElementById("loserName"),
+      document.getElementById("tournamentName"),
+    ]) {
+      let size = 58;
+      node.style.fontSize = size + "px";
+      while (
+        size > 24 &&
+        (node.scrollWidth > node.clientWidth ||
+          node.scrollHeight > node.clientHeight)
+      ) {
+        size -= 2;
+        node.style.fontSize = size + "px";
+      }
     }
   }
   function fit() {
@@ -30,36 +37,27 @@
     if (!source) {
       logoSource = "";
       logo.hidden = true;
-      watermark.hidden = true;
       logo.removeAttribute("src");
-      watermark.removeAttribute("src");
       wrapper.classList.add("without-logo");
       return;
     }
     if (source === logoSource) return;
     logoSource = source;
     logo.hidden = true;
-    watermark.hidden = true;
     wrapper.classList.remove("without-logo");
     logo.onload = () => {
       if (source !== logoSource) return;
       logo.hidden = false;
-      watermark.hidden = false;
       wrapper.classList.remove("without-logo");
       fitName();
     };
     logo.onerror = () => {
       if (source !== logoSource) return;
       logo.hidden = true;
-      watermark.hidden = true;
       wrapper.classList.add("without-logo");
       fitName();
     };
-    watermark.onerror = () => {
-      watermark.hidden = true;
-    };
     logo.src = source;
-    watermark.src = source;
   }
   function apply({ data }) {
     if (stopped) return;
@@ -81,12 +79,32 @@
       wrapper.setAttribute("aria-hidden", "true");
       return;
     }
+    const opponent =
+      data.teamdata?.[side === "blue" ? "redteam" : "blueteam"] || {};
+    document.getElementById("loserName").textContent = String(
+      opponent.teamname || opponent.name || "OPPONENT",
+    );
+    const losingSource = root.RosterModel.safeImage(opponent.logo);
+    if (losingSource !== loserSource) {
+      loserSource = losingSource;
+      loserLogo.hidden = true;
+      if (losingSource) {
+        loserLogo.onload = () => {
+          if (loserSource === losingSource) loserLogo.hidden = false;
+        };
+        loserLogo.onerror = () => {
+          loserLogo.hidden = true;
+        };
+        loserLogo.src = losingSource;
+      } else loserLogo.removeAttribute("src");
+    }
     const game = data.game_number || 1,
       newCue = side + ":" + game;
     wrapper.dataset.side = side;
     name.textContent = String(
       team.teamname || team.name || side.toUpperCase() + " SIDE",
     );
+    document.getElementById("winnerFooter").textContent = name.textContent;
     document.getElementById("gameNumber").textContent = "GAME " + game;
     image(root.RosterModel.safeImage(team.logo));
     wrapper.classList.add("is-visible");
@@ -107,7 +125,22 @@
     }
   }
   fit();
-  const unsubscribe = root.MatchDataClient.subscribe(apply);
+  const unsubscribe = root.MatchDataClient.subscribe(apply, () => {}, {
+    onMessage(message) {
+      if (message.type === "clear")
+        document.getElementById("tournamentName").textContent =
+          "15TH LCUAA ESPORTS MLBB";
+      if (message.type === "init" || message.type === "update") {
+        const title = message.data?.["tournament-title"];
+        if (message.type === "init" || title !== undefined)
+          document.getElementById("tournamentName").textContent =
+            typeof title === "string" && title.trim()
+              ? title
+              : "15TH LCUAA ESPORTS MLBB";
+        fitName();
+      }
+    },
+  });
   addEventListener("resize", fit);
   document.fonts.ready.then(() => {
     if (!stopped) fitName();

@@ -1,9 +1,11 @@
 # Match Winner overlay
 
-Open `/matchwinner.html` as an OBS Browser Source at **1920 × 1080**. The canvas is transparent around a centered esports result panel; only the winning team's logo and name are needed. Local Chakra Petch/Oxanium webfonts are reused from the bundled font library.
+Open `/matchwinner.html` as an OBS Browser Source at **1920 × 1080**. The canvas is transparent around a centered esports result panel; both teams use only their logo and name. Local Chakra Petch/Oxanium webfonts are reused from the bundled font library.
 
-In `/control.html`, **BLUE WIN** or **RED WIN** selects the winner using the existing `winmatches` field. The overlay reads the live match API/WebSocket feed without changing it. It displays `game_number` and the winning side's `teamname`/`logo`. With `winmatches` cleared to `none`, the graphic exits and hides. Current winner state also loads when the Browser Source is refreshed.
+In `/control.html`, **BLUE WIN** or **RED WIN** selects the winner using the existing `winmatches` field. The overlay reads the live match API/WebSocket feed without changing it. It displays `game_number` and both sides' `teamname`/`logo`. With `winmatches` cleared to `none`, the graphic exits and hides. Current winner state also loads when the Browser Source is refreshed.
 
-Winner-side/game changes reveal the graphic once. Unchanged polling and live name/logo corrections do not repeatedly restart the entrance. Missing, unsafe or failed logos use a centered name-only layout. Labels render as plain text, long team names fit the panel, and reduced-motion preference removes movement. The whole 1920×1080 stage scales to the preview viewport.
+Winner-side/game changes reveal the graphic once. Unchanged polling and live name/logo corrections do not repeatedly restart the entrance. Missing, unsafe or failed logos fall back to the team name. Labels render as plain text, long team names fit the panel, and reduced-motion preference removes movement. The whole 1920×1080 stage scales to the preview viewport.
 
 Validation: `MLBB_TEST_BROWSER=/usr/bin/chromium node --test test/match-winner-browser.spec.js` checks blue/red/none states, logo/name-only fallback, safe labels/URLs, stable animation under repeated data and polling, responsive placement, reduced motion, and read-only behavior.
+
+The result uses a cream paper / red-and-charcoal editorial treatment with torn card edges. Both teams remain visible in blue-left/red-right order; the defeated team is desaturated and dimmed. The vertical tournament rail follows the shared `tournament-title` field from init/update messages (with the LCUAA title as fallback). Game number remains a game label, not a series score.
