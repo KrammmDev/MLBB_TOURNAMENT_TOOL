@@ -17,8 +17,7 @@
         u.password ||
         u.pathname !== "/" ||
         !u.searchParams.get("view") ||
-        u.searchParams.has("push") ||
-        u.searchParams.has("room")
+        u.searchParams.has("push")
       )
         return "";
       return u.href;

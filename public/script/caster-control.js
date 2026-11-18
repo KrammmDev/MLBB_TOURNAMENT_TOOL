@@ -80,6 +80,7 @@
       const r = await fetch("/api/caster-panel", { cache: "no-store" });
       if (!r.ok) throw Error("Caster settings unavailable");
       snapshot = await r.json();
+      $("caster-status").dataset.error = "false";
       fill();
       $("caster-status").textContent =
         "Caster settings loaded. Frame " +
@@ -89,6 +90,7 @@
         ".";
     } catch (e) {
       $("caster-status").textContent = e.message;
+      $("caster-status").dataset.error = "true";
     } finally {
       busy = false;
       controls();
@@ -100,16 +102,21 @@
     controls();
     try {
       const next = structuredClone(snapshot.data);
-      if (change === "details")
+      const includeDetails =
+        change === "details" ||
+        change.visible === true ||
+        change.namesVisible === true ||
+        change.onAir === true;
+      if (includeDetails)
         next.casters = fields.map((row, i) => ({
           ...next.casters[i],
           ...Object.fromEntries(
             Object.entries(row).map(([key, input]) => [key, input.value]),
           ),
         }));
-      else if (Number.isInteger(change.caster))
+      if (change !== "details" && Number.isInteger(change.caster))
         next.casters[change.caster].onAir = change.onAir;
-      else Object.assign(next, change);
+      else if (change !== "details") Object.assign(next, change);
       const r = await fetch("/api/caster-panel", {
           method: "PUT",
           headers: {
@@ -121,7 +128,8 @@
         value = await r.json();
       if (!r.ok) throw Error(value.message || "Caster save failed");
       snapshot = value;
-      if (change === "details") fill();
+      $("caster-status").dataset.error = "false";
+      if (includeDetails) fill();
       $("caster-status").textContent =
         "Saved. Frame " +
         (value.data.visible ? "shown" : "hidden") +
@@ -130,6 +138,7 @@
         ".";
     } catch (e) {
       $("caster-status").textContent = e.message;
+      $("caster-status").dataset.error = "true";
     } finally {
       busy = false;
       controls();
