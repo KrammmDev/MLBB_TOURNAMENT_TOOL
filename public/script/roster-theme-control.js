@@ -118,9 +118,12 @@
         });
       if (output() === "casters")
         Object.assign(details, {
-          classic: "Championship desk · charcoal/gold · centered nameplates",
-          arena: "World stage · electric blue · angular mirrored nameplates",
-          studio: "White/red broadcast · bold name tabs · role tags",
+          classic:
+            "Championship desk · framed gold plates · centered broadcast header",
+          arena:
+            "World stage · blue stage lighting · mirrored white/cyan nameplates",
+          studio:
+            "White/red event stage · dual camera frames · yellow role blocks",
         });
       if (output() === "postdraft")
         Object.assign(details, {

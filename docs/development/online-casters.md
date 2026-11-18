@@ -31,3 +31,5 @@ Broadcast Theme previews never load VDO embeds, avoiding duplicate audio. Browse
 Show frame, Show names and On Air save current edited details with their action, avoiding blank names or stale view links when a separate Save was missed. Stop actions (Off Air, Hide frame, Hide names) use acknowledged settings so invalid unsaved input cannot prevent taking a feed off-air. Invalid view links identify the caster in the error message.
 
 Caster entry/exit and duo/solo changes use 650ms compositor transform/opacity animations with a shared easing curve. Geometry is measured before each layout change so interrupted moves continue from the visible position. The VDO document remains attached during its exit and is removed at the matching end time; reduced motion disconnects immediately.
+
+The broadcast designs use stronger camera edging, tournament header plates and mirrored MLBB nameplate blocks inspired by the supplied esports references. Arena uses white/cyan angular lower thirds, Classic uses dark/gold championship plates, and Studio uses red/white event framing with yellow role blocks. Camera positions, solo behavior, colors and VDO controls are unchanged.
