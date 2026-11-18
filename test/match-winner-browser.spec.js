@@ -21,6 +21,9 @@ test(
       next();
     });
     app.get("/api/matchdata", (q, s) => s.json(data));
+    app.get("/api/scoreboard-branding", (q, s) =>
+      s.json({ data: { patchLabel: "STARWARD DECADE 1009" } }),
+    );
     app.get("/api/broadcast-colors", (q, s) =>
       s.json({ revision: '"1"', data: { schemaVersion: 2, palettes: {} } }),
     );
@@ -89,6 +92,11 @@ test(
     data.teamdata.redteam.logo = "Assets/Team/red.png";
     data.winmatches = "blue";
     data.game_number = 2;
+    data.matchInfo = {
+      match: "GRAND FINALS",
+      stage: "KNOCKOUT STAGE",
+      group: "DAY 1",
+    };
     data.teamdata.blueteam.teamname = "BLUE TITANS";
     data.teamdata.blueteam.logo = "Assets/Team/blue.png";
     send();
@@ -105,6 +113,32 @@ test(
         !document.getElementById("winnerLogoImg").hidden,
     );
     assert.equal(await page.locator("#gameNumber").textContent(), "GAME 2");
+    assert.equal(
+      await page.locator("#resultMatch").textContent(),
+      "GRAND FINALS",
+    );
+    assert.equal(
+      await page.locator("#resultStageDay").textContent(),
+      "KNOCKOUT STAGE DAY 1",
+    );
+    await page.waitForFunction(
+      () =>
+        document.getElementById("resultPatch").textContent ===
+        "STARWARD DECADE 1009",
+    );
+    for (const socket of wss.clients)
+      socket.send(
+        JSON.stringify({
+          type: "scoreboard_branding_update",
+          data: { patchLabel: "PATCH <b>2</b>" },
+        }),
+      );
+    await page.waitForFunction(
+      () =>
+        document.getElementById("resultPatch").textContent === "PATCH <b>2</b>",
+    );
+    assert.equal(await page.locator("#resultPatch b").count(), 0);
+
     await page
       .locator("#winnerWrapper")
       .evaluate((e) => Promise.all(e.getAnimations().map((a) => a.finished)));

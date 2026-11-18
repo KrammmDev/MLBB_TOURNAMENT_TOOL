@@ -104,7 +104,16 @@
     name.textContent = String(
       team.teamname || team.name || side.toUpperCase() + " SIDE",
     );
-    document.getElementById("winnerFooter").textContent = name.textContent;
+    const info = data.matchInfo || {},
+      clean = (value) => (typeof value === "string" ? value.trim() : "");
+    const match = document.getElementById("resultMatch"),
+      stageDay = document.getElementById("resultStageDay");
+    match.textContent = clean(info.match);
+    match.hidden = !match.textContent;
+    stageDay.textContent = [clean(info.stage), clean(info.group)]
+      .filter(Boolean)
+      .join(" ");
+    stageDay.hidden = !stageDay.textContent;
     document.getElementById("gameNumber").textContent = "GAME " + game;
     image(root.RosterModel.safeImage(team.logo));
     wrapper.classList.add("is-visible");
@@ -125,10 +134,45 @@
     }
   }
   fit();
+  let brandingVersion = 0,
+    brandingPending = false;
+  function branding(data) {
+    if (stopped || typeof data?.patchLabel !== "string") return;
+    document.getElementById("resultPatch").textContent = data.patchLabel.trim();
+    document.getElementById("resultPatch").hidden =
+      !document.getElementById("resultPatch").textContent;
+  }
+  async function readBranding() {
+    if (stopped || brandingPending) return;
+    brandingPending = true;
+    const version = brandingVersion,
+      controller = new AbortController(),
+      timeout = setTimeout(() => controller.abort(), 3000);
+    try {
+      const response = await fetch("/api/scoreboard-branding", {
+        cache: "no-store",
+        signal: controller.signal,
+      });
+      if (response.ok) {
+        const value = await response.json();
+        if (version === brandingVersion) branding(value.data);
+      }
+    } catch {
+    } finally {
+      clearTimeout(timeout);
+      brandingPending = false;
+    }
+  }
+  readBranding();
+  const brandingPoll = setInterval(readBranding, 5000);
   root.BroadcastColorClient.activate("arena", "matchwinner");
   const unsubscribe = root.MatchDataClient.subscribe(apply, () => {}, {
     onMessage(message) {
       root.BroadcastColorClient.accept(message);
+      if (message.type === "scoreboard_branding_update") {
+        brandingVersion++;
+        branding(message.data);
+      }
       if (message.type === "clear")
         document.getElementById("tournamentName").textContent =
           "15TH LCUAA ESPORTS MLBB";
@@ -149,6 +193,8 @@
   });
   addEventListener("pagehide", () => {
     stopped = true;
+    brandingVersion++;
+    clearInterval(brandingPoll);
     unsubscribe();
     if (reveal) reveal.cancel();
   });
