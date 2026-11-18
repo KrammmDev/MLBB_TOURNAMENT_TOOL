@@ -37,3 +37,9 @@ The broadcast designs use stronger camera edging, tournament header plates and m
 VDO receiver URLs are preserved as supplied (after URL validation), including view/solo/room/password options. The overlay no longer injects autostart or cleanoutput, so it loads the same receiver address that was verified in a standalone tab. Autoplay permission remains on the iframe. A working direct link is required; the change does not establish the cause of every live WebRTC connection failure.
 
 Both nameplate logo tiles use the existing Broadcast Theme → Tournament logo upload (`logoFile` in scoreboard branding). They load initially, update on scoreboard_branding_update and recover through five-second polling. Removing the logo clears both tiles; missing/broken images hide without an MLBB text fallback. Saved caster details and view links are unchanged.
+
+## Draft below casters
+
+Broadcast Theme's Online Casters controls include **Show draft** and **Hide draft**. This independently saves `draftVisible` in the caster panel (old settings default to false). Show draft moves/scales both camera windows and nameplates above an embedded `/draft-display.html?audio=0`; Hide draft restores the normal desk. The embedded renderer follows its own saved Draft theme, colors, match data, picks, bans and timer. Use `/casters.html?format=six` for the six-ban draft.
+
+The draft iframe mounts once on first show and remains live when hidden. Draft audio is disabled. Caster VDO receiver documents remain mounted during layout transitions; existing Off Air and Hide frame feed teardown still applies. In solo mode, the remaining caster centers above draft. Reduced motion switches layouts immediately. Separate OBS camera captures are not repositioned automatically; use embedded VDO feeds for this combined layout.

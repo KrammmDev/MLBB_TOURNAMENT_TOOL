@@ -62,6 +62,23 @@ test(
     app.get("/api/matchdata", (q, s) =>
       s.json(require("./fixtures").fixture()),
     );
+    const blankSide = () => ({
+      pick: Array.from({ length: 5 }, () => ({})),
+      ban: Array.from({ length: 5 }, () => ({})),
+    });
+    app.get("/api/matchdraft", (q, s) =>
+      s.json({
+        draftdata: {
+          current_phase: 6,
+          timer: "18",
+          timer_running: false,
+          blueside: blankSide(),
+          redside: blankSide(),
+        },
+      }),
+    );
+    app.get("/database/herolist.json", (q, s) => s.json([]));
+    app.get("/api/herostats", (q, s) => s.json({ heroes: {} }));
     let brandingLogo = "11111111-1111-4111-8111-111111111111.png";
     app.get(/^\/scoreboard-branding\//, (q, s) =>
       s
@@ -418,6 +435,117 @@ test(
       await overlay.locator(".cc-camera iframe").count(),
       2,
       "rapid reversal cancels pending feed removal",
+    );
+    // Draft is the actual display renderer below both cameras, without reconnecting VDO.
+    const loadsBeforeDraft = feedLoads;
+    await overlay.evaluate(() => {
+      window.savedCasterFeeds = Array.from(
+        document.querySelectorAll(".cc-camera iframe"),
+      );
+    });
+    await control.waitForFunction(
+      () => !document.getElementById("caster-draft-show").disabled,
+    );
+    await control.click("#caster-draft-show");
+    await overlay.waitForFunction(
+      () =>
+        document.getElementById("casterStage").dataset.draftVisible === "true",
+    );
+    await overlay
+      .locator("#casterDesk")
+      .evaluate((e) => Promise.all(e.getAnimations().map((a) => a.finished)));
+    await overlay
+      .frameLocator("#casterDraft iframe")
+      .locator(".mainbox")
+      .waitFor({ state: "visible" });
+    await overlay
+      .frameLocator("#casterDraft iframe")
+      .locator("#timer")
+      .filter({ hasText: "18" })
+      .waitFor();
+    broadcast({
+      type: "update",
+      data: { draftdata: { timer: "17", timer_running: false } },
+    });
+    await overlay
+      .frameLocator("#casterDraft iframe")
+      .locator("#timer")
+      .filter({ hasText: "17" })
+      .waitFor();
+    await overlay.screenshot({ path: "/tmp/casters-with-draft.png" });
+    const cameraDraft = await overlay.locator("#casterWindow1").boundingBox();
+    const plateDraft = await overlay.locator(".cc-one").boundingBox();
+    const draftBounds = await overlay.locator("#casterDraft").boundingBox();
+    assert.ok(cameraDraft.width < 840 && cameraDraft.y < 100);
+    assert.ok(
+      plateDraft.y + plateDraft.height < draftBounds.y,
+      "draft sits below camera nameplates",
+    );
+    assert.equal(
+      await overlay.locator("#casterDraft iframe").getAttribute("src"),
+      "/draft-display.html?audio=0",
+    );
+    assert.equal(
+      feedLoads,
+      loadsBeforeDraft,
+      "showing draft never reconnects caster feeds",
+    );
+    assert.ok(
+      await overlay.evaluate(() =>
+        window.savedCasterFeeds.every(
+          (e, i) => e === document.querySelectorAll(".cc-camera iframe")[i],
+        ),
+      ),
+    );
+    await control.waitForFunction(
+      () => !document.getElementById("caster-draft-hide").disabled,
+    );
+    await control.click("#caster-draft-hide");
+    await overlay.locator("#casterDraft").waitFor({ state: "hidden" });
+    await overlay
+      .locator("#casterDesk")
+      .evaluate((e) => Promise.all(e.getAnimations().map((a) => a.finished)));
+    assert.equal(
+      (await overlay.locator("#casterWindow1").boundingBox()).width,
+      840,
+    );
+    await control.waitForFunction(
+      () => !document.getElementById("caster-draft-show").disabled,
+    );
+    await control.click("#caster-draft-show");
+    await overlay.waitForFunction(
+      () =>
+        document.getElementById("casterStage").dataset.draftVisible === "true",
+    );
+    await control.waitForFunction(
+      () => !document.getElementById("caster-2-off-air").disabled,
+    );
+    await control.click("#caster-2-off-air");
+    await overlay.waitForFunction(
+      () => document.querySelectorAll(".cc-camera iframe").length === 1,
+    );
+    await overlay
+      .locator("#casterDesk")
+      .evaluate((e) => Promise.all(e.getAnimations().map((a) => a.finished)));
+    await overlay
+      .locator("#casterWindow1")
+      .evaluate((e) => Promise.all(e.getAnimations().map((a) => a.finished)));
+    const soloDraft = await overlay.locator("#casterWindow1").boundingBox();
+    assert.ok(
+      Math.abs(soloDraft.x + soloDraft.width / 2 - 960) < 1,
+      "single caster centers above draft",
+    );
+    await control.waitForFunction(
+      () => !document.getElementById("caster-2-on-air").disabled,
+    );
+    await control.click("#caster-2-on-air");
+    await control.waitForFunction(
+      () => !document.getElementById("caster-draft-hide").disabled,
+    );
+    await control.click("#caster-draft-hide");
+    await overlay.locator("#casterDraft").waitFor({ state: "hidden" });
+    await overlay.waitForFunction(
+      () => document.querySelectorAll(".cc-camera iframe").length === 2,
     );
     await overlay.emulateMedia({ reducedMotion: "reduce" });
     assert.equal(
