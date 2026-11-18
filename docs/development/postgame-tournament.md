@@ -18,4 +18,4 @@ Result groups mirror the latest reference: blue-side bars then label, red-side l
 
 Fill direction mirrors the teams: blue wins start at the leftmost marker, red wins start at the rightmost marker. Both fill inward toward their result labels.
 
-A seven-second metallic reflection loops across the opaque frame surfaces: header, team strips, tournament rail, footer and side fillers. It does not cover the transparent capture opening. Score bars remain solid with no dedicated animation. Reduced motion disables the reflection.
+The frame reuses Match Winner's exact animation keyframes: seven-second narrow panel reflections, four-second winner border glow, six-second text-clipped POST GAME shine and six-second tournament rail light. Reflections remain behind content and clipped inside header/team/footer panels; nothing covers the transparent capture opening. Score bars stay solid. Reduced motion disables all effects.
