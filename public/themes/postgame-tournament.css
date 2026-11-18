@@ -1,0 +1,197 @@
+#postgameStage {
+  position: absolute;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: 0 0;
+  pointer-events: none;
+  background: transparent;
+  color: var(--mw-text, #edf1f6);
+}
+.pg-rail,
+.pg-header,
+.pg-footer,
+.pg-left-fill,
+.pg-right-fill {
+  position: absolute;
+  background: var(--mw-background, #080e1b);
+}
+.pg-rail {
+  left: 0;
+  top: 0;
+  width: 180px;
+  height: 1080px;
+  border-left: 7px solid var(--mw-left, #d8be83);
+  border-right: 1px solid var(--mw-border, #899bb4);
+  overflow: hidden;
+}
+#pgTournament {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  width: 800px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-transform: uppercase;
+  font:
+    700 54px/1.05 WinnerHeading,
+    Arial,
+    sans-serif;
+  overflow-wrap: anywhere;
+  overflow: hidden;
+  color: var(--mw-left, #d8be83);
+}
+.pg-rail > span {
+  position: absolute;
+  left: 22px;
+  bottom: 30px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--mw-muted, #92a3bd);
+}
+.pg-rail > span:last-child {
+  left: auto;
+  right: 16px;
+  top: 30px;
+  bottom: auto;
+  color: var(--mw-left, #d8be83);
+}
+.pg-header {
+  left: 180px;
+  top: 0;
+  width: 1740px;
+  height: 220px;
+  padding: 25px 60px 20px 80px;
+}
+.pg-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+}
+.pg-heading h1 {
+  font-size: 64px;
+  letter-spacing: 5px;
+  margin: 0;
+  color: var(--mw-left, #d8be83);
+}
+#pgGame {
+  padding: 12px 24px;
+  background: var(--mw-left, #d8be83);
+  color: var(--mw-accent-text, #0a1120);
+  font:
+    800 27px WinnerTeam,
+    Arial,
+    sans-serif;
+  letter-spacing: 3px;
+}
+.pg-teams {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  border-top: 1px solid var(--mw-border, #899bb4);
+  padding-top: 15px;
+  height: 75px;
+}
+.pg-team {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: var(--mw-right, #203550);
+  padding: 8px 16px;
+  height: 70px;
+  border-top: 3px solid var(--mw-left, #d8be83);
+}
+#pgRed {
+  justify-content: flex-end;
+}
+.pg-team img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+.pg-team strong {
+  font:
+    700 30px/1.05 WinnerTeam,
+    Arial,
+    sans-serif;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  max-height: 54px;
+  flex: 1;
+}
+#pgRed strong {
+  text-align: right;
+}
+.pg-team > span {
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: var(--mw-left, #d8be83);
+}
+.pg-team.is-defeated {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+.pg-vs {
+  font-size: 26px;
+  color: var(--mw-left, #d8be83);
+}
+.pg-left-fill {
+  left: 180px;
+  top: 220px;
+  width: 80px;
+  height: 800px;
+}
+.pg-right-fill {
+  left: 1860px;
+  top: 220px;
+  width: 60px;
+  height: 800px;
+}
+#resultsWindow {
+  position: absolute;
+  left: 260px;
+  top: 220px;
+  width: 1600px;
+  height: 800px;
+  background: transparent;
+  outline: 2px solid var(--mw-border, #899bb4);
+  outline-offset: -2px;
+}
+.pg-footer {
+  left: 180px;
+  top: 1020px;
+  width: 1740px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  padding: 0 60px 0 80px;
+  border-top: 1px solid var(--mw-border, #899bb4);
+  font-size: 13px;
+  letter-spacing: 3px;
+}
+.pg-footer strong {
+  background: var(--mw-left, #d8be83);
+  color: var(--mw-accent-text, #0a1120);
+  padding: 8px 15px;
+}
+.pg-footer > span {
+  color: var(--mw-muted, #92a3bd);
+}
+#pgWinner {
+  margin-left: auto;
+  max-width: 650px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--mw-text, #edf1f6);
+}

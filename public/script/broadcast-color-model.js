@@ -13,6 +13,7 @@
       "postdraft",
       "schedule",
       "matchwinner",
+      "postgame",
     ];
   const fields = {
     background: "Panel background",
@@ -137,6 +138,9 @@
       },
     ]),
   );
+  defaults.postgame = Object.fromEntries(
+    themes.map((id) => [id, { ...defaults.matchwinner[id] }]),
+  );
   function validColors(colors) {
     return (
       colors !== null &&
@@ -206,7 +210,7 @@
       );
     const vars = (names, value) =>
       names.split(",").forEach((name) => variables.push(name + ":" + value));
-    if (output === "matchwinner") {
+    if (output === "matchwinner" || output === "postgame") {
       for (const field of Object.keys(fields))
         vars("--mw-" + field, palette[field]);
       vars("--mw-left-dark", shade(palette.left, 0.72));
