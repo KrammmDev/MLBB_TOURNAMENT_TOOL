@@ -105,13 +105,32 @@ test(
         !document.getElementById("winnerLogoImg").hidden,
     );
     assert.equal(await page.locator("#gameNumber").textContent(), "GAME 2");
-    await page.locator("#winnerWrapper").evaluate(e => Promise.all(e.getAnimations().map(a=>a.finished)));
+    await page
+      .locator("#winnerWrapper")
+      .evaluate((e) => Promise.all(e.getAnimations().map((a) => a.finished)));
     assert.deepEqual(await page.locator("#winnerWrapper").boundingBox(), {
       x: 0,
       y: 0,
       width: 1920,
       height: 1080,
     });
+    const shine = () =>
+      page
+        .locator(".winning-team")
+        .evaluate((e) => getComputedStyle(e, "::after").transform);
+    const beforeShine = await shine();
+    await page.waitForTimeout(300);
+    assert.notEqual(
+      await shine(),
+      beforeShine,
+      "metallic reflection moves over time",
+    );
+    assert.equal(
+      await page
+        .locator(".losing-team")
+        .evaluate((e) => getComputedStyle(e).animationName),
+      "none",
+    );
     for (const socket of wss.clients)
       socket.send(
         JSON.stringify({
@@ -261,6 +280,18 @@ test(
       "true",
     );
     await page.emulateMedia({ reducedMotion: "reduce" });
+    assert.equal(
+      await page
+        .locator(".winning-team")
+        .evaluate((e) => getComputedStyle(e).animationName),
+      "none",
+    );
+    assert.equal(
+      await page
+        .locator(".winning-team")
+        .evaluate((e) => getComputedStyle(e, "::after").animationName),
+      "none",
+    );
     data.winmatches = "red";
     data.teamdata.redteam.logo = "javascript:alert(1)";
     send();

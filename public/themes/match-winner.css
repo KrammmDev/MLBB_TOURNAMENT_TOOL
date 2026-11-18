@@ -341,3 +341,139 @@ body {
     transform: none;
   }
 }
+/* Moving reflections stay inside the result surfaces, behind the team content. */
+.winning-team {
+  isolation: isolate;
+  animation: mw-winner-glow 4s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.winning-team > * {
+  position: relative;
+  z-index: 1;
+}
+.winning-team::after {
+  content: "";
+  position: absolute;
+  top: -25%;
+  left: -50%;
+  width: 32%;
+  height: 150%;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    transparent
+  );
+  transform: translateX(0) skewX(-18deg);
+  animation: mw-metal-sweep 7s linear infinite;
+  animation-play-state: paused;
+}
+.victory-heading {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.victory-heading::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    110deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.28) 49%,
+    transparent 60%
+  );
+  background-size: 300% 100%;
+  background-position: 150% 0;
+  mix-blend-mode: screen;
+  animation: mw-title-sweep 6s linear infinite;
+  animation-play-state: paused;
+}
+.tournament-rail::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 7px;
+  height: 120px;
+  background: linear-gradient(
+    transparent,
+    var(--mw-left, #d8be83),
+    #fff,
+    var(--mw-left, #d8be83),
+    transparent
+  );
+  pointer-events: none;
+  animation: mw-rail-light 6s linear infinite;
+  animation-play-state: paused;
+}
+.is-visible .winning-team,
+.is-visible .winning-team::after,
+.is-visible .victory-heading::after,
+.is-visible .tournament-rail::after {
+  animation-play-state: running;
+}
+@keyframes mw-metal-sweep {
+  0% {
+    transform: translateX(0) skewX(-18deg);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  45% {
+    transform: translateX(550%) skewX(-18deg);
+    opacity: 1;
+  }
+  48%,
+  100% {
+    transform: translateX(550%) skewX(-18deg);
+    opacity: 0;
+  }
+}
+@keyframes mw-winner-glow {
+  0%,
+  100% {
+    box-shadow:
+      inset 0 4px var(--mw-left, #d7bd81),
+      inset 0 0 15px transparent;
+  }
+  50% {
+    box-shadow:
+      inset 0 4px var(--mw-left, #d7bd81),
+      inset 0 0 35px var(--mw-left-dark, #aa8746);
+  }
+}
+@keyframes mw-title-sweep {
+  0% {
+    background-position: 150% 0;
+  }
+  55%,
+  100% {
+    background-position: -150% 0;
+  }
+}
+@keyframes mw-rail-light {
+  from {
+    transform: translateY(-120px);
+  }
+  to {
+    transform: translateY(1080px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .winning-team,
+  .winning-team::after,
+  .victory-heading::after,
+  .tournament-rail::after {
+    animation: none;
+  }
+  .winning-team::after,
+  .victory-heading::after,
+  .tournament-rail::after {
+    display: none;
+  }
+}
