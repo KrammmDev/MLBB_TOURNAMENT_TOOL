@@ -62,13 +62,21 @@ test(
     app.get("/api/matchdata", (q, s) =>
       s.json(require("./fixtures").fixture()),
     );
+    let brandingLogo = "11111111-1111-4111-8111-111111111111.png";
+    app.get(/^\/scoreboard-branding\//, (q, s) =>
+      s
+        .type("svg")
+        .send(
+          '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="red"/></svg>',
+        ),
+    );
     app.get("/api/scoreboard-branding", (q, s) =>
       s.json({
         data: {
           schemaVersion: 1,
           patchLabel: "",
           casterNames: "",
-          logoFile: null,
+          logoFile: brandingLogo,
         },
         revision: '"0"',
       }),
@@ -138,6 +146,34 @@ test(
     await overlay.locator("#casterFrame").waitFor({ state: "visible" });
     assert.equal(await overlay.locator("#casterName1").textContent(), "Athena");
     assert.equal(await overlay.locator("#casterName2").textContent(), "Wolf");
+    await overlay.waitForFunction(() =>
+      Array.from(document.querySelectorAll(".cc-tournament-logo")).every(
+        (i) => !i.hidden && i.naturalWidth > 0,
+      ),
+    );
+    assert.equal(await overlay.locator(".cc-mark").first().textContent(), "");
+    brandingLogo = "22222222-2222-4222-8222-222222222222.png";
+    broadcast({
+      type: "scoreboard_branding_update",
+      data: { logoFile: brandingLogo },
+    });
+    await overlay.waitForFunction(
+      (file) =>
+        Array.from(document.querySelectorAll(".cc-tournament-logo")).every(
+          (i) => i.getAttribute("src").endsWith(file) && !i.hidden,
+        ),
+      brandingLogo,
+    );
+    broadcast({
+      type: "scoreboard_branding_update",
+      data: { logoFile: "../../bad.png" },
+    });
+    assert.ok(
+      (
+        await overlay.locator(".cc-tournament-logo").first().getAttribute("src")
+      ).endsWith(brandingLogo),
+    );
+
     await overlay.waitForFunction(
       () => document.querySelectorAll(".cc-camera iframe").length === 2,
     );
@@ -232,6 +268,13 @@ test(
         omitBackground: true,
       });
     }
+    brandingLogo = null;
+    broadcast({ type: "scoreboard_branding_update", data: { logoFile: null } });
+    await overlay.waitForFunction(() =>
+      Array.from(document.querySelectorAll(".cc-tournament-logo")).every(
+        (i) => i.hidden && !i.hasAttribute("src"),
+      ),
+    );
     await control.locator("#color-left").evaluate((e) => {
       e.value = "#11bb77";
       e.dispatchEvent(new Event("input", { bubbles: true }));

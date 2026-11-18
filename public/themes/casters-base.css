@@ -290,3 +290,14 @@ body {
     transform: none;
   }
 }
+
+.cc-mark .cc-tournament-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 10px;
+  display: block;
+}
+.cc-mark .cc-tournament-logo[hidden] {
+  display: none;
+}
