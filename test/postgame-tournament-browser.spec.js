@@ -16,6 +16,8 @@ test(
       writes = [];
     let data = require("./fixtures").fixture();
     data.winmatches = "blue";
+    data.teamdata.blueteam.score = "1";
+    data.teamdata.redteam.score = "0";
     data.teamdata.blueteam.teamname = "BLUE TITANS";
     data.teamdata.redteam.teamname = "RED PHOENIX";
     const {
@@ -92,6 +94,7 @@ test(
     };
     data.winmatches = "red";
     data.game_number = 3;
+    data.teamdata.redteam.score = "2";
     data.teamdata.redteam.teamname = "<b>CHAMPIONS</b>";
     send({ type: "matchdata_update", data });
     send({
@@ -103,6 +106,8 @@ test(
     );
     assert.equal(await page.locator("#pgRedName b").count(), 0);
     assert.equal(await page.locator("#pgRedResult").textContent(), "VICTORY");
+    assert.equal(await page.locator("#pgBlueScore").textContent(), "1");
+    assert.equal(await page.locator("#pgRedScore").textContent(), "2");
     assert.equal(
       await page.locator("#pgTournament").textContent(),
       "LCUAA CHAMPIONSHIP",

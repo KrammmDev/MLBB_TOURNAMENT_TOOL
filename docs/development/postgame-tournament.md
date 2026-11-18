@@ -9,3 +9,5 @@ Hub → Control Panel → **Post Game Tournament Colors** opens `/postgame-tourn
 The frame stays visible even before a winner is selected. With no winner selected it shows neutral team labels; selecting a winner marks VICTORY/DEFEAT and dims the losing header. Missing logos are hidden while team names remain visible.
 
 Validation: `MLBB_TEST_BROWSER=/usr/bin/chromium node --test test/postgame-tournament-browser.spec.js` verifies transparent window geometry, no opaque overlap, live winner/title/team changes, plain text labels, independent color saving, responsive scaling and a read-only overlay feed.
+
+The header displays LINE SCORE using each team’s `score` field from the Control Panel. It updates live, including score decreases/corrections, and is separate from the kill totals in the captured results screen. Missing/invalid scores display 0.

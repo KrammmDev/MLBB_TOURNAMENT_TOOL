@@ -51,6 +51,9 @@
         team.teamname || team.name || own.toUpperCase() + " TEAM",
       );
       picture($(prefix + "Logo"), team.logo);
+      const score = Number.parseInt(team.score, 10);
+      $(prefix + "Score").textContent =
+        Number.isFinite(score) && score >= 0 ? String(score) : "0";
       $(prefix).classList.toggle("is-defeated", selected && side !== own);
       $(prefix + "Result").textContent = selected
         ? side === own
