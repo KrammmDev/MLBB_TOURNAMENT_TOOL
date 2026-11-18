@@ -213,19 +213,18 @@
   display: block;
   width: 10px;
   height: 30px;
-  border: 2px solid currentColor;
+  border: 0;
   opacity: 1;
-  background: transparent;
+  background: #85888f;
 }
 #pgBlueMarks .pg-win-mark {
-  transform: skewX(25deg);
+  transform: skewX(-25deg);
 }
 #pgRedMarks .pg-win-mark {
-  transform: skewX(-25deg);
+  transform: skewX(25deg);
 }
 .pg-win-mark.is-won {
   background: var(--mw-left, #d8be83);
-  border-color: var(--mw-left, #d8be83);
   opacity: 1;
 }
 
@@ -239,7 +238,4 @@
 }
 .pg-score-marks {
   color: var(--mw-text, #edf1f6);
-}
-.pg-win-mark.is-won {
-  box-shadow: 0 0 7px var(--mw-left, #d8be83);
 }

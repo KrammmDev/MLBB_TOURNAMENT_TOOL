@@ -10,6 +10,6 @@ The frame stays visible even before a winner is selected. With no winner selecte
 
 Validation: `MLBB_TEST_BROWSER=/usr/bin/chromium node --test test/postgame-tournament-browser.spec.js` verifies transparent window geometry, no opaque overlap, live winner/title/team changes, plain text labels, independent color saving, responsive scaling and a read-only overlay feed.
 
-The slash markers sit directly beside the VICTORY/DEFEAT labels. They follow `matchFormat` and each team's `score` from `control.html`: BO1=1 slot, BO3=2, BO5=3, BO7=4 (fallback BO3). Filled slashes represent wins; dim outlines represent remaining wins needed. Both teams update immediately, including score reductions and format changes. No separate center LINE SCORE block or visible score numbers are shown. Values are clamped to the series target.
+The slash markers sit directly beside the VICTORY/DEFEAT labels. They follow `matchFormat` and each team's `score` from `control.html`: BO1=1 slot, BO3=2, BO5=3, BO7=4 (fallback BO3). Filled slashes represent wins; solid gray bars represent remaining wins needed. Both teams update immediately, including score reductions and format changes. No separate center LINE SCORE block or visible score numbers are shown. Values are clamped to the series target.
 
-For readability, slash slots use 10×30px shapes with 2px outlines at full opacity; wins have accent fill and a subtle glow. Defeated names/logos stay dimmed and grayscale, while result labels and markers retain full opacity.
+For readability, slash slots use 10×30px shapes with solid gray fills at full opacity; wins have accent fill. Defeated names/logos stay dimmed and grayscale, while result labels and markers retain full opacity.

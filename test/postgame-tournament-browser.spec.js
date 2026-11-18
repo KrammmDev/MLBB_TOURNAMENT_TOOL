@@ -119,7 +119,7 @@ test(
         .locator("#pgBlueMarks .pg-win-mark")
         .first()
         .evaluate((e) => getComputedStyle(e).borderLeftWidth),
-      "2px",
+      "0px",
     );
     assert.equal(
       await page
@@ -131,6 +131,7 @@ test(
 
     assert.equal(await page.locator("#pgBlueMarks .pg-win-mark").count(), 3);
     assert.equal(await page.locator("#pgBlueMarks .is-won").count(), 1);
+    assert.equal(await page.locator("#pgBlueMarks .pg-win-mark:not(.is-won)").first().evaluate(e=>getComputedStyle(e).backgroundColor), "rgb(133, 136, 143)");
     assert.equal(await page.locator("#pgRedMarks .is-won").count(), 2);
     assert.equal(await page.locator("#pgBlueResult").textContent(), "DEFEAT");
     for (const [format, slots] of [
