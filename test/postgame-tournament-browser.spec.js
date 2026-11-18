@@ -108,10 +108,39 @@ test(
     assert.equal(await page.locator("#pgRedName b").count(), 0);
     assert.equal(await page.locator("#pgRedResult").textContent(), "VICTORY");
     assert.equal(await page.locator(".pg-line-score").count(), 0);
-    const blueMarkBox=await page.locator("#pgBlueMarks").boundingBox(), blueLabelBox=await page.locator("#pgBlueResult").boundingBox();
-    const redMarkBox=await page.locator("#pgRedMarks").boundingBox(),redLabelBox=await page.locator("#pgRedResult").boundingBox();
-    assert.ok(blueMarkBox.x+blueMarkBox.width<blueLabelBox.x,"left bars precede result text");
-    assert.ok(redLabelBox.x+redLabelBox.width<redMarkBox.x,"right bars follow result text");
+    const reflection = () =>
+      page
+        .locator("#pgBlueMarks .pg-win-mark")
+        .first()
+        .evaluate((e) => getComputedStyle(e, "::after").transform);
+    const beforeReflection = await reflection();
+    await page.waitForTimeout(200);
+    assert.notEqual(
+      await reflection(),
+      beforeReflection,
+      "bar reflection moves",
+    );
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    assert.equal(
+      await page
+        .locator("#pgBlueMarks .pg-win-mark")
+        .first()
+        .evaluate((e) => getComputedStyle(e, "::after").animationName),
+      "none",
+    );
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    const blueMarkBox = await page.locator("#pgBlueMarks").boundingBox(),
+      blueLabelBox = await page.locator("#pgBlueResult").boundingBox();
+    const redMarkBox = await page.locator("#pgRedMarks").boundingBox(),
+      redLabelBox = await page.locator("#pgRedResult").boundingBox();
+    assert.ok(
+      blueMarkBox.x + blueMarkBox.width < blueLabelBox.x,
+      "left bars precede result text",
+    );
+    assert.ok(
+      redLabelBox.x + redLabelBox.width < redMarkBox.x,
+      "right bars follow result text",
+    );
     assert.equal(
       await page
         .locator("#pgBlueMarks")
@@ -155,9 +184,18 @@ test(
       "rgb(133, 136, 143)",
     );
     assert.equal(await page.locator("#pgRedMarks .is-won").count(), 2);
-    const firstRedMark=await page.locator("#pgRedMarks .pg-win-mark").first().boundingBox();
-    const lastRedMark=await page.locator("#pgRedMarks .pg-win-mark").last().boundingBox();
-    assert.ok(firstRedMark.x>lastRedMark.x,"red wins fill from the far right toward the label");
+    const firstRedMark = await page
+      .locator("#pgRedMarks .pg-win-mark")
+      .first()
+      .boundingBox();
+    const lastRedMark = await page
+      .locator("#pgRedMarks .pg-win-mark")
+      .last()
+      .boundingBox();
+    assert.ok(
+      firstRedMark.x > lastRedMark.x,
+      "red wins fill from the far right toward the label",
+    );
     assert.equal(await page.locator("#pgBlueResult").textContent(), "DEFEAT");
     for (const [format, slots] of [
       [1, 1],

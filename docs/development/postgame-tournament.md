@@ -17,3 +17,5 @@ For readability, slash slots use 8×26px shapes with solid gray fills at full op
 Result groups mirror the latest reference: blue-side bars then label, red-side label then bars, with opposite slants. Bars use compact 4px gaps. BO format and score behavior are unchanged.
 
 Fill direction mirrors the teams: blue wins start at the leftmost marker, red wins start at the rightmost marker. Both fill inward toward their result labels.
+
+Each slanted score bar has a clipped metallic reflection looping every 4.5 seconds, slightly staggered between bars. The gray/accent base fill remains intact. Reduced motion hides the reflection.
