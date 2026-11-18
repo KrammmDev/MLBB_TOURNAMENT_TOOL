@@ -273,7 +273,7 @@ test(
       ]) {
         assert.deepEqual(await overlay.locator(selector).boundingBox(), {
           x,
-          y: id === "studio" ? 340 : 230,
+          y: id === "studio" ? 340 : id === "classic" ? 160 : 230,
           width: 840,
           height: id === "studio" ? 472.5 : 560,
         });
@@ -292,6 +292,29 @@ test(
           (f) => f.contentWindow,
         ),
       );
+      if (id === "classic") {
+        await overlay.locator(".cc-header").waitFor({ state: "hidden" });
+        await overlay.locator(".cc-footer").waitFor({ state: "hidden" });
+        for (const [cameraId, plateClass] of [
+          ["#casterWindow1", ".cc-one"],
+          ["#casterWindow2", ".cc-two"],
+        ]) {
+          const camera = await overlay.locator(cameraId).boundingBox();
+          const plate = await overlay.locator(plateClass).boundingBox();
+          assert.equal(plate.x, camera.x);
+          assert.equal(plate.width, camera.width);
+          assert.ok(
+            plate.y > camera.y + camera.height,
+            "Classic angular plates sit below camera frames",
+          );
+          assert.notEqual(
+            await overlay
+              .locator(plateClass)
+              .evaluate((e) => getComputedStyle(e).clipPath),
+            "none",
+          );
+        }
+      }
       if (id === "studio") {
         const logo = await overlay.locator(".cc-header-logo").boundingBox();
         assert.equal(

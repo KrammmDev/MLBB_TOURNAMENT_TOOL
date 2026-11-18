@@ -119,7 +119,7 @@
       if (output() === "casters")
         Object.assign(details, {
           classic:
-            "Championship desk · framed gold plates · centered broadcast header",
+            "Carbon esports stage · neon corner rails · angular caster plates",
           arena:
             "World stage · blue stage lighting · mirrored white/cyan nameplates",
           studio:
@@ -147,7 +147,7 @@
         });
       if (output() === "casters")
         Object.assign(colors, {
-          classic: ["#0d1422", "#d9bd7b", "#edf1f6"],
+          classic: ["#080c12", "#c8ff42", "#39c6ff"],
           arena: ["#061a52", "#16c8ef", "#2361ff"],
           studio: ["#39247b", "#d8b740", "#ffffff"],
         });
