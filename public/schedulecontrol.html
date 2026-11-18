@@ -546,6 +546,7 @@
     <header class="topbar">
       <div class="brand">
         <span class="status-dot"></span>
+        <span id="schedule-sync-status" role="status">Connecting…</span>
         <h1>Schedule Control Panel</h1>
       </div>
       <div class="top-actions">
@@ -596,6 +597,7 @@
       const DEFAULT_LOGO = "Assets/Other/transparent.png";
       const TOTAL_SCHEDULES = 8;
       let currentTab = 1;
+      const scheduleCache = new Map();
 
       // ============================================
       // Generate sidebar + editors dynamically
@@ -747,7 +749,9 @@
         if (file) {
           const reader = new FileReader();
           reader.onload = function (e) {
+            if (fileInput.files[0] !== file) return;
             imgElement.src = e.target.result;
+            fileInput.value = ""; // Allow choosing the same filename again after editing it.
             saveSchedule(scheduleNum);
           };
           reader.readAsDataURL(file);
@@ -765,7 +769,9 @@
         if (file) {
           const reader = new FileReader();
           reader.onload = function (e) {
+            if (fileInput.files[0] !== file) return;
             imgElement.src = e.target.result;
+            fileInput.value = ""; // Allow choosing the same filename again after editing it.
             saveSchedule(1);
           };
           reader.readAsDataURL(file);
@@ -775,7 +781,7 @@
       // unang schedule na may castersImg), para hindi ma-duplicate sa localStorage.
 
       // ============================================
-      // Save schedule -> localStorage (crosshost.js handles the sync)
+      // Save locally and publish schedule-only live updates
       // ============================================
       function saveSchedule(scheduleNum) {
         const scheduleData = {
@@ -795,6 +801,10 @@
               : false,
         };
 
+        scheduleCache.set(
+          `schedule-${scheduleNum}`,
+          JSON.stringify(scheduleData),
+        );
         try {
           localStorage.setItem(
             `schedule-${scheduleNum}`,
@@ -806,8 +816,11 @@
             "Puno na ang storage! Gumamit ng mas maliit na image (logo/casters) o i-reset ang ibang schedule.",
           );
         }
+        ScheduleControlSync.publish(
+          `schedule-${scheduleNum}`,
+          JSON.stringify(scheduleData),
+        );
         refreshListItem(scheduleNum);
-        console.log(`💾 Saved schedule-${scheduleNum} to localStorage`);
       }
 
       // ============================================
@@ -840,10 +853,27 @@
       // ============================================
       function loadSchedules() {
         let castersLoaded = false;
+        document.getElementById("casters-img").src = DEFAULT_LOGO;
+        document.getElementById("show-casters").checked = false;
         const stale = [];
         for (let i = 1; i <= TOTAL_SCHEDULES; i++) {
-          const raw = localStorage.getItem(`schedule-${i}`);
-          if (!raw) continue;
+          const cacheKey = `schedule-${i}`;
+          if (!scheduleCache.has(cacheKey)) {
+            try {
+              scheduleCache.set(cacheKey, localStorage.getItem(cacheKey));
+            } catch {
+              scheduleCache.set(cacheKey, null);
+            }
+          }
+          const raw = scheduleCache.get(cacheKey);
+          if (!raw) {
+            document.getElementById(`show-${i}`).checked = false;
+            for (const field of ["time", "team1", "team2", "score1", "score2"])
+              document.getElementById(`${field}-${i}`).value = "";
+            document.getElementById(`logo1-${i}`).src = DEFAULT_LOGO;
+            document.getElementById(`logo2-${i}`).src = DEFAULT_LOGO;
+            continue;
+          }
 
           try {
             const data = JSON.parse(raw);
@@ -852,20 +882,22 @@
             document.getElementById(`time-${i}`).value = data.time || "";
 
             const logo1Src =
-              data.logo1 && data.logo1.length > 100 ? data.logo1 : DEFAULT_LOGO;
+              RosterModel.safeImage(data.logo1) || DEFAULT_LOGO;
             document.getElementById(`logo1-${i}`).src = logo1Src;
             document.getElementById(`team1-${i}`).value = data.team1 || "";
             document.getElementById(`score1-${i}`).value = data.score1 || "";
 
             const logo2Src =
-              data.logo2 && data.logo2.length > 100 ? data.logo2 : DEFAULT_LOGO;
+              RosterModel.safeImage(data.logo2) || DEFAULT_LOGO;
             document.getElementById(`logo2-${i}`).src = logo2Src;
             document.getElementById(`team2-${i}`).value = data.team2 || "";
             document.getElementById(`score2-${i}`).value = data.score2 || "";
 
             // Casters: kunin sa unang schedule na may naka-save
             const hasCastersImg =
-              data.castersImg && data.castersImg.length > 100;
+              RosterModel.safeImage(data.castersImg) &&
+              new URL(data.castersImg, location.href).href !==
+                new URL(DEFAULT_LOGO, location.href).href;
             if (!castersLoaded && hasCastersImg) {
               document.getElementById("casters-img").src = data.castersImg;
               castersLoaded = true;
@@ -893,9 +925,28 @@
       window.onload = () => {
         generateTabs();
         loadSchedules();
+        ScheduleControlSync.start(
+          (changes) => {
+            for (const [key, value] of Object.entries(changes)) {
+              const raw = value === null ? null
+                : typeof value === "string" ? value : JSON.stringify(value);
+              scheduleCache.set(key, raw);
+              try {
+                if (raw === null) localStorage.removeItem(key);
+                else localStorage.setItem(key, raw);
+              } catch {}
+            }
+            loadSchedules();
+          },
+          (text) => {
+            document.getElementById("schedule-sync-status").textContent = text;
+          },
+        );
       };
     </script>
 
-    <script src="crosshost.js"></script>
+    <script src="script/roster-model.js"></script>
+    <script src="script/schedule-control-sync.js"></script>
   </body>
 </html>
+

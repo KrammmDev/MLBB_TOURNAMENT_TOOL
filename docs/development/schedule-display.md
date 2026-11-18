@@ -53,3 +53,9 @@ Arena’s base panel surfaces are now flat palette colors, removing the stationa
 Arena bundles Google Fonts’ Chakra Petch Bold (display headings) and Oxanium (geometric team names, metadata and tabular clock/score numbers) under public/fonts/arena, with each SIL OFL license. These are alternatives matching the requested geometric/esports style, not the exact screenshot fonts. Local WOFF2 files avoid a runtime font-CDN dependency. Font sources: https://fonts.google.com/specimen/Chakra+Petch and https://fonts.google.com/specimen/Oxanium.
 
 Arena display headings now use bundled Chakra Petch Bold for upright, chamfered letterforms inspired by the KNOCKOUT STAGE reference. This is an approximation, not a confirmed identification of the pictured font. Oxanium remains on team names and numbers; font sources and OFL license are included locally.
+
+## Schedule Control live edits
+
+Schedule Control uses an explicit same-origin WebSocket transport for schedule-1 through schedule-8. Every field/file change publishes a short debounced update without toggling Show on Display. The transport reconnects and queues edits made while disconnected, imports legacy local schedules only if the server has none, and never uploads unrelated browser settings. Server snapshots win over stale browser caches; received changes do not echo back. Caster/logo previews update after the chosen file is read, and image visibility recovers when the same image is hidden then shown again.
+
+`MLBB_TEST_BROWSER=/usr/bin/chromium node --test test/schedule-control-browser.spec.js` exercises the actual controller and display in separate browser contexts, including caster replacement, live match edits and reconnect.
