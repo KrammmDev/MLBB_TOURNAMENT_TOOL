@@ -160,12 +160,12 @@
       border: "#2388ff",
     },
     studio: {
-      background: "#f2f2f0",
-      left: "#ed3524",
-      right: "#f1cf50",
-      text: "#161616",
-      muted: "#535353",
-      border: "#b9bbc2",
+      background: "#39247b",
+      left: "#43308d",
+      right: "#d8b740",
+      text: "#ffffff",
+      muted: "#ddd8ee",
+      border: "#f4df87",
     },
   };
   function validColors(colors) {
