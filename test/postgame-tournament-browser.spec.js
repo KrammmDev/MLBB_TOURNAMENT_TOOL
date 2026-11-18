@@ -16,6 +16,7 @@ test(
       writes = [];
     let data = require("./fixtures").fixture();
     data.winmatches = "blue";
+    data.matchFormat = 5;
     data.teamdata.blueteam.score = "1";
     data.teamdata.redteam.score = "0";
     data.teamdata.blueteam.teamname = "BLUE TITANS";
@@ -106,8 +107,18 @@ test(
     );
     assert.equal(await page.locator("#pgRedName b").count(), 0);
     assert.equal(await page.locator("#pgRedResult").textContent(), "VICTORY");
-    assert.equal(await page.locator("#pgBlueScore").textContent(), "1");
-    assert.equal(await page.locator("#pgRedScore").textContent(), "2");
+    assert.equal(await page.locator("#pgBlueScore .is-won").count(), 1);
+    assert.equal(await page.locator("#pgRedScore .is-won").count(), 2);
+    assert.equal(await page.locator("#pgBlueScore .pg-win-mark").count(), 3);
+    assert.equal((await page.locator("#pgBlueScore").textContent()).trim(), "");
+    data.matchFormat = 7;
+    data.teamdata.redteam.score = "0";
+    send({ type: "matchdata_update", data });
+    await page.waitForFunction(
+      () =>
+        document.querySelectorAll("#pgRedScore .pg-win-mark").length === 4 &&
+        document.querySelectorAll("#pgRedScore .is-won").length === 0,
+    );
     assert.equal(
       await page.locator("#pgTournament").textContent(),
       "LCUAA CHAMPIONSHIP",
