@@ -381,9 +381,9 @@ footer {
 
 /* Bundled geometric display fonts: available to the OBS browser offline. */
 @font-face {
-  font-family: "Arena Russo";
-  src: url("/fonts/arena/RussoOne.woff2") format("woff2");
-  font-weight: 400;
+  font-family: "Arena Chakra";
+  src: url("/fonts/arena/ChakraPetch-Bold.woff2") format("woff2");
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
@@ -395,23 +395,23 @@ footer {
   font-display: swap;
 }
 #schedule-event {
-  font-family: "Arena Russo", Arial, sans-serif;
-  font-size: 36px;
-  font-weight: 400;
+  font-family: "Arena Chakra", Arial, sans-serif;
+  font-size: 42px;
+  font-weight: 700;
   line-height: 1.15;
   letter-spacing: 0.4px;
 }
 #schedule-context {
-  font-family: "Arena Oxanium", Arial, sans-serif;
-  font-size: 28px;
+  font-family: "Arena Chakra", Arial, sans-serif;
+  font-size: 30px;
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: 0.6px;
 }
 #schedule-talents h2,
 #schedule-heading {
-  font-family: "Arena Russo", Arial, sans-serif;
-  font-weight: 400;
+  font-family: "Arena Chakra", Arial, sans-serif;
+  font-weight: 700;
 }
 #schedule-heading {
   font-size: 21px;
