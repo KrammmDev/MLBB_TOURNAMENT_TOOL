@@ -813,6 +813,7 @@
       const controlFiles = [
         "ocr-control.html",
         "broadcast-themes.html",
+        "production-panel.html",
         "control.html",
         "controlban6.html",
         "controller.html",
@@ -839,6 +840,7 @@
         "group-viewer.html",
       ];
       const utilityFiles = [
+        "production-timer.html",
         "postgame.html",
         "mvpdisplay.html",
         "scheduledisplay.html",
@@ -894,10 +896,16 @@
 
       // --- CARD GENERATOR ---
       function createCard(filename, type) {
-        const title = filename
-          .replace(".html", "")
-          .replace(/([A-Z])/g, " $1")
-          .replace(/^./, (str) => str.toUpperCase());
+        const toolTitles = {
+          "production-panel.html": "Production Timer Control",
+          "production-timer.html": "Production Timer Overlay",
+        };
+        const title =
+          toolTitles[filename] ||
+          filename
+            .replace(".html", "")
+            .replace(/([A-Z])/g, " $1")
+            .replace(/^./, (str) => str.toUpperCase());
 
         const initials = title
           .split(" ")
