@@ -61,6 +61,24 @@ test(
       "BLUE TITANS",
     );
     assert.equal(await page.locator("#pgRedResult").textContent(), "DEFEAT");
+    await page.waitForFunction(
+      () =>
+        getComputedStyle(document.body)
+          .getPropertyValue("--mw-background")
+          .trim() === "#ffffff",
+    );
+    assert.equal(
+      await page
+        .locator(".pg-header")
+        .evaluate((e) => getComputedStyle(e).backgroundSize),
+      "1920px 1080px",
+    );
+    assert.equal(
+      await page
+        .locator(".pg-heading h1")
+        .evaluate((e) => getComputedStyle(e).backgroundClip),
+      "text",
+    );
     assert.equal(
       await page.locator("#pgRed").evaluate((e) => getComputedStyle(e).filter),
       "grayscale(1)",
@@ -245,6 +263,9 @@ test(
     await control.waitForFunction(
       () => !document.getElementById("save").disabled,
     );
+    await control.click("#silver-green-preset");
+    assert.equal(await control.locator("#color-background").inputValue(), "#ffffff");
+    assert.equal(store.snapshot().data.palettes.arena?.postgame, undefined);
     await control.locator("#color-left").evaluate((e) => {
       e.value = "#11cc44";
       e.dispatchEvent(new Event("input"));
