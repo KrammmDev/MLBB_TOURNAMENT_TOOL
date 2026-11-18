@@ -164,6 +164,46 @@ test(
           1900,
           "video keeps a 20px right margin",
         );
+        assert.equal(await page.locator("footer").isVisible(), false);
+        const crawl = await page.locator("#schedule-ticker").boundingBox();
+        const bottomRow = await page.locator(".schedule-sidebar").boundingBox();
+        assert.equal(crawl.x, 20);
+        assert.equal(crawl.width, 1880);
+        assert.equal(crawl.x + crawl.width, 1900);
+        assert.ok(crawl.y >= bottomRow.y + bottomRow.height);
+        assert.ok(crawl.y + crawl.height <= 1080);
+        const arenaGroups = await page
+          .locator("#schedule-ticker-track span")
+          .allTextContents();
+        assert.equal(arenaGroups.length, 2);
+        assert.equal(arenaGroups[0], arenaGroups[1]);
+        assert.ok(
+          await page
+            .locator("#schedule-ticker-track span")
+            .first()
+            .evaluate(
+              (e) =>
+                e.getBoundingClientRect().width >=
+                document
+                  .getElementById("schedule-ticker")
+                  .getBoundingClientRect().width,
+            ),
+          "each ticker group fills the wider Arena strip",
+        );
+        await page
+          .locator("#schedule-ticker-track")
+          .evaluate((e) => (window.arenaCrawl = e.getAnimations()[0]));
+        await page.waitForTimeout(1100);
+        assert.equal(
+          await page
+            .locator("#schedule-ticker-track")
+            .evaluate(
+              (e) =>
+                !!window.arenaCrawl &&
+                e.getAnimations()[0] === window.arenaCrawl,
+            ),
+          true,
+        );
         const casters = await page.locator("#schedule-talents").boundingBox();
         assert.ok(casters.x + casters.width < slot.x);
         assert.equal(casters.width, 620);

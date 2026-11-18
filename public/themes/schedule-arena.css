@@ -140,7 +140,7 @@ body {
 }
 .schedule-sidebar {
   left: 20px;
-  top: 910px;
+  top: 890px;
   width: 1570px;
   height: 145px;
   display: grid;
@@ -238,7 +238,7 @@ body {
   display: flex;
   position: absolute;
   left: 1610px;
-  top: 910px;
+  top: 890px;
   width: 290px;
   height: 145px;
   flex-direction: column;
@@ -262,26 +262,44 @@ body {
   height: 85px;
   object-fit: contain;
 }
+/* Arena uses the full-width crawl below the fixtures, without a headline band. */
 footer {
-  left: auto;
-  right: 20px;
-  top: 887px;
-  width: 1220px;
-  height: 18px;
-  padding: 0 12px;
-  background: linear-gradient(
-    100deg,
-    var(--sc-left),
-    color-mix(in srgb, var(--sc-left) 75%, black)
-  );
-  color: var(--sc-left-text, #fff);
-  border: 0;
+  display: none;
 }
-#schedule-footer {
+#schedule-ticker {
+  display: block;
+  position: absolute;
+  left: 20px;
+  top: 1043px;
+  width: 1880px;
+  height: 27px;
+  overflow: hidden;
+  border-top: 1px solid var(--sc-border);
+  background: var(--arena-metal);
+  color: var(--sc-text);
+  box-shadow: var(--arena-edge);
+}
+#schedule-ticker-track {
+  display: flex;
+  width: max-content;
+  animation: arena-schedule-crawl 25s linear infinite;
+}
+#schedule-ticker-track span {
+  flex-shrink: 0;
+  white-space: pre;
   font:
-    700 13px/18px Arial,
+    20px/26px Arial,
     sans-serif;
-  letter-spacing: 0.5px;
+}
+@keyframes arena-schedule-crawl {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #schedule-ticker-track {
+    animation: none;
+  }
 }
 #schedule-partners {
   height: 145px;

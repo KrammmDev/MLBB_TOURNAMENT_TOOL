@@ -289,7 +289,11 @@
   }
   function ticker(data) {
     const text = typeof data.ticker === "string" ? data.ticker.trim() : "";
-    const next = JSON.stringify([text, data.tickerSeconds]);
+    const next = JSON.stringify([
+      text,
+      data.tickerSeconds,
+      document.body.dataset.scheduleTheme,
+    ]);
     $("schedule-ticker").hidden = !text;
     if (tickerKey === next) return;
     tickerKey = next;
@@ -302,7 +306,7 @@
     group.textContent = copy;
     track.append(group);
     const measure = document.createElement("canvas").getContext("2d");
-    measure.font = "24px Arial";
+    measure.font = getComputedStyle(group).font || "24px Arial";
     while (measure.measureText(group.textContent).width < 1920)
       group.textContent += copy;
     track.append(group.cloneNode(true));
