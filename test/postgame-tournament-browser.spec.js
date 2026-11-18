@@ -155,6 +155,9 @@ test(
       "rgb(133, 136, 143)",
     );
     assert.equal(await page.locator("#pgRedMarks .is-won").count(), 2);
+    const firstRedMark=await page.locator("#pgRedMarks .pg-win-mark").first().boundingBox();
+    const lastRedMark=await page.locator("#pgRedMarks .pg-win-mark").last().boundingBox();
+    assert.ok(firstRedMark.x>lastRedMark.x,"red wins fill from the far right toward the label");
     assert.equal(await page.locator("#pgBlueResult").textContent(), "DEFEAT");
     for (const [format, slots] of [
       [1, 1],

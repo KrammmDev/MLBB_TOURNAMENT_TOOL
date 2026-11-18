@@ -15,3 +15,5 @@ The slash markers sit directly beside the VICTORY/DEFEAT labels. They follow `ma
 For readability, slash slots use 8×26px shapes with solid gray fills at full opacity; wins have accent fill. Defeated names/logos stay dimmed and grayscale, while result labels and markers retain full opacity.
 
 Result groups mirror the latest reference: blue-side bars then label, red-side label then bars, with opposite slants. Bars use compact 4px gaps. BO format and score behavior are unchanged.
+
+Fill direction mirrors the teams: blue wins start at the leftmost marker, red wins start at the rightmost marker. Both fill inward toward their result labels.

@@ -252,3 +252,7 @@
 #pgRedResult {
   order: 1;
 }
+
+#pgRedMarks {
+  flex-direction: row-reverse;
+}
