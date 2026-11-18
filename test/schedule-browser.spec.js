@@ -159,6 +159,22 @@ test(
       if (id === "arena")
         assert.equal(composition.columns.split(" ").length, 3);
       if (id === "arena") {
+        const fonts = await page.evaluate(async () => {
+          const russo = await document.fonts.load('400 36px "Arena Russo"');
+          const oxanium = await document.fonts.load('700 22px "Arena Oxanium"');
+          return {
+            russo: russo.some((f) => f.status === "loaded"),
+            oxanium: oxanium.some((f) => f.status === "loaded"),
+            title: getComputedStyle(document.getElementById("schedule-event"))
+              .fontFamily,
+            timer: getComputedStyle(document.getElementById("schedule-timer"))
+              .fontFamily,
+          };
+        });
+        assert.equal(fonts.russo, true);
+        assert.equal(fonts.oxanium, true);
+        assert.ok(fonts.title.includes("Arena Russo"));
+        assert.ok(fonts.timer.includes("Arena Oxanium"));
         assert.equal(
           slot.x + slot.width,
           1900,
