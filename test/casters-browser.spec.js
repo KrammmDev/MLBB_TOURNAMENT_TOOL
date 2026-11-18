@@ -161,6 +161,18 @@ test(
     await control.fill("#caster-2-handle", "@wolfcasts");
     await control.click("#caster-show");
     await overlay.locator("#casterFrame").waitFor({ state: "visible" });
+    await overlay.waitForFunction(
+      () =>
+        document.getElementById("casterStage").dataset.sceneTransition ===
+        "true",
+    );
+    assert.equal(
+      await overlay
+        .locator(".cc-top")
+        .evaluate((e) => getComputedStyle(e).height),
+      "1080px",
+      "Show frame retains opaque backing while fading in",
+    );
     assert.equal(await overlay.locator("#casterName1").textContent(), "Athena");
     assert.equal(await overlay.locator("#casterName2").textContent(), "Wolf");
     await overlay.waitForFunction(() =>
@@ -506,7 +518,8 @@ test(
       }
       const names = await overlay.locator(".cc-one").boundingBox();
       assert.ok(
-        names.y + names.height < host.y,
+        names.y + names.height <=
+          (await embedded.locator(".mainbox").boundingBox()).y,
         "nameplates stay above " + draftTheme + " draft",
       );
       await overlay.screenshot({
@@ -515,7 +528,10 @@ test(
     }
     const cameraDraft = await overlay.locator("#casterWindow1").boundingBox();
     const plateDraft = await overlay.locator(".cc-one").boundingBox();
-    const draftBounds = await overlay.locator("#casterDraft").boundingBox();
+    const draftBounds = await overlay
+      .frameLocator("#casterDraft iframe")
+      .locator(".mainbox")
+      .boundingBox();
     assert.ok(cameraDraft.width < 840 && cameraDraft.y < 100);
     assert.ok(
       plateDraft.y + plateDraft.height < draftBounds.y,
@@ -541,7 +557,44 @@ test(
       () => !document.getElementById("caster-draft-hide").disabled,
     );
     await control.click("#caster-draft-hide");
+    await overlay.waitForFunction(
+      () =>
+        document.getElementById("casterStage").dataset.sceneTransition ===
+        "true",
+    );
+    assert.equal(
+      await overlay
+        .locator(".cc-top")
+        .evaluate((e) => getComputedStyle(e).height),
+      "1080px",
+      "opaque backing stays across camera holes during restoration",
+    );
+    assert.ok(
+      await overlay.evaluate(
+        () =>
+          Number(
+            getComputedStyle(document.getElementById("casterDraft")).zIndex,
+          ) <
+          Number(
+            getComputedStyle(document.getElementById("casterDesk")).zIndex,
+          ),
+      ),
+      "fading draft stays behind moving cameras",
+    );
+    await overlay.screenshot({ path: "/tmp/caster-draft-hide-transition.png" });
     await overlay.locator("#casterDraft").waitFor({ state: "hidden" });
+    await overlay.waitForFunction(
+      () =>
+        document.getElementById("casterStage").dataset.sceneTransition ===
+        "false",
+    );
+    assert.equal(
+      await overlay
+        .locator(".cc-top")
+        .evaluate((e) => getComputedStyle(e).height),
+      "230px",
+      "normal transparent camera layout returns after movement",
+    );
     await overlay
       .locator("#casterDesk")
       .evaluate((e) => Promise.all(e.getAnimations().map((a) => a.finished)));
@@ -586,6 +639,61 @@ test(
     await overlay.locator("#casterDraft").waitFor({ state: "hidden" });
     await overlay.waitForFunction(
       () => document.querySelectorAll(".cc-camera iframe").length === 2,
+    );
+    await overlay.waitForFunction(
+      () =>
+        document.getElementById("casterStage").dataset.sceneTransition ===
+        "false",
+    );
+    await control.waitForFunction(
+      () => !document.getElementById("caster-names-hide").disabled,
+    );
+    await control.click("#caster-names-hide");
+    await overlay.waitForFunction(
+      () =>
+        document.getElementById("casterStage").dataset.sceneTransition ===
+        "true",
+    );
+    assert.equal(
+      await overlay
+        .locator(".cc-top")
+        .evaluate((e) => getComputedStyle(e).height),
+      "1080px",
+      "name visibility changes retain backing",
+    );
+    await control.waitForFunction(
+      () => !document.getElementById("caster-names-show").disabled,
+    );
+    await control.click("#caster-names-show");
+    await overlay.waitForFunction(
+      () =>
+        document.getElementById("casterStage").dataset.sceneTransition ===
+        "false",
+    );
+    await control.waitForFunction(
+      () => !document.getElementById("caster-2-off-air").disabled,
+    );
+    await control.click("#caster-2-off-air");
+    await overlay.waitForFunction(
+      () =>
+        document.getElementById("casterStage").dataset.sceneTransition ===
+        "true",
+    );
+    assert.equal(
+      await overlay
+        .locator(".cc-top")
+        .evaluate((e) => getComputedStyle(e).height),
+      "1080px",
+      "caster Off Air retains backing during solo motion",
+    );
+    await control.waitForFunction(
+      () => !document.getElementById("caster-2-on-air").disabled,
+    );
+    await control.click("#caster-2-on-air");
+    await overlay.waitForFunction(
+      () =>
+        document.getElementById("casterStage").dataset.sceneTransition ===
+        "false",
     );
     await overlay.emulateMedia({ reducedMotion: "reduce" });
     assert.equal(

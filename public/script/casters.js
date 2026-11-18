@@ -18,6 +18,7 @@
   }
   const motionDuration = 650,
     motions = new Map();
+  let sceneTimer = null;
   let previousAir = null,
     previousVisible = false;
   const feeds = [
@@ -76,7 +77,33 @@
         })),
       };
     const draftVisible = data.draftVisible === true;
+    const previousDraft = stage.dataset.draftVisible;
+    const activeAir = data.casters.map((c) => c.onAir !== false);
+    const airChanged =
+      previousAir !== null &&
+      activeAir.some((active, i) => active !== previousAir[i]);
+    const visibilityChanged =
+      previousAir !== null && previousVisible !== data.visible;
+    const namesChanged =
+      stage.dataset.namesVisible !== undefined &&
+      stage.dataset.namesVisible !== String(data.namesVisible);
+    if (
+      (previousDraft !== undefined && previousDraft !== String(draftVisible)) ||
+      airChanged ||
+      visibilityChanged ||
+      namesChanged
+    ) {
+      clearTimeout(sceneTimer);
+      const moving = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+      stage.dataset.sceneTransition = String(moving);
+      if (moving)
+        sceneTimer = setTimeout(() => {
+          stage.dataset.sceneTransition = "false";
+          sceneTimer = null;
+        }, motionDuration);
+    }
     stage.dataset.draftVisible = String(draftVisible);
+    stage.dataset.namesVisible = String(data.namesVisible);
     const draftHost = $("casterDraft");
     draftHost.setAttribute("aria-hidden", String(!draftVisible));
     if (draftVisible && !draftHost.firstElementChild) {
@@ -87,7 +114,6 @@
         "/draft-display.html?audio=0" + (format === "six" ? "&format=six" : "");
       draftHost.append(draftFrame);
     }
-    const activeAir = data.casters.map((c) => c.onAir !== false);
     const animateScene =
       previousAir !== null &&
       (previousVisible || data.visible) &&
@@ -309,6 +335,7 @@
   addEventListener("resize", fit);
   addEventListener("pagehide", () => {
     stopped = true;
+    clearTimeout(sceneTimer);
     brandingVersion++;
     for (const animation of motions.values()) animation.cancel();
     feeds.forEach((f, i) => {

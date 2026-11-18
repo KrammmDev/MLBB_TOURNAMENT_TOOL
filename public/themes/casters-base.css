@@ -317,7 +317,7 @@ body {
   width: 1920px;
   height: 500px;
   overflow: hidden;
-  z-index: 2;
+  z-index: 0;
   opacity: 0;
   visibility: hidden;
   transform: translateY(80px);
@@ -344,12 +344,16 @@ body {
   transform: none;
   transition-delay: 0s;
 }
-#casterStage[data-draft-visible="true"] .cc-header,
-#casterStage[data-draft-visible="true"] .cc-footer,
-#casterStage[data-draft-visible="true"] .cc-fill:not(.cc-top) {
+#casterStage:is([data-draft-visible="true"], [data-scene-transition="true"])
+  .cc-header,
+#casterStage:is([data-draft-visible="true"], [data-scene-transition="true"])
+  .cc-footer,
+#casterStage:is([data-draft-visible="true"], [data-scene-transition="true"])
+  .cc-fill:not(.cc-top) {
   display: none;
 }
-#casterStage[data-draft-visible="true"] .cc-top {
+#casterStage:is([data-draft-visible="true"], [data-scene-transition="true"])
+  .cc-top {
   height: 1080px;
 }
 @media (prefers-reduced-motion: reduce) {
