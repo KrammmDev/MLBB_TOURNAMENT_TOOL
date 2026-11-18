@@ -203,23 +203,27 @@
   font-size: 17px;
   white-space: nowrap;
 }
-#pgBlueResult:not(:empty)::before,
-#pgRedResult:not(:empty)::after {
-  content: "";
-  display: block;
-  height: 26px;
-  background: repeating-linear-gradient(
-    90deg,
-    currentColor 0 5px,
-    transparent 5px 11px
-  );
-  flex-shrink: 0;
+
+.pg-score-marks {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
 }
-#pgBlueResult:not(:empty)::before {
-  width: 27px;
+.pg-win-mark {
+  display: block;
+  width: 6px;
+  height: 26px;
+  border: 1px solid currentColor;
+  opacity: 0.3;
+  background: transparent;
+}
+#pgBlueMarks .pg-win-mark {
   transform: skewX(25deg);
 }
-#pgRedResult:not(:empty)::after {
-  width: 16px;
+#pgRedMarks .pg-win-mark {
   transform: skewX(-25deg);
+}
+.pg-win-mark.is-won {
+  background: currentColor;
+  opacity: 1;
 }

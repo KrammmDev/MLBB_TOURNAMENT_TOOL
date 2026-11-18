@@ -51,6 +51,30 @@
         team.teamname || team.name || own.toUpperCase() + " TEAM",
       );
       picture($(prefix + "Logo"), team.logo);
+      const format = Number(data?.matchFormat);
+      const slots = Math.ceil(([1, 3, 5, 7].includes(format) ? format : 3) / 2);
+      const raw = Number(team.score);
+      const wins = Number.isFinite(raw)
+        ? Math.max(0, Math.min(slots, Math.floor(raw)))
+        : 0;
+      const marks = $(prefix + "Marks");
+      if (marks.children.length !== slots)
+        marks.replaceChildren(
+          ...Array.from({ length: slots }, () => {
+            const mark = document.createElement("span");
+            mark.className = "pg-win-mark";
+            mark.setAttribute("aria-hidden", "true");
+            return mark;
+          }),
+        );
+      Array.from(marks.children).forEach((mark, index) =>
+        mark.classList.toggle("is-won", index < wins),
+      );
+      marks.setAttribute(
+        "aria-label",
+        own.toUpperCase() + " team: " + wins + " wins of " + slots + " needed",
+      );
+
       $(prefix).classList.toggle("is-defeated", selected && side !== own);
       $(prefix + "Result").textContent = selected
         ? side === own
