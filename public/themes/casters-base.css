@@ -214,3 +214,82 @@ body {
     transform: none;
   }
 }
+
+.cc-camera {
+  overflow: hidden;
+  transition:
+    left 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.45s,
+    transform 0.45s,
+    visibility 0s;
+}
+.cc-camera iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #000;
+}
+.cc-camera.is-off-air,
+.cc-nameplate.is-off-air {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-100px);
+  transition:
+    opacity 0.45s,
+    transform 0.45s,
+    visibility 0s 0.45s;
+}
+.cc-camera-two.is-off-air,
+.cc-two.is-off-air {
+  transform: translateX(100px);
+}
+#casterStage[data-active-count="1"] .cc-left {
+  width: 360px;
+}
+#casterStage[data-active-count="1"] .cc-right {
+  left: 1560px;
+  width: 360px;
+}
+#casterStage[data-active-count="1"] .cc-mid {
+  display: none;
+}
+#casterStage[data-active-count="1"] .cc-camera.is-on-air {
+  left: 360px;
+  width: 1200px;
+}
+#casterStage[data-active-count="1"] .cc-nameplate.is-on-air {
+  left: 360px;
+  width: 1200px;
+}
+#casterStage[data-active-count="0"] .cc-left {
+  width: 1920px;
+}
+#casterStage[data-active-count="0"] .cc-mid,
+#casterStage[data-active-count="0"] .cc-right {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cc-camera,
+  .cc-camera.is-off-air,
+  .cc-nameplate.is-off-air {
+    transition: none;
+    transform: none;
+  }
+}
+
+#casterNames .cc-nameplate.is-off-air {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-100px);
+}
+#casterNames .cc-two.is-off-air {
+  transform: translateX(100px);
+}
+@media (prefers-reduced-motion: reduce) {
+  #casterNames .cc-nameplate.is-off-air {
+    transform: none;
+  }
+}

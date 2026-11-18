@@ -16,6 +16,41 @@
   function fit() {
     stage.style.transform = `scale(${Math.min(innerWidth / 1920, innerHeight / 1080)})`;
   }
+  const feeds = [
+    { timer: null, source: "" },
+    { timer: null, source: "" },
+  ];
+  function feed(index, url, enabled) {
+    const slot = $("casterWindow" + (index + 1)),
+      state = feeds[index];
+    const src = root.CasterVDO.embedURL(url);
+    if (!enabled || !src || previewMode) {
+      const remove = () => {
+        slot.querySelector("iframe")?.remove();
+        state.source = "";
+        state.timer = null;
+      };
+      if (
+        previewMode ||
+        matchMedia("(prefers-reduced-motion: reduce)").matches
+      ) {
+        clearTimeout(state.timer);
+        remove();
+      } else if (state.timer === null) state.timer = setTimeout(remove, 450);
+      return;
+    }
+    clearTimeout(state.timer);
+    state.timer = null;
+    if (state.source === src && slot.querySelector("iframe")) return;
+    slot.querySelector("iframe")?.remove();
+    const iframe = document.createElement("iframe");
+    iframe.title = "Caster " + (index + 1) + " VDO.Ninja feed";
+    iframe.allow = "autoplay; fullscreen";
+    iframe.referrerPolicy = "no-referrer";
+    iframe.src = src;
+    slot.append(iframe);
+    state.source = src;
+  }
   function apply(data) {
     if (
       stopped ||
@@ -35,7 +70,21 @@
           name: c.name || "CASTER " + (i + 1),
         })),
       };
+    stage.dataset.activeCount = String(
+      data.casters.filter((c) => c.onAir !== false).length,
+    );
     data.casters.forEach((c, i) => {
+      const active = c.onAir !== false;
+      $("casterWindow" + (i + 1)).classList.toggle("is-off-air", !active);
+      $("casterWindow" + (i + 1)).classList.toggle("is-on-air", active);
+      $("casterWindow" + (i + 1)).setAttribute("aria-hidden", String(!active));
+      document
+        .querySelector(i === 0 ? ".cc-one" : ".cc-two")
+        .classList.toggle("is-off-air", !active);
+      document
+        .querySelector(i === 0 ? ".cc-one" : ".cc-two")
+        .classList.toggle("is-on-air", active);
+      feed(i, c.vdoUrl, data.visible && active);
       for (const [field, id] of [
         ["name", "Name"],
         ["handle", "Handle"],
@@ -119,6 +168,12 @@
   addEventListener("resize", fit);
   addEventListener("pagehide", () => {
     stopped = true;
+    feeds.forEach((f, i) => {
+      clearTimeout(f.timer);
+      $("casterWindow" + (i + 1))
+        .querySelector("iframe")
+        ?.remove();
+    });
     version++;
     themeVersion++;
     clearInterval(poll);

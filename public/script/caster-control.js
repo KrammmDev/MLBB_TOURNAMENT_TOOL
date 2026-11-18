@@ -17,12 +17,16 @@
     legend.textContent = "Caster " + (i + 1);
     box.append(legend);
     const row = {};
-    for (const key of ["name", "handle", "role"]) {
+    for (const key of ["name", "handle", "role", "vdoUrl"]) {
       const label = document.createElement("label"),
         input = document.createElement("input");
       label.textContent = key[0].toUpperCase() + key.slice(1);
       input.id = "caster-" + (i + 1) + "-" + key;
-      input.maxLength = 64;
+      input.maxLength = key === "vdoUrl" ? 2048 : 64;
+      if (key === "vdoUrl") {
+        label.textContent = "VDO.Ninja view link (https://vdo.ninja/?view=…)";
+        input.placeholder = "https://vdo.ninja/?view=CASTER_ID";
+      }
       input.style.cssText =
         "display:block;width:100%;margin:8px 0 14px;padding:10px";
       input.disabled = true;
@@ -30,20 +34,42 @@
       box.append(label);
       row[key] = input;
     }
+    const status = document.createElement("p");
+    status.id = "caster-" + (i + 1) + "-air-status";
+    box.append(status);
+    for (const [label, onAir] of [
+      ["On Air", true],
+      ["Off Air", false],
+    ]) {
+      const button = document.createElement("button");
+      button.id = "caster-" + (i + 1) + (onAir ? "-on-air" : "-off-air");
+      button.textContent = label;
+      button.disabled = true;
+      button.onclick = () => save({ caster: i, onAir });
+      box.append(button);
+      buttons.push(button.id);
+    }
     fields.push(row);
     $("caster-fields").append(box);
   }
   function controls() {
     for (const id of buttons) $(id).disabled = busy || !snapshot;
     $("caster-reload").disabled = busy;
+    if (snapshot)
+      snapshot.data.casters.forEach((c, i) => {
+        $("caster-" + (i + 1) + "-air-status").textContent =
+          c.onAir !== false
+            ? "ON AIR"
+            : "OFF AIR — video and audio disconnected";
+      });
     for (const row of fields)
       for (const input of Object.values(row))
         input.disabled = busy || !snapshot;
   }
   function fill() {
     snapshot.data.casters.forEach((c, i) => {
-      for (const key of ["name", "handle", "role"])
-        fields[i][key].value = c[key];
+      for (const key of ["name", "handle", "role", "vdoUrl"])
+        fields[i][key].value = c[key] || "";
     });
   }
   async function read() {
@@ -75,11 +101,14 @@
     try {
       const next = structuredClone(snapshot.data);
       if (change === "details")
-        next.casters = fields.map((row) =>
-          Object.fromEntries(
+        next.casters = fields.map((row, i) => ({
+          ...next.casters[i],
+          ...Object.fromEntries(
             Object.entries(row).map(([key, input]) => [key, input.value]),
           ),
-        );
+        }));
+      else if (Number.isInteger(change.caster))
+        next.casters[change.caster].onAir = change.onAir;
       else Object.assign(next, change);
       const r = await fetch("/api/caster-panel", {
           method: "PUT",
