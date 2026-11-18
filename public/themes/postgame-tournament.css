@@ -257,47 +257,89 @@
   flex-direction: row-reverse;
 }
 
-/* Reflections animate only on opaque frame pieces, leaving the capture opening clear. */
+/* Match Winner's reflection, glow, text sweep and rail light. */
 .pg-header,
 .pg-team,
-.pg-rail,
-.pg-footer,
-.pg-left-fill,
-.pg-right-fill {
-  background-image: linear-gradient(
+.pg-footer {
+  isolation: isolate;
+  overflow: hidden;
+}
+.pg-header > *,
+.pg-team > *,
+.pg-footer > * {
+  position: relative;
+  z-index: 1;
+}
+.pg-header::after,
+.pg-team::after,
+.pg-footer::after {
+  content: "";
+  position: absolute;
+  top: -25%;
+  left: -50%;
+  width: 32%;
+  height: 150%;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    transparent
+  );
+  transform: translateX(0) skewX(-18deg);
+  animation: mw-metal-sweep 7s linear infinite;
+}
+.pg-team:not(.is-defeated) {
+  animation: mw-winner-glow 4s ease-in-out infinite;
+}
+.pg-heading h1 {
+  background: linear-gradient(
     110deg,
-    transparent 38%,
-    rgba(255, 255, 255, 0.13) 48%,
-    rgba(255, 255, 255, 0.2) 50%,
-    transparent 62%
+    var(--mw-left, #d8be83) 38%,
+    #fff 49%,
+    var(--mw-left, #d8be83) 60%
   );
   background-size: 300% 100%;
   background-position: 150% 0;
-  animation: pg-frame-shine 7s linear infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: mw-title-sweep 6s linear infinite;
 }
-.pg-team {
-  animation-delay: 0.2s;
-}
-.pg-footer {
-  animation-delay: 0.4s;
-}
-@keyframes pg-frame-shine {
-  0% {
-    background-position: 150% 0;
-  }
-  60%,
-  100% {
-    background-position: -150% 0;
-  }
+.pg-rail::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 7px;
+  height: 120px;
+  background: linear-gradient(
+    transparent,
+    var(--mw-left, #d8be83),
+    #fff,
+    var(--mw-left, #d8be83),
+    transparent
+  );
+  pointer-events: none;
+  animation: mw-rail-light 6s linear infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  .pg-header,
-  .pg-team,
-  .pg-rail,
-  .pg-footer,
-  .pg-left-fill,
-  .pg-right-fill {
+  .pg-header::after,
+  .pg-team::after,
+  .pg-footer::after,
+  .pg-rail::after {
     animation: none;
-    background-image: none;
+    display: none;
+  }
+  .pg-team:not(.is-defeated),
+  .pg-heading h1 {
+    animation: none;
+  }
+  .pg-heading h1 {
+    background: none;
+    color: var(--mw-left, #d8be83);
+    -webkit-text-fill-color: var(--mw-left, #d8be83);
   }
 }

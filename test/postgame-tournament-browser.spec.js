@@ -111,7 +111,7 @@ test(
     const reflection = () =>
       page
         .locator(".pg-header")
-        .evaluate((e) => getComputedStyle(e).backgroundPosition);
+        .evaluate((e) => getComputedStyle(e, "::after").transform);
     const beforeReflection = await reflection();
     await page.waitForTimeout(200);
     assert.notEqual(
@@ -132,25 +132,20 @@ test(
         .evaluate((e) => getComputedStyle(e).backgroundImage),
       "none",
     );
-    for (const selector of [
-      ".pg-header",
-      ".pg-team",
-      ".pg-rail",
-      ".pg-footer",
-    ]) {
+    for (const selector of [".pg-header", ".pg-team", ".pg-footer"]) {
       assert.equal(
         await page
           .locator(selector)
           .first()
-          .evaluate((e) => getComputedStyle(e).animationName),
-        "pg-frame-shine",
+          .evaluate((e) => getComputedStyle(e, "::after").animationName),
+        "mw-metal-sweep",
       );
     }
     await page.emulateMedia({ reducedMotion: "reduce" });
     assert.equal(
       await page
         .locator(".pg-header")
-        .evaluate((e) => getComputedStyle(e).animationName),
+        .evaluate((e) => getComputedStyle(e, "::after").animationName),
       "none",
     );
     await page.emulateMedia({ reducedMotion: "no-preference" });
