@@ -114,6 +114,36 @@ test(
       width: 1920,
       height: 1080,
     });
+    assert.equal(
+      await page
+        .locator(".victory-heading")
+        .evaluate((e) => getComputedStyle(e).backgroundClip),
+      "text",
+    );
+    assert.equal(
+      await page
+        .locator(".victory-heading")
+        .evaluate((e) => getComputedStyle(e, "::after").content),
+      "none",
+    );
+    assert.equal(
+      await page
+        .locator(".winning-team")
+        .evaluate((e) => getComputedStyle(e).backgroundImage),
+      "none",
+    );
+    assert.equal(
+      await page
+        .locator(".losing-team")
+        .evaluate((e) => getComputedStyle(e).backgroundImage),
+      "none",
+    );
+    assert.equal(
+      await page
+        .locator(".winning-team")
+        .evaluate((e) => getComputedStyle(e, "::before").content),
+      "none",
+    );
     const shine = () =>
       page
         .locator(".winning-team")
