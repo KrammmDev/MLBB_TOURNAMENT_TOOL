@@ -129,15 +129,11 @@ test(
     await control.fill("#caster-1-handle", "@athenakaph");
     await control.fill(
       "#caster-1-vdoUrl",
-      "https://vdo.ninja/?view=athena-test",
+      "https://vdo.ninja/?view=athena-test&solo=1&room=Test123",
     );
     await control.fill("#caster-2-vdoUrl", "https://vdo.ninja/?view=wolf-test");
     await control.fill("#caster-2-name", "Wolf");
     await control.fill("#caster-2-handle", "@wolfcasts");
-    await control.click("#caster-save");
-    await control.waitForFunction(
-      () => !document.getElementById("caster-show").disabled,
-    );
     await control.click("#caster-show");
     await overlay.locator("#casterFrame").waitFor({ state: "visible" });
     assert.equal(await overlay.locator("#casterName1").textContent(), "Athena");
@@ -155,6 +151,17 @@ test(
       "preview cannot play duplicate VDO audio",
     );
     const loadsBeforeEdit = feedLoads;
+    assert.equal(
+      casters.snapshot().data.casters[0].name,
+      "Athena",
+      "Show frame saves current details without a separate Save click",
+    );
+    assert.equal(
+      new URL(
+        await overlay.locator("#casterWindow1 iframe").getAttribute("src"),
+      ).searchParams.get("room"),
+      "Test123",
+    );
     assert.equal(
       await overlay.locator("#casterTournament").textContent(),
       "LCUAA ONLINE DESK",
@@ -274,17 +281,42 @@ test(
       () => document.querySelectorAll(".cc-camera iframe").length === 2,
     );
     await overlay.locator("#casterWindow2").waitFor({ state: "visible" });
-    await control.waitForFunction(()=>!document.getElementById("caster-1-off-air").disabled);
+    await control.waitForFunction(
+      () => !document.getElementById("caster-1-off-air").disabled,
+    );
     await control.click("#caster-1-off-air");
-    await overlay.waitForFunction(()=>document.querySelectorAll(".cc-camera iframe").length===1);
-    await overlay.locator("#casterWindow2").evaluate(e=>Promise.all(e.getAnimations().map(a=>a.finished)));
-    assert.equal((await overlay.locator("#casterWindow2").boundingBox()).x,360,"right caster also centers when left is off-air");
-    await control.waitForFunction(()=>!document.getElementById("caster-2-off-air").disabled);
+    await overlay.waitForFunction(
+      () => document.querySelectorAll(".cc-camera iframe").length === 1,
+    );
+    await overlay
+      .locator("#casterWindow2")
+      .evaluate((e) => Promise.all(e.getAnimations().map((a) => a.finished)));
+    assert.equal(
+      (await overlay.locator("#casterWindow2").boundingBox()).x,
+      360,
+      "right caster also centers when left is off-air",
+    );
+    await control.waitForFunction(
+      () => !document.getElementById("caster-2-off-air").disabled,
+    );
     await control.click("#caster-2-off-air");
-    await overlay.waitForFunction(()=>document.querySelectorAll(".cc-camera iframe").length===0);
-    assert.equal(await overlay.locator("#casterStage").getAttribute("data-active-count"),"0");
-    for(const id of [1,2]){await control.waitForFunction(id=>!document.getElementById("caster-"+id+"-on-air").disabled,id);await control.click("#caster-"+id+"-on-air")}
-    await overlay.waitForFunction(()=>document.querySelectorAll(".cc-camera iframe").length===2);
+    await overlay.waitForFunction(
+      () => document.querySelectorAll(".cc-camera iframe").length === 0,
+    );
+    assert.equal(
+      await overlay.locator("#casterStage").getAttribute("data-active-count"),
+      "0",
+    );
+    for (const id of [1, 2]) {
+      await control.waitForFunction(
+        (id) => !document.getElementById("caster-" + id + "-on-air").disabled,
+        id,
+      );
+      await control.click("#caster-" + id + "-on-air");
+    }
+    await overlay.waitForFunction(
+      () => document.querySelectorAll(".cc-camera iframe").length === 2,
+    );
     await overlay.emulateMedia({ reducedMotion: "reduce" });
     assert.equal(
       await overlay
@@ -314,6 +346,7 @@ test(
     await control.waitForFunction(
       () => !document.getElementById("caster-hide").disabled,
     );
+    await control.fill("#caster-1-vdoUrl", "https://invalid.example/?view=x");
     await control.click("#caster-hide");
     await overlay.locator("#casterFrame").waitFor({ state: "hidden" });
     await overlay.waitForFunction(

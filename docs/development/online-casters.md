@@ -22,8 +22,10 @@ Validation: `MLBB_TEST_BROWSER=/usr/bin/chromium node --test test/caster-panel.t
 
 ## VDO.Ninja and individual On Air controls
 
-Paste each caster's **receive/view link** (`https://vdo.ninja/?view=...`) in their VDO.Ninja field and save details. Push/room links and non-VDO hosts are rejected. The overlay embeds each active feed with autoplay permission; enable **Control audio via OBS** on the Browser Source. Use this embedded source for caster audio so the On Air controls own its lifecycle.
+Paste each caster's **receive/view link** (`https://vdo.ninja/?view=...`) in their VDO.Ninja field and save details. Room-qualified receive links such as `?view=...&solo=1&room=...` are supported. Push links, room-only links without a view ID, and non-VDO hosts are rejected. The overlay embeds each active feed with autoplay permission; enable **Control audio via OBS** on the Browser Source. Use this embedded source for caster audio so the On Air controls own its lifecycle.
 
 Each caster has **On Air / Off Air** buttons. Off Air slides that camera and nameplate out, then removes its iframe after 450ms (immediately with reduced motion), destroying its audio/video document. One remaining caster moves to a centered 1200×560 window at X360/Y230. Returning On Air recreates the feed and restores the duo layout. Both off-air leaves no active feeds. Hide frame also unloads all feeds; hiding only names keeps audio/video running. Saved legacy settings default both casters to on-air with blank view links, preserving external-camera mode.
 
 Broadcast Theme previews never load VDO embeds, avoiding duplicate audio. Browser tests use a stubbed VDO receiver to verify iframe removal/recreation and solo geometry; actual VDO media playback still depends on the supplied live view link and OBS audio settings.
+
+Show frame, Show names and On Air save current edited details with their action, avoiding blank names or stale view links when a separate Save was missed. Stop actions (Off Air, Hide frame, Hide names) use acknowledged settings so invalid unsaved input cannot prevent taking a feed off-air. Invalid view links identify the caster in the error message.
