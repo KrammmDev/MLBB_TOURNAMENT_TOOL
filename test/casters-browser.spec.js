@@ -122,7 +122,7 @@ test(
       feedLoads++;
       await route.fulfill({
         contentType: "text/html",
-        body: "<!doctype html><html><body>Test receiver feed</body></html>",
+        body: `<!doctype html><html><body>Test receiver feed<script>window.muteMessages=[];addEventListener("message",e=>{if(typeof e.data?.mute === "boolean") {window.muteMessages.push(e.data.mute);document.body.dataset.muted=String(e.data.mute);}});</script></body></html>`,
       });
     });
     const base = "http://127.0.0.1:" + server.address().port;
@@ -727,6 +727,61 @@ test(
     await control.fill("#caster-1-vdoUrl", "https://invalid.example/?view=x");
     await control.click("#caster-hide");
     await overlay.locator("#casterFrame").waitFor({ state: "hidden" });
+    assert.equal(
+      await overlay.locator(".cc-camera iframe").count(),
+      2,
+      "Hide frame retains receivers",
+    );
+    for (const receiver of overlay
+      .frames()
+      .filter((f) => f.url().startsWith("https://vdo.ninja/")))
+      await receiver.waitForFunction(
+        () => document.body.dataset.muted === "true",
+      );
+    const warmLoads = feedLoads;
+    await overlay.evaluate(() => {
+      window.warmFeeds = Array.from(
+        document.querySelectorAll(".cc-camera iframe"),
+      );
+    });
+    await control.fill(
+      "#caster-1-vdoUrl",
+      casters.snapshot().data.casters[0].vdoUrl,
+    );
+    await control.waitForFunction(
+      () => !document.getElementById("caster-show").disabled,
+    );
+    await control.click("#caster-show");
+    await overlay.locator("#casterFrame").waitFor({ state: "visible" });
+    for (const receiver of overlay
+      .frames()
+      .filter((f) => f.url().startsWith("https://vdo.ninja/")))
+      await receiver.waitForFunction(
+        () => document.body.dataset.muted === "false",
+      );
+    assert.equal(
+      feedLoads,
+      warmLoads,
+      "Show frame reuses warm receiver connections",
+    );
+    assert.ok(
+      await overlay.evaluate(() =>
+        window.warmFeeds.every(
+          (f, i) => f === document.querySelectorAll(".cc-camera iframe")[i],
+        ),
+      ),
+    );
+    await control.waitForFunction(
+      () => !document.getElementById("caster-hide").disabled,
+    );
+    await control.click("#caster-hide");
+    for (const id of [1, 2]) {
+      await control.waitForFunction(
+        (id) => !document.getElementById("caster-" + id + "-off-air").disabled,
+        id,
+      );
+      await control.click("#caster-" + id + "-off-air");
+    }
     await overlay.waitForFunction(
       () => document.querySelectorAll(".cc-camera iframe").length === 0,
     );

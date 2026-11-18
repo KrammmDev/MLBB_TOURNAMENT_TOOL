@@ -22,19 +22,29 @@
   let previousAir = null,
     previousVisible = false;
   const feeds = [
-    { timer: null, source: "" },
-    { timer: null, source: "" },
+    { timer: null, source: "", muted: true, retries: [] },
+    { timer: null, source: "", muted: true, retries: [] },
   ];
-  function feed(index, url, enabled) {
+  function syncAudio(index) {
+    const state = feeds[index];
+    $("casterWindow" + (index + 1))
+      .querySelector("iframe")
+      ?.contentWindow?.postMessage({ mute: state.muted }, "https://vdo.ninja");
+  }
+  function feed(index, url, onAir, visible) {
     const slot = $("casterWindow" + (index + 1)),
       state = feeds[index];
     const src = root.CasterVDO.embedURL(url);
-    if (!enabled || !src || previewMode) {
-      const remove = () => {
-        slot.querySelector("iframe")?.remove();
-        state.source = "";
-        state.timer = null;
-      };
+    state.muted = !visible || !onAir;
+    syncAudio(index);
+    const remove = () => {
+      state.retries.forEach(clearTimeout);
+      state.retries = [];
+      slot.querySelector("iframe")?.remove();
+      state.source = "";
+      state.timer = null;
+    };
+    if (!onAir || !src || previewMode) {
       if (
         previewMode ||
         matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -48,11 +58,23 @@
     clearTimeout(state.timer);
     state.timer = null;
     if (state.source === src && slot.querySelector("iframe")) return;
-    slot.querySelector("iframe")?.remove();
+    remove();
+    // A hidden frame keeps an existing receiver warm, but never starts a new one.
+    if (!visible) return;
     const iframe = document.createElement("iframe");
     iframe.title = "Caster " + (index + 1) + " VDO.Ninja feed";
     iframe.allow = "autoplay; fullscreen";
     iframe.referrerPolicy = "no-referrer";
+    iframe.onload = () => {
+      if (slot.querySelector("iframe") !== iframe) return;
+      state.retries.forEach(clearTimeout);
+      syncAudio(index);
+      state.retries = [250, 1000].map((delay) =>
+        setTimeout(() => {
+          if (slot.querySelector("iframe") === iframe) syncAudio(index);
+        }, delay),
+      );
+    };
     iframe.src = src;
     slot.append(iframe);
     state.source = src;
@@ -138,7 +160,7 @@
       document
         .querySelector(i === 0 ? ".cc-one" : ".cc-two")
         .classList.toggle("is-on-air", active);
-      feed(i, c.vdoUrl, data.visible && active);
+      feed(i, c.vdoUrl, active, data.visible);
       for (const [field, id] of [
         ["name", "Name"],
         ["handle", "Handle"],
@@ -340,6 +362,7 @@
     for (const animation of motions.values()) animation.cancel();
     feeds.forEach((f, i) => {
       clearTimeout(f.timer);
+      f.retries.forEach(clearTimeout);
       $("casterWindow" + (i + 1))
         .querySelector("iframe")
         ?.remove();
