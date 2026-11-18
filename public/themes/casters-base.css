@@ -1,0 +1,216 @@
+@font-face {
+  font-family: CasterHeading;
+  src: url("/fonts/arena/ChakraPetch-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: CasterText;
+  src: url("/fonts/arena/Oxanium.woff2") format("woff2");
+  font-weight: 400 800;
+  font-display: swap;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+}
+#casterStage {
+  position: absolute;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: 0 0;
+  pointer-events: none;
+  font-family: CasterHeading, Arial, sans-serif;
+  color: var(--cc-text, #edf1f6);
+}
+.caster-frame {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.45s,
+    visibility 0s 0.45s;
+  isolation: isolate;
+}
+.caster-frame.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.cc-fill {
+  position: absolute;
+  background: var(--cc-background, #0d1422);
+}
+.cc-top {
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 230px;
+}
+.cc-bottom {
+  left: 0;
+  top: 790px;
+  width: 1920px;
+  height: 290px;
+}
+.cc-left {
+  left: 0;
+  top: 230px;
+  width: 90px;
+  height: 560px;
+}
+.cc-mid {
+  left: 930px;
+  top: 230px;
+  width: 60px;
+  height: 560px;
+}
+.cc-right {
+  left: 1830px;
+  top: 230px;
+  width: 90px;
+  height: 560px;
+}
+.cc-header {
+  position: absolute;
+  left: 90px;
+  top: 50px;
+  width: 1740px;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-bottom: 2px solid var(--cc-border, #d9bd7b);
+}
+.cc-eyebrow {
+  font-size: 15px;
+  letter-spacing: 5px;
+  color: var(--cc-muted, #a1afc2);
+}
+.cc-header h1 {
+  font-size: 55px;
+  line-height: 1.1;
+  margin: 14px 0;
+  max-width: 1400px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.cc-live {
+  position: absolute;
+  right: 0;
+  top: 45px;
+  padding: 12px 20px;
+  font-size: 17px;
+  letter-spacing: 3px;
+  border: 1px solid var(--cc-border, #d9bd7b);
+  color: var(--cc-left, #d9bd7b);
+}
+.cc-camera {
+  position: absolute;
+  top: 230px;
+  width: 840px;
+  height: 560px;
+  background: transparent;
+  outline: 3px solid var(--cc-border, #d9bd7b);
+  outline-offset: -3px;
+}
+.cc-camera-one {
+  left: 90px;
+}
+.cc-camera-two {
+  left: 990px;
+}
+.cc-names {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s,
+    visibility 0s 0.4s;
+}
+.cc-names.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.cc-nameplate {
+  position: absolute;
+  top: 825px;
+  width: 840px;
+  height: 130px;
+  overflow: hidden;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(35px);
+  background: var(--cc-background, #0d1422);
+}
+.cc-names.is-visible .cc-nameplate {
+  transform: translateY(0);
+}
+.cc-one {
+  left: 90px;
+}
+.cc-two {
+  left: 990px;
+  transition-delay: 0.08s;
+}
+.cc-name {
+  font:
+    700 44px/1.1 CasterText,
+    Arial,
+    sans-serif;
+  height: 64px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 9px 24px;
+}
+.cc-handle {
+  font:
+    500 20px CasterText,
+    Arial,
+    sans-serif;
+  padding: 5px 24px;
+  color: var(--cc-muted, #a1afc2);
+  height: 35px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.cc-role {
+  font-size: 13px;
+  letter-spacing: 4px;
+  padding: 5px 24px;
+  height: 28px;
+  color: var(--cc-left, #d9bd7b);
+}
+.cc-footer {
+  position: absolute;
+  left: 90px;
+  right: 90px;
+  top: 1010px;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--cc-border, #d9bd7b);
+  padding-top: 20px;
+  color: var(--cc-muted, #a1afc2);
+  font-size: 13px;
+  letter-spacing: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .caster-frame,
+  .cc-names,
+  .cc-nameplate {
+    transition: none;
+    transform: none;
+  }
+}

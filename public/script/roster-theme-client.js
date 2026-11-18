@@ -49,15 +49,17 @@
     }
     try {
       const styles =
-        output === "draft"
-          ? theme.draftStyles
-          : output === "scoreboard"
-            ? theme.scoreboardStyles
-            : output === "schedule"
-              ? theme.scheduleStyles
-              : output === "postdraft"
-                ? theme.postdraftStyles
-                : theme.styles;
+        output === "casters"
+          ? theme.castersStyles
+          : output === "draft"
+            ? theme.draftStyles
+            : output === "scoreboard"
+              ? theme.scoreboardStyles
+              : output === "schedule"
+                ? theme.scheduleStyles
+                : output === "postdraft"
+                  ? theme.postdraftStyles
+                  : theme.styles;
       await Promise.all(
         styles.map(
           (href) =>

@@ -6,26 +6,30 @@
     previous = document.getElementById("previous-theme");
   const outputSelect = document.getElementById("preview-output");
   const output = () =>
-    outputSelect.value === "schedule"
-      ? "schedule"
-      : outputSelect.value === "postdraft"
-        ? "postdraft"
-        : outputSelect.value === "scoreboard"
-          ? "scoreboard"
-          : outputSelect.value.startsWith("draft")
-            ? "draft"
-            : "roster";
+    outputSelect.value === "casters"
+      ? "casters"
+      : outputSelect.value === "schedule"
+        ? "schedule"
+        : outputSelect.value === "postdraft"
+          ? "postdraft"
+          : outputSelect.value === "scoreboard"
+            ? "scoreboard"
+            : outputSelect.value.startsWith("draft")
+              ? "draft"
+              : "roster";
   const format = () => (outputSelect.value === "draft-six" ? "six" : "normal");
   function outputURL() {
-    return output() === "schedule"
-      ? "/scheduledisplay.html"
-      : output() === "postdraft"
-        ? "/postdraft2.html"
-        : output() === "scoreboard"
-          ? "/scoreboard.html"
-          : output() === "roster"
-            ? "/broadcast-overlay.html"
-            : "/draft-display.html?format=" + format();
+    return output() === "casters"
+      ? "/casters.html"
+      : output() === "schedule"
+        ? "/scheduledisplay.html"
+        : output() === "postdraft"
+          ? "/postdraft2.html"
+          : output() === "scoreboard"
+            ? "/scoreboard.html"
+            : output() === "roster"
+              ? "/broadcast-overlay.html"
+              : "/draft-display.html?format=" + format();
   }
   function updateURL() {
     document.getElementById("output-url").value = location.origin + outputURL();
@@ -60,6 +64,7 @@
         roster: "Roster",
         postdraft: "Post-draft",
         schedule: "Schedule",
+        casters: "Online Casters",
       }[output()] +
       " only";
     activate.disabled =
@@ -111,6 +116,12 @@
           arena: "Metallic broadcast desk · right video · caster panel",
           studio: "Season 18 format · left schedule/talents · right video",
         });
+      if (output() === "casters")
+        Object.assign(details, {
+          classic: "Championship desk · charcoal/gold · centered nameplates",
+          arena: "World stage · electric blue · angular mirrored nameplates",
+          studio: "White/red broadcast · bold name tabs · role tags",
+        });
       if (output() === "postdraft")
         Object.assign(details, {
           classic: "Stacked team rows · player cutouts over heroes",
@@ -130,6 +141,12 @@
           classic: ["#351008", "#ff7200", "#e92237"],
           arena: ["#091827", "#1bc2d5", "#527fe8"],
           studio: ["#f5f3ed", "#e9ba30", "#e92237"],
+        });
+      if (output() === "casters")
+        Object.assign(colors, {
+          classic: ["#0d1422", "#d9bd7b", "#edf1f6"],
+          arena: ["#061a52", "#16c8ef", "#2361ff"],
+          studio: ["#f2f2f0", "#ed3524", "#f1cf50"],
         });
       for (const card of document.querySelectorAll(".theme-card")) {
         card.querySelector("p").textContent = details[card.dataset.themeId];

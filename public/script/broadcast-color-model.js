@@ -14,6 +14,7 @@
       "schedule",
       "matchwinner",
       "postgame",
+      "casters",
     ];
   const fields = {
     background: "Panel background",
@@ -141,6 +142,32 @@
   defaults.postgame = Object.fromEntries(
     themes.map((id) => [id, { ...defaults.matchwinner[id] }]),
   );
+  defaults.casters = {
+    classic: {
+      background: "#0d1422",
+      left: "#d9bd7b",
+      right: "#aa8746",
+      text: "#edf1f6",
+      muted: "#a1afc2",
+      border: "#d9bd7b",
+    },
+    arena: {
+      background: "#061a52",
+      left: "#16c8ef",
+      right: "#2361ff",
+      text: "#ffffff",
+      muted: "#9dd9f2",
+      border: "#2388ff",
+    },
+    studio: {
+      background: "#f2f2f0",
+      left: "#ed3524",
+      right: "#f1cf50",
+      text: "#161616",
+      muted: "#535353",
+      border: "#b9bbc2",
+    },
+  };
   function validColors(colors) {
     return (
       colors !== null &&
@@ -210,6 +237,12 @@
       );
     const vars = (names, value) =>
       names.split(",").forEach((name) => variables.push(name + ":" + value));
+    if (output === "casters") {
+      for (const field of Object.keys(fields))
+        vars("--cc-" + field, palette[field]);
+      vars("--cc-accent-text", readable("#ffffff", palette.left));
+      return scope + "{" + variables.join(";") + "}";
+    }
     if (output === "matchwinner" || output === "postgame") {
       for (const field of Object.keys(fields))
         vars("--mw-" + field, palette[field]);

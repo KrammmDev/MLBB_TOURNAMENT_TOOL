@@ -1,3 +1,4 @@
+const { loadCasterStore, installCasterRoutes } = require("./lib/caster-panel");
 const { loadPanelStore, installPanelRoutes } = require("./lib/production-panel");
 // server.js - PORT 3000 (Safe & Rare) & Strict IP Filter
 // FULL REVISED VERSION - Fix WebSocket Freezing, Lag on LAN & Race Conditions
@@ -399,6 +400,7 @@ let sponsorStore;
 let colorStore;
 let brandingStore;
 let productionPanelStore;
+let casterStore;
 const sponsorDirectory = path.join(__dirname, "runtime", "sponsor-logos");
 
 async function initFlagDB() {
@@ -642,6 +644,7 @@ app.get("/api/players", async (req, res) => {
 });
 // --- MATCH DATA API ---
 installPanelRoutes(app, () => productionPanelStore);
+installCasterRoutes(app, () => casterStore);
 installMatchRoutes(app, () => matchStore);
 installOCRRoutes(app, () => ocrStore);
 installRosterThemeRoutes(app, () => rosterThemeStore);
@@ -1347,6 +1350,7 @@ async function start() {
       broadcast({ type: "update", data: { matchdata: data }, revision });
     },
   });
+  casterStore = await loadCasterStore({file:path.join(__dirname,"runtime","caster-panel.json"),onCommit:snapshot=>broadcast({type:"caster_panel_update",...snapshot})});
   productionPanelStore = await loadPanelStore({ file: path.join(__dirname, "runtime", "production-panel.json") });
   rosterThemeStore = await loadRosterThemeStore({
     file: path.join(__dirname, "runtime", "roster-theme.json"),
