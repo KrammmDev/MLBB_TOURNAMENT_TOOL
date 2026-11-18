@@ -273,9 +273,9 @@ test(
       ]) {
         assert.deepEqual(await overlay.locator(selector).boundingBox(), {
           x,
-          y: 230,
+          y: id === "studio" ? 340 : 230,
           width: 840,
-          height: 560,
+          height: id === "studio" ? 472.5 : 560,
         });
         assert.equal(
           await overlay
@@ -292,6 +292,32 @@ test(
           (f) => f.contentWindow,
         ),
       );
+      if (id === "studio") {
+        const logo = await overlay.locator(".cc-header-logo").boundingBox();
+        assert.equal(
+          logo.x + logo.width / 2,
+          960,
+          "Studio tournament logo is centered",
+        );
+        for (const [cameraId, plateClass] of [
+          ["#casterWindow1", ".cc-one"],
+          ["#casterWindow2", ".cc-two"],
+        ]) {
+          const camera = await overlay.locator(cameraId).boundingBox();
+          const plate = await overlay.locator(plateClass).boundingBox();
+          assert.equal(
+            plate.x,
+            camera.x,
+            "Studio name tab starts at the camera's left edge",
+          );
+          assert.equal(
+            plate.y + plate.height,
+            camera.y + camera.height,
+            "name tab sits inside the camera's lower edge",
+          );
+          assert.ok(plate.width < camera.width / 2);
+        }
+      }
       await overlay.screenshot({
         path: "/tmp/casters-" + id + ".png",
         omitBackground: true,
@@ -361,9 +387,9 @@ test(
       .evaluate((e) => Promise.all(e.getAnimations().map((a) => a.finished)));
     assert.deepEqual(await overlay.locator("#casterWindow1").boundingBox(), {
       x: 360,
-      y: 230,
+      y: 340,
       width: 1200,
-      height: 560,
+      height: 472.5,
     });
     for (const id of ["classic", "arena", "studio"]) {
       await theme.select(id, theme.snapshot().revision, "casters");

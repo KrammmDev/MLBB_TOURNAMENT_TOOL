@@ -362,3 +362,10 @@ body {
     transition: none;
   }
 }
+
+.cc-header-logo {
+  display: none;
+}
+.cc-header-logo[hidden] {
+  display: none !important;
+}

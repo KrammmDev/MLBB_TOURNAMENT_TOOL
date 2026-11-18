@@ -123,7 +123,7 @@
           arena:
             "World stage · blue stage lighting · mirrored white/cyan nameplates",
           studio:
-            "White/red event stage · dual camera frames · yellow role blocks",
+            "Violet event stage · gold camera frames · inset purple name tabs",
         });
       if (output() === "postdraft")
         Object.assign(details, {
@@ -149,7 +149,7 @@
         Object.assign(colors, {
           classic: ["#0d1422", "#d9bd7b", "#edf1f6"],
           arena: ["#061a52", "#16c8ef", "#2361ff"],
-          studio: ["#f2f2f0", "#ed3524", "#f1cf50"],
+          studio: ["#39247b", "#d8b740", "#ffffff"],
         });
       for (const card of document.querySelectorAll(".theme-card")) {
         card.querySelector("p").textContent = details[card.dataset.themeId];
