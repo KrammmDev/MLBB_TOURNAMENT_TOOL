@@ -472,7 +472,47 @@ test(
       .locator("#timer")
       .filter({ hasText: "17" })
       .waitFor();
-    await overlay.screenshot({ path: "/tmp/casters-with-draft.png" });
+    // Every saved draft look must fit, including Arena's taller team header.
+    await theme.select("arena", theme.snapshot().revision, "casters");
+    await overlay.waitForFunction(
+      () => document.body.dataset.castersTheme === "arena",
+    );
+    for (const draftTheme of ["classic", "arena", "studio"]) {
+      await theme.select(draftTheme, theme.snapshot().revision, "draft");
+      const embedded = overlay
+        .frames()
+        .find((f) => f.url().includes("/draft-display.html"));
+      await embedded.waitForFunction(
+        (id) =>
+          document.body.dataset.draftTheme === id &&
+          document.body.dataset.draftReady === "true",
+        draftTheme,
+      );
+      const host = await overlay.locator("#casterDraft").boundingBox();
+      for (const selector of draftTheme === "arena"
+        ? [".mainbox", ".upperlowermid .teamlogo-wrap"]
+        : [".mainbox"]) {
+        for (const box of await embedded.locator(selector).all()) {
+          const bounds = await box.boundingBox();
+          assert.ok(
+            bounds.y >= host.y - 1,
+            draftTheme + " " + selector + " top is not clipped",
+          );
+          assert.ok(
+            bounds.y + bounds.height <= host.y + host.height + 1,
+            draftTheme + " bottom is not clipped",
+          );
+        }
+      }
+      const names = await overlay.locator(".cc-one").boundingBox();
+      assert.ok(
+        names.y + names.height < host.y,
+        "nameplates stay above " + draftTheme + " draft",
+      );
+      await overlay.screenshot({
+        path: "/tmp/casters-draft-fit-" + draftTheme + ".png",
+      });
+    }
     const cameraDraft = await overlay.locator("#casterWindow1").boundingBox();
     const plateDraft = await overlay.locator(".cc-one").boundingBox();
     const draftBounds = await overlay.locator("#casterDraft").boundingBox();

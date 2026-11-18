@@ -315,7 +315,7 @@ body {
   left: 0;
   bottom: 0;
   width: 1920px;
-  height: 430px;
+  height: 500px;
   overflow: hidden;
   z-index: 2;
   opacity: 0;
@@ -336,7 +336,7 @@ body {
   background: transparent;
 }
 #casterStage[data-draft-visible="true"] .cc-desk {
-  transform: translate(211.2px, -140px) scale(0.78);
+  transform: translate(249.6px, -140px) scale(0.74);
 }
 #casterStage[data-draft-visible="true"] .cc-draft {
   opacity: 1;
