@@ -266,15 +266,27 @@
           if (changed && source && img) {
             img.classList.remove("hero-reveal");
             img.style.opacity = "0";
+            if (label) {
+              label.classList.remove("hero-name-reveal");
+              label.style.opacity = "0";
+            }
             image(img, [source], () => {
               img.style.opacity = "1";
               img.classList.remove("hero-reveal");
               void img.offsetWidth;
               img.classList.add("hero-reveal");
+              if (label) {
+                label.style.opacity = "1";
+                label.classList.add("hero-name-reveal");
+              }
             });
           } else if (!source && img) {
             image(img, []);
             img.style.opacity = "0";
+            if (label) {
+              label.classList.remove("hero-name-reveal");
+              label.style.opacity = "";
+            }
           }
           if (
             changed &&
