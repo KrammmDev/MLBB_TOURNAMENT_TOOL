@@ -50,6 +50,15 @@ for (const variant of ['control.html', 'controlban6.html']) {
     await Promise.all([a.goto(base+'/'+variant),b.goto(base+'/postgamecontrol.html')]);
     await a.waitForFunction(()=>window.ControlMatch?.get() && !document.querySelector('.content-wrapper').inert && currentDraftData);
     await b.waitForFunction(()=>Boolean(matchData.teamdata));
+    for (const seconds of [30, 50]) {
+      await a.locator('#draft-start-seconds').fill(String(seconds));
+      await a.locator('#draft-timer-settings button').click();
+      await a.waitForFunction(seconds => currentDraftData.timer_duration === seconds && currentDraftData.timer === String(seconds), seconds);
+      assert.equal(draft.draftdata.timer_duration, seconds);
+      assert.equal(draft.draftdata.timer, String(seconds));
+      assert.equal(draft.draftdata.timer_running, false);
+    }
+
     if (variant === 'control.html') {
       for (const width of [1920,1366,390]) {
         await a.setViewportSize({width,height:1080});

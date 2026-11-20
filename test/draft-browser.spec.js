@@ -303,6 +303,29 @@ test(
       await normal.locator("body").innerText(),
       /MLBB|WORLD CHAMP|BROADCAST OVERLAY|MATCH 1|GAME 1|Unknown/,
     );
+    // A custom phase duration drives every layout, including subsecond bar motion.
+    const savedDraft = draft;
+    draft = {draftdata: {...draft.draftdata, timer: "30", timer_duration: 30, timer_running: true}};
+    broadcast({type: "draftdata_update", data: draft.draftdata});
+    const barRatio = p => p.locator("#timer-bar").evaluate(el => el.style.width ? parseFloat(el.style.width) / 100 : Number(el.style.transform.match(/scaleX\(([^)]+)/)[1]));
+    await Promise.all([normal, six, classic, legacy, legacySix].map(async p => {
+      await p.waitForFunction(() => document.getElementById("timer").textContent === "30");
+      const before = await barRatio(p);
+      await p.waitForTimeout(150);
+      const after = await barRatio(p);
+      assert.ok(after < before && after > .95, "bar interpolates between ticks using the custom duration");
+    }));
+    draft = {draftdata: {...draft.draftdata, timer: "15", timer_running: false}};
+    broadcast({type: "draftdata_update", data: draft.draftdata});
+    for (const p of [normal, six, classic, legacy, legacySix]) {
+      await p.waitForFunction(() => document.getElementById("timer").textContent === "15");
+      assert.equal(await barRatio(p), .5);
+      await p.waitForTimeout(60);
+      assert.equal(await barRatio(p), .5, "paused bar stays still");
+    }
+    draft = savedDraft;
+    broadcast({type: "draftdata_update", data: draft.draftdata});
+
     // Live zero ticks remain zero in both the numeric display and timer fill, including after recovery.
     broadcast({
       type: "update",
