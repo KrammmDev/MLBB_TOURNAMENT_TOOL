@@ -161,3 +161,8 @@ body[data-casters-theme="classic"]
   .cc-two.is-on-air {
   left: 960px;
 }
+body[data-casters-theme="classic"]
+  #casterStage[data-draft-visible="true"]
+  .cc-desk {
+  transform: translate(249.6px, -45px) scale(0.74);
+}
