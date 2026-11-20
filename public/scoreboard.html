@@ -24,6 +24,7 @@
       href="/Assets/Font/big_noodle_titling.ttf"
       crossorigin
     />
+    <link rel="stylesheet" href="/themes/mapdraw-label.css" />
   </head>
   <body>
     <main id="scoreboard-stage">
@@ -115,12 +116,14 @@
             ><span id="sb-caster-names"></span>
           </div>
         </div>
+        <div id="sb-map-label" hidden></div>
         <img id="sb-tournament-logo" alt="" hidden />
       </div>
     </main>
     <div id="notification-stage" data-notification-embedded></div>
     <script src="/script/match-state.js"></script>
     <script src="/script/match-client.js"></script>
+    <script src="/script/mapdraw-label.js"></script>
     <script src="/script/roster-model.js"></script>
     <script src="/script/roster-themes.js"></script>
     <script src="/script/broadcast-color-model.js"></script>
