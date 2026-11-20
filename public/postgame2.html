@@ -76,6 +76,8 @@
       </div>
     </div>
 
+    <script src="/script/match-state.js"></script>
+    <script src="/script/match-client.js"></script>
     <script src="script/postgame.js"></script>
     <script src="script/displaynicknamelogo.js"></script>
 
@@ -102,10 +104,9 @@
         return 2;                         // default BO3
       }
 
-      async function updateScoreDots() {
+      async function updateScoreDots(snapshot) {
         try {
-          const response = await fetch("/api/matchdata");
-          const data = await response.json();
+          const data = snapshot?.teamdata ? snapshot : (await window.MatchDataClient.read()).data;
 
           const blueScore = data.teamdata.blueteam.score || 0;
           const redScore = data.teamdata.redteam.score || 0;
@@ -150,8 +151,7 @@
 
       document.addEventListener("DOMContentLoaded", () => {
         updateScoreDots();
-        // Poll every 2 seconds to stay in sync with control panel
-        setInterval(updateScoreDots, 2000);
+        document.addEventListener("postgame-match", event => updateScoreDots(event.detail));
       });
     </script>
   </body>

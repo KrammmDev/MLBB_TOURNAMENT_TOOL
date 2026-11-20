@@ -7,6 +7,8 @@ const { loadPanelStore, installPanelRoutes } = require("./lib/production-panel")
 // + TOURNAMENT BRACKET SYSTEM (controller.html + viewer.html)
 // + SHARED STATE (server-side mirror ng localStorage para gumana sa ibang PC)
 
+const { createJSONSnapshot } = require("./lib/json-snapshot");
+const { mergeSharedState } = require("./lib/shared-state");
 const WebSocket = require("ws");
 const http = require("http");
 const express = require("express");
@@ -526,9 +528,11 @@ function getLocalIp() {
 }
 
 function broadcast(data) {
+  if (!wss.clients.size) return;
+  const payload = JSON.stringify(data);
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(data));
+      client.send(payload);
     }
   });
 }
@@ -564,11 +568,7 @@ wss.on("connection", (ws) => {
       if (msg.type === "update" && msg.data && typeof msg.data === "object") {
         cache.matchdraft = mirrorDraftTimer(cache.matchdraft, msg.data.draftdata);
         // I-save sa server ang laman para maipadala sa mga susunod na client
-        for (const [k, v] of Object.entries(msg.data)) {
-          if (v === null) delete sharedState[k];
-          else sharedState[k] = v;
-        }
-        persistSharedState();
+        if (mergeSharedState(sharedState, msg.data, true)) persistSharedState();
       } else if (
         msg.type === "init" &&
         msg.data &&
@@ -577,14 +577,13 @@ wss.on("connection", (ws) => {
         // Ipinapadala ng crosshost.js ng controller ang buong localStorage
         // pagkakonekta. I-merge sa server state at i-relay bilang "update"
         // (hindi "init", para hindi mapalitan ang buong state ng ibang client).
-        for (const [k, v] of Object.entries(msg.data)) {
-          if (v !== null && v !== undefined) sharedState[k] = v;
-        }
-        persistSharedState();
+        if (mergeSharedState(sharedState, msg.data)) persistSharedState();
         msg = { type: "update", data: msg.data };
       } else if (msg.type === "clear") {
-        sharedState = {};
-        persistSharedState();
+        if (Object.keys(sharedState).length) {
+          sharedState = {};
+          persistSharedState();
+        }
       } else {
         return;
       }
@@ -789,8 +788,9 @@ app.get("/api/items", async (req, res) => {
   }
 });
 
+const sendScheduleSnapshot = createJSONSnapshot();
 app.get("/api/schedule", (req, res) => {
-  res.json(cache.schedule);
+  sendScheduleSnapshot(req, res, cache.schedule);
 });
 app.post("/api/schedule", (req, res) => {
   try {
@@ -1351,7 +1351,10 @@ async function start() {
     },
   });
   casterStore = await loadCasterStore({file:path.join(__dirname,"runtime","caster-panel.json"),onCommit:snapshot=>broadcast({type:"caster_panel_update",...snapshot})});
-  productionPanelStore = await loadPanelStore({ file: path.join(__dirname, "runtime", "production-panel.json") });
+  productionPanelStore = await loadPanelStore({
+    file: path.join(__dirname, "runtime", "production-panel.json"),
+    onCommit: (snapshot) => broadcast({ type: "production_panel_update", ...snapshot }),
+  });
   rosterThemeStore = await loadRosterThemeStore({
     file: path.join(__dirname, "runtime", "roster-theme.json"),
     onCommit: snapshot => broadcast({ type: "roster_theme_update", ...snapshot }),

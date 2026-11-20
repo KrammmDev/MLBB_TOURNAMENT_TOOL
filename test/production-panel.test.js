@@ -185,3 +185,26 @@ test("quick time additions preserve clock state and reset duration", async () =>
   );
   assert.deepEqual(store.snapshot(), before);
 });
+
+test("panel events publish acknowledged state only after persistence", async () => {
+  let fail = false;
+  const events = [];
+  const store = createPanelStore({
+    persist: async () => {
+      if (fail) throw Error("disk failure");
+    },
+    onCommit: (s) => events.push(s),
+  });
+  const result = await store.change(
+    { action: "start" },
+    store.snapshot().revision,
+  );
+  assert.equal(events.length, 1);
+  assert.deepEqual(events[0], result);
+  fail = true;
+  await assert.rejects(
+    store.change({ action: "pause" }, store.snapshot().revision),
+  );
+  assert.equal(events.length, 1);
+  assert.equal(store.snapshot().data.running, true);
+});

@@ -15,6 +15,8 @@
     stopped = false,
     reading = false,
     feedVersion = 0,
+    clockVersion = 0,
+    lastScheduleSnapshot = null,
     tickerKey = "",
     sponsorIndex = 0,
     drawnTheme = null;
@@ -349,6 +351,20 @@
     );
     $("schedule-timer-label").textContent = clock.data.label;
   }
+  function acceptClock(value) {
+    if (
+      stopped ||
+      !Number.isFinite(value?.serverNow) ||
+      !value.data ||
+      typeof value.data.running !== "boolean"
+    )
+      return;
+    clock = value;
+    clockAnchor = performance.now();
+    $("schedule-footer").textContent = value.data.headline || "";
+    ticker(value.data);
+    tick();
+  }
   async function refresh() {
     if (stopped || reading) return;
     reading = true;
@@ -359,28 +375,26 @@
         if (r.ok && !stopped) acceptSponsors((await r.json()).data);
       })(),
       (async () => {
-        const r = await fetch("/api/schedule", { cache: "no-store" });
-        if (r.ok && !stopped) {
-          const value = await r.json();
-          if (!stopped && version === feedVersion) {
-            const next = value && typeof value === "object" ? value : {};
-            const changed = JSON.stringify(next) !== JSON.stringify(api);
-            api = next;
-            if (changed && !legacy) rebuild();
-          }
+        if (legacy) return;
+        const value = await root.SnapshotClient.read("/api/schedule");
+        if (
+          !stopped &&
+          version === feedVersion &&
+          value !== lastScheduleSnapshot
+        ) {
+          lastScheduleSnapshot = value;
+          const next = value && typeof value === "object" ? value : {};
+          const changed = JSON.stringify(next) !== JSON.stringify(api);
+          api = next;
+          if (changed && !legacy) rebuild();
         }
       })(),
       (async () => {
+        const started = clockVersion;
         const r = await fetch("/api/production-panel", { cache: "no-store" });
-        if (r.ok && !stopped) {
+        if (r.ok) {
           const value = await r.json();
-          if (!stopped) {
-            clock = value;
-            clockAnchor = performance.now();
-            $("schedule-footer").textContent = value.data.headline || "";
-            ticker(value.data);
-            tick();
-          }
+          if (started === clockVersion) acceptClock(value);
         }
       })(),
       (async () => {
@@ -395,7 +409,7 @@
             /^[a-f0-9-]{36}\.(png|jpg|webp|gif)$/.test(file)
           ) {
             const img = $("schedule-brand");
-            const src = "/scoreboard-logos/" + file;
+            const src = "/scoreboard-branding/" + file;
             if (img.getAttribute("src") !== src) {
               img.hidden = true;
               img.onload = () => {
@@ -414,18 +428,28 @@
   }
   function message(m) {
     if (m.type === "init" || m.type === "update") {
-      feedVersion++;
+      let scheduleChanged = m.type === "init",
+        brandChanged = m.type === "init";
       if (m.type === "init") {
         shared = {};
         legacy = false;
       }
       for (const [k, v] of Object.entries(m.data || {})) {
-        if (/^schedule-[1-8]$/.test(k)) legacy = true;
-        if (v === null) delete shared[k];
-        else shared[k] = v;
+        const scheduleKey = /^schedule-[1-8]$/.test(k);
+        if (!scheduleKey && k !== "tournament-title") continue;
+        if (scheduleKey) legacy = true;
+        if (shared[k] !== v) {
+          if (scheduleKey) scheduleChanged = true;
+          else brandChanged = true;
+          if (v === null) delete shared[k];
+          else shared[k] = v;
+        }
       }
-      branding();
-      rebuild();
+      if (scheduleChanged) {
+        feedVersion++;
+        rebuild();
+      }
+      if (brandChanged) branding();
     } else if (m.type === "clear") {
       feedVersion++;
       shared = {};
@@ -438,6 +462,10 @@
       legacy = false;
       rebuild();
     } else if (m.type === "roster_theme_update" && !pinned) theme();
+    if (m.type === "production_panel_update") {
+      clockVersion++;
+      acceptClock(m);
+    }
     if (m.type === "broadcast_sponsors_update") acceptSponsors(m.data);
     BroadcastColorClient.accept(m);
   }
@@ -476,7 +504,7 @@
   theme();
   refresh();
   timers.push(
-    setInterval(refresh, 1000),
+    setInterval(refresh, 5000),
     setInterval(() => {
       sponsorIndex++;
       sponsorLogo();
