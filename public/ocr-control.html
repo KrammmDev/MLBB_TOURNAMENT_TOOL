@@ -28,6 +28,9 @@
         ><button id="devices">Refresh devices</button
         ><button id="connect">Connect camera</button
         ><button id="screen">Capture window</button
+        ><label>USB ADB device<select id="adb-device"><option value="">Select a phone</option></select></label
+        ><button id="adb-refresh">Refresh USB</button
+        ><button id="adb-connect">Connect USB ADB</button
         ><label class="file"
           >Test image<input
             id="image"
@@ -36,12 +39,12 @@
         ><button id="disconnect">Disconnect</button>
       </section>
       <p id="capture-info">
-        No source connected. Select OBS Virtual Camera on the server PC.
+        No source connected. Select OBS Virtual Camera or USB ADB on the server PC.
       </p>
       <p class="note">
         Use a clean game feed in OBS Virtual Camera. Including this scoreboard
         in the captured scene creates a feedback loop. Camera access needs
-        localhost or HTTPS; HTTP LAN addresses cannot open the camera.
+        localhost or HTTPS; HTTP LAN addresses cannot open the camera. USB ADB capture is available only when this page is opened on localhost of the server PC.
       </p>
       <div class="workspace">
         <section class="capture">

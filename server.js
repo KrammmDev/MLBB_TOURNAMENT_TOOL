@@ -28,6 +28,7 @@ const { mirrorDraftTimer } = require("./lib/draft-timer");
 const { installNotificationRoutes } = require("./lib/notifications");
 const { loadOCRStore, installOCRRoutes } = require("./lib/ocr-store");
 const { createEngine: createOCREngine } = require("./ocr/engine");
+const { installADBRoutes } = require("./lib/adb-capture");
 
 const app = express();
 const server = http.createServer(app);
@@ -646,6 +647,7 @@ installPanelRoutes(app, () => productionPanelStore);
 installCasterRoutes(app, () => casterStore);
 installMatchRoutes(app, () => matchStore);
 installOCRRoutes(app, () => ocrStore);
+installADBRoutes(app);
 installRosterThemeRoutes(app, () => rosterThemeStore);
 installSponsorRoutes(app, () => sponsorStore, sponsorDirectory);
 installColorRoutes(app, () => colorStore);
