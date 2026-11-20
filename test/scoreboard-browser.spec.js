@@ -145,6 +145,11 @@ test(
       const url = new URL(route.request().url());
       if (url.hostname !== "127.0.0.1") return route.abort();
       if (url.pathname.includes("/Assets/Font/")) return route.continue();
+      if (url.pathname.startsWith("/Assets/map/"))
+        return route.fulfill({
+          contentType: "image/svg+xml",
+          body: '<svg xmlns="http://www.w3.org/2000/svg" width="720" height="112"><rect width="720" height="112" fill="white"/><path d="M0 0H120L160 56L120 112H0Z" fill="orange"/><circle cx="60" cy="56" r="40" fill="gold"/><text x="190" y="72" font-family="Arial" font-size="40" font-weight="bold">GOLDEN TURRET</text></svg>',
+        });
       if (
         url.pathname.includes("/Assets/") ||
         url.pathname.startsWith("/broadcast-sponsors/") ||
@@ -192,6 +197,16 @@ test(
       () => document.body.dataset.draftReady === "true",
     );
 
+    const waitMap = (output, label) =>
+      output.waitForFunction((label) => {
+        const image = document.querySelector(".mapdraw-image");
+        return (
+          image?.alt === label &&
+          image.naturalWidth > 0 &&
+          !image.hidden &&
+          !image.parentElement.hidden
+        );
+      }, label);
     const mapPages = [
       live,
       pinned,
@@ -202,11 +217,38 @@ test(
       await page("/scoreboard.html?theme=studio"),
     ];
     for (const output of mapPages) {
-      await output
-        .locator(".mapdraw-name")
-        .filter({ hasText: "GOLDEN TURRET" })
-        .waitFor();
+      await waitMap(output, "GOLDEN TURRET");
       await output.locator(".mapdraw-label").waitFor({ state: "visible" });
+      assert.equal(
+        await output.locator(".mapdraw-label").textContent(),
+        "",
+        "no recreated map text or badge",
+      );
+      assert.equal(
+        await output.locator(".mapdraw-image").getAttribute("src"),
+        "/Assets/map/GoldenTurret.png",
+      );
+      assert.equal(
+        await output
+          .locator(".mapdraw-image")
+          .evaluate((e) => getComputedStyle(e).objectFit),
+        "contain",
+        "the final artwork is never cropped",
+      );
+      assert.equal(
+        await output
+          .locator(".mapdraw-image")
+          .evaluate((e) => getComputedStyle(e).borderRadius),
+        "0px",
+      );
+      if (output.url().includes("draft-display")) {
+        const artwork = await output.locator(".mapdraw-label").boundingBox();
+        const panel = await output.locator(".mainbox").boundingBox();
+        assert.ok(
+          artwork.y + artwork.height <= panel.y + 1,
+          "final draw artwork sits above the draft panel",
+        );
+      }
     }
     await live.screenshot({
       path: "/tmp/scoreboard-map-label.png",
@@ -227,17 +269,10 @@ test(
       ["FlyingClouds", "FLYING CLOUDS"],
     ]) {
       setMap({ status: "finished", result, timestamp: Date.now() });
-      for (const output of mapPages)
-        await output
-          .locator(".mapdraw-name")
-          .filter({ hasText: label })
-          .waitFor();
+      for (const output of mapPages) await waitMap(output, label);
     }
     await live.reload();
-    await live
-      .locator(".mapdraw-name")
-      .filter({ hasText: "FLYING CLOUDS" })
-      .waitFor();
+    await waitMap(live, "FLYING CLOUDS");
     setMap({
       status: "drawing",
       result: "GoldenTurret",
@@ -253,7 +288,10 @@ test(
         false,
         "Reset cancels delayed result reveal",
       );
-      assert.equal(await output.locator(".mapdraw-name").textContent(), "");
+      assert.equal(
+        await output.locator(".mapdraw-image").getAttribute("src"),
+        null,
+      );
     }
     setMap({ status: "finished", result: "../../bad.png", timestamp: 0 });
     for (const output of mapPages)
@@ -263,11 +301,7 @@ test(
       result: "GoldenTurret",
       timestamp: Date.now() - 7950,
     });
-    for (const output of mapPages)
-      await output
-        .locator(".mapdraw-name")
-        .filter({ hasText: "GOLDEN TURRET" })
-        .waitFor();
+    for (const output of mapPages) await waitMap(output, "GOLDEN TURRET");
     for (const output of mapPages.filter(
       (p) => p !== live && p !== pinned && p !== draftOutput,
     ))
