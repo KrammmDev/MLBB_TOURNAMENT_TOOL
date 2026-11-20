@@ -279,6 +279,7 @@
   }
   async function adbLoop(serial, epoch) {
     if (epoch !== captureEpoch || adbSerial !== serial) return;
+    const started = performance.now();
     try {
       await adbFrame(serial, epoch);
     } catch (error) {
@@ -290,7 +291,7 @@
       return;
     }
     if (epoch === captureEpoch && adbSerial === serial)
-      adbTimer = setTimeout(() => adbLoop(serial, epoch), 1000);
+      adbTimer = setTimeout(() => adbLoop(serial, epoch), Math.max(100, 1000 - (performance.now() - started)));
   }
   async function connectUSB() {
     const serial = $("adb-device").value;
@@ -554,7 +555,7 @@
       if (running) timer = setTimeout(read, 350);
       return;
     }
-    if (sampledFrame === lastFrame) {
+    if (reference?.kind === "adb" && sampledFrame === lastFrame) {
       timer = setTimeout(read, 350);
       return;
     }
