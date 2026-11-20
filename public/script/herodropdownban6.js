@@ -109,13 +109,18 @@ async function saveDraftData() {
   isSaving = true;
 
   try {
-    await fetch("/api/matchdraft", {
+    const response = await fetch("/api/matchdraft", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ draftdata: currentDraftData }),
     });
+    if (!response.ok) throw Error("Timer/draft settings were not saved");
+    const status = document.getElementById("draft-timer-status");
+    if (status) status.textContent = "Saved · applies now and to the next phases.";
   } catch (error) {
     console.error("Gagal menyimpan data draft:", error);
+    const status = document.getElementById("draft-timer-status");
+    if (status) status.textContent = "Not saved. Check connection and try again.";
   } finally {
     isSaving = false;
   }
@@ -213,6 +218,19 @@ async function initializePage() {
 
   // Connect WS akan handle fetch data awal juga
   connectWebSocket();
+
+  document.getElementById("draft-timer-settings")?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const input = document.getElementById("draft-start-seconds");
+    const seconds = Number(input.value);
+    if (!currentDraftData || !Number.isInteger(seconds) || seconds < 1 || seconds > 600 || isSaving) return;
+    const running = currentDraftData.timer_running;
+    TimerManager.reset(String(seconds));
+    currentDraftData.timer_duration = seconds;
+    currentDraftData.timer_running = running;
+    if (running) TimerManager.start();
+    await saveDraftData();
+  });
 
   // Setup Listeners
   for (let i = 1; i <= 20; i++) {
@@ -465,6 +483,7 @@ const TimerManager = {
         if (currentTime > 0) {
           currentTime--;
           currentDraftData.timer = currentTime.toString();
+          if (currentTime === 0) this.stop();
           this.updateUI();
 
           // Sync detik ke Overlay HANYA via WebSocket (tanpa save JSON)
@@ -475,7 +494,8 @@ const TimerManager = {
                 data: {
                   draftdata: {
                     timer: currentDraftData.timer,
-                    timer_running: true,
+                    timer_duration: currentDraftData.timer_duration || 50,
+                    timer_running: currentDraftData.timer_running,
                   },
                 },
               }),
@@ -515,6 +535,8 @@ const TimerManager = {
 
   syncState: function () {
     this.updateUI();
+    const input = document.getElementById("draft-start-seconds");
+    if (input && document.activeElement !== input) input.value = currentDraftData?.timer_duration || 50;
     if (currentDraftData && currentDraftData.timer_running) {
       this.start();
     } else {
@@ -543,13 +565,13 @@ async function handleControlAction(action) {
   } else if (action === "nextPhase") {
     if (currentPhaseIndex < dropdownOrder.length) {
       currentDraftData.current_phase = currentPhaseIndex + 1;
-      TimerManager.reset("50");
+      TimerManager.reset(String(currentDraftData.timer_duration || 50));
       currentDraftData.timer_running = true;
       TimerManager.start();
     }
   } else if (action === "reset") {
     currentDraftData.current_phase = 0;
-    TimerManager.reset("50");
+    TimerManager.reset(String(currentDraftData.timer_duration || 50));
     correctionMode = false;
 
     // Reset Draft Data (Gambar)

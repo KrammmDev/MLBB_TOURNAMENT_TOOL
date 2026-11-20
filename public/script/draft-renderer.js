@@ -34,7 +34,10 @@
     let heroesLoading = false;
     let audio = null,
       phaseDuration = config.defaultTimer,
-      lastPhase = -1;
+      lastPhase = -1,
+      clockKey = "",
+      clockAnchor = 0,
+      clockFrame = null;
     const node = (id) => document.getElementById(id);
     function text(id, value) {
       const el = node(id);
@@ -210,14 +213,28 @@
         "warning",
         time <= 5 && draft.timer_running === true,
       );
-      const ratio = Math.min(1, time / phaseDuration);
+      const key = [lastPhase, time, draft.timer_running, draft.timer_duration].join(":");
+      if (key !== clockKey) {
+        clockKey = key;
+        clockAnchor = performance.now();
+      }
+      const duration = model.timer(draft.timer_duration);
+      phaseDuration = duration > 0 ? duration : Math.max(config.defaultTimer, time);
+      // Interpolate only to the next expected second; a lost connection must not
+      // let this display-only clock run ahead of the acknowledged controller.
+      const elapsed = draft.timer_running ? Math.min(1, (performance.now() - clockAnchor) / 1000) : 0;
+      const ratio = Math.max(0, Math.min(1, (time - elapsed) / phaseDuration));
       if (node("timer-bar")) {
+        node("timer-bar").style.transition = "none";
         if (originalLayout) node("timer-bar").style.width = ratio * 100 + "%";
         else node("timer-bar").style.transform = "scaleX(" + ratio + ")";
       }
       for (const fill of document.querySelectorAll(".tb-fill")) {
-        fill.style.transition = "transform .2s linear";
+        fill.style.transition = "none";
         fill.style.transform = "scaleX(" + ratio + ")";
+      }
+      if (draft.timer_running && time > 0 && !stopped && clockFrame === null) {
+        clockFrame = requestAnimationFrame(() => { clockFrame = null; clock(); });
       }
     }
     function renderDraft(data, silent = false) {
@@ -423,6 +440,7 @@
           lastTick = {
             timer: String(value),
             timer_running: tick.timer_running,
+            ...(model.timer(tick.timer_duration) > 0 ? { timer_duration: Number(tick.timer_duration) } : {}),
           };
           if (draft) {
             draft = { ...draft, ...lastTick };
@@ -477,6 +495,8 @@
       themeVersion++;
       stopMatch?.();
       clearInterval(poll);
+      cancelAnimationFrame(clockFrame);
+      clockFrame = null;
       root.BroadcastThemeClient?.cancel();
       audio?.pause();
     }

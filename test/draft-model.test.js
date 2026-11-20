@@ -58,6 +58,8 @@ test("timer mirror updates only valid live-clock fields, preserving draft select
     blueside: {},
   });
   assert.equal(next.draftdata.timer, "0");
+  assert.equal(mirrorDraftTimer(current, {timer: "15", timer_running: true, timer_duration: 30}).draftdata.timer_duration, 30);
+  assert.equal(mirrorDraftTimer(current, {timer: "15", timer_running: true, timer_duration: -1}).draftdata.timer_duration, undefined);
   assert.equal(next.draftdata.current_phase, 6);
   assert.strictEqual(next.draftdata.blueside, current.draftdata.blueside);
   assert.equal(current.draftdata.timer, "50");
@@ -86,3 +88,28 @@ test("legacy primary draft displays have unique IDs for every active phase box",
         assert.ok(ids.includes(id), `${name} missing ${id}`);
   }
 });
+
+for (const file of ["herodropdown.js", "herodropdownban6.js"]) {
+  test(`${file}: configured duration survives next phase, reset and resume`, async () => {
+    const ctx = vm.createContext({
+      document: {addEventListener() {}, getElementById() {return null}, querySelector() {return null}},
+      console, setInterval: () => 1, clearInterval() {},
+    });
+    vm.runInContext(fs.readFileSync(path.join(__dirname, "../public/script", file), "utf8"), ctx);
+    await vm.runInContext(`
+      saveDraftData = async () => {};
+      resetMatchDataHeroes = async () => {};
+      currentDraftData = {timer: "12", timer_duration: 30, timer_running: false,
+        current_phase: 0, blueside: {}, redside: {}};
+      handleControlAction("nextPhase");
+    `, ctx);
+    assert.equal(vm.runInContext("currentDraftData.timer", ctx), "30");
+    assert.equal(vm.runInContext("currentDraftData.timer_running", ctx), true);
+    await vm.runInContext('handleControlAction("stop")', ctx);
+    await vm.runInContext('handleControlAction("start")', ctx);
+    assert.equal(vm.runInContext("currentDraftData.timer", ctx), "30");
+    await vm.runInContext('handleControlAction("reset")', ctx);
+    assert.equal(vm.runInContext("currentDraftData.timer", ctx), "30");
+    assert.equal(vm.runInContext("currentDraftData.timer_running", ctx), false);
+  });
+}
