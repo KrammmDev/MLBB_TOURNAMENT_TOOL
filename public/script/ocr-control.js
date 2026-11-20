@@ -8,6 +8,8 @@
     native = document.createElement("canvas");
   let stream,
     image,
+    adbTimer,
+    adbSerial,
     reference,
     settings,
     telemetry,
@@ -92,6 +94,10 @@
     stream?.getTracks().forEach((track) => track.stop());
     stream = null;
     video.srcObject = null;
+    clearTimeout(adbTimer);
+    adbTimer = null;
+    adbSerial = null;
+    image?.close?.();
     image = null;
     reference = null;
     lastFrame = 0;
@@ -217,8 +223,94 @@
       "Source connected. Draw and save native regions, then start preview.",
     );
   }
+  async function refreshUSB() {
+    const response = await fetch("/api/adb/devices", {
+      cache: "no-store", signal: AbortSignal.timeout(7000),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "ADB device lookup failed");
+    const selector = $("adb-device"), previous = selector.value;
+    selector.replaceChildren(new Option("Select a phone", ""));
+    for (const device of data.devices) {
+      const option = new Option(`${device.serial} (${device.status})`, device.serial);
+      option.disabled = device.status !== "device";
+      selector.add(option);
+    }
+    if ([...selector.options].some(option => option.value === previous && !option.disabled))
+      selector.value = previous;
+    else if (data.devices.filter(device => device.status === "device").length === 1)
+      selector.value = data.devices.find(device => device.status === "device").serial;
+    return data.devices;
+  }
+  async function adbFrame(serial, epoch) {
+    const response = await fetch(`/api/adb/frame?serial=${encodeURIComponent(serial)}`, {
+      cache: "no-store", signal: AbortSignal.timeout(10000),
+    });
+    if (!response.ok) {
+      const detail = await response.json().catch(() => ({}));
+      throw new Error(detail.message || `ADB frame failed (${response.status})`);
+    }
+    const nextImage = await createImageBitmap(await response.blob());
+    if (epoch !== captureEpoch || adbSerial !== serial) {
+      nextImage.close();
+      return;
+    }
+    if (reference &&
+        (nextImage.width !== reference.width || nextImage.height !== reference.height)) {
+      nextImage.close();
+      throw new Error("ADB orientation or resolution changed. Reconnect and recalibrate.");
+    }
+    if (!reference) {
+      reference = {
+        width: nextImage.width, height: nextImage.height,
+        kind: "adb", sourceKey: `adb:${serial}`,
+      };
+      dirty = JSON.stringify(reference) !==
+        JSON.stringify(settings?.data.profile?.reference);
+    }
+    image?.close?.();
+    image = nextImage;
+    lastFrame = performance.now();
+    frameCount++;
+    captureStalled = false;
+    $("capture-info").textContent =
+      `USB ADB ${serial} • native ${reference.width} × ${reference.height} • ${frameCount} screenshots`;
+    controls();
+  }
+  async function adbLoop(serial, epoch) {
+    if (epoch !== captureEpoch || adbSerial !== serial) return;
+    try {
+      await adbFrame(serial, epoch);
+    } catch (error) {
+      if (epoch !== captureEpoch) return;
+      captureStalled = true;
+      await stop();
+      message(`USB ADB paused: ${error.message}`, true);
+      controls();
+      return;
+    }
+    if (epoch === captureEpoch && adbSerial === serial)
+      adbTimer = setTimeout(() => adbLoop(serial, epoch), 1000);
+  }
+  async function connectUSB() {
+    const serial = $("adb-device").value;
+    if (!serial) throw new Error("Select an authorized USB ADB device");
+    await disconnect();
+    const epoch = captureEpoch;
+    adbSerial = serial;
+    try {
+      await adbFrame(serial, epoch);
+      if (epoch !== captureEpoch) return;
+      message("USB ADB connected. Save native calibration, then start OCR preview.");
+      adbTimer = setTimeout(() => adbLoop(serial, epoch), 1000);
+    } catch (error) {
+      if (epoch === captureEpoch) await disconnect();
+      throw error;
+    }
+  }
   function snapshot() {
     if (!reference) return false;
+    if (reference.kind === "adb" && (captureStalled || performance.now() - lastFrame > 5000)) return false;
     if (!image) {
       const track = stream?.getVideoTracks()[0];
       if (!track || track.readyState === "ended") {
@@ -462,7 +554,7 @@
       if (running) timer = setTimeout(read, 350);
       return;
     }
-    if (!image && sampledFrame === lastFrame) {
+    if (sampledFrame === lastFrame) {
       timer = setTimeout(read, 350);
       return;
     }
@@ -528,6 +620,8 @@
   $("devices").onclick = safe(devices);
   $("connect").onclick = safe(() => connect("camera"));
   $("screen").onclick = safe(() => connect("screen"));
+  $("adb-refresh").onclick = safe(refreshUSB);
+  $("adb-connect").onclick = safe(connectUSB);
   $("disconnect").onclick = safe(disconnect);
   $("stop").onclick = safe(stop);
   $("reload").onclick = safe(reload);
@@ -630,6 +724,8 @@
   window.addEventListener("pagehide", () => {
     running = false;
     stream?.getTracks().forEach((t) => t.stop());
+    clearTimeout(adbTimer);
+    image?.close?.();
     if (sessionId)
       fetch("/api/ocr/stop", {
         method: "POST",
@@ -657,6 +753,7 @@
   safe(async () => {
     await reload();
     if (navigator.mediaDevices) await devices();
+    await refreshUSB().catch(() => {});
     else
       message(
         "Open http://localhost:3000/ocr-control.html on the server PC to access OBS Virtual Camera.",
