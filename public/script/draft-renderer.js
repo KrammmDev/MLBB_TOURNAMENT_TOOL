@@ -55,12 +55,13 @@
       if (!options.template) throw Error("Draft display template is required");
       node("draft-stage").append(options.template);
     }
-    function image(el, candidates) {
+    function image(el, candidates, onReady = null) {
       if (!el) return;
       const list = [...new Set(candidates.filter(Boolean))],
         key = JSON.stringify(list);
       if (el.dataset.imageKey === key) return;
       el.dataset.imageKey = key;
+      el.onload = onReady;
       el.hidden = !list.length;
       el.style.visibility = "";
       if (!list.length) {
@@ -263,11 +264,14 @@
           const host = box.closest(".heropick,.banhero");
           host?.classList.toggle("has-hero", Boolean(source));
           if (changed && source && img) {
-            image(img, [source]);
-            img.style.opacity = "1";
             img.classList.remove("hero-reveal");
-            void img.offsetWidth;
-            img.classList.add("hero-reveal");
+            img.style.opacity = "0";
+            image(img, [source], () => {
+              img.style.opacity = "1";
+              img.classList.remove("hero-reveal");
+              void img.offsetWidth;
+              img.classList.add("hero-reveal");
+            });
           } else if (!source && img) {
             image(img, []);
             img.style.opacity = "0";
