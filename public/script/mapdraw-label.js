@@ -23,25 +23,35 @@
         ? data.result
         : null;
     for (const host of hosts) {
-      host.hidden = !key;
-      host
-        .closest(".mainbox")
-        ?.setAttribute("data-map-selected", String(Boolean(key)));
-      host.querySelector(".mapdraw-name").textContent = key ? maps[key] : "";
       const img = host.querySelector("img");
       const src = key ? "/Assets/map/" + key + ".png" : "";
+      img.alt = key ? maps[key] : "";
+      host.setAttribute(
+        "aria-label",
+        key ? "Selected battlefield: " + maps[key] : "Selected battlefield",
+      );
       if (img.dataset.source !== src) {
         img.dataset.source = src;
         img.hidden = true;
         img.onload = () => {
-          if (img.dataset.source === src) img.hidden = false;
+          if (img.dataset.source === src && src) {
+            img.hidden = false;
+            host.hidden = false;
+          }
         };
         img.onerror = () => {
-          img.hidden = true;
+          if (img.dataset.source === src) {
+            img.hidden = true;
+            host.hidden = true;
+          }
         };
         if (src) img.src = src;
         else img.removeAttribute("src");
       }
+      host.hidden = !key || img.hidden;
+      host
+        .closest(".mainbox")
+        ?.setAttribute("data-map-selected", String(Boolean(key)));
     }
   }
   function apply(data) {
@@ -90,17 +100,11 @@
       host.hidden = true;
       host.classList.add("mapdraw-label");
       host.setAttribute("aria-label", "Selected battlefield");
-      const badge = document.createElement("span");
-      badge.className = "mapdraw-icon";
-      badge.setAttribute("aria-hidden", "true");
-      badge.textContent = "◆";
       const image = document.createElement("img");
+      image.className = "mapdraw-image";
       image.alt = "";
       image.hidden = true;
-      badge.append(image);
-      const name = document.createElement("span");
-      name.className = "mapdraw-name";
-      host.append(badge, name);
+      host.append(image);
       hosts.add(host);
       if (current) apply(current);
       if (!poll) {

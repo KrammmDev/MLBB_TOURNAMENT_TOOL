@@ -1,6 +1,8 @@
 /* Reuse the operator's original display2 markup; never execute scripts from the template. */
 (async function mount() {
   const stage = document.getElementById("draft-stage");
+  if (new URLSearchParams(location.search).get("context") === "casters")
+    document.body.dataset.draftContext = "casters";
   try {
     const response = await fetch("/display2.html", { cache: "no-store" });
     if (!response.ok) throw Error("Display template unavailable");

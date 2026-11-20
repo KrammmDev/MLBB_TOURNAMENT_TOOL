@@ -133,7 +133,8 @@
       draftFrame.title = "Live tournament draft";
       const format = new URLSearchParams(location.search).get("format");
       draftFrame.src =
-        "/draft-display.html?audio=0" + (format === "six" ? "&format=six" : "");
+        "/draft-display.html?audio=0&context=casters" +
+        (format === "six" ? "&format=six" : "");
       draftHost.append(draftFrame);
     }
     const animateScene =

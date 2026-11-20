@@ -103,6 +103,13 @@ test(
         revision: '"0"',
       }),
     );
+    app.get(/^\/Assets\/map\//, (q, s) =>
+      s
+        .type("svg")
+        .send(
+          '<svg xmlns="http://www.w3.org/2000/svg" width="720" height="112"><rect width="720" height="112" fill="white"/><path d="M0 0H120L160 56L120 112H0Z" fill="orange"/><text x="190" y="72" font-size="40">GOLDEN TURRET</text></svg>',
+        ),
+    );
     app.use(express.static(path.join(__dirname, "../public")));
     const browser = await chromium.launch({
       executablePath: process.env.MLBB_TEST_BROWSER || undefined,
@@ -648,7 +655,7 @@ test(
     );
     assert.equal(
       await overlay.locator("#casterDraft iframe").getAttribute("src"),
-      "/draft-display.html?audio=0",
+      "/draft-display.html?audio=0&context=casters",
     );
     assert.equal(
       feedLoads,
