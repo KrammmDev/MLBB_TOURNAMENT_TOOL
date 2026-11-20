@@ -30,7 +30,10 @@
     sponsor.className = "broadcast-sponsors";
     sponsor.setAttribute("aria-label", "Sponsor logos");
     fragment.querySelector(".mainbox").append(sponsor);
+    const mapLabel = document.createElement("div");
+    fragment.querySelector(".mainbox").append(mapLabel);
     DraftDisplay.start({ template: fragment });
+    window.MapDrawLabel.start(mapLabel);
     window.SponsorSlideshow?.start(sponsor);
     const stats = document.createElement("script");
     stats.src = "/script/herostats.js";

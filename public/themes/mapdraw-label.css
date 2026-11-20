@@ -1,0 +1,77 @@
+.mapdraw-label {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: #f7f8fa;
+  color: #131b26;
+  border-bottom: 2px solid var(--blue-accent, var(--sb-left, #ff7200));
+  font:
+    800 20px/1 "Arial Narrow",
+    "Scoreboard Condensed",
+    Arial,
+    sans-serif;
+  text-shadow: none;
+  letter-spacing: 0.4px;
+  pointer-events: none;
+  z-index: 20;
+}
+.mapdraw-label[hidden] {
+  display: none;
+}
+.mapdraw-icon {
+  position: relative;
+  flex: 0 0 42px;
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  background: var(--blue-accent, var(--sb-left, #ff7200));
+  color: #fff;
+  font-size: 18px;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 9px) 0,
+    100% 50%,
+    calc(100% - 9px) 100%,
+    0 100%
+  );
+}
+.mapdraw-icon img {
+  position: absolute;
+  inset: 3px 9px 3px 3px;
+  width: calc(100% - 12px);
+  height: calc(100% - 6px);
+  object-fit: cover;
+  border-radius: 50%;
+}
+.mapdraw-icon img[hidden] {
+  display: none;
+}
+.mapdraw-name {
+  flex: 1;
+  min-width: 0;
+  padding: 0 10px;
+  overflow: hidden;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.mainbox > .mapdraw-label {
+  left: var(--side-width, 725px);
+  top: 0;
+  width: var(--center-width, 470px);
+  height: 32px;
+  font-size: 18px;
+}
+.mainbox[data-map-selected="true"] > .broadcast-sponsors {
+  top: 32px;
+  height: calc(var(--sponsor-height, 92.5px) - 32px);
+  padding: 3px 14px;
+}
+#sb-map-label {
+  left: 1570px;
+  top: 148px;
+  width: 350px;
+  height: 36px;
+}

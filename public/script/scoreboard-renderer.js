@@ -120,6 +120,7 @@
   function start() {
     if (stopMatch) return;
     stopped = false;
+    root.MapDrawLabel.start(document.getElementById("sb-map-label"));
     stopMatch = root.MatchDataClient.subscribe(
       ({ data }) => render(data),
       (status) => {
@@ -127,6 +128,7 @@
       },
       {
         onMessage(message) {
+          root.MapDrawLabel.accept(message);
           if (message.type === "notification_trigger") {
             try {
               root.NotificationOverlay?.accept(message);

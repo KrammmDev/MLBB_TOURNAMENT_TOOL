@@ -114,6 +114,16 @@ test(
     );
     app.get("/database/herolist.json", (req, res) => res.json([]));
     app.get("/api/herostats", (req, res) => res.json({ heroes: {} }));
+    let mapState = {
+      status: "finished",
+      result: "GoldenTurret",
+      timestamp: Date.now() - 9000,
+    };
+    app.get("/api/mapdraw", (req, res) => res.json({ drawdata: mapState }));
+    const setMap = (data) => {
+      mapState = data;
+      broadcast({ type: "mapdraw_update", data });
+    };
     app.use(express.static(path.join(__dirname, "../public")));
     server.listen(0, "127.0.0.1");
     await new Promise((r) => server.once("listening", r));
@@ -182,6 +192,86 @@ test(
       () => document.body.dataset.draftReady === "true",
     );
 
+    const mapPages = [
+      live,
+      pinned,
+      draftOutput,
+      await page("/draft-display.html?theme=classic"),
+      await page("/draft-display.html?theme=studio"),
+      await page("/draft-display.html?theme=studio&format=six"),
+      await page("/scoreboard.html?theme=studio"),
+    ];
+    for (const output of mapPages) {
+      await output
+        .locator(".mapdraw-name")
+        .filter({ hasText: "GOLDEN TURRET" })
+        .waitFor();
+      await output.locator(".mapdraw-label").waitFor({ state: "visible" });
+    }
+    await live.screenshot({
+      path: "/tmp/scoreboard-map-label.png",
+      omitBackground: true,
+    });
+    await draftOutput.screenshot({
+      path: "/tmp/draft-map-label.png",
+      omitBackground: true,
+    });
+    assert.deepEqual(
+      writes,
+      [],
+      "map consumers never write draw or match state",
+    );
+    for (const [result, label] of [
+      ["HealingTurtle", "HEALING TURTLE"],
+      ["RevealingWisps", "REVEALING WISPS"],
+      ["FlyingClouds", "FLYING CLOUDS"],
+    ]) {
+      setMap({ status: "finished", result, timestamp: Date.now() });
+      for (const output of mapPages)
+        await output
+          .locator(".mapdraw-name")
+          .filter({ hasText: label })
+          .waitFor();
+    }
+    await live.reload();
+    await live
+      .locator(".mapdraw-name")
+      .filter({ hasText: "FLYING CLOUDS" })
+      .waitFor();
+    setMap({
+      status: "drawing",
+      result: "GoldenTurret",
+      timestamp: Date.now(),
+    });
+    for (const output of mapPages)
+      await output.locator(".mapdraw-label").waitFor({ state: "hidden" });
+    setMap({ status: "idle", result: null, timestamp: 0 });
+    await live.waitForTimeout(8100);
+    for (const output of mapPages) {
+      assert.equal(
+        await output.locator(".mapdraw-label").isVisible(),
+        false,
+        "Reset cancels delayed result reveal",
+      );
+      assert.equal(await output.locator(".mapdraw-name").textContent(), "");
+    }
+    setMap({ status: "finished", result: "../../bad.png", timestamp: 0 });
+    for (const output of mapPages)
+      assert.equal(await output.locator(".mapdraw-label").isVisible(), false);
+    setMap({
+      status: "drawing",
+      result: "GoldenTurret",
+      timestamp: Date.now() - 7950,
+    });
+    for (const output of mapPages)
+      await output
+        .locator(".mapdraw-name")
+        .filter({ hasText: "GOLDEN TURRET" })
+        .waitFor();
+    for (const output of mapPages.filter(
+      (p) => p !== live && p !== pinned && p !== draftOutput,
+    ))
+      await output.close();
     await ready(pinned, "classic");
     await live.locator("#sb-sponsors img").waitFor();
     assert.equal(

@@ -79,6 +79,11 @@ test(
     );
     app.get("/database/herolist.json", (q, s) => s.json([]));
     app.get("/api/herostats", (q, s) => s.json({ heroes: {} }));
+    app.get("/api/mapdraw", (q, s) =>
+      s.json({
+        drawdata: { status: "finished", result: "GoldenTurret", timestamp: 0 },
+      }),
+    );
     let brandingLogo = "11111111-1111-4111-8111-111111111111.png";
     app.get(/^\/scoreboard-branding\//, (q, s) =>
       s
@@ -598,6 +603,13 @@ test(
         draftTheme,
       );
       const host = await overlay.locator("#casterDraft").boundingBox();
+      await embedded.locator(".mapdraw-label").waitFor({ state: "visible" });
+      const mapBounds = await embedded.locator(".mapdraw-label").boundingBox();
+      assert.ok(
+        mapBounds.y >= host.y &&
+          mapBounds.y + mapBounds.height <= host.y + host.height,
+        "map result remains inside the caster draft viewport",
+      );
       for (const selector of draftTheme === "arena"
         ? [".mainbox", ".upperlowermid .teamlogo-wrap"]
         : [".mainbox"]) {

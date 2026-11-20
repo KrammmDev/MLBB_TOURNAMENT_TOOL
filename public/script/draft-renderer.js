@@ -407,6 +407,7 @@
       }
     }
     function onMessage(message) {
+      root.MapDrawLabel?.accept(message);
       root.BroadcastColorClient?.accept(message);
       root.SponsorSlideshow?.accept(message);
       if (message.type === "draftdata_update") {
