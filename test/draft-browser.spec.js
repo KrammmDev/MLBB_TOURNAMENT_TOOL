@@ -316,6 +316,16 @@ test(
         return window.heroEntrance.effect.getKeyframes().map(k => k.transform);
       });
       assert.deepEqual(frames, ["translateY(100%)", "translateY(0px)"]);
+      if (p !== legacySix) {
+      const pair = await p.evaluate(() => {
+        const image = document.getElementById("image-display-1").getAnimations().find(a => a.animationName === "draft-hero-pan-up");
+        const name = document.getElementById("hero-name-1").getAnimations().find(a => a.animationName === "draft-hero-name-pan-up");
+        return {duration: image.effect.getTiming().duration, nameDuration: name?.effect.getTiming().duration, delta: Math.abs(image.startTime - name?.startTime)};
+      });
+      assert.equal(pair.duration, 2000);
+      assert.equal(pair.nameDuration, 2000);
+      assert.ok(pair.delta < 20, "hero and name start on the same frame");
+      }
     }));
     broadcast({type: "update", data: {draftdata: {timer: "17", timer_running: false}}});
     for (const p of [normal, six, classic, legacy, legacySix]) {
