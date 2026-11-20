@@ -1379,3 +1379,43 @@ input[type="file"]::file-selector-button:hover {
 .redside .btn-turtle-minus:hover {
   background: var(--raise-hover);
 }
+
+/* Timer settings share the transport slot, without becoming a second grid item. */
+.content-wrapper > .draft-transport > button {
+  height: var(--control-h, 38px);
+}
+.draft-transport > .draft-timer-settings {
+  flex: 1 0 100%;
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(70px, 1fr) minmax(100px, 1fr);
+  gap: 8px;
+  min-width: 0;
+  margin: 8px 0 0;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius, 6px);
+  background: var(--background-color-2);
+  box-sizing: border-box;
+}
+.draft-timer-settings > label,
+.draft-timer-settings > [role="status"] {
+  grid-column: 1 / -1;
+  line-height: 1.5;
+  white-space: normal;
+}
+.draft-timer-settings > label {
+  font-size: 12px;
+  font-weight: 600;
+}
+.draft-timer-settings > input,
+.draft-timer-settings > button {
+  width: 100%;
+  min-width: 0;
+  height: 38px;
+  box-sizing: border-box;
+}
+.draft-timer-settings > [role="status"] {
+  font-size: 11px;
+  color: var(--font-dim);
+}
