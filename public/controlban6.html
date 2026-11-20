@@ -892,10 +892,11 @@
       <!-- FORMAT CONTROL WITH BO1 ADDED -->
       <form id="draft-timer-settings" class="timercontrol" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <label for="draft-start-seconds">Draft timer (seconds)</label>
-        <input id="draft-start-seconds" type="number" min="1" max="600" step="1" value="50" required style="width:85px">
+        <input id="draft-start-seconds" type="number" min="1" max="600" step="1" value="50" required>
         <button type="submit">Set timer</button>
         <span id="draft-timer-status" role="status">Applies now and to the next phases.</span>
       </form>
+      </div>
 
       <div class="format-control">
         <button onclick="setFormat(1)">BO1</button>
