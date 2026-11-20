@@ -754,12 +754,12 @@
   safe(async () => {
     await reload();
     if (navigator.mediaDevices) await devices();
-    await refreshUSB().catch(() => {});
     else
       message(
         "Open http://localhost:3000/ocr-control.html on the server PC to access OBS Virtual Camera.",
         true,
       );
+    await refreshUSB().catch(() => {});
   })();
   requestAnimationFrame(draw);
 })();
