@@ -2,79 +2,79 @@
   "draftdata": {
     "timer": "50",
     "timerRunning": false,
-    "current_phase": 17,
+    "current_phase": 0,
     "blueside": {
       "ban": [
         {
-          "hero": "/Assets/HeroPick/granger.gif"
+          "hero": ""
         },
         {
-          "hero": "/Assets/HeroPick/hilda.gif"
+          "hero": ""
         },
         {
-          "hero": "/Assets/HeroPick/marcel.gif"
+          "hero": ""
         },
         {
-          "hero": "/Assets/HeroPick/arlot.gif"
+          "hero": ""
         },
         {
-          "hero": "/Assets/HeroPick/irithel.gif"
+          "hero": ""
         }
       ],
       "pick": [
         {
-          "hero": "/Assets/HeroPick/nolan.gif"
+          "hero": ""
         },
         {
-          "hero": "/Assets/HeroPick/zetian.gif"
+          "hero": ""
         },
         {
-          "hero": "/Assets/HeroPick/atlas.gif"
+          "hero": ""
         },
         {
-          "hero": "/Assets/HeroPick/obsidia.gif"
+          "hero": ""
         },
         {
-          "hero": "/Assets/HeroPick/joy.gif"
+          "hero": ""
         }
       ]
     },
     "redside": {
       "ban": [
         {
-          "hero": "/Assets/HeroPick/suyou.gif"
+          "hero": ""
         },
         {
-          "hero": "/Assets/HeroPick/karrie.gif"
+          "hero": ""
         },
         {
-          "hero": "/Assets/HeroPick/lunox.gif"
+          "hero": ""
         },
         {
-          "hero": "/Assets/HeroPick/fanny.gif"
+          "hero": ""
         },
         {
-          "hero": "/Assets/HeroPick/eudora.gif"
+          "hero": ""
         }
       ],
       "pick": [
         {
-          "hero": "/Assets/HeroPick/hirara.gif"
+          "hero": ""
         },
         {
-          "hero": "/Assets/HeroPick/yve.gif"
+          "hero": ""
         },
         {
-          "hero": "/Assets/HeroPick/hylos.gif"
+          "hero": ""
         },
         {
-          "hero": "/Assets/HeroPick/clint.gif"
+          "hero": ""
         },
         {
-          "hero": "/Assets/HeroPick/lapulapu.gif"
+          "hero": ""
         }
       ]
     },
-    "timer_running": true
+    "timer_running": false
   }
 }

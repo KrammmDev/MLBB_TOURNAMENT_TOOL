@@ -338,3 +338,6 @@ body {
   box-sizing: border-box;
   text-transform: uppercase;
 }
+body[data-scoreboard-theme="studio"] #sb-map-label {
+  top: 155px;
+}

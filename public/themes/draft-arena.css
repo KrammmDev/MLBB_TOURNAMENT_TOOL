@@ -328,3 +328,6 @@
   left: 8px;
   right: auto;
 }
+body[data-draft-theme="arena"] .mainbox > .mapdraw-label {
+  transform: translateY(63px);
+}

@@ -1,9 +1,9 @@
 {
   "drawdata": {
     "status": "drawing",
-    "mode": "fixed",
-    "fixedChoice": "RevealingWisps",
-    "result": "RevealingWisps",
-    "timestamp": 1793184512275
+    "mode": "random",
+    "fixedChoice": null,
+    "result": "FlyingClouds",
+    "timestamp": 1795158155291
   }
 }

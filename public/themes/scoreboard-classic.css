@@ -275,3 +275,6 @@ body {
 #sb-caster-cell {
   color: var(--sb-readable, var(--sb-text));
 }
+body[data-scoreboard-theme="classic"] #sb-map-label {
+  top: 158px;
+}
