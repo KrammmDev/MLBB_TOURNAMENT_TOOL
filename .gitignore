@@ -1,2 +1,10 @@
 # Local broadcast selections are runtime state, not shared match fixtures.
 /runtime/
+
+# Generated installations and editor lock files are not source.
+/node_modules/
+~$*
+
+# Old command-output artifacts.
+/Berhasil
+/Ditemukan

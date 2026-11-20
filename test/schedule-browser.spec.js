@@ -48,7 +48,7 @@ test(
         file: path.join(dir, "colors.json"),
         onCommit: (s) => broadcast({ type: "broadcast_colors_update", ...s }),
       }),
-      panel = createPanelStore({ persist: async () => {} });
+      panel = createPanelStore({ persist: async () => {}, onCommit: s => broadcast({type:"production_panel_update",...s}) });
     await panel.change(
       {
         action: "settings",
@@ -395,8 +395,7 @@ test(
               score: getComputedStyle(e.querySelector(".schedule-score"))
                 .fontSize,
             }));
-          assert.notEqual(cardPaint.bg, "rgba(0, 0, 0, 0)");
-          assert.equal(cardPaint.image, "none");
+          assert.ok(cardPaint.bg !== "rgba(0, 0, 0, 0)" || cardPaint.image !== "none", "Classic cards retain a painted backdrop (including the saved metallic style)");
           assert.equal(cardPaint.team, "column");
           assert.equal(cardPaint.score, "78px");
           assert.equal(

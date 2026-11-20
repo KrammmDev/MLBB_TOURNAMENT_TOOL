@@ -24,6 +24,7 @@ async function sandbox(t, raw) {
   await fs.mkdir(path.join(dir, "public/script"), { recursive: true });
   for (const script of [
     "match-state.js",
+    "caster-vdo-model.js",
     "production-timer-model.js",
     "ocr-model.js",
     "notification-model.js",

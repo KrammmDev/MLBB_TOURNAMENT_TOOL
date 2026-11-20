@@ -45,7 +45,7 @@ test(
       createPanelStore,
       installPanelRoutes,
     } = require("../lib/production-panel");
-    const production = createPanelStore({ persist: async () => {} });
+    const production = createPanelStore({ persist: async () => {}, onCommit: s => broadcast({type:"production_panel_update",...s}) });
     await production.change(
       {
         action: "settings",

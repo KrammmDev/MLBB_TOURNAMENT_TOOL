@@ -117,6 +117,7 @@ function updateWinLose(winStatus) {
 // Fungsi Render Statistik Tengah (TLT + Gold)
 function renderTeamStats(teamData, containerId) {
   const container = document.getElementById(containerId);
+  if (!container) return;
   container.innerHTML = "";
 
   // UPDATE: Menggunakan formatGold untuk index ke-0 (Total Gold)
@@ -138,6 +139,7 @@ function renderTeamStats(teamData, containerId) {
 // Fungsi Render List Pemain (MODIFIKASI: Urutan berbeda untuk Team 2)
 function renderPlayerList(players, containerId) {
   const container = document.getElementById(containerId);
+  if (!container) return;
   container.innerHTML = "";
 
   players.forEach((player) => {
@@ -249,26 +251,11 @@ function renderBans(players, startFrameId) {
   });
 }
 
-// Fungsi Fetch Data dengan Pengecekan Perubahan (Dirty Check)
-function checkDataUpdate() {
-  fetch("database/matchdatateam.json?t=" + new Date().getTime())
-    .then((response) => {
-      if (!response.ok)
-        throw new Error(`Gagal memuat JSON: ${response.status}`);
-      return response.json();
-    })
-    .then((data) => {
-      const currentDataState = JSON.stringify(data);
-      if (currentDataState !== lastDataState) {
-        lastDataState = currentDataState;
-        renderMatchData(data);
-      }
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-    });
-}
-
-// Inisialisasi
-checkDataUpdate();
-setInterval(checkDataUpdate, 500);
+// Match API pushes changes immediately; the shared client supplies reconnect and fallback polling.
+window.MatchDataClient.subscribe(({ data }) => {
+  const next = JSON.stringify(data);
+  if (next === lastDataState) return;
+  lastDataState = next;
+  renderMatchData(data);
+  document.dispatchEvent(new CustomEvent("postgame-match", { detail: data }));
+});

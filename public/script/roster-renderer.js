@@ -40,6 +40,7 @@
       productionPoll = null,
       productionRequest = null,
       productionClock = null,
+      productionVersion = 0,
       slideTimer = null,
       stopped = false,
       themeReadGeneration = 0;
@@ -111,8 +112,27 @@
         countdown.style.display = productionClock || target > 0 ? "" : "none";
       tick();
     }
+    function acceptProductionTimer(value) {
+      if (
+        stopped ||
+        !Number.isFinite(value?.serverNow) ||
+        !value.data ||
+        typeof value.data.running !== "boolean"
+      )
+        return;
+      document.body.dataset.rosterProductionTimer = "true";
+      productionClock = {
+        data: value.data,
+        serverNow: value.serverNow,
+        anchor: performance.now(),
+      };
+      const block = document.querySelector(".countdown-block");
+      if (block) block.style.display = "";
+      tick();
+    }
     async function readProductionTimer() {
       if (stopped || productionRequest || !root.ProductionTimer) return;
+      const started = productionVersion;
       const controller = new AbortController();
       productionRequest = controller;
       const timeout = setTimeout(() => controller.abort(), 3000);
@@ -131,15 +151,7 @@
           typeof value.data.running !== "boolean"
         )
           return;
-        document.body.dataset.rosterProductionTimer = "true";
-        productionClock = {
-          data: value.data,
-          serverNow: value.serverNow,
-          anchor: performance.now(),
-        };
-        const block = document.querySelector(".countdown-block");
-        if (block) block.style.display = "";
-        tick();
+        if (started === productionVersion) acceptProductionTimer(value);
       } catch {
         /* Retain a running acknowledged clock while disconnected. */
       } finally {
@@ -327,6 +339,10 @@
     }
     function onMessage(message) {
       root.BroadcastColorClient?.accept(message);
+      if (message.type === "production_panel_update") {
+        productionVersion++;
+        acceptProductionTimer(message);
+      }
       if (message.type === "roster_theme_update" && !pinned) {
         themeReadGeneration++;
         select(window.RosterThemes.selection(message.data, "roster").themeId);
@@ -356,7 +372,7 @@
         { onMessage },
       );
       readProductionTimer();
-      productionPoll = setInterval(readProductionTimer, 1000);
+      productionPoll = setInterval(readProductionTimer, 5000);
       tickTimer = setInterval(tick, 100);
       slideTimer = setInterval(() => {
         if (pairs.length > 1) {
