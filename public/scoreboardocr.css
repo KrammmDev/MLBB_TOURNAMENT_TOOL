@@ -126,7 +126,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--plate-text);
+  /* color: var(--plate-text); */
+  color: #111111;
   background: transparent;
   clip-path: none;
 }

@@ -1,6 +1,6 @@
 {
   "draftdata": {
-    "timer": "50",
+    "timer": "30",
     "timerRunning": false,
     "current_phase": 0,
     "blueside": {
@@ -23,13 +23,13 @@
       ],
       "pick": [
         {
-          "hero": ""
+          "hero": "/Assets/HeroPick/ling.gif"
         },
         {
-          "hero": ""
+          "hero": "/Assets/HeroPick/lesley.gif"
         },
         {
-          "hero": ""
+          "hero": "/Assets/HeroPick/lancelot.gif"
         },
         {
           "hero": ""
@@ -59,22 +59,23 @@
       ],
       "pick": [
         {
-          "hero": ""
+          "hero": "/Assets/HeroPick/hanabi.gif"
         },
         {
-          "hero": ""
+          "hero": "/Assets/HeroPick/yve.gif"
         },
         {
-          "hero": ""
+          "hero": "/Assets/HeroPick/chou.gif"
         },
         {
-          "hero": ""
+          "hero": "/Assets/HeroPick/moskov.gif"
         },
         {
           "hero": ""
         }
       ]
     },
-    "timer_running": false
+    "timer_running": false,
+    "timer_duration": 30
   }
 }

@@ -1776,21 +1776,35 @@ body {
 
 /* Shared hero entrance for Classic, Arena, Studio and legacy draft outputs. */
 .image-box > img.hero-reveal {
-  animation: draft-hero-pan-up 2s ease-in-out both;
+  animation: draft-hero-pan-up 1s ease-in-out both;
 }
 @keyframes draft-hero-pan-up {
-  from { transform: translateY(100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 .hero-name.hero-name-reveal {
-  animation: draft-hero-name-pan-up 2s ease-in-out both;
+  animation: draft-hero-name-pan-up 1s ease-in-out both;
   transition: none;
 }
 @keyframes draft-hero-name-pan-up {
-  from { translate: 0 100%; opacity: 0; }
-  to { translate: 0 0; opacity: 1; }
+  from {
+    translate: 0 100%;
+    opacity: 0;
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .image-box > img.hero-reveal,
-  .hero-name.hero-name-reveal { animation-duration: 1ms; }
+  .hero-name.hero-name-reveal {
+    animation-duration: 1ms;
+  }
 }

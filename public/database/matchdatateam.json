@@ -14,7 +14,7 @@
         {
           "name": "CONDE",
           "lane": "gold",
-          "hero": "",
+          "hero": "Ling",
           "banhero": "",
           "level": 0,
           "gold": "13352",
@@ -32,7 +32,7 @@
         {
           "name": "BERNABE",
           "lane": "junggle",
-          "hero": "",
+          "hero": "Lesley",
           "banhero": "",
           "level": 0,
           "gold": "",
@@ -50,7 +50,7 @@
         {
           "name": "FLORENDO",
           "lane": "exp",
-          "hero": "",
+          "hero": "Lancelot",
           "banhero": "",
           "level": "15",
           "gold": "11143",
@@ -119,7 +119,7 @@
         {
           "name": "ARCIAGA",
           "lane": "exp",
-          "hero": "",
+          "hero": "Hanabi",
           "banhero": "",
           "level": "15",
           "gold": 0,
@@ -137,7 +137,7 @@
         {
           "name": "KHER SINGHANIA",
           "lane": "gold",
-          "hero": "",
+          "hero": "Yve",
           "banhero": "",
           "level": "13",
           "gold": "7111",
@@ -155,7 +155,7 @@
         {
           "name": "FILTHY AKSERU",
           "lane": "roam",
-          "hero": "",
+          "hero": "Chou",
           "banhero": "",
           "level": 0,
           "gold": 0,
@@ -173,7 +173,7 @@
         {
           "name": "NASTY WARIS",
           "lane": "mid",
-          "hero": "",
+          "hero": "Moskov",
           "banhero": "",
           "level": 0,
           "gold": 0,
