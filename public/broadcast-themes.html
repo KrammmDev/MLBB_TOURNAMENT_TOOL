@@ -5,18 +5,21 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Broadcast Themes</title>
     <link rel="stylesheet" href="/themes/theme-control.css" />
+    <link rel="stylesheet" href="/themes/production-workspace.css" />
   </head>
-  <body>
+  <body class="production-themes">
     <main>
       <nav>
         <a href="/hub.html">← Production hub</a
         ><a href="/production-panel.html">Timer + scrolling text →</a
-        ><span>PRODUCTION TOOL</span>
+        ><a href="/control.html">Match control ↗</a>
+        <a href="#online-casters">Online casters</a>
+        <a href="#broadcast-branding">Branding</a>
       </nav>
       <header>
         <div>
           <p class="eyebrow">BROADCAST GRAPHICS</p>
-          <h1>One system. Three looks.</h1>
+          <h1>Broadcast production</h1>
           <p class="intro">
             Preview roster, draft, scoreboard, post-draft, schedule or caster
             graphics, then select a look for that output only.
@@ -27,244 +30,269 @@
           ><small>Saved independently for each output</small>
         </div>
       </header>
-      <section
-        class="theme-grid"
-        id="theme-grid"
-        aria-label="Broadcast looks"
-      ></section>
-      <section class="preview-section" aria-label="Selected theme preview">
-        <div class="preview-heading">
-          <label for="preview-output">Output</label>
-          <select id="preview-output">
-            <option value="roster">Roster</option>
-            <option value="casters">Online Casters</option>
-            <option value="schedule">Schedule / holding screen</option>
-            <option value="draft-normal">Draft</option>
-            <option value="postdraft">Post-draft</option>
-            <option value="scoreboard">In-game scoreboard</option>
-            <option value="draft-six">Draft · 6 bans</option>
-          </select>
-          <h2>Preview <span id="preview-label"></span></h2>
-          <span id="preview-canvas-note"
-            >1920 × 1080 · transparent background</span
+      <div class="graphics-workspace">
+        <div class="graphics-preview-column">
+          <section
+            class="theme-grid"
+            id="theme-grid"
+            aria-label="Broadcast looks"
+          ></section>
+          <section class="preview-section" aria-label="Selected theme preview">
+            <div class="preview-heading">
+              <label for="preview-output">Output</label>
+              <select id="preview-output">
+                <option value="roster">Roster</option>
+                <option value="casters">Online Casters</option>
+                <option value="schedule">Schedule / holding screen</option>
+                <option value="draft-normal">Draft</option>
+                <option value="postdraft">Post-draft</option>
+                <option value="scoreboard">In-game scoreboard</option>
+                <option value="draft-six">Draft · 6 bans</option>
+              </select>
+              <h2>Preview <span id="preview-label"></span></h2>
+              <span id="preview-canvas-note"
+                >1920 × 1080 · transparent background</span
+              >
+            </div>
+            <div class="actions">
+              <p id="theme-status" role="status" aria-live="polite">
+                Loading settings…
+              </p>
+              <button id="reload-settings" class="secondary">
+                Reload settings
+              </button>
+              <button id="previous-theme" class="secondary" disabled>
+                Preview previous look
+              </button>
+              <button id="activate-theme" disabled>
+                Use for selected output only
+              </button>
+            </div>
+            <div class="preview-surface">
+              <iframe
+                id="theme-preview"
+                title="Broadcast theme preview"
+              ></iframe>
+            </div>
+          </section>
+          <section class="obs-link">
+            <div>
+              <h2>OBS Browser Source</h2>
+              <p>Use this URL at 1920 × 1080 for the selected output.</p>
+            </div>
+            <label class="sr-only" for="output-url">Browser Source URL</label
+            ><input id="output-url" readonly /><button
+              id="copy-url"
+              class="secondary"
+            >
+              Copy URL
+            </button>
+          </section>
+        </div>
+        <div class="graphics-settings-column">
+          <section class="color-settings" aria-labelledby="color-title">
+            <div class="color-heading">
+              <h2 id="color-title">Theme colors</h2>
+              <strong id="color-scope">Select a preview</strong>
+            </div>
+            <p>
+              Roster, draft, scoreboard, post-draft and schedule colors are
+              saved separately for each theme. Changes affect only the preview
+              until you save.
+            </p>
+            <form id="color-form">
+              <div id="color-fields" class="color-fields"></div>
+              <div class="color-actions">
+                <button id="save-colors" type="submit" disabled>
+                  Save colors
+                </button>
+                <button
+                  id="reset-colors"
+                  type="button"
+                  class="secondary"
+                  disabled
+                >
+                  Reset to default
+                </button>
+                <button id="reload-colors" type="button" class="secondary">
+                  Reload saved colors
+                </button>
+              </div>
+            </form>
+            <p id="color-status" role="status" aria-live="polite">
+              Loading color settings…
+            </p>
+          </section>
+          <section
+            id="broadcast-branding"
+            class="sponsor-settings"
+            aria-labelledby="scoreboard-details-title"
           >
+            <h2 id="scoreboard-details-title">Scoreboard details</h2>
+            <p>
+              Saved details appear on all three scoreboard themes. Patch and
+              caster names sit below the right panels; the tournament logo sits
+              at center and extends slightly below the frame.
+            </p>
+            <form id="scoreboard-details-form" class="scoreboard-details-form">
+              <label for="scoreboard-patch">Patch / broadcast label</label>
+              <input
+                id="scoreboard-patch"
+                type="text"
+                maxlength="64"
+                autocomplete="off"
+              />
+              <label for="scoreboard-casters">Caster names</label>
+              <input
+                id="scoreboard-casters"
+                type="text"
+                maxlength="100"
+                autocomplete="off"
+              />
+              <div class="sponsor-actions">
+                <button id="scoreboard-details-save" type="submit" disabled>
+                  Save details</button
+                ><button
+                  id="scoreboard-details-reload"
+                  type="button"
+                  class="secondary"
+                >
+                  Reload details
+                </button>
+              </div>
+            </form>
+            <form id="tournament-logo-form" class="scoreboard-details-form">
+              <label for="tournament-logo-file"
+                >Tournament logo · scoreboard + post-draft + online
+                casters</label
+              >
+              <input
+                id="tournament-logo-file"
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif"
+                required
+              />
+              <small
+                >PNG, JPEG, WebP or GIF · up to 3 MB. Uploading publishes the
+                logo to scoreboard, post-draft and online caster themes.</small
+              >
+              <img
+                id="tournament-logo-preview"
+                alt="Saved tournament logo"
+                hidden
+              />
+              <div class="sponsor-actions">
+                <button id="tournament-logo-upload" type="submit" disabled>
+                  Upload tournament logo</button
+                ><button
+                  id="tournament-logo-remove"
+                  type="button"
+                  class="secondary"
+                  disabled
+                >
+                  Remove logo
+                </button>
+              </div>
+            </form>
+            <p id="scoreboard-details-status" role="status" aria-live="polite">
+              Loading scoreboard details…
+            </p>
+          </section>
         </div>
-        <div class="preview-surface">
-          <iframe id="theme-preview" title="Broadcast theme preview"></iframe>
-        </div>
-        <div class="actions">
-          <p id="theme-status" role="status" aria-live="polite">
-            Loading settings…
+      </div>
+      <div class="production-tools-grid">
+        <section
+          id="online-casters"
+          class="preview-section"
+          aria-label="Online caster controls"
+        >
+          <h2>Online Casters</h2>
+          <p>
+            OBS source:
+            <a href="/casters.html" target="_blank" rel="noopener"
+              >Online Casters (/casters.html)</a
+            >
+            · 1920 × 1080
           </p>
-          <button id="reload-settings" class="secondary">
-            Reload settings
+          <p>
+            Paste each caster’s VDO.Ninja view link and save details to embed
+            video/audio directly. Use Off Air to slide a caster out and
+            disconnect their feed; the remaining caster centers automatically.
+            Hide frame mutes and keeps connected feeds ready for a faster Show
+            frame. Theme previews never play VDO audio. Alternatively, camera
+            captures can go below /casters.html in OBS. External-camera
+            positions: Classic 840 × 560 at X90/Y160 and X990/Y160; Arena 840 ×
+            560 at X90/Y230 and X990/Y230; Studio 840 × 472.5 at X90/Y340 and
+            X990/Y340. Choose Online Casters above to preview the three designs
+            and save its colors. Show draft shrinks the caster views above the
+            live Draft Display; Hide draft restores the normal layout. Embedded
+            VDO feeds stay connected. Separate OBS camera captures need their
+            own layout adjustment.
+          </p>
+          <div id="caster-fields"></div>
+          <button id="caster-save" disabled>Save caster details</button>
+          <button id="caster-show" disabled>Show frame</button
+          ><button id="caster-hide" disabled>Hide frame</button>
+          <button id="caster-names-show" disabled>Show names</button
+          ><button id="caster-names-hide" disabled>Hide names</button>
+          <button id="caster-draft-show" disabled>Show draft</button>
+          <button id="caster-draft-hide" disabled>Hide draft</button>
+          <button id="caster-reload">Reload caster settings</button>
+          <p id="caster-status" role="status">Loading caster settings…</p>
+        </section>
+        <section class="sponsor-settings" aria-labelledby="sponsor-title">
+          <h2 id="sponsor-title">Sponsor slideshow</h2>
+          <p>
+            Logos appear in each draft theme’s sponsor slot. Uploading or saving
+            updates draft and scoreboard outputs.
+          </p>
+          <button id="sponsor-preview" type="button" class="secondary">
+            Preview draft
           </button>
-          <button id="previous-theme" class="secondary" disabled>
-            Preview previous look
-          </button>
-          <button id="activate-theme" disabled>
-            Use for selected output only
-          </button>
-        </div>
-      </section>
-      <section class="color-settings" aria-labelledby="color-title">
-        <div class="color-heading">
-          <h2 id="color-title">Theme colors</h2>
-          <strong id="color-scope">Select a preview</strong>
-        </div>
-        <p>
-          Roster, draft, scoreboard, post-draft and schedule colors are saved
-          separately for each theme. Changes affect only the preview until you
-          save.
-        </p>
-        <form id="color-form">
-          <div id="color-fields" class="color-fields"></div>
-          <div class="color-actions">
-            <button id="save-colors" type="submit" disabled>Save colors</button>
-            <button id="reset-colors" type="button" class="secondary" disabled>
-              Reset to default
-            </button>
-            <button id="reload-colors" type="button" class="secondary">
-              Reload saved colors
-            </button>
-          </div>
-        </form>
-        <p id="color-status" role="status" aria-live="polite">
-          Loading color settings…
-        </p>
-      </section>
-      <section
-        class="sponsor-settings"
-        aria-labelledby="scoreboard-details-title"
-      >
-        <h2 id="scoreboard-details-title">Scoreboard details</h2>
-        <p>
-          Saved details appear on all three scoreboard themes. Patch and caster
-          names sit below the right panels; the tournament logo sits at center
-          and extends slightly below the frame.
-        </p>
-        <form id="scoreboard-details-form" class="scoreboard-details-form">
-          <label for="scoreboard-patch">Patch / broadcast label</label>
-          <input
-            id="scoreboard-patch"
-            type="text"
-            maxlength="64"
-            autocomplete="off"
-          />
-          <label for="scoreboard-casters">Caster names</label>
-          <input
-            id="scoreboard-casters"
-            type="text"
-            maxlength="100"
-            autocomplete="off"
-          />
-          <div class="sponsor-actions">
-            <button id="scoreboard-details-save" type="submit" disabled>
-              Save details</button
-            ><button
-              id="scoreboard-details-reload"
-              type="button"
-              class="secondary"
-            >
-              Reload details
-            </button>
-          </div>
-        </form>
-        <form id="tournament-logo-form" class="scoreboard-details-form">
-          <label for="tournament-logo-file"
-            >Tournament logo · scoreboard + post-draft + online casters</label
-          >
-          <input
-            id="tournament-logo-file"
-            type="file"
-            accept="image/png,image/jpeg,image/webp,image/gif"
-            required
-          />
-          <small
-            >PNG, JPEG, WebP or GIF · up to 3 MB. Uploading publishes the logo
-            to scoreboard, post-draft and online caster themes.</small
-          >
-          <img
-            id="tournament-logo-preview"
-            alt="Saved tournament logo"
-            hidden
-          />
-          <div class="sponsor-actions">
-            <button id="tournament-logo-upload" type="submit" disabled>
-              Upload tournament logo</button
-            ><button
-              id="tournament-logo-remove"
-              type="button"
-              class="secondary"
-              disabled
-            >
-              Remove logo
-            </button>
-          </div>
-        </form>
-        <p id="scoreboard-details-status" role="status" aria-live="polite">
-          Loading scoreboard details…
-        </p>
-      </section>
-      <section class="sponsor-settings" aria-labelledby="sponsor-title">
-        <h2 id="sponsor-title">Sponsor slideshow</h2>
-        <p>
-          Logos appear in each draft theme’s sponsor slot. Uploading or saving
-          updates draft and scoreboard outputs.
-        </p>
-        <button id="sponsor-preview" type="button" class="secondary">
-          Preview draft
-        </button>
-        <form id="sponsor-upload-form">
-          <label for="sponsor-upload">Add sponsor logo</label>
-          <input
-            id="sponsor-upload"
-            type="file"
-            accept="image/png,image/jpeg,image/webp,image/gif"
-            required
-          />
-          <button id="sponsor-add" type="submit" disabled>Upload logo</button>
-          <small
-            >PNG, JPEG, WebP or GIF · up to 3 MB each · up to 20 logos</small
-          >
-        </form>
-        <form id="sponsor-settings-form">
-          <div class="sponsor-options">
-            <label
-              ><input id="sponsor-enabled" type="checkbox" /> Show
-              sponsors</label
-            >
-            <label for="sponsor-interval">Seconds per logo</label>
+          <form id="sponsor-upload-form">
+            <label for="sponsor-upload">Add sponsor logo</label>
             <input
-              id="sponsor-interval"
-              type="number"
-              min="2"
-              max="60"
-              value="5"
+              id="sponsor-upload"
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/gif"
               required
             />
-          </div>
-          <ol id="sponsor-list" aria-label="Sponsor order"></ol>
-          <div class="sponsor-actions">
-            <button id="sponsor-save" type="submit" disabled>
-              Save slideshow
-            </button>
-            <button id="sponsor-reload" type="button" class="secondary">
-              Reload sponsors
-            </button>
-          </div>
-        </form>
-        <p id="sponsor-status" role="status" aria-live="polite">
-          Loading sponsors…
-        </p>
-      </section>
-      <section class="obs-link">
-        <div>
-          <h2>OBS Browser Source</h2>
-          <p>Use this URL at 1920 × 1080 for the selected output.</p>
-        </div>
-        <label class="sr-only" for="output-url">Browser Source URL</label
-        ><input id="output-url" readonly /><button
-          id="copy-url"
-          class="secondary"
-        >
-          Copy URL
-        </button>
-      </section>
-      <section class="preview-section" aria-label="Online caster controls">
-        <h2>Online Casters</h2>
-        <p>
-          OBS source:
-          <a href="/casters.html" target="_blank" rel="noopener"
-            >Online Casters (/casters.html)</a
-          >
-          · 1920 × 1080
-        </p>
-        <p>
-          Paste each caster’s VDO.Ninja view link and save details to embed
-          video/audio directly. Use Off Air to slide a caster out and disconnect
-          their feed; the remaining caster centers automatically. Hide frame
-          mutes and keeps connected feeds ready for a faster Show frame. Theme
-          previews never play VDO audio. Alternatively, camera captures can go
-          below /casters.html in OBS. External-camera positions: Classic 840 ×
-          560 at X90/Y160 and X990/Y160; Arena 840 × 560 at X90/Y230 and
-          X990/Y230; Studio 840 × 472.5 at X90/Y340 and X990/Y340. Choose Online
-          Casters above to preview the three designs and save its colors. Show
-          draft shrinks the caster views above the live Draft Display; Hide
-          draft restores the normal layout. Embedded VDO feeds stay connected.
-          Separate OBS camera captures need their own layout adjustment.
-        </p>
-        <div id="caster-fields"></div>
-        <button id="caster-save" disabled>Save caster details</button>
-        <button id="caster-show" disabled>Show frame</button
-        ><button id="caster-hide" disabled>Hide frame</button>
-        <button id="caster-names-show" disabled>Show names</button
-        ><button id="caster-names-hide" disabled>Hide names</button>
-        <button id="caster-draft-show" disabled>Show draft</button>
-        <button id="caster-draft-hide" disabled>Hide draft</button>
-        <button id="caster-reload">Reload caster settings</button>
-        <p id="caster-status" role="status">Loading caster settings…</p>
-      </section>
+            <button id="sponsor-add" type="submit" disabled>Upload logo</button>
+            <small
+              >PNG, JPEG, WebP or GIF · up to 3 MB each · up to 20 logos</small
+            >
+          </form>
+          <form id="sponsor-settings-form">
+            <div class="sponsor-options">
+              <label
+                ><input id="sponsor-enabled" type="checkbox" /> Show
+                sponsors</label
+              >
+              <label for="sponsor-interval">Seconds per logo</label>
+              <input
+                id="sponsor-interval"
+                type="number"
+                min="2"
+                max="60"
+                value="5"
+                required
+              />
+            </div>
+            <ol id="sponsor-list" aria-label="Sponsor order"></ol>
+            <div class="sponsor-actions">
+              <button id="sponsor-save" type="submit" disabled>
+                Save slideshow
+              </button>
+              <button id="sponsor-reload" type="button" class="secondary">
+                Reload sponsors
+              </button>
+            </div>
+          </form>
+          <p id="sponsor-status" role="status" aria-live="polite">
+            Loading sponsors…
+          </p>
+        </section>
+      </div>
       <footer>
         Themes cover roster, draft, scoreboard, post-draft, schedule and online
         caster outputs. MVP and postgame retain their existing appearance.

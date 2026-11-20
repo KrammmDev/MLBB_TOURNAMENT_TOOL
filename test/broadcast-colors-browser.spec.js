@@ -119,6 +119,21 @@ test(
           .getElementById("theme-status")
           .textContent.startsWith("Preview ready"),
     );
+    for (const width of [1920,1440,390]) {
+      await admin.setViewportSize({width,height:1080});
+      await admin.evaluate(() => window.scrollTo(0,0));
+      assert.ok(await admin.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `theme workspace fits ${width}px without horizontal scrolling`);
+      const main = await admin.locator('main').boundingBox();
+      assert.ok(main.width >= width - 1, 'theme workspace uses available screen width');
+      if (width >= 1440) {
+        const preview = await admin.locator('.graphics-preview-column').boundingBox();
+        const settings = await admin.locator('.graphics-settings-column').boundingBox();
+        assert.ok(settings.x >= preview.x + preview.width, 'settings use the space beside the preview');
+      }
+      await admin.screenshot({path:`/tmp/production-themes-${width}.png`});
+    }
+    await admin.setViewportSize({width:1440,height:810});
+    await admin.evaluate(() => window.scrollTo(0,0));
     for (const page of [roster, normal, six])
       await page.waitForFunction(
         () =>

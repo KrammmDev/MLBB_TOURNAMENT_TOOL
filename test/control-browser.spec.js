@@ -50,6 +50,22 @@ for (const variant of ['control.html', 'controlban6.html']) {
     await Promise.all([a.goto(base+'/'+variant),b.goto(base+'/postgamecontrol.html')]);
     await a.waitForFunction(()=>window.ControlMatch?.get() && !document.querySelector('.content-wrapper').inert && currentDraftData);
     await b.waitForFunction(()=>Boolean(matchData.teamdata));
+    if (variant === 'control.html') {
+      for (const width of [1920,1366,390]) {
+        await a.setViewportSize({width,height:1080});
+        await a.evaluate(() => window.scrollTo(0,0));
+        assert.ok(await a.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `production control fits ${width}px without horizontal scrolling`);
+        assert.ok((await a.locator('#match-number').boundingBox()).width >= 100, 'match input stays wide enough to edit');
+        const history = await a.locator('.history-controls').boundingBox();
+        for (const button of await a.locator('.history-controls > button').all()) {
+          const box = await button.boundingBox();
+          assert.ok(box.x >= history.x && box.x + box.width <= history.x + history.width + 1, 'history controls stay inside their panel');
+        }
+        await a.screenshot({path:`/tmp/production-control-${width}.png`});
+      }
+      await a.setViewportSize({width:1920,height:1080});
+      await a.evaluate(() => window.scrollTo(0,0));
+    }
     const idle=()=>a.waitForFunction(()=>!ControlMatch.status().pending && !ControlMatch.status().timers);
     // Both teams' debounced edits must survive; no shared timeout cancels the other side.
     await a.locator('#name-input-1').fill('Team North');

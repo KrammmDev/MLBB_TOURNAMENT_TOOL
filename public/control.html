@@ -131,16 +131,19 @@
       #control-save-status[data-error="true"] { color: #ffb3b3; }
       #control-reload { cursor: pointer; padding: 6px 12px; }
     </style>
+    <link rel="stylesheet" href="/themes/production-workspace.css" />
   </head>
 
-  <body>
+  <body class="production-control">
     <div class="control-sync-bar">
+      <a href="/hub.html">Production hub</a>
       <a href="/broadcast-themes.html" target="_blank" rel="noopener" style="color:inherit">Broadcast themes</a>
       <span id="control-connection">Connecting...</span>
       <span id="control-save-status" role="status" aria-live="polite">Loading match...</span>
       <button id="control-reload" type="button" onclick="ControlMatch.reload()" hidden>Reload latest match</button>
     </div>
     <div class="content-wrapper" inert>
+      <div class="control-workspace-heading">
       <h1>MLBB Control Panel</h1>
 
       <div class="button">
@@ -150,6 +153,7 @@
         <button onclick="safeSwitchImages()">Switch Team Logo</button>
       </div>
 
+      </div>
       <!-- MATCH INFO SECTION -->
       <div class="match-info-control">
         <h2>MATCH INFORMATION</h2>
@@ -842,8 +846,7 @@
         </div>
       </div>
 
-      <h2>DRAFT CONTROL</h2>
-      <div class="timercontrol">
+      <div class="timercontrol draft-transport" role="group" aria-label="Draft controls">
         <button id="start">Start</button>
         <button id="stop">Stop</button>
         <button id="nextPhase">Force Next Phase</button>
@@ -924,8 +927,8 @@
         <p id="draw-status-message"></p>
       </div>
 
-      <h2>ANALYZER & HISTORY</h2>
-      <div class="timercontrol" style="flex-wrap: wrap">
+      <div class="timercontrol history-controls" style="flex-wrap: wrap">
+        <h2>Analyzer &amp; history</h2>
         <button onclick="handleSaveDraft(this)">SAVE TO PREVIOUS</button>
         <button onclick="controlAnalyzer('switch_camp')">
           Switch Camp Position
