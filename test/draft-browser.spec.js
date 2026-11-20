@@ -303,6 +303,27 @@ test(
       await normal.locator("body").innerText(),
       /MLBB|WORLD CHAMP|BROADCAST OVERLAY|MATCH 1|GAME 1|Unknown/,
     );
+    const previousHero = draft.draftdata.blueside.pick[0].hero;
+    draft.draftdata.blueside.pick[0].hero = "Assets/HeroPick/Balmond.png";
+    broadcast({type: "draftdata_update", data: draft.draftdata});
+    await Promise.all([normal, six, classic, legacy, legacySix].map(async p => {
+      await p.waitForFunction(() => {
+        const img = document.getElementById("image-display-1");
+        return img.src.endsWith("Balmond.png") && img.complete && img.getAnimations().some(a => a.animationName === "draft-hero-pan-up");
+      });
+      const frames = await p.locator("#image-display-1").evaluate(img => {
+        window.heroEntrance = img.getAnimations().find(a => a.animationName === "draft-hero-pan-up");
+        return window.heroEntrance.effect.getKeyframes().map(k => k.transform);
+      });
+      assert.deepEqual(frames, ["translateY(100%)", "translateY(0px)"]);
+    }));
+    broadcast({type: "update", data: {draftdata: {timer: "17", timer_running: false}}});
+    for (const p of [normal, six, classic, legacy, legacySix]) {
+      assert.equal(await p.locator("#image-display-1").evaluate(img => img.getAnimations().includes(window.heroEntrance)), true, "clock ticks do not restart hero entrance");
+    }
+    draft.draftdata.blueside.pick[0].hero = previousHero;
+    broadcast({type: "draftdata_update", data: draft.draftdata});
+
     // A custom phase duration drives every layout, including subsecond bar motion.
     const savedDraft = draft;
     draft = {draftdata: {...draft.draftdata, timer: "30", timer_duration: 30, timer_running: true}};
