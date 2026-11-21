@@ -120,9 +120,22 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-side {
   padding: 0 4px;
   border: 0;
   border-radius: 0;
+  /* Brushed gunmetal: broad satin reflection and restrained steel edges. */
   background:
-    linear-gradient(180deg, rgba(255,255,255,.11), transparent 38%),
-    var(--header-bg, var(--sb-panel, #0a0b10));
+    linear-gradient(180deg,
+      rgba(255,255,255,.32) 0%,
+      rgba(255,255,255,.12) 8%,
+      rgba(255,255,255,.015) 30%,
+      rgba(0,0,0,.11) 56%,
+      rgba(255,255,255,.075) 76%,
+      rgba(0,0,0,.22) 100%),
+    repeating-linear-gradient(0deg,
+      rgba(255,255,255,.022) 0px,
+      rgba(255,255,255,.022) 1px,
+      transparent 1px,
+      transparent 4px),
+    color-mix(in srgb, var(--header-bg, var(--sb-panel, #0a0b10)) 82%, #687584);
+  background-blend-mode: normal, soft-light, normal;
 }
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-blue {
   box-shadow: inset 0 -4px 0 var(--blue-accent, var(--sb-left, #2f8cff));
@@ -197,17 +210,33 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-stat:has([id$
   border: 0;
   clip-path: polygon(0 0,100% 0,100% 100%,10px 100%,0 calc(100% - 10px));
   color: #fff;
-  background: linear-gradient(155deg,
-    color-mix(in srgb, var(--blue-accent, var(--sb-left, #2f8cff)) 73%, white),
-    var(--blue-accent, var(--sb-left, #2f8cff)) 55%,
-    color-mix(in srgb, var(--blue-accent, var(--sb-left, #2f8cff)) 75%, black));
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,.42) 0%,
+      rgba(255,255,255,.17) 12%,
+      transparent 32%,
+      rgba(0,0,0,.08) 54%,
+      rgba(255,255,255,.09) 73%,
+      rgba(0,0,0,.30) 100%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--blue-accent, var(--sb-left, #2f8cff)) 60%, #d1e6ef),
+      var(--blue-accent, var(--sb-left, #2f8cff)) 45%,
+      color-mix(in srgb, var(--blue-accent, var(--sb-left, #2f8cff)) 72%, #091424));
   text-shadow: 0 1px 2px rgba(0,0,0,.65);
 }
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-red .sb-ocr-stat:has([id$="-kills"]) {
-  background: linear-gradient(205deg,
-    color-mix(in srgb, var(--red-accent, var(--sb-right, #e0243c)) 73%, white),
-    var(--red-accent, var(--sb-right, #e0243c)) 55%,
-    color-mix(in srgb, var(--red-accent, var(--sb-right, #e0243c)) 75%, black));
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,.42) 0%,
+      rgba(255,255,255,.17) 12%,
+      transparent 32%,
+      rgba(0,0,0,.08) 54%,
+      rgba(255,255,255,.09) 73%,
+      rgba(0,0,0,.30) 100%),
+    linear-gradient(225deg,
+      color-mix(in srgb, var(--red-accent, var(--sb-right, #e0243c)) 60%, #f3d8da),
+      var(--red-accent, var(--sb-right, #e0243c)) 45%,
+      color-mix(in srgb, var(--red-accent, var(--sb-right, #e0243c)) 72%, #1b0d16));
   clip-path: polygon(0 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%);
 }
 /* Studio kill panels show only the large OCR count, no KILLS word. */
@@ -242,10 +271,18 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-clock {
   flex-direction: column;
   justify-content: flex-start;
   padding-top: 4px;
-  background: linear-gradient(180deg,
-    var(--gold-1, #f6d978),
-    var(--gold-2, #d9a93a) 58%,
-    var(--gold-3, #87651b));
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,.47) 0%,
+      rgba(255,255,255,.20) 11%,
+      transparent 31%,
+      rgba(0,0,0,.075) 57%,
+      rgba(255,255,255,.10) 74%,
+      rgba(0,0,0,.24) 100%),
+    linear-gradient(135deg,
+      var(--gold-1, #f6d978),
+      var(--gold-2, #d9a93a) 48%,
+      var(--gold-3, #87651b));
   color: var(--sb-trim-text, #0a0b10);
   box-shadow: inset 0 -4px 0 var(--gold-1, #f9d76d);
 }
