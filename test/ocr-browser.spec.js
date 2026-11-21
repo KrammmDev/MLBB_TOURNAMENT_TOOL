@@ -198,6 +198,18 @@ test(
       await overlay.locator("#blue-turtle-container img").count(),
       2,
     );
+    // Turtle markers are opt-in and can be toggled without changing match data.
+    await overlay.waitForFunction(() =>
+      getComputedStyle(document.querySelector("#blue-turtle-container")).display === "none",
+    );
+    await panel.locator("#showTurtles").check();
+    await overlay.waitForFunction(() =>
+      getComputedStyle(document.querySelector("#blue-turtle-container")).display === "flex",
+    );
+    await panel.locator("#showTurtles").uncheck();
+    await overlay.waitForFunction(() =>
+      getComputedStyle(document.querySelector("#blue-turtle-container")).display === "none",
+    );
     await panel.locator("#live").click();
     await overlay.waitForFunction(
       () => document.querySelector("#homescore-value").textContent === "12",
