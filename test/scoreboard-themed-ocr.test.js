@@ -38,7 +38,19 @@ test("themed OCR output uses original scoreboard renderer and all three theme st
 test("themed OCR client displays accepted stats, held reads, turtles and safely blanks on game change", async () => {
   const elements = new Map();
   const element = id => {
-    if (!elements.has(id)) elements.set(id,{ textContent:"", hidden:true });
+    if (!elements.has(id)) {
+      const classes = new Set();
+      elements.set(id,{
+        textContent:"", hidden:true,
+        classList:{
+          toggle(name, enabled) {
+            if (enabled) classes.add(name);
+            else classes.delete(name);
+          },
+          contains(name) { return classes.has(name); },
+        },
+      });
+    }
     return elements.get(id);
   };
   const turtleItems = [{hidden:true},{hidden:true}];
@@ -78,18 +90,48 @@ test("themed OCR client displays accepted stats, held reads, turtles and safely 
   await new Promise(resolve=>setImmediate(resolve));
   assert.equal(element("ocr-blue-gold").textContent,"36.7K");
   assert.equal(element("ocr-red-kills").textContent,"9");
+  assert.equal(element("goldleadValue").textContent, "+2.5K");
+  assert.equal(element("goldLead").hidden, false);
+  assert.equal(element("goldLead").classList.contains("blue-lead"), true);
   assert.equal(element("ocr-timer").textContent,"10:20");
   assert.equal(element("ocr-blue-turtle").textContent,"2");
   assert.equal(element("ocr-red-turtle").textContent,"1");
   assert.deepEqual(turtleItems.map(x=>x.hidden),[false,false]);
   handler({type:"ocr_update",data:{...snapshot,fields:{...snapshot.fields,blueKills:{value:12,status:"stale"}}}});
   assert.equal(element("ocr-blue-kills").textContent,"12");
+  handler({type:"ocr_update",data:{
+    ...snapshot, fields:{...snapshot.fields,blueGold:{value:34000},redGold:{value:36700}},
+  }});
+  assert.equal(element("goldleadValue").textContent, "+2.7K");
+  assert.equal(element("goldLead").classList.contains("red-lead"), true);
+  handler({type:"ocr_update",data:{
+    ...snapshot, fields:{...snapshot.fields,blueGold:{value:36700},redGold:{value:36700}},
+  }});
+  assert.equal(element("goldLead").hidden, true);
+  handler({type:"ocr_update",data:{
+    ...snapshot, fields:{...snapshot.fields,blueGold:{value:null}},
+  }});
+  assert.equal(element("goldLead").hidden, true);
   handler({type:"ocr_update",data:{...snapshot,showTurtles:false}});
   assert.deepEqual(turtleItems.map(x=>x.hidden),[true,true]);
   matchHandler({data:{...game,game_number:2}});
   assert.equal(element("ocr-blue-kills").textContent,"--");
+  assert.equal(element("goldLead").hidden, true);
 });
 
+test("Studio OCR uses the confirmed objective PNG assets without affecting non-OCR scoreboard", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
+  for (const kind of ["gold", "tower", "lord", "turtle"]) {
+    assert.ok(html.includes("/Assets/Other/" + kind + "1.png"));
+    assert.ok(fs.existsSync(path.join(base, "Assets/Other", kind + "1.png")),
+      "Expected asset is missing: " + kind + "1.png");
+  }
+  assert.ok(html.includes('id="goldLead"'));
+  assert.ok(html.includes('id="goldleadValue"'));
+  assert.match(css, /--blue-accent/);
+  assert.match(css, /--red-accent/);
+  assert.ok(css.includes('body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-goldlead'));
+});
 test("Studio OCR has an integrated two-tier HUD without changing Classic/Arena geometry", () => {
   const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
   const scoped = 'body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]';
