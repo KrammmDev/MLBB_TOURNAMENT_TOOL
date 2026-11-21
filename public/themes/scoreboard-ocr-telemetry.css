@@ -304,7 +304,8 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] #sb-tournament-logo {
   z-index: 15;
 }
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .name-box { font-size: 35px; }
-body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] #sb-map-label { top: 180px; }
+/* Keep map-result artwork flush with the original Studio match-info footer. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] #sb-map-label { top: 155px; }
 
 /* Respect motion reduction in OBS and preview. */
 @media (prefers-reduced-motion: reduce) {
