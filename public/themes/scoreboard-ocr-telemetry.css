@@ -220,3 +220,17 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] #sb-production-strip 
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] #sb-map-label {
   top: 180px;
 }
+
+/* Full descriptive headings are visible at Studio broadcast scale.
+   Compact letter captions remain unchanged in Classic and Arena. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-stat small {
+  font-size: 0;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-stat small::after {
+  font-size: 10px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-stat:has([id$="-kills"]) small::after { content: "KILLS"; }
+body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-stat:has([id$="-gold"]) small::after { content: "GOLD"; }
+body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-stat:has([id$="-tower"]) small::after { content: "TOWER"; }
+body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-stat:has([id$="-lord"]) small::after { content: "LORD"; }
+body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-turtle small::after { content: "TURTLE"; font-size: 9px; letter-spacing: 0; }
