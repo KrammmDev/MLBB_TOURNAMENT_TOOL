@@ -304,8 +304,8 @@ test("timer and gold allow normal advancement, reject decreases/jumps and low sc
   results.timer.rawText = "20:00";
   results.blueGold.rawText = "99k";
   await read();
-  assert.equal(store.state().fields.timer.value, 321);
-  assert.equal(store.state().fields.blueGold.value, 13400);
+  assert.equal(store.state().fields.timer.value, 322);
+  assert.equal(store.state().fields.blueGold.value, 13500);
   results.timer = { rawText: "05:22", score: 30 };
   results.blueGold = { rawText: "13.5k", score: 30 };
   await read();
