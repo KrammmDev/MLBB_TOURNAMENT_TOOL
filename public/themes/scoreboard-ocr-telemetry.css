@@ -214,9 +214,6 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] #sb-tournament-logo {
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .name-box {
   font-size: 35px;
 }
-body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] #sb-production-strip {
-  top: 154px;
-}
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] #sb-map-label {
   top: 180px;
 }
