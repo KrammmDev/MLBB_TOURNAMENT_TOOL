@@ -108,6 +108,19 @@
       ? value
       : null;
   }
+  // OCR may miss the small decimal dot in a gold HUD (12.3k -> 123k).
+  // Only recover this specific 3-digit OCR shape, never manual/legacy inputs.
+  // Note: 123k itself is ambiguous; consecutive readings and jump checks
+  // still apply in the OCR store before any recovered value is accepted.
+  function parseOCR(id, raw) {
+    const spec = field(id);
+    if (spec?.kind !== "gold") return parse(id, raw);
+    if (typeof raw !== "string" && typeof raw !== "number") return null;
+    const text = String(raw).trim().replace(/\\s/g, "");
+    if (/^\\d{3}[kK]$/.test(text))
+      return parse(id, `${text.slice(0, 2)}.${text[2]}k`);
+    return parse(id, raw);
+  }
   function format(id, value) {
     if (value === null || value === undefined)
       return id === "timer" ? "--:--" : "--";
@@ -232,6 +245,7 @@
     fields,
     field,
     parse,
+    parseOCR,
     format,
     context,
     validateProfile,
