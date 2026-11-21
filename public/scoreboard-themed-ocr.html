@@ -50,17 +50,22 @@
         <div class="sb-ocr-hud" aria-label="OCR match telemetry">
           <div class="sb-ocr-side sb-ocr-blue">
             <div class="sb-ocr-stat"><small>K</small><strong id="ocr-blue-kills">--</strong></div>
-            <div class="sb-ocr-stat"><small>G</small><strong id="ocr-blue-gold">--</strong></div>
-            <div class="sb-ocr-stat"><small>T</small><strong id="ocr-blue-tower">--</strong></div>
-            <div class="sb-ocr-stat"><small>L</small><strong id="ocr-blue-lord">--</strong></div>
-            <div class="sb-ocr-stat sb-ocr-turtle" hidden><small>TR</small><strong id="ocr-blue-turtle">0</strong></div>
+            <div class="sb-ocr-stat"><small>G</small><span class="sb-ocr-icon" aria-hidden="true"><img src="/Assets/Other/gold1.png" alt="" /></span><strong id="ocr-blue-gold">--</strong></div>
+            <div class="sb-ocr-stat"><small>T</small><span class="sb-ocr-icon" aria-hidden="true"><img src="/Assets/Other/tower1.png" alt="" /></span><strong id="ocr-blue-tower">--</strong></div>
+            <div class="sb-ocr-stat"><small>L</small><span class="sb-ocr-icon" aria-hidden="true"><img src="/Assets/Other/lord1.png" alt="" /></span><strong id="ocr-blue-lord">--</strong></div>
+            <div class="sb-ocr-stat sb-ocr-turtle" hidden><small>TR</small><span class="sb-ocr-icon" aria-hidden="true"><img src="/Assets/Other/turtle1.png" alt="" /></span><strong id="ocr-blue-turtle">0</strong></div>
           </div>
-          <div class="sb-ocr-clock" id="ocr-timer">--:--</div>
+          <div class="sb-ocr-clock">
+            <strong id="ocr-timer">--:--</strong>
+            <div id="goldLead" class="sb-ocr-goldlead even" hidden aria-label="Gold lead">
+              <span id="goldleadValue"></span>
+            </div>
+          </div>
           <div class="sb-ocr-side sb-ocr-red">
-            <div class="sb-ocr-stat sb-ocr-turtle" hidden><small>TR</small><strong id="ocr-red-turtle">0</strong></div>
-            <div class="sb-ocr-stat"><small>L</small><strong id="ocr-red-lord">--</strong></div>
-            <div class="sb-ocr-stat"><small>T</small><strong id="ocr-red-tower">--</strong></div>
-            <div class="sb-ocr-stat"><small>G</small><strong id="ocr-red-gold">--</strong></div>
+            <div class="sb-ocr-stat sb-ocr-turtle" hidden><small>TR</small><span class="sb-ocr-icon" aria-hidden="true"><img src="/Assets/Other/turtle1.png" alt="" /></span><strong id="ocr-red-turtle">0</strong></div>
+            <div class="sb-ocr-stat"><small>L</small><span class="sb-ocr-icon" aria-hidden="true"><img src="/Assets/Other/lord1.png" alt="" /></span><strong id="ocr-red-lord">--</strong></div>
+            <div class="sb-ocr-stat"><small>T</small><span class="sb-ocr-icon" aria-hidden="true"><img src="/Assets/Other/tower1.png" alt="" /></span><strong id="ocr-red-tower">--</strong></div>
+            <div class="sb-ocr-stat"><small>G</small><span class="sb-ocr-icon" aria-hidden="true"><img src="/Assets/Other/gold1.png" alt="" /></span><strong id="ocr-red-gold">--</strong></div>
             <div class="sb-ocr-stat"><small>K</small><strong id="ocr-red-kills">--</strong></div>
           </div>
         </div>
