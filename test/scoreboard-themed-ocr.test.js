@@ -156,6 +156,21 @@ test("Studio OCR hides KILLS wording and places team-colored Gold Lead inside th
   assert.ok(!css.includes('content: "KILLS"'), "Do not add KILLS text by CSS");
   assert.ok(css.includes('.sb-ocr-stat:has([id$="-kills"]) small {\\n  display: none;'), "Kill caption hidden");
 });
+test("Studio OCR upper HUD has a metallic finish driven by saved broadcast colors", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
+  const prefix = 'body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]';
+  for (const selector of [".sb-ocr-side", ".sb-ocr-blue", ".sb-ocr-red", ".sb-ocr-clock"]) {
+    assert.ok(css.includes(prefix + " " + selector), "Missing isolated Studio rule: " + selector);
+  }
+  assert.ok(css.includes("Brushed gunmetal"), "Expected satin metal texture");
+  assert.ok(css.includes("repeating-linear-gradient(0deg"), "Brushed metal microtexture must be present");
+  assert.ok(css.includes("var(--header-bg"), "Stats must follow theme background color");
+  assert.ok(css.includes("var(--blue-accent"), "Blue kills must follow dynamic blue accent");
+  assert.ok(css.includes("var(--red-accent"), "Red kills must follow dynamic red accent");
+  assert.ok(css.includes("var(--gold-2"), "Timer must retain themed gold trim");
+  assert.ok(!fs.readFileSync(path.join(base, "scoreboard.html"), "utf8")
+    .includes("scoreboard-ocr-telemetry.css"), "Non-OCR scoreboard must remain untouched");
+});
 test("Studio OCR has an integrated two-tier HUD without changing Classic/Arena geometry", () => {
   const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
   const scoped = 'body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]';
