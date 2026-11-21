@@ -139,6 +139,9 @@ test("Studio OCR has an integrated two-tier HUD without changing Classic/Arena g
   assert.ok(css.includes(scoped + " .lower"));
   assert.ok(css.includes(scoped + " .sb-frame"));
   assert.ok(css.includes(scoped + " #sb-tournament-logo"));
+  assert.ok(css.includes(scoped + " #sb-map-label { top: 155px; }"), "Studio OCR map artwork must align with original Studio");
+  const baseStudio = fs.readFileSync(path.join(base, "themes/scoreboard-studio.css"), "utf8");
+  assert.ok(baseStudio.includes('body[data-scoreboard-theme="studio"] #sb-map-label {\n  top: 155px;'), "Original Studio alignment must remain unchanged");
   assert.ok(css.includes('font-size: 43px;'), "kills should be visibly prominent");
   assert.ok(css.includes('font-size: 35px;'), "timer should have a prominent center placement");
   assert.match(css, /left: 510px;\s*width: 904px;\s*height: 74px;/);
