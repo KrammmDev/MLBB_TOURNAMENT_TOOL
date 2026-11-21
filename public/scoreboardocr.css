@@ -455,7 +455,7 @@ html:not([data-show-turtles="true"]) .turtle-container {
   width: 18px;
   height: 18px;
   object-fit: contain;
-  filter: brightness(0) invert(1) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
+  filter: brightness(0);
 }
 .turtle-stat strong {
   min-width: 16px;
