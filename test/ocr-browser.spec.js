@@ -196,16 +196,23 @@ test(
     assert.equal(await overlay.locator("#timer").textContent(), "05:20");
     assert.equal(await overlay.locator("#blue-turtle-count").textContent(), "2");
     assert.equal(await overlay.locator("#red-turtle-count").textContent(), "1");
-    assert.equal(await overlay.locator("#blue-turtle-container img").count(), 1);
-    // Numeric Turtle totals are opt-in and can be toggled without changing match data.
+    assert.equal(await overlay.locator("#blue-turtle-container img").count(), 0);
+    assert.equal(await overlay.locator("#red-turtle-container img").count(), 0);
+    // Only numeric Turtle totals are shown, with four evenly spaced stats when enabled.
     await overlay.waitForFunction(() =>
       getComputedStyle(document.querySelector("#blue-turtle-container")).display === "none",
     );
     await panel.locator("#showTurtles").check();
     await overlay.waitForFunction(() =>
+      getComputedStyle(document.querySelector(".blue-team .metrics")).gridTemplateColumns.split(" ").length === 4,
+    );
+    await overlay.waitForFunction(() =>
       getComputedStyle(document.querySelector("#blue-turtle-container")).display === "flex",
     );
     await panel.locator("#showTurtles").uncheck();
+    await overlay.waitForFunction(() =>
+      getComputedStyle(document.querySelector(".blue-team .metrics")).gridTemplateColumns.split(" ").length === 3,
+    );
     await overlay.waitForFunction(() =>
       getComputedStyle(document.querySelector("#blue-turtle-container")).display === "none",
     );
