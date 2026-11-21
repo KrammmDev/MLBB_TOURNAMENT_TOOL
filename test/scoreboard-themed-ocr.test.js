@@ -89,3 +89,21 @@ test("themed OCR client displays accepted stats, held reads, turtles and safely 
   matchHandler({data:{...game,game_number:2}});
   assert.equal(element("ocr-blue-kills").textContent,"--");
 });
+
+test("Studio OCR has an integrated two-tier HUD without changing Classic/Arena geometry", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
+  const scoped = 'body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]';
+  assert.ok(css.includes(scoped + " .sb-ocr-hud"));
+  assert.ok(css.includes(scoped + " .lower"));
+  assert.ok(css.includes(scoped + " .sb-frame"));
+  assert.ok(css.includes(scoped + " #sb-tournament-logo"));
+  assert.ok(css.includes('font-size: 43px;'), "kills should be visibly prominent");
+  assert.ok(css.includes('font-size: 35px;'), "timer should have a prominent center placement");
+  assert.match(css, /left: 510px;\s*width: 904px;\s*height: 74px;/);
+  assert.match(css, /top: 78px;\s*height: 76px;/);
+  assert.ok(css.includes('order: 5;'), "team metrics should reorder for integrated presentation");
+  assert.ok(css.includes('.sb-ocr-turtle { order:'), "optional turtles stay inside HUD");
+  assert.ok(html.includes('class="scoreboard-themed-ocr"'));
+  assert.ok(!fs.readFileSync(path.join(base,"scoreboard.html"),"utf8")
+    .includes("scoreboard-ocr-telemetry.css"), "non-OCR output must not import OCR redesign");
+});
