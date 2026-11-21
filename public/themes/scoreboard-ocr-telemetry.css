@@ -210,23 +210,9 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-red .sb-ocr-s
     color-mix(in srgb, var(--red-accent, var(--sb-right, #e0243c)) 75%, black));
   clip-path: polygon(0 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%);
 }
+/* Studio kill panels show only the large OCR count, no KILLS word. */
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-stat:has([id$="-kills"]) small {
-  display: block;
-  color: #fff;
-  font-size: 10px;
-  line-height: 1;
-  font-weight: 900;
-  letter-spacing: .9px;
-  opacity: 1;
-}
-body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-stat:has([id$="-kills"]) small::after {
-  content: "KILLS";
-}
-body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-stat:has([id$="-kills"]) small {
-  font-size: 0;
-}
-body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-stat:has([id$="-kills"]) small::after {
-  font-size: 10px;
+  display: none;
 }
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-stat:has([id$="-kills"]) strong {
   font-family: "Studio Championship", Impact, "Arial Narrow", sans-serif;
@@ -247,7 +233,7 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-red .sb-ocr-s
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-red .sb-ocr-stat:has([id$="-tower"]) { order: 4; }
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-red .sb-ocr-stat:has([id$="-gold"]) { order: 5; }
 
-/* The validated Gold Lead is inside the timer plate, not over the game/crest. */
+/* Timer stays independent; Gold Lead moves into the name/series-score gap. */
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-clock {
   height: 74px;
   border: 0;
@@ -270,29 +256,41 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-clock > stron
   line-height: 1;
   letter-spacing: .5px;
 }
+/* Series score bars remain at their original offsets on both sides.
+   The read-only lead value sits in the empty area between name and bars. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .midscorename {
+  position: relative;
+}
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-goldlead {
-  display: block;
+  display: flex;
   position: absolute;
-  left: 50%;
-  bottom: 8px;
-  transform: translateX(-50%);
-  min-width: 68px;
-  padding: 2px 5px;
-  background: color-mix(in srgb, var(--header-bg, #091827) 88%, black);
-  color: #fff;
-  border-top: 2px solid var(--gold-1, #f9d76d);
-  font: 900 14px "Scoreboard Condensed", Arial, sans-serif;
+  top: 26px;
+  left: 176px;
+  width: 78px;
+  min-height: 24px;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  padding: 2px 6px;
+  border-bottom: 2px solid var(--blue-accent, var(--sb-left, #2f8cff));
+  background: color-mix(in srgb, var(--header-bg, var(--sb-panel, #0a0b10)) 88%, black);
+  color: var(--sb-readable, var(--sb-text, #fff));
+  font: 900 18px "Scoreboard Condensed", Arial, sans-serif;
   line-height: 1;
   white-space: nowrap;
   text-align: center;
-  transition: transform .35s ease, border-color .35s ease, color .35s ease;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .8);
+  transition: opacity .2s ease;
 }
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-goldlead.blue-lead {
-  transform: translateX(calc(-50% - 13px));
+  left: 176px;
+  right: auto;
   border-color: var(--blue-accent, var(--sb-left, #2f8cff));
 }
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-goldlead.red-lead {
-  transform: translateX(calc(-50% + 13px));
+  left: auto;
+  right: 176px;
   border-color: var(--red-accent, var(--sb-right, #e0243c));
 }
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-goldlead.even {

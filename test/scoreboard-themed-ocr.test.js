@@ -132,6 +132,23 @@ test("Studio OCR uses the confirmed objective PNG assets without affecting non-O
   assert.match(css, /--red-accent/);
   assert.ok(css.includes('body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-goldlead'));
 });
+test("Studio OCR hides KILLS wording and places team-colored Gold Lead inside the namebar gap", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
+  const namebarStart = html.indexOf('class="midscorename"');
+  const leadIndex = html.indexOf('id="goldLead"');
+  const footerStart = html.indexOf('id="sb-production-strip"');
+  assert.ok(namebarStart >= 0 && namebarStart < leadIndex && leadIndex < footerStart);
+  assert.ok(!html.slice(html.indexOf('class="sb-ocr-clock"'),namebarStart)
+    .includes('id="goldLead"'), "Gold Lead must not sit below the game timer");
+  assert.ok(css.includes('.sb-ocr-goldlead.blue-lead'));
+  assert.ok(css.includes('.sb-ocr-goldlead.red-lead'));
+  assert.ok(css.includes('left: 176px;'));
+  assert.ok(css.includes('right: 176px;'));
+  assert.ok(css.includes('border-color: var(--blue-accent'));
+  assert.ok(css.includes('border-color: var(--red-accent'));
+  assert.ok(!css.includes('content: "KILLS"'), "Do not add KILLS text by CSS");
+  assert.ok(css.includes('.sb-ocr-stat:has([id$="-kills"]) small {\\n  display: none;'), "Kill caption hidden");
+});
 test("Studio OCR has an integrated two-tier HUD without changing Classic/Arena geometry", () => {
   const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
   const scoped = 'body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]';
