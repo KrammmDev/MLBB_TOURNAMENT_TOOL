@@ -102,16 +102,9 @@
       [...dots.children].forEach((dot, i) =>
         dot.classList.toggle("active", i < count(team.score, wins)),
       );
-      const turtles = $(side + "-turtle-container"),
-        total = count(team.turtles ?? team.turtle, 3);
-      while (turtles.children.length > total) turtles.lastChild.remove();
-      while (turtles.children.length < total) {
-        const icon = document.createElement("img");
-        icon.src = "Assets/Other/turtle-icon.png";
-        icon.className = "turtle-icon-img";
-        icon.alt = "Turtle";
-        turtles.append(icon);
-      }
+      const turtleCount = $(side + "-turtle-count");
+      if (turtleCount)
+        turtleCount.textContent = String(count(team.turtles ?? team.turtle, 3));
     }
     $("matchinfo-main").textContent = String(
       data.matchInfo?.stage || data.season || "",

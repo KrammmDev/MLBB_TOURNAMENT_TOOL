@@ -194,11 +194,10 @@ test(
       () => document.querySelector("#homescore-value").textContent === "7",
     );
     assert.equal(await overlay.locator("#timer").textContent(), "05:20");
-    assert.equal(
-      await overlay.locator("#blue-turtle-container img").count(),
-      2,
-    );
-    // Turtle markers are opt-in and can be toggled without changing match data.
+    assert.equal(await overlay.locator("#blue-turtle-count").textContent(), "2");
+    assert.equal(await overlay.locator("#red-turtle-count").textContent(), "1");
+    assert.equal(await overlay.locator("#blue-turtle-container img").count(), 1);
+    // Numeric Turtle totals are opt-in and can be toggled without changing match data.
     await overlay.waitForFunction(() =>
       getComputedStyle(document.querySelector("#blue-turtle-container")).display === "none",
     );
@@ -215,10 +214,8 @@ test(
       () => document.querySelector("#homescore-value").textContent === "12",
     );
     assert.equal(await overlay.locator("#timer").textContent(), "--:--");
-    assert.equal(
-      await overlay.locator("#blue-turtle-container img").count(),
-      2,
-    );
+    assert.equal(await overlay.locator("#blue-turtle-count").textContent(), "2");
+    assert.equal(await overlay.locator("#red-turtle-count").textContent(), "1");
     assert.equal(
       await overlay.locator("#matchinfo-match").textContent(),
       "GRAND FINALS - GAME 3",
