@@ -12,7 +12,7 @@
         ? "schedule"
         : outputSelect.value === "postdraft"
           ? "postdraft"
-          : outputSelect.value === "scoreboard"
+          : ["scoreboard", "scoreboard-ocr"].includes(outputSelect.value)
             ? "scoreboard"
             : outputSelect.value.startsWith("draft")
               ? "draft"
@@ -26,7 +26,9 @@
         : output() === "postdraft"
           ? "/postdraft2.html"
           : output() === "scoreboard"
-            ? "/scoreboard.html"
+            ? outputSelect.value === "scoreboard-ocr"
+              ? "/scoreboard-themed-ocr.html"
+              : "/scoreboard.html"
             : output() === "roster"
               ? "/broadcast-overlay.html"
               : "/draft-display.html?format=" + format();
