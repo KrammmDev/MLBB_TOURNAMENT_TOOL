@@ -440,6 +440,6 @@ body {
 }
 
 /* Optional Turtle markers: existing positions, dimensions and assets unchanged. */
-html[data-show-turtles="false"] .turtle-container {
+html:not([data-show-turtles="true"]) .turtle-container {
   display: none;
 }
