@@ -466,8 +466,8 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]
   border-right: 0;
 }
 
-/* Studio OCR kill frames mirror the logo holders: gold bevel, dark inset,
-   blue glow on the left, red glow on the right, and opposite cut corners.
+/* Studio OCR kill frames mirror the logo holders' dark inset and angled silhouette,
+   but omit the gold outline on the actual kill boxes.
    These selectors are intentionally OCR + Studio only. */
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]
   .sb-ocr-stat:has([id$="-kills"]) {
@@ -477,12 +477,7 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]
   box-sizing: border-box;
   padding: 2px 4px 3px;
   border: 0;
-  background: linear-gradient(
-    135deg,
-    var(--gold-1, #f9d76d),
-    var(--gold-2, #d9a93a) 45%,
-    var(--gold-3, #87651b)
-  );
+  background: var(--header-bg, var(--sb-panel, #0a0b10));
   /* Blue holder: lower-right corner cuts inward. */
   clip-path: polygon(
     0 0, 100% 0, 100% calc(100% - 11px),
@@ -495,7 +490,7 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]
   .sb-ocr-stat:has([id$="-kills"])::before {
   content: "";
   position: absolute;
-  inset: 2px;
+  inset: 0;
   z-index: 0;
   background:
     radial-gradient(
@@ -509,19 +504,14 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]
       var(--header-bg, var(--sb-panel, #0a0b10)) 80%
     );
   clip-path: polygon(
-    0 0, 100% 0, 100% calc(100% - 10px),
-    calc(100% - 10px) 100%, 0 100%
+    0 0, 100% 0, 100% calc(100% - 11px),
+    calc(100% - 11px) 100%, 0 100%
   );
 }
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]
   .sb-ocr-red .sb-ocr-stat:has([id$="-kills"]) {
   /* Red holder: mirrored lower-left cut. */
-  background: linear-gradient(
-    135deg,
-    var(--gold-1, #f9d76d),
-    var(--gold-2, #d9a93a) 45%,
-    var(--gold-3, #87651b)
-  );
+  background: var(--header-bg, var(--sb-panel, #0a0b10));
   clip-path: polygon(
     0 0, 100% 0, 100% 100%,
     11px 100%, 0 calc(100% - 11px)
@@ -542,7 +532,7 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]
     );
   clip-path: polygon(
     0 0, 100% 0, 100% 100%,
-    10px 100%, 0 calc(100% - 10px)
+    11px 100%, 0 calc(100% - 11px)
   );
 }
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]
