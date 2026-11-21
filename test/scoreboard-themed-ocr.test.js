@@ -147,7 +147,7 @@ test("Studio OCR hides KILLS wording and places team-colored Gold Lead inside th
   assert.ok(css.includes('border-color: var(--blue-accent'));
   assert.ok(css.includes('border-color: var(--red-accent'));
   assert.ok(!css.includes('content: "KILLS"'), "Do not add KILLS text by CSS");
-  assert.match(css, /\\.sb-ocr-stat:has\\(\\[id\\$="-kills"\\]\\) small \\{\\s*display: none;/);
+  assert.ok(css.includes('.sb-ocr-stat:has([id$="-kills"]) small {\\n  display: none;'), "Kill caption hidden");
 });
 test("Studio OCR has an integrated two-tier HUD without changing Classic/Arena geometry", () => {
   const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
