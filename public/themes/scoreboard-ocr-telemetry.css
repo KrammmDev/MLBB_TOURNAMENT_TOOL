@@ -74,6 +74,7 @@ body.scoreboard-themed-ocr .turtle-container { display: none !important; }
 /* Stat icons and lead indicator belong only to the OCR output.
    Other scoreboard pages never load this sheet. */
 .sb-ocr-icon { display: none; }
+.sb-ocr-goldlead { display: none; }
 .sb-ocr-goldlead[hidden] { display: none !important; }
 .sb-ocr-clock { position: relative; }
 .sb-ocr-clock > strong { font: inherit; }
@@ -270,6 +271,7 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-clock > stron
   letter-spacing: .5px;
 }
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-goldlead {
+  display: block;
   position: absolute;
   left: 50%;
   bottom: 8px;
