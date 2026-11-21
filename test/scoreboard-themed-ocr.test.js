@@ -191,3 +191,21 @@ test("Studio OCR has an integrated two-tier HUD without changing Classic/Arena g
   assert.ok(!fs.readFileSync(path.join(base,"scoreboard.html"),"utf8")
     .includes("scoreboard-ocr-telemetry.css"), "non-OCR output must not import OCR redesign");
 });
+
+test("Studio OCR kills use the logo-holder gold outline, dark inset and mirrored corners", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
+  const tail = css.slice(css.indexOf("/* Studio OCR kill frames mirror the logo holders"));
+  assert.ok(tail.includes('body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]'));
+  assert.ok(tail.includes('var(--gold-1'));
+  assert.ok(tail.includes('var(--gold-2'));
+  assert.ok(tail.includes('var(--gold-3'));
+  assert.ok(tail.includes('var(--header-bg'));
+  assert.ok(tail.includes('var(--blue-accent'));
+  assert.ok(tail.includes('var(--red-accent'));
+  assert.ok(tail.includes('::before'), "Dark inset should preserve a visible gold border");
+  assert.ok(tail.includes('11px 100%, 0 calc(100% - 11px)'), "Red side should be mirrored");
+  assert.ok(tail.includes('calc(100% - 11px) 100%, 0 100%'), "Blue side should cut bottom-right");
+  assert.ok(tail.includes('inset 0 -4px 0 var(--gold-2'), "Shared top rail trim should match gold logo outlines");
+  assert.ok(!fs.readFileSync(path.join(base, "scoreboard.html"), "utf8")
+    .includes("scoreboard-ocr-telemetry.css"), "Original scoreboard must be unchanged");
+});
