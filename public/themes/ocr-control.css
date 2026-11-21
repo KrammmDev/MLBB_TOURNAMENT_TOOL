@@ -246,3 +246,19 @@ td button {
   background: #030609;
   border: 1px solid var(--line);
 }
+
+/* Optional OCR turtle output setting; keep operator controls compact. */
+.ocr-turtle-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  white-space: nowrap;
+}
+.ocr-turtle-toggle input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--accent);
+}
+.section-head { flex-wrap: wrap; }

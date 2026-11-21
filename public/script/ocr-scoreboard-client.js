@@ -44,7 +44,7 @@
           !state.preview &&
           elapsed < 4000 &&
           item &&
-          (item.locked || (item.ageMs !== null && item.ageMs + elapsed <= 4000))
+          item.value !== null && item.value !== undefined
           ? item.value
           : null
         : Date.now() - legacyAt < 4000
@@ -67,6 +67,7 @@
         ? `+${M.format("blueGold", Math.abs(difference))}`
         : "";
     }
+    document.documentElement.dataset.showTurtles = String(state?.showTurtles === true);
     document.documentElement.dataset.ocrSource = source();
   }
   const count = (value, max) =>

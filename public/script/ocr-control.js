@@ -458,7 +458,7 @@
       mode: $("mode").value,
       scale: +$("scale").value,
       threshold: +$("threshold").value,
-      minScore: +$("minScore").value,
+      minScore: settings?.data?.minScore ?? 85,
     };
     drag = null;
     const next = { ...regions, [$("field").value]: roi };
@@ -485,7 +485,7 @@
   function fieldSettings() {
     const roi = regions[$("field").value];
     if (roi)
-      for (const key of ["mode", "scale", "threshold", "minScore"])
+      for (const key of ["mode", "scale", "threshold"])
         $(key).value = roi[key];
     inspect();
   }
@@ -598,6 +598,8 @@
     settings = await api("config", undefined, "GET");
     telemetry = await api("state", undefined, "GET");
     regions = structuredClone(settings.data.profile?.regions || {});
+    $("minScore").value = settings.data.minScore ?? 85;
+    $("showTurtles").checked = settings.data.showTurtles === true;
     dirty = Boolean(
       reference &&
       JSON.stringify(reference) !==
@@ -610,7 +612,7 @@
     );
   }
   $("field").onchange = fieldSettings;
-  for (const key of ["mode", "scale", "threshold", "minScore"])
+  for (const key of ["mode", "scale", "threshold"])
     $(key).onchange = () => {
       const roi = regions[$("field").value];
       if (roi) {
@@ -618,6 +620,30 @@
         changed();
       }
     };
+  $("minScore").onchange = safe(async () => {
+    const value = Number($("minScore").value);
+    if (!Number.isFinite(value) || value < 50 || value > 100) {
+      $("minScore").value = settings?.data?.minScore ?? 85;
+      throw new Error("Global engine score must be between 50 and 100.");
+    }
+    await stop();
+    settings = await api("config", { minScore: value }, "PUT", {
+      "If-Match": settings.revision,
+    });
+    message(`Global engine score set to ${value} for all OCR fields. Start a new preview.`);
+  });
+  $("showTurtles").onchange = safe(async () => {
+    const enabled = $("showTurtles").checked;
+    try {
+      settings = await api("config", { showTurtles: enabled }, "PUT", {
+        "If-Match": settings.revision,
+      });
+      message(enabled ? "Turtle icons enabled on scoreboard." : "Turtle icons hidden on scoreboard.");
+    } catch (error) {
+      $("showTurtles").checked = settings?.data?.showTurtles === true;
+      throw error;
+    }
+  });
   $("devices").onclick = safe(devices);
   $("connect").onclick = safe(() => connect("camera"));
   $("screen").onclick = safe(() => connect("screen"));

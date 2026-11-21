@@ -109,7 +109,7 @@
               value="85"
           /></label>
           <p class="note">
-            Engine score is a filter, not a measured accuracy percentage.
+            One engine score setting applies to every calibrated OCR field and is saved automatically. Engine score is a filter, not a measured accuracy percentage.
             Compare each crop with the game.
           </p>
           <button id="remove">Remove this region</button>
@@ -132,6 +132,7 @@
             <h2>Recognition & output</h2>
           </div>
           <span id="output-state">Output: loading</span>
+          <label class="ocr-turtle-toggle"><input type="checkbox" id="showTurtles" /> Show Turtle icons on scoreboard</label>
         </div>
         <div class="toolbar">
           <button id="start">Start preview / new game</button
@@ -142,7 +143,7 @@
         <p id="session-info">No active capture session</p>
         <p class="note">
           Preview never changes the broadcast. Taking live resets readings for
-          confirmation. Missing or stale readings show “--”. New game, changed
+          confirmation. After a validated reading, temporary OCR misses hold the last accepted number; before the first read, unknown values show “--”. New game, changed
           HUD, changed device or resolution: stop, verify regions, and start
           again. Manual values stay locked until Auto or a new session.
         </p>
