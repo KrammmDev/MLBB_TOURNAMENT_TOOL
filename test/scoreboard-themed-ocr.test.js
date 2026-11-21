@@ -134,6 +134,13 @@ test("Studio OCR uses the confirmed objective PNG assets without affecting non-O
 });
 test("Studio OCR hides KILLS wording and places team-colored Gold Lead inside the namebar gap", () => {
   const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
+  // The lead must follow the red team inside .midscorename, before its close.
+  const leadMarkup = html.indexOf('<div id="goldLead"');
+  const afterRedTeam = html.indexOf('            </div>\n              <div id="goldLead"', html.indexOf('id="name-box-8"'));
+  assert.ok(leadMarkup >= 0);
+  assert.equal(afterRedTeam, -1, "Gold Lead must not be nested in the 1920px outer lower container");
+  assert.ok(html.includes('              </div>\n              <div id="goldLead"'),
+    "Gold Lead must be a child of the positioned midscorename");
   const namebarStart = html.indexOf('class="midscorename"');
   const leadIndex = html.indexOf('id="goldLead"');
   const footerStart = html.indexOf('id="sb-production-strip"');
