@@ -139,7 +139,8 @@ test("preview, consecutive confirmation, freshness, manual lock and game invalid
   await store.read(x.body());
   assert.equal(store.state().fields.blueKills.accepted, 2);
   x.advance(4001);
-  assert.equal(store.state().fields.blueKills.value, null);
+  assert.equal(store.state().fields.blueKills.value, 2);
+  assert.equal(store.state().fields.blueKills.status, "stale");
   store.manual({
     generation: store.state().generation,
     field: "blueKills",
@@ -254,6 +255,63 @@ test("failed persistence keeps the previous config and revision", async (t) => {
   );
   assert.deepEqual(x.store.settings(), before);
 });
+test("global OCR score applies across fields and Turtle option is persisted", async (t) => {
+  const x = await setup(t);
+  const p = { ...x.p, regions: { ...x.p.regions, redKills: x.p.regions.blueKills } };
+  await x.store.configure({ profile: p, minScore: 90, showTurtles: true }, x.store.settings().revision);
+  assert.equal(x.store.settings().data.minScore, 90);
+  assert.equal(x.store.state().showTurtles, true);
+  const saved = JSON.parse(await fs.readFile(x.file, "utf8"));
+  assert.equal(saved.minScore, 90);
+  assert.equal(saved.showTurtles, true);
+  await x.store.configure({ showTurtles: false }, x.store.settings().revision);
+  assert.equal(x.store.state().showTurtles, false);
+  await assert.rejects(
+    x.store.configure({ minScore: 10 }, x.store.settings().revision),
+    /Invalid global engine score/,
+  );
+  // Global threshold applies to all fields even when their legacy ROI minScore differs.
+  const resultStore = await loadOCRStore({
+    file: x.file,
+    getMatch: () => x.match,
+    now: () => 100000,
+    engine: { recognize: async () => ({ rawText: "4", score: 89 }) },
+  });
+  t.after(() => resultStore.close());
+  const session = resultStore.start({
+    generation: resultStore.state().generation,
+    expected: M.context(x.match),
+    reference: p.reference,
+  });
+  const crops = Object.entries(p.regions).map(([field, roi]) => ({
+    field, png: png(roi, p.reference),
+  }));
+  await resultStore.read({
+    sessionId: session.sessionId, sequence: 1, capturedAt: 100000,
+    reference: p.reference, crops,
+  });
+  assert.equal(resultStore.state().fields.blueKills.status, "rejected");
+  assert.equal(resultStore.state().fields.redKills.status, "rejected");
+  assert.match(resultStore.state().fields.redKills.reason, /threshold/);
+});
+test("a temporary unreadable OCR frame holds last accepted value until new session", async (t) => {
+  const x = await setup(t);
+  await x.store.read(x.body());
+  await x.store.read(x.body());
+  x.store.live(x.session().sessionId);
+  await x.store.read(x.body());
+  await x.store.read(x.body());
+  assert.equal(x.store.state().fields.blueKills.value, 2);
+  x.raw("");
+  x.advance(1000);
+  await x.store.read(x.body());
+  assert.equal(x.store.state().fields.blueKills.value, 2);
+  x.advance(4100);
+  assert.equal(x.store.state().fields.blueKills.value, 2);
+  assert.equal(x.store.state().fields.blueKills.status, "stale");
+  x.store.stop(x.session().sessionId);
+  assert.equal(x.store.state().fields.blueKills.value, null);
+});
 test("timer and gold allow normal advancement, reject decreases/jumps and low scores", async (t) => {
   let results = {
       timer: { rawText: "05:20", score: 99 },
@@ -311,6 +369,6 @@ test("timer and gold allow normal advancement, reject decreases/jumps and low sc
   await read();
   assert.equal(store.state().fields.timer.status, "rejected");
   x.advance(4001);
-  assert.equal(store.state().fields.timer.value, null);
+  assert.equal(store.state().fields.timer.value, 322);
   assert.equal(store.state().fields.timer.status, "stale");
 });
