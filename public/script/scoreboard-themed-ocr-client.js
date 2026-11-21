@@ -22,6 +22,7 @@
   const count = (n, max) => Math.max(0, Math.min(max, Math.floor(Number(n) || 0)));
   function render() {
     const now = Date.now();
+    const values = {};
     const activeCustom = source() === "custom" && telemetry?.active &&
       !telemetry.preview && now - received < 4000 &&
       (!context || equal(context, telemetry.context));
@@ -33,7 +34,22 @@
           value = item.value;
       } else if (now - legacyAt < 4000)
         value = legacy[field] ?? null;
+      values[field] = value;
       $(id).textContent = M.format(field, value);
+    }
+    // Reuse the existing scoreboardocr gold-lead calculation and direction.
+    // Only currently displayable validated values contribute to the lead.
+    const lead = $("goldLead"), leadValue = $("goldleadValue");
+    if (lead && leadValue) {
+      const known = values.blueGold !== null && values.redGold !== null;
+      const difference = known ? values.blueGold - values.redGold : 0;
+      lead.hidden = !known || difference === 0;
+      lead.classList.toggle("blue-lead", difference > 0);
+      lead.classList.toggle("red-lead", difference < 0);
+      lead.classList.toggle("even", difference === 0);
+      leadValue.textContent = difference
+        ? "+" + M.format("blueGold", Math.abs(difference))
+        : "";
     }
     const visible = telemetry?.showTurtles === true;
     document.querySelectorAll(".sb-ocr-turtle").forEach(el => { el.hidden = !visible; });
