@@ -1,0 +1,71 @@
+/* OCR-only telemetry rail. Existing Classic/Arena/Studio geometry remains untouched. */
+.sb-ocr-hud {
+  position: absolute;
+  z-index: 12;
+  top: 5px;
+  left: 518px;
+  width: 884px;
+  height: 43px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 116px minmax(0, 1fr);
+  align-items: center;
+  gap: 5px;
+  color: var(--sb-readable, var(--sb-text, #fff));
+  font-family: "Scoreboard Condensed", "Arial Narrow", Arial, sans-serif;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+.sb-ocr-side {
+  min-width: 0;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 3px;
+  height: 38px;
+  padding: 0 6px;
+  background: color-mix(in srgb, var(--header-bg, var(--sb-panel, #101b27)) 84%, transparent);
+  border-bottom: 2px solid var(--edge, var(--sb-border, #999));
+  border-radius: 3px;
+}
+.sb-ocr-blue { border-left: 3px solid var(--blue-accent, var(--sb-left, #28a0ff)); }
+.sb-ocr-red { border-right: 3px solid var(--red-accent, var(--sb-right, #f34a50)); }
+.sb-ocr-stat {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 0;
+  align-items: baseline;
+  justify-content: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+.sb-ocr-stat[hidden] { display: none !important; }
+.sb-ocr-stat small {
+  font-size: 10px;
+  opacity: 0.75;
+  font-weight: 700;
+}
+.sb-ocr-stat strong {
+  font-size: 16px;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.1;
+}
+.sb-ocr-stat:has([id$="-gold"]) { flex: 1.55 1 0; }
+.sb-ocr-clock {
+  height: 39px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23px;
+  font-weight: 900;
+  color: var(--sb-readable, var(--sb-text, #fff));
+  background: var(--header-bg, var(--sb-panel, #101b27));
+  border: 1px solid var(--edge, var(--sb-border, #999));
+  border-radius: 3px;
+  white-space: nowrap;
+}
+body[data-scoreboard-theme="classic"] .sb-ocr-hud { top: 7px; }
+body[data-scoreboard-theme="studio"] .sb-ocr-side { border-radius: 0; }
+body[data-scoreboard-theme="arena"] .sb-ocr-side { background: var(--header-bg, var(--sb-panel, #091827)); }
+/* The standard scoreboard's Turtle icon stacks stay unused in this OCR variant. */
+body.scoreboard-themed-ocr .turtle-container { display: none !important; }
