@@ -90,6 +90,16 @@ test("OCR grammar keeps unknown separate from zero and preserves native geometry
   assert.equal(M.parse("blueKills", "0"), 0);
   assert.equal(M.parse("blueTower", "12"), null);
   assert.equal(M.parse("blueGold", "13.3k"), 13300);
+  // OCR-only recovery: a missing decimal must not change manual parsing.
+  assert.equal(M.parseOCR("blueGold", "123k"), 12300);
+  assert.equal(M.parseOCR("redGold", "267K"), 26700);
+  assert.equal(M.parseOCR("blueGold", "12.3k"), 12300);
+  assert.equal(M.parseOCR("redGold", "9.8k"), 9800);
+  assert.equal(M.parseOCR("blueGold", "1234k"), null);
+  assert.equal(M.parseOCR("blueGold", "123"), 123);
+  assert.equal(M.parseOCR("blueKills", "123"), 123);
+  assert.equal(M.parse("blueGold", "123k"), 123000);
+  assert.equal(M.format("blueGold", M.parseOCR("blueGold", "123k")), "12.3K");
   assert.equal(M.parse("blueGold", "13,300"), 13300);
   assert.equal(M.parse("blueGold", "13.3"), null);
   assert.equal(M.parse("timer", "05:20"), 320);
@@ -285,6 +295,12 @@ test("timer and gold allow normal advancement, reject decreases/jumps and low sc
   await read();
   assert.equal(store.state().fields.timer.value, 321);
   assert.equal(store.state().fields.blueGold.value, 13400);
+  results.blueGold.rawText = "135k"; // 13.5k with decimal missed by OCR
+  results.timer.rawText = "05:22";
+  x.advance(1000);
+  await read();
+  assert.equal(store.state().fields.blueGold.value, 13500);
+  assert.equal(store.state().fields.blueGold.rawText, "135k");
   results.timer.rawText = "20:00";
   results.blueGold.rawText = "99k";
   await read();
