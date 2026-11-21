@@ -101,8 +101,8 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .teamnamesc {
 }
 body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-hud {
   top: 0;
-  left: 514px;
-  width: 906px;
+  left: 510px;
+  width: 904px;
   height: 74px;
   grid-template-columns: minmax(0, 1fr) 116px minmax(0, 1fr);
   gap: 0;
