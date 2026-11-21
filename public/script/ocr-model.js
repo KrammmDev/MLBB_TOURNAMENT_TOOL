@@ -116,9 +116,9 @@
     const spec = field(id);
     if (spec?.kind !== "gold") return parse(id, raw);
     if (typeof raw !== "string" && typeof raw !== "number") return null;
-    const text = String(raw).trim().replace(/\\s/g, "");
-    if (/^\\d{3}[kK]$/.test(text))
-      return parse(id, `${text.slice(0, 2)}.${text[2]}k`);
+    const text = String(raw).trim().replace(/\s/g, "");
+    if (/^\d{3}[kK]$/.test(text))
+      return parse(id, text.slice(0, 2) + "." + text[2] + "k");
     return parse(id, raw);
   }
   function format(id, value) {
