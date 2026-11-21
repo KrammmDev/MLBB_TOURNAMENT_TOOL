@@ -438,3 +438,8 @@ body {
   border-bottom: 7px solid transparent;
   border-right: 11px solid #ffffff;
 }
+
+/* Optional Turtle markers: existing positions, dimensions and assets unchanged. */
+html[data-show-turtles="false"] .turtle-container {
+  display: none;
+}
