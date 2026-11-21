@@ -70,19 +70,25 @@ body {
 }
 
 .metrics {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: center;
-  justify-content: center;
-  justify-content: space-evenly;
-  gap: 0;
+  column-gap: 8px;
   padding: 0 12px;
   background: transparent;
 }
 
+/* When enabled, each side gains a fourth evenly spaced numeric stat. */
+html[data-show-turtles="true"] .metrics {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .metric {
   display: flex;
-  align-items: baseline;
+  align-items: center;
+  justify-content: center;
   gap: 7px;
+  min-width: 0;
   white-space: nowrap;
 }
 
@@ -90,7 +96,7 @@ body {
   display: none;
 }
 .metric strong {
-  min-width: 40px;
+  min-width: 0;
   color: var(--stats-text);
   font-family: Arial, sans-serif;
   font-size: 20px;
@@ -99,7 +105,7 @@ body {
 }
 
 .metric.gold strong {
-  min-width: 70px;
+  min-width: 0;
 }
 .metric.gold strong::before {
   content: none;
@@ -444,21 +450,9 @@ html:not([data-show-turtles="true"]) .turtle-container {
   display: none;
 }
 
-/* Optional Turtle totals beside the existing top-row match stats.
-   Preserve established score, logo and nameplate positions. */
-.turtle-stat {
-  gap: 3px;
-  align-items: center;
-}
-.turtle-stat img {
-  display: block;
-  width: 18px;
-  height: 18px;
-  object-fit: contain;
-  filter: brightness(0);
-}
+/* Numeric-only Turtle count uses the same alignment as other top-row stats. */
 .turtle-stat strong {
-  min-width: 16px;
+  min-width: 0;
   font-size: 20px;
 }
 html:not([data-show-turtles="true"]) .turtle-stat {
