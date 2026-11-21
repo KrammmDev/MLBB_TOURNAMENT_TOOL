@@ -191,3 +191,19 @@ test("Studio OCR has an integrated two-tier HUD without changing Classic/Arena g
   assert.ok(!fs.readFileSync(path.join(base,"scoreboard.html"),"utf8")
     .includes("scoreboard-ocr-telemetry.css"), "non-OCR output must not import OCR redesign");
 });
+
+test("Studio OCR kills retain dark logo-holder styling without gold borders", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
+  const tail = css.slice(css.indexOf("/* Studio OCR kill frames mirror the logo holders"));
+  assert.ok(tail.includes('body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]'));
+  assert.ok(tail.includes('var(--header-bg'), "Kills should use the same dark theme background");
+  assert.ok(tail.includes('var(--blue-accent'), "Blue glow should follow broadcast colors");
+  assert.ok(tail.includes('var(--red-accent'), "Red glow should follow broadcast colors");
+  assert.ok(tail.includes('inset: 0;'), "Inner background should fill panel without yellow outline");
+  assert.ok(!tail.includes('background: linear-gradient(\\n    135deg,\\n    var(--gold-1'),
+    "Kill panel should not use gold as its background frame");
+  assert.ok(tail.includes('11px 100%, 0 calc(100% - 11px)'), "Red side should be mirrored");
+  assert.ok(tail.includes('calc(100% - 11px) 100%, 0 100%'), "Blue side should cut bottom-right");
+  assert.ok(!fs.readFileSync(path.join(base, "scoreboard.html"), "utf8")
+    .includes("scoreboard-ocr-telemetry.css"), "Original scoreboard must be unchanged");
+});

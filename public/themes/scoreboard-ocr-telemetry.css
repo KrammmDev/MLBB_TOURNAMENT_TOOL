@@ -465,3 +465,86 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]
   .sb-ocr-stat:has([id$="-kills"]) {
   border-right: 0;
 }
+
+/* Studio OCR kill frames mirror the logo holders' dark inset and angled silhouette,
+   but omit the gold outline on the actual kill boxes.
+   These selectors are intentionally OCR + Studio only. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]
+  .sb-ocr-stat:has([id$="-kills"]) {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 2px 4px 3px;
+  border: 0;
+  background: var(--header-bg, var(--sb-panel, #0a0b10));
+  /* Blue holder: lower-right corner cuts inward. */
+  clip-path: polygon(
+    0 0, 100% 0, 100% calc(100% - 11px),
+    calc(100% - 11px) 100%, 0 100%
+  );
+  color: var(--sb-readable, #fff);
+  text-shadow: 0 2px 3px rgba(0, 0, 0, .75);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]
+  .sb-ocr-stat:has([id$="-kills"])::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(
+      circle at 30% 20%,
+      color-mix(in srgb, var(--blue-accent, var(--sb-left, #2f8cff)) 40%, transparent),
+      transparent 65%
+    ),
+    linear-gradient(
+      145deg,
+      var(--sb-panel-2, #18202d),
+      var(--header-bg, var(--sb-panel, #0a0b10)) 80%
+    );
+  clip-path: polygon(
+    0 0, 100% 0, 100% calc(100% - 11px),
+    calc(100% - 11px) 100%, 0 100%
+  );
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]
+  .sb-ocr-red .sb-ocr-stat:has([id$="-kills"]) {
+  /* Red holder: mirrored lower-left cut. */
+  background: var(--header-bg, var(--sb-panel, #0a0b10));
+  clip-path: polygon(
+    0 0, 100% 0, 100% 100%,
+    11px 100%, 0 calc(100% - 11px)
+  );
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]
+  .sb-ocr-red .sb-ocr-stat:has([id$="-kills"])::before {
+  background:
+    radial-gradient(
+      circle at 70% 20%,
+      color-mix(in srgb, var(--red-accent, var(--sb-right, #e0243c)) 40%, transparent),
+      transparent 65%
+    ),
+    linear-gradient(
+      215deg,
+      var(--sb-panel-2, #18202d),
+      var(--header-bg, var(--sb-panel, #0a0b10)) 80%
+    );
+  clip-path: polygon(
+    0 0, 100% 0, 100% 100%,
+    11px 100%, 0 calc(100% - 11px)
+  );
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]
+  .sb-ocr-stat:has([id$="-kills"]) strong {
+  position: relative;
+  z-index: 1;
+  color: var(--sb-readable, #fff);
+}
+/* The entire upper rail uses the logo holders' theme-controlled gold trim. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-blue,
+body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-red {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    inset 0 -4px 0 var(--gold-2, var(--edge, #d9a93a));
+}
