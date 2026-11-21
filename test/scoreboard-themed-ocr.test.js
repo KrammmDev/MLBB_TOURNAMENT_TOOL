@@ -9,6 +9,15 @@ const base = path.join(__dirname, "../public");
 const html = fs.readFileSync(path.join(base, "scoreboard-themed-ocr.html"), "utf8");
 const script = fs.readFileSync(path.join(base, "script/scoreboard-themed-ocr-client.js"), "utf8");
 
+test("Broadcast Themes offers the three-theme OCR scoreboard preview and separate OBS URL", () => {
+  const controls = fs.readFileSync(path.join(base, "script/roster-theme-control.js"), "utf8");
+  const themePage = fs.readFileSync(path.join(base, "broadcast-themes.html"), "utf8");
+  assert.match(themePage, /<option value="scoreboard-ocr">In-game scoreboard · OCR<\/option>/);
+  assert.ok(controls.includes('outputSelect.value === "scoreboard-ocr"'));
+  assert.ok(controls.includes('"/scoreboard-themed-ocr.html"'));
+  assert.ok(controls.includes('"/scoreboard.html"'));
+  assert.ok(themePage.includes('id="theme-preview"'));
+});
 test("themed OCR output uses original scoreboard renderer and all three theme styles", () => {
   for (const p of [
     "themes/scoreboard-base.css", "script/scoreboard-renderer.js",
