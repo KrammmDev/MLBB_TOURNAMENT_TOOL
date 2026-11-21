@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OCR Scoreboard · Broadcast Themes</title>
+    <link rel="stylesheet" href="/themes/scoreboard-base.css" />
+    <link rel="stylesheet" href="/themes/scoreboard-ocr-telemetry.css" />
+    <link rel="stylesheet" href="/themes/sponsor-slideshow.css" />
+    <link
+      rel="stylesheet"
+      href="/themes/notification-overlay.css?v=combined-1"
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/otf"
+      href="/Assets/Font/Renegade%20Pursuit.otf"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/ttf"
+      href="/Assets/Font/big_noodle_titling.ttf"
+      crossorigin
+    />
+    <link rel="stylesheet" href="/themes/mapdraw-label.css" />
+  </head>
+  <body>
+    <main id="scoreboard-stage">
+      <div class="scoreboard" aria-label="Gameplay scoreboard overlay">
+        <svg class="sb-map-frame" viewBox="0 0 342 342" aria-hidden="true">
+          <defs>
+            <linearGradient id="classic-map-edge" x1="1" y1="0" x2="0" y2="1">
+              <stop class="map-edge-start" offset="0" />
+              <stop class="map-edge-end" offset="1" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M340 0 V300 L300 340 H0"
+            fill="none"
+            stroke="url(#classic-map-edge)"
+            stroke-width="3"
+          />
+        </svg>
+        <div class="sb-frame" aria-hidden="true"></div>
+        <div class="sb-banner sb-banner-left" aria-hidden="true"></div>
+        <div class="sb-banner sb-banner-right" aria-hidden="true"></div>
+        <div class="sb-ocr-hud" aria-label="OCR match telemetry">
+          <div class="sb-ocr-side sb-ocr-blue">
+            <div class="sb-ocr-stat"><small>K</small><strong id="ocr-blue-kills">--</strong></div>
+            <div class="sb-ocr-stat"><small>G</small><strong id="ocr-blue-gold">--</strong></div>
+            <div class="sb-ocr-stat"><small>T</small><strong id="ocr-blue-tower">--</strong></div>
+            <div class="sb-ocr-stat"><small>L</small><strong id="ocr-blue-lord">--</strong></div>
+            <div class="sb-ocr-stat sb-ocr-turtle" hidden><small>TR</small><strong id="ocr-blue-turtle">0</strong></div>
+          </div>
+          <div class="sb-ocr-clock" id="ocr-timer">--:--</div>
+          <div class="sb-ocr-side sb-ocr-red">
+            <div class="sb-ocr-stat sb-ocr-turtle" hidden><small>TR</small><strong id="ocr-red-turtle">0</strong></div>
+            <div class="sb-ocr-stat"><small>L</small><strong id="ocr-red-lord">--</strong></div>
+            <div class="sb-ocr-stat"><small>T</small><strong id="ocr-red-tower">--</strong></div>
+            <div class="sb-ocr-stat"><small>G</small><strong id="ocr-red-gold">--</strong></div>
+            <div class="sb-ocr-stat"><small>K</small><strong id="ocr-red-kills">--</strong></div>
+          </div>
+        </div>
+        <div class="upper">
+          <div class="mapbox" aria-hidden="true"></div>
+          <div class="gb1" aria-hidden="true"></div>
+          <div class="logo sb-team-logo"><img id="displayImage1" alt="" /></div>
+          <div class="uppermid" aria-hidden="true"></div>
+          <div class="logo sb-team-logo"><img id="displayImage2" alt="" /></div>
+          <div class="logo match-info">
+            <div class="matchinfo-content">
+              <span id="matchinfo-main" hidden></span>
+              <span id="matchinfo-day" hidden></span>
+              <div id="match-display">
+                <span id="sb-match-text"></span
+                ><span id="sb-match-divider" hidden> | </span
+                ><span id="sb-game"></span>
+              </div>
+            </div>
+            <div id="sb-sponsors" aria-label="Sponsor slideshow"></div>
+          </div>
+        </div>
+        <div class="lower">
+          <div class="mapbox" aria-hidden="true"></div>
+          <div class="gb1" aria-hidden="true"></div>
+          <div class="logo" aria-hidden="true"></div>
+          <div class="uppermid">
+            <div class="midscorename">
+              <div class="teamnamesc sb-left">
+                <div class="tn">
+                  <div id="name-box-1" class="name-box"></div>
+                </div>
+                <div class="score-dots" id="blue-score-display"></div>
+                <div
+                  id="blue-turtle-container"
+                  class="turtle-container blue-turtle"
+                ></div>
+              </div>
+              <div class="gb2" aria-hidden="true"></div>
+              <div class="teamnamesc sb-right">
+                <div
+                  class="turtle-container red-turtle"
+                  id="red-turtle-container"
+                ></div>
+                <div class="score-dots" id="red-score-display"></div>
+                <div class="tn">
+                  <div id="name-box-8" class="name-box"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="sb-production-strip" hidden>
+          <div id="sb-patch-label"></div>
+          <div id="sb-caster-cell">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect
+                x="9"
+                y="2"
+                width="6"
+                height="12"
+                rx="3"
+                fill="currentColor"
+              />
+              <path
+                d="M6 10v2a6 6 0 0 0 12 0v-2M12 18v4M8 22h8"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              /></svg
+            ><span id="sb-caster-names"></span>
+          </div>
+        </div>
+        <div id="sb-map-label" hidden></div>
+        <img id="sb-tournament-logo" alt="" hidden />
+      </div>
+    </main>
+    <div id="notification-stage" data-notification-embedded></div>
+    <script src="/script/match-state.js"></script>
+    <script src="/script/match-client.js"></script>
+    <script src="/script/mapdraw-label.js"></script>
+    <script src="/script/roster-model.js"></script>
+    <script src="/script/roster-themes.js"></script>
+    <script src="/script/broadcast-color-model.js"></script>
+    <script src="/script/broadcast-color-client.js"></script>
+    <script src="/script/roster-theme-client.js"></script>
+    <script src="/script/sponsor-slideshow.js"></script>
+    <script src="/script/scoreboard-branding-client.js"></script>
+    <script src="/script/notification-model.js?v=team-wipe-1"></script>
+    <script src="/script/notification-overlay.js?v=autoplay-1"></script>
+    <script src="/script/scoreboard-renderer.js?v=combined-1"></script>
+    <script src="/script/ocr-model.js"></script>
+    <script src="/script/scoreboard-themed-ocr-client.js"></script>
+  </body>
+</html>
