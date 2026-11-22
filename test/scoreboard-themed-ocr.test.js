@@ -279,3 +279,19 @@ test("Classic and Arena OCR keep the original theme artwork geometry untouched",
   assert.ok(arena.includes(".sb-banner-right"), "Keep Arena's mirrored logo holder");
   assert.ok(arena.includes("bottom: 7px"), "Keep Arena's original scoreline");
 });
+
+test("Classic and Arena Gold Lead have separate theme-specific visuals", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
+  const classic = css.slice(css.indexOf("/* Classic: restrained bevel inset"),
+    css.indexOf("/* ARENA OCR"));
+  const arena = css.slice(css.indexOf("/* Arena: narrow tactical tag"));
+  assert.ok(classic.includes('border-bottom: 2px solid var(--edge'));
+  assert.ok(classic.includes('"Classic Display"'));
+  assert.ok(classic.includes("clip-path: polygon(5px 0"));
+  assert.ok(arena.includes('border-left: 3px solid var(--blue-accent'));
+  assert.ok(arena.includes('border-right: 3px solid var(--red-accent'));
+  assert.ok(arena.includes("clip-path: polygon(0 0"));
+  assert.ok(css.includes(".sb-ocr-goldlead[hidden]"), "Unknown/tied gold must remain hidden");
+  assert.ok(css.includes(".sb-ocr-goldlead.blue-lead"));
+  assert.ok(css.includes(".sb-ocr-goldlead.red-lead"));
+});
