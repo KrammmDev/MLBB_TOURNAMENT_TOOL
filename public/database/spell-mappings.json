@@ -1,0 +1,86 @@
+{
+  "SP001": {
+    "name": "Execute",
+    "image": "/Assets/Itemandspell/Execute.png",
+    "type": "spell",
+    "cooldown": "90s",
+    "description": "Deals true damage to finish low-HP targets, ignoring shields; refunds 40% cooldown on a kill."
+  },
+  "SP002": {
+    "name": "Retribution",
+    "image": "/Assets/Itemandspell/Retribution.png",
+    "type": "spell",
+    "cooldown": "35s",
+    "description": "Deals true damage to creeps/objectives and upgrades with jungle blessings."
+  },
+  "SP003": {
+    "name": "Inspire",
+    "image": "/Assets/Itemandspell/Inspire.png",
+    "type": "spell",
+    "cooldown": "75s",
+    "description": "Boosts attack speed and enhances basic attacks with defense shred/sustain."
+  },
+  "SP004": {
+    "name": "Sprint",
+    "image": "/Assets/Itemandspell/Sprint.png",
+    "type": "spell",
+    "cooldown": "100s",
+    "description": "Grants a speed burst and slow immunity for chasing, escaping, or rotating."
+  },
+  "SP005": {
+    "name": "Revitalize",
+    "image": "/Assets/Itemandspell/Revitalize.png",
+    "type": "spell",
+    "cooldown": "75s–100s",
+    "description": "Drops an area healing spring that restores HP and boosts healing/shield effects."
+  },
+  "SP006": {
+    "name": "Aegis",
+    "image": "/Assets/Itemandspell/Aegis.png",
+    "type": "spell",
+    "cooldown": "75s",
+    "description": "Grants a protective shield to you and a nearby low-HP ally."
+  },
+  "SP007": {
+    "name": "Petrify",
+    "image": "/Assets/Itemandspell/Petrify.png",
+    "type": "spell",
+    "cooldown": "75s–90s",
+    "description": "Deals magic damage and briefly stuns/slows nearby enemies."
+  },
+  "SP008": {
+    "name": "Purify",
+    "image": "/Assets/Itemandspell/Purify.png",
+    "type": "spell",
+    "cooldown": "90s",
+    "description": "Cleanses crowd control/debuffs and grants temporary control immunity and movement speed."
+  },
+  "SP009": {
+    "name": "Flameshot",
+    "image": "/Assets/Itemandspell/Flameshot.png",
+    "type": "spell",
+    "cooldown": "50s",
+    "description": "Fires a long-range magic projectile for poking/finishing and can knock back close enemies."
+  },
+  "SP010": {
+    "name": "Flicker",
+    "image": "/Assets/Itemandspell/Flicker.png",
+    "type": "spell",
+    "cooldown": "120s",
+    "description": "Blinks a short distance and grants brief defense bonuses."
+  },
+  "SP011": {
+    "name": "Arrival",
+    "image": "/Assets/Itemandspell/Arrival.png",
+    "type": "spell",
+    "cooldown": "75s",
+    "description": "Teleports to an allied turret or minion after channeling, with a speed/attack follow-up."
+  },
+  "SP012": {
+    "name": "Vengeance",
+    "image": "/Assets/Itemandspell/Vengeance.png",
+    "type": "spell",
+    "cooldown": "75s",
+    "description": "Reduces incoming damage and reflects damage back to attackers."
+  }
+}

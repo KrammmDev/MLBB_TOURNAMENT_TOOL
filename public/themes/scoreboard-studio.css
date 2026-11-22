@@ -270,6 +270,9 @@ body {
   gap: 6px;
 }
 #matchinfo-main {
+  display: block;
+  width: 100%;
+  max-width: 100%;
   font-family: "Studio Championship", Impact, "Arial Narrow", sans-serif;
   font-size: 30px;
   font-weight: 400;
@@ -283,6 +286,9 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  overflow-wrap: break-word;
+  overflow: visible;
+  text-overflow: clip;
 }
 #matchinfo-day {
   color: var(--sb-muted-readable, var(--sb-muted));

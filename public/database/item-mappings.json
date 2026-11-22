@@ -1,0 +1,492 @@
+{
+  "001": {
+    "name": "Allow Throw",
+    "image": "/Assets/Itemandspell/Allow Throw.png",
+    "type": "item"
+  },
+  "002": {
+    "name": "Antique Cuirass",
+    "image": "/Assets/Itemandspell/Antique Cuirass.png",
+    "type": "item"
+  },
+  "003": {
+    "name": "Arcane Boots",
+    "image": "/Assets/Itemandspell/Arcane Boots.png",
+    "type": "item"
+  },
+  "004": {
+    "name": "Ares Belt",
+    "image": "/Assets/Itemandspell/Ares Belt.png",
+    "type": "item"
+  },
+  "005": {
+    "name": "Athenas Shield",
+    "image": "/Assets/Itemandspell/Athenas Shield.png",
+    "type": "item"
+  },
+  "006": {
+    "name": "Azure Blade",
+    "image": "/Assets/Itemandspell/Azure Blade.png",
+    "type": "item"
+  },
+  "007": {
+    "name": "Berserkers Fury",
+    "image": "/Assets/Itemandspell/Berserkers Fury.png",
+    "type": "item"
+  },
+  "008": {
+    "name": "Black Ice Shield",
+    "image": "/Assets/Itemandspell/Black Ice Shield.png",
+    "type": "item"
+  },
+  "009": {
+    "name": "Blade Armor",
+    "image": "/Assets/Itemandspell/Blade Armor.png",
+    "type": "item"
+  },
+  "010": {
+    "name": "Blade of Despair",
+    "image": "/Assets/Itemandspell/Blade of Despair.png",
+    "type": "item"
+  },
+  "011": {
+    "name": "Blade of the Heptaseas",
+    "image": "/Assets/Itemandspell/Blade of the Heptaseas.png",
+    "type": "item"
+  },
+  "012": {
+    "name": "Blood Wings",
+    "image": "/Assets/Itemandspell/Blood Wings.png",
+    "type": "item"
+  },
+  "013": {
+    "name": "Book of Sages",
+    "image": "/Assets/Itemandspell/Book of Sages.png",
+    "type": "item"
+  },
+  "014": {
+    "name": "Boots",
+    "image": "/Assets/Itemandspell/Boots.png",
+    "type": "item"
+  },
+  "015": {
+    "name": "Brute Force Breastplate",
+    "image": "/Assets/Itemandspell/Brute Force Breastplate.png",
+    "type": "item"
+  },
+  "016": {
+    "name": "Clock of Destiny",
+    "image": "/Assets/Itemandspell/Clock of Destiny.png",
+    "type": "item"
+  },
+  "017": {
+    "name": "Concentrated Energy",
+    "image": "/Assets/Itemandspell/Concentrated Energy.png",
+    "type": "item"
+  },
+  "018": {
+    "name": "Corrosion Scythe",
+    "image": "/Assets/Itemandspell/Corrosion Scythe.png",
+    "type": "item"
+  },
+  "019": {
+    "name": "Cursed Helmet",
+    "image": "/Assets/Itemandspell/Cursed Helmet.png",
+    "type": "item"
+  },
+  "020": {
+    "name": "Dagger",
+    "image": "/Assets/Itemandspell/Dagger.png",
+    "type": "item"
+  },
+  "021": {
+    "name": "Demon Hunter Sword",
+    "image": "/Assets/Itemandspell/Demon Hunter Sword.png",
+    "type": "item"
+  },
+  "022": {
+    "name": "Demon Shoes",
+    "image": "/Assets/Itemandspell/Demon Shoes.png",
+    "type": "item"
+  },
+  "023": {
+    "name": "Divine Glaive",
+    "image": "/Assets/Itemandspell/Divine Glaive.png",
+    "type": "item"
+  },
+  "024": {
+    "name": "Dominance Ice",
+    "image": "/Assets/Itemandspell/Dominance Ice.png",
+    "type": "item"
+  },
+  "025": {
+    "name": "Dreadnaught Armor",
+    "image": "/Assets/Itemandspell/Dreadnaught Armor.png",
+    "type": "item"
+  },
+  "026": {
+    "name": "Elegant Gem",
+    "image": "/Assets/Itemandspell/Elegant Gem.png",
+    "type": "item"
+  },
+  "027": {
+    "name": "Enchanted Talisman",
+    "image": "/Assets/Itemandspell/Enchanted Talisman.png",
+    "type": "item"
+  },
+  "028": {
+    "name": "Endless Battle",
+    "image": "/Assets/Itemandspell/Endless Battle.png",
+    "type": "item"
+  },
+  "029": {
+    "name": "Exotic Veil",
+    "image": "/Assets/Itemandspell/Exotic Veil.png",
+    "type": "item"
+  },
+  "030": {
+    "name": "Expert Gloves",
+    "image": "/Assets/Itemandspell/Expert Gloves.png",
+    "type": "item"
+  },
+  "031": {
+    "name": "Feather of Heaven",
+    "image": "/Assets/Itemandspell/Feather of Heaven.png",
+    "type": "item"
+  },
+  "032": {
+    "name": "Flask of the Oasis",
+    "image": "/Assets/Itemandspell/Flask of the Oasis.png",
+    "type": "item"
+  },
+  "033": {
+    "name": "Fleeting Time",
+    "image": "/Assets/Itemandspell/Fleeting Time.png",
+    "type": "item"
+  },
+  "034": {
+    "name": "Flower of Hope",
+    "image": "/Assets/Itemandspell/Flower of Hope.png",
+    "type": "item"
+  },
+  "035": {
+    "name": "Fury Hammer",
+    "image": "/Assets/Itemandspell/Fury Hammer.png",
+    "type": "item"
+  },
+  "036": {
+    "name": "Genius Wand",
+    "image": "/Assets/Itemandspell/Genius Wand.png",
+    "type": "item"
+  },
+  "037": {
+    "name": "Glowing Wand",
+    "image": "/Assets/Itemandspell/Glowing Wand.png",
+    "type": "item"
+  },
+  "038": {
+    "name": "Golden Staff",
+    "image": "/Assets/Itemandspell/Golden Staff.png",
+    "type": "item"
+  },
+  "039": {
+    "name": "Great Dragon Spear",
+    "image": "/Assets/Itemandspell/Great Dragon Spear.png",
+    "type": "item"
+  },
+  "040": {
+    "name": "Guardian Helmet",
+    "image": "/Assets/Itemandspell/Guardian Helmet.png",
+    "type": "item"
+  },
+  "041": {
+    "name": "Haass Claws",
+    "image": "/Assets/Itemandspell/Haass Claws.png",
+    "type": "item"
+  },
+  "042": {
+    "name": "Healing Necklace",
+    "image": "/Assets/Itemandspell/Healing Necklace.png",
+    "type": "item"
+  },
+  "043": {
+    "name": "Heros Ring",
+    "image": "/Assets/Itemandspell/Heros Ring.png",
+    "type": "item"
+  },
+  "044": {
+    "name": "Holy Crystal",
+    "image": "/Assets/Itemandspell/Holy Crystal.png",
+    "type": "item"
+  },
+  "045": {
+    "name": "Hunter Strike",
+    "image": "/Assets/Itemandspell/Hunter Strike.png",
+    "type": "item"
+  },
+  "046": {
+    "name": "Ice Queen Wand",
+    "image": "/Assets/Itemandspell/Ice Queen Wand.png",
+    "type": "item"
+  },
+  "047": {
+    "name": "Immortality",
+    "image": "/Assets/Itemandspell/Immortality.png",
+    "type": "item"
+  },
+  "048": {
+    "name": "Iron Hunting Bow",
+    "image": "/Assets/Itemandspell/Iron Hunting Bow.png",
+    "type": "item"
+  },
+  "049": {
+    "name": "Javelin",
+    "image": "/Assets/Itemandspell/Javelin.png",
+    "type": "item"
+  },
+  "050": {
+    "name": "Knife",
+    "image": "/Assets/Itemandspell/Knife.png",
+    "type": "item"
+  },
+  "051": {
+    "name": "idle",
+    "image": "/Assets/Itemandspell/idle.png",
+    "type": "placeholder"
+  },
+  "052": {
+    "name": "Lantern of Hope",
+    "image": "/Assets/Itemandspell/Lantern of Hope.png",
+    "type": "item"
+  },
+  "053": {
+    "name": "Leather Jerkin",
+    "image": "/Assets/Itemandspell/Leather Jerkin.png",
+    "type": "item"
+  },
+  "054": {
+    "name": "Legion Sword",
+    "image": "/Assets/Itemandspell/Legion Sword.png",
+    "type": "item"
+  },
+  "055": {
+    "name": "Lightning Truncheon",
+    "image": "/Assets/Itemandspell/Lightning Truncheon.png",
+    "type": "item"
+  },
+  "056": {
+    "name": "Magic Blade",
+    "image": "/Assets/Itemandspell/Magic Blade.png",
+    "type": "item"
+  },
+  "057": {
+    "name": "Magic Necklace",
+    "image": "/Assets/Itemandspell/Magic Necklace.png",
+    "type": "item"
+  },
+  "058": {
+    "name": "Magic Potion",
+    "image": "/Assets/Itemandspell/Magic Potion.png",
+    "type": "item"
+  },
+  "059": {
+    "name": "Magic Resist Cloak",
+    "image": "/Assets/Itemandspell/Magic Resist Cloak.png",
+    "type": "item"
+  },
+  "060": {
+    "name": "Magic Shoes",
+    "image": "/Assets/Itemandspell/Magic Shoes.png",
+    "type": "item"
+  },
+  "061": {
+    "name": "Magic Wand",
+    "image": "/Assets/Itemandspell/Magic Wand.png",
+    "type": "item"
+  },
+  "062": {
+    "name": "Malefic Gun",
+    "image": "/Assets/Itemandspell/Malefic Gun.png",
+    "type": "item"
+  },
+  "063": {
+    "name": "Malefic Roar",
+    "image": "/Assets/Itemandspell/Malefic Roar.png",
+    "type": "item"
+  },
+  "064": {
+    "name": "Molten Essence",
+    "image": "/Assets/Itemandspell/Molten Essence.png",
+    "type": "item"
+  },
+  "065": {
+    "name": "Mystery Codex",
+    "image": "/Assets/Itemandspell/Mystery Codex.png",
+    "type": "item"
+  },
+  "066": {
+    "name": "Mystic Container",
+    "image": "/Assets/Itemandspell/Mystic Container.png",
+    "type": "item"
+  },
+  "067": {
+    "name": "Ogre Tomahawk",
+    "image": "/Assets/Itemandspell/Ogre Tomahawk.png",
+    "type": "item"
+  },
+  "068": {
+    "name": "Oracle",
+    "image": "/Assets/Itemandspell/Oracle.png",
+    "type": "item"
+  },
+  "069": {
+    "name": "Power Crystal",
+    "image": "/Assets/Itemandspell/Power Crystal.png",
+    "type": "item"
+  },
+  "070": {
+    "name": "Power Potion",
+    "image": "/Assets/Itemandspell/Power Potion.png",
+    "type": "item"
+  },
+  "071": {
+    "name": "Queens Wings",
+    "image": "/Assets/Itemandspell/Queens Wings.png",
+    "type": "item"
+  },
+  "072": {
+    "name": "Radiant Armor",
+    "image": "/Assets/Itemandspell/Radiant Armor.png",
+    "type": "item"
+  },
+  "073": {
+    "name": "Rapid Boots",
+    "image": "/Assets/Itemandspell/Rapid Boots.png",
+    "type": "item"
+  },
+  "074": {
+    "name": "Regular Spear",
+    "image": "/Assets/Itemandspell/Regular Spear.png",
+    "type": "item"
+  },
+  "075": {
+    "name": "Rock Potion",
+    "image": "/Assets/Itemandspell/Rock Potion.png",
+    "type": "item"
+  },
+  "076": {
+    "name": "Rogue Meteor",
+    "image": "/Assets/Itemandspell/Rogue Meteor.png",
+    "type": "item"
+  },
+  "077": {
+    "name": "Rose Gold Meteor",
+    "image": "/Assets/Itemandspell/Rose Gold Meteor.png",
+    "type": "item"
+  },
+  "078": {
+    "name": "Sea Halberd",
+    "image": "/Assets/Itemandspell/Sea Halberd.png",
+    "type": "item"
+  },
+  "079": {
+    "name": "Silence Robe",
+    "image": "/Assets/Itemandspell/Silence Robe.png",
+    "type": "item"
+  },
+  "080": {
+    "name": "Sky Piercer",
+    "image": "/Assets/Itemandspell/Sky Piercer.png",
+    "type": "item"
+  },
+  "081": {
+    "name": "Starlium Scythe",
+    "image": "/Assets/Itemandspell/Starlium Scythe.png",
+    "type": "item"
+  },
+  "082": {
+    "name": "Steel Legplates",
+    "image": "/Assets/Itemandspell/Steel Legplates.png",
+    "type": "item"
+  },
+  "083": {
+    "name": "Swift Boots",
+    "image": "/Assets/Itemandspell/Swift Boots.png",
+    "type": "item"
+  },
+  "084": {
+    "name": "Throw Forbidden",
+    "image": "/Assets/Itemandspell/Throw Forbidden.png",
+    "type": "item"
+  },
+  "085": {
+    "name": "Thunder Belt",
+    "image": "/Assets/Itemandspell/Thunder Belt.png",
+    "type": "item"
+  },
+  "086": {
+    "name": "Tome of Evil",
+    "image": "/Assets/Itemandspell/Tome of Evil.png",
+    "type": "item"
+  },
+  "087": {
+    "name": "Tough Boots",
+    "image": "/Assets/Itemandspell/Tough Boots.png",
+    "type": "item"
+  },
+  "088": {
+    "name": "Twilight Armor",
+    "image": "/Assets/Itemandspell/Twilight Armor.png",
+    "type": "item"
+  },
+  "089": {
+    "name": "Vampire Mallet",
+    "image": "/Assets/Itemandspell/Vampire Mallet.png",
+    "type": "item"
+  },
+  "090": {
+    "name": "Vitality Crystal",
+    "image": "/Assets/Itemandspell/Vitality Crystal.png",
+    "type": "item"
+  },
+  "091": {
+    "name": "War Axe",
+    "image": "/Assets/Itemandspell/War Axe.png",
+    "type": "item"
+  },
+  "092": {
+    "name": "Warrior Boots",
+    "image": "/Assets/Itemandspell/Warrior Boots.png",
+    "type": "item"
+  },
+  "093": {
+    "name": "Wind of Nature",
+    "image": "/Assets/Itemandspell/Wind of Nature.png",
+    "type": "item"
+  },
+  "094": {
+    "name": "Windtalker",
+    "image": "/Assets/Itemandspell/Windtalker.png",
+    "type": "item"
+  },
+  "095": {
+    "name": "Winter Crown",
+    "image": "/Assets/Itemandspell/Winter Crown.png",
+    "type": "item"
+  },
+  "096": {
+    "name": "Winter Truncheon",
+    "image": "/Assets/Itemandspell/Winter Truncheon.png",
+    "type": "item"
+  },
+  "097": {
+    "name": "Wishing Lantern",
+    "image": "/Assets/Itemandspell/Wishing Lantern.png",
+    "type": "item"
+  },
+  "098": {
+    "name": "Chastise Pauldron",
+    "image": "/Assets/Itemandspell/Chastise Pauldron.png",
+    "type": "item"
+  }
+}

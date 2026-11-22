@@ -226,7 +226,7 @@ body {
   display: flex;
   gap: 3px;
   position: absolute;
-  top: 52px;
+  top: 75px;
 }
 .blue-turtle {
   right: 14px;
@@ -238,6 +238,7 @@ body {
   width: 22px;
   height: 22px;
   object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 #sb-sponsors {
   width: 100%;
