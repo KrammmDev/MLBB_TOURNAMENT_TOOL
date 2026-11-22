@@ -737,10 +737,23 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-clock {
   border-bottom: 3px solid color-mix(in srgb, var(--edge, #e2ac39) 65%, black);
   font-family: "Classic Display", Impact, "Arial Narrow", sans-serif;
 }
+/* Classic: restrained bevel inset, warm tournament-gold typography and trim. */
 body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-goldlead {
-  top: 25px;
+  top: 27px;
+  height: 25px;
+  width: 82px;
   font-family: "Classic Display", Impact, "Arial Narrow", sans-serif;
-  font-size: 19px;
+  font-size: 21px;
+  letter-spacing: .5px;
+  color: var(--sb-readable, var(--sb-text, #faf7ed));
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.1), transparent 48%),
+    color-mix(in srgb, var(--header-bg, var(--sb-panel, #242424)) 83%, transparent);
+  border-bottom: 2px solid var(--edge, var(--sb-border, #e2ac39));
+  clip-path: polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-goldlead.red-lead {
+  clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 100%, 5px 100%);
 }
 
 /* ARENA OCR — tactical segmented plates with light cyan edge-work,
@@ -786,8 +799,24 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-clock {
   border-top: 2px solid var(--edge, var(--sb-border, #28435b));
   border-bottom: 4px solid var(--edge, var(--sb-border, #28435b));
 }
+/* Arena: narrow tactical tag, crisp team-color side marker, no Classic gold bevel. */
 body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-goldlead {
-  top: 8px;
+  top: 9px;
+  height: 23px;
+  width: 82px;
   font-family: "Scoreboard Condensed", "Arial Narrow", sans-serif;
   font-size: 17px;
+  letter-spacing: .5px;
+  color: var(--sb-readable, var(--sb-text, #f2f7fc));
+  background:
+    linear-gradient(110deg, rgba(255,255,255,.11), transparent 55%),
+    color-mix(in srgb, var(--header-bg, var(--sb-panel, #091827)) 88%, transparent);
+  border: 1px solid var(--edge, var(--sb-border, #28435b));
+  border-left: 3px solid var(--blue-accent, var(--sb-left, #1bc2d5));
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-goldlead.red-lead {
+  border-left: 1px solid var(--edge, var(--sb-border, #28435b));
+  border-right: 3px solid var(--red-accent, var(--sb-right, #527fe8));
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 6px 100%, 0 calc(100% - 6px));
 }
