@@ -1,0 +1,66 @@
+/* Standard scoreboard ONLY — Background OFF removes decorative surfaces.
+   The three original Classic/Arena/Studio themes and all saved colors return
+   unchanged on ON. This file is NOT loaded by the OCR scoreboard.
+   Preserve the 1920x1080 geometry, team logos, series scores,
+   match/stage/day text, sponsor slideshow images and rotation. */
+body[data-standard-background="off"] .sb-frame,
+body[data-standard-background="off"] .sb-banner,
+body[data-standard-background="off"] .gb1,
+body[data-standard-background="off"] .gb2,
+body[data-standard-background="off"] .sb-team-logo,
+body[data-standard-background="off"] .teamnamesc,
+body[data-standard-background="off"] .match-info,
+body[data-standard-background="off"] .matchinfo-content,
+body[data-standard-background="off"] #match-display,
+body[data-standard-background="off"] #sb-sponsors,
+body[data-standard-background="off"] #sb-production-strip,
+body[data-standard-background="off"] #sb-patch-label,
+body[data-standard-background="off"] #sb-caster-cell {
+  background: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  outline-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Theme framing and decorative pseudo-elements.
+   Never remove the .sb-win series markers or their active fill. */
+body[data-standard-background="off"] .scoreboard::before,
+body[data-standard-background="off"] .sb-frame::before,
+body[data-standard-background="off"] .sb-frame::after,
+body[data-standard-background="off"] .sb-banner::before,
+body[data-standard-background="off"] .sb-banner::after,
+body[data-standard-background="off"] .teamnamesc::before,
+body[data-standard-background="off"] .teamnamesc::after {
+  content: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* No decorative minimap outline; map/game feed itself is unaffected. */
+body[data-standard-background="off"] .sb-map-frame {
+  opacity: 0 !important;
+}
+
+/* Studio's stage title is gradient-clipped with transparent fill.
+   When OFF, convert it to ordinary legible text, without touching
+   font-size, line-height, alignment or positioning. */
+body[data-standard-background="off"] #matchinfo-main {
+  background: transparent !important;
+  background-image: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+}
+body[data-standard-background="off"] .name-box,
+body[data-standard-background="off"] #matchinfo-main,
+body[data-standard-background="off"] #matchinfo-day,
+body[data-standard-background="off"] #match-display,
+body[data-standard-background="off"] #sb-patch-label,
+body[data-standard-background="off"] #sb-caster-cell {
+  color: var(--sb-readable, var(--sb-text, #fff)) !important;
+  -webkit-text-fill-color: var(--sb-readable, var(--sb-text, #fff)) !important;
+  text-shadow: 0 1px 3px rgba(0,0,0,.95), 0 0 2px rgba(0,0,0,.8) !important;
+}
+
+/* The sponsor slot loses its panel but never hides its image children.
+   SponsorSlideshow continues its unchanged rotation. */
