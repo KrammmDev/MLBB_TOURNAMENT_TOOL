@@ -1467,3 +1467,33 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc .tn > #g
 body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc .tn > #goldLead.red-lead {
   border-bottom: 2px solid var(--classic-right);
 }
+
+
+/* ================================================================
+   ARENA OCR — MINIMAP / LEFT LOGO CONNECTOR
+   The 1920px stage has a 52px spacer: minimap ends at x342,
+   while the left logo panel starts at x394. Cover only that gap
+   with a solid, theme-driven plate. Do not modify logo geometry,
+   minimap feed, map outline, OCR values or Studio/Classic.
+   ================================================================ */
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .scoreboard::before {
+  content: "";
+  position: absolute;
+  box-sizing: border-box;
+  left: 342px;
+  top: 0;
+  width: 52.08px;
+  height: 127px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.065), transparent 54%),
+    var(--arena-panel, var(--es-surface, #142132));
+  border-top: 2px solid var(--es-edge, var(--edge, #61758a));
+  border-bottom: 3px solid var(--es-edge, var(--edge, #61758a));
+  pointer-events: none;
+  z-index: 1;
+}
+/* Keep the original map silhouette visible and prevent a thin
+   translucent seam where the new connector meets the logo holder. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-banner-left {
+  z-index: 2;
+}
