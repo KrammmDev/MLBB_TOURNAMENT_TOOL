@@ -28,6 +28,7 @@ const { mirrorDraftTimer } = require("./lib/draft-timer");
 const { installNotificationRoutes } = require("./lib/notifications");
 const { loadOCRStore, installOCRRoutes } = require("./lib/ocr-store");
 const { loadOCRBackgroundStore, installOCRBackgroundRoutes } = require("./lib/ocr-background");
+const { loadScoreboardBackgroundStore, installScoreboardBackgroundRoutes } = require("./lib/scoreboard-background");
 const { createEngine: createOCREngine } = require("./ocr/engine");
 const { installADBRoutes } = require("./lib/adb-capture");
 
@@ -399,6 +400,7 @@ async function loadCache() {
 }
 let matchStore;
 let ocrBackgroundStore;
+let scoreboardBackgroundStore;
 let ocrStore;
 let rosterThemeStore;
 let sponsorStore;
@@ -650,6 +652,7 @@ installCasterRoutes(app, () => casterStore);
 installMatchRoutes(app, () => matchStore);
 installOCRRoutes(app, () => ocrStore);
 installOCRBackgroundRoutes(app, () => ocrBackgroundStore);
+installScoreboardBackgroundRoutes(app, () => scoreboardBackgroundStore);
 installADBRoutes(app);
 installRosterThemeRoutes(app, () => rosterThemeStore);
 installSponsorRoutes(app, () => sponsorStore, sponsorDirectory);
@@ -1375,6 +1378,10 @@ async function start() {
   brandingStore = await loadBrandingStore({
     file: path.join(__dirname, "runtime", "scoreboard-branding.json"),
     onCommit: snapshot => broadcast({ type: "scoreboard_branding_update", ...snapshot }),
+  });
+  scoreboardBackgroundStore = await loadScoreboardBackgroundStore({
+    file: path.join(__dirname, "runtime", "scoreboard-background.json"),
+    onCommit: snapshot => broadcast({ type: "scoreboard_background_update", ...snapshot }),
   });
   ocrBackgroundStore = await loadOCRBackgroundStore({
     file: path.join(__dirname, "runtime", "ocr-background.json"),

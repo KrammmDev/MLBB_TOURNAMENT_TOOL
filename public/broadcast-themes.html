@@ -69,6 +69,15 @@
                 Use for selected output only
               </button>
             </div>
+            <div id="scoreboard-background-controls" class="ocr-background-controls" hidden>
+              <label class="ocr-background-switch" for="scoreboard-background-enabled">
+                <input id="scoreboard-background-enabled" type="checkbox" checked disabled />
+                <span>Scoreboard background</span>
+                <strong id="scoreboard-background-label">ON</strong>
+              </label>
+              <p>ON shows the original scoreboard theme. OFF makes decorative frames and panels transparent while retaining team names, logos, score bars, match text and sponsor logos. Saved independently for Classic, Arena and Studio, separate from OCR.</p>
+              <small id="scoreboard-background-status" role="status" aria-live="polite"></small>
+            </div>
             <div id="ocr-background-controls" class="ocr-background-controls" hidden>
               <label class="ocr-background-switch" for="ocr-background-enabled">
                 <input id="ocr-background-enabled" type="checkbox" checked disabled />
@@ -314,6 +323,7 @@
     <script src="/script/broadcast-color-model.js"></script>
     <script src="/script/roster-theme-control.js"></script>
     <script src="/script/ocr-background-control.js"></script>
+    <script src="/script/scoreboard-background-control.js"></script>
     <script src="/script/broadcast-color-control.js"></script>
     <script src="/script/scoreboard-branding-control.js"></script>
     <script src="/script/sponsor-control.js"></script>
