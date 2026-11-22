@@ -57,3 +57,21 @@ test("OCR background server/API, toggles, stylesheet, and live OBS scripts are i
   assert.ok(!normal.includes('scoreboard-ocr-background.css'));
   assert.ok(!normal.includes('scoreboard-ocr-background-client.js'));
 });
+
+test("Background OFF preserves the complete right match-information panel", () => {
+  const css = read("themes/scoreboard-ocr-background.css");
+  const matchPanel = [
+    ".matchinfo-content", "#matchinfo-main", "#matchinfo-day",
+    "#match-display", "#sb-sponsors", "#sb-production-strip",
+    "#sb-patch-label", "#sb-caster-cell",
+  ];
+  for (const selector of matchPanel)
+    assert.ok(!css.includes('[data-ocr-background="off"] ' + selector),
+      selector + " must keep its original background, text and border styling");
+  assert.ok(css.includes('[data-ocr-background="off"] .sb-frame'),
+    "Main OCR rail still supports background OFF");
+  const studio = read("themes/scoreboard-studio.css");
+  assert.ok(studio.includes(".matchinfo-content"));
+  assert.ok(studio.includes("#matchinfo-main"));
+  assert.ok(studio.includes("#match-display"));
+});
