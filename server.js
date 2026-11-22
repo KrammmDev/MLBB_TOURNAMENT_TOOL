@@ -32,6 +32,7 @@ const { loadScoreboardBackgroundStore, installScoreboardBackgroundRoutes } = req
 const { createEngine: createOCREngine } = require("./ocr/engine");
 const { installADBRoutes } = require("./lib/adb-capture");
 
+const { installBuildRecognitionRoutes } = require("./lib/build-recognition-routes");
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
@@ -39,6 +40,7 @@ const wss = new WebSocket.Server({ server });
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(express.static("public"));
+installBuildRecognitionRoutes(app);
 
 // ==========================================
 // 1. KELAS ANTREAN PENULISAN (WRITE QUEUE)

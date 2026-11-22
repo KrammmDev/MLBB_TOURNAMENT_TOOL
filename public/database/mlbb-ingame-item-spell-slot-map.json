@@ -1,0 +1,683 @@
+{
+  "reference_resolution": {
+    "width": 1919,
+    "height": 1078
+  },
+  "layout": "bottom equipment panel and side battle spells",
+  "teams": {
+    "blue": [
+      {
+        "player_index": 1,
+        "item_slots": [
+          {
+            "slot": 1,
+            "crop": {
+              "x": 629,
+              "y": 813,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 2,
+            "crop": {
+              "x": 675,
+              "y": 813,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 3,
+            "crop": {
+              "x": 721,
+              "y": 813,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 4,
+            "crop": {
+              "x": 766,
+              "y": 813,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 5,
+            "crop": {
+              "x": 811,
+              "y": 813,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 6,
+            "crop": {
+              "x": 856,
+              "y": 813,
+              "width": 42,
+              "height": 42
+            }
+          }
+        ],
+        "battle_spell": {
+          "crop": {
+            "x": 79,
+            "y": 393,
+            "width": 40,
+            "height": 40
+          }
+        }
+      },
+      {
+        "player_index": 2,
+        "item_slots": [
+          {
+            "slot": 1,
+            "crop": {
+              "x": 629,
+              "y": 867,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 2,
+            "crop": {
+              "x": 675,
+              "y": 867,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 3,
+            "crop": {
+              "x": 721,
+              "y": 867,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 4,
+            "crop": {
+              "x": 766,
+              "y": 867,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 5,
+            "crop": {
+              "x": 811,
+              "y": 867,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 6,
+            "crop": {
+              "x": 856,
+              "y": 867,
+              "width": 42,
+              "height": 42
+            }
+          }
+        ],
+        "battle_spell": {
+          "crop": {
+            "x": 79,
+            "y": 481,
+            "width": 40,
+            "height": 40
+          }
+        }
+      },
+      {
+        "player_index": 3,
+        "item_slots": [
+          {
+            "slot": 1,
+            "crop": {
+              "x": 629,
+              "y": 921,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 2,
+            "crop": {
+              "x": 675,
+              "y": 921,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 3,
+            "crop": {
+              "x": 721,
+              "y": 921,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 4,
+            "crop": {
+              "x": 766,
+              "y": 921,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 5,
+            "crop": {
+              "x": 811,
+              "y": 921,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 6,
+            "crop": {
+              "x": 856,
+              "y": 921,
+              "width": 42,
+              "height": 42
+            }
+          }
+        ],
+        "battle_spell": {
+          "crop": {
+            "x": 79,
+            "y": 566,
+            "width": 40,
+            "height": 40
+          }
+        }
+      },
+      {
+        "player_index": 4,
+        "item_slots": [
+          {
+            "slot": 1,
+            "crop": {
+              "x": 629,
+              "y": 976,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 2,
+            "crop": {
+              "x": 675,
+              "y": 976,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 3,
+            "crop": {
+              "x": 721,
+              "y": 976,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 4,
+            "crop": {
+              "x": 766,
+              "y": 976,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 5,
+            "crop": {
+              "x": 811,
+              "y": 976,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 6,
+            "crop": {
+              "x": 856,
+              "y": 976,
+              "width": 42,
+              "height": 42
+            }
+          }
+        ],
+        "battle_spell": {
+          "crop": {
+            "x": 79,
+            "y": 652,
+            "width": 40,
+            "height": 40
+          }
+        }
+      },
+      {
+        "player_index": 5,
+        "item_slots": [
+          {
+            "slot": 1,
+            "crop": {
+              "x": 629,
+              "y": 1030,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 2,
+            "crop": {
+              "x": 675,
+              "y": 1030,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 3,
+            "crop": {
+              "x": 721,
+              "y": 1030,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 4,
+            "crop": {
+              "x": 766,
+              "y": 1030,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 5,
+            "crop": {
+              "x": 811,
+              "y": 1030,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 6,
+            "crop": {
+              "x": 856,
+              "y": 1030,
+              "width": 42,
+              "height": 42
+            }
+          }
+        ],
+        "battle_spell": {
+          "crop": {
+            "x": 79,
+            "y": 731,
+            "width": 40,
+            "height": 40
+          }
+        }
+      }
+    ],
+    "red": [
+      {
+        "player_index": 1,
+        "item_slots": [
+          {
+            "slot": 1,
+            "crop": {
+              "x": 1020,
+              "y": 813,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 2,
+            "crop": {
+              "x": 1066,
+              "y": 813,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 3,
+            "crop": {
+              "x": 1111,
+              "y": 813,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 4,
+            "crop": {
+              "x": 1156,
+              "y": 813,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 5,
+            "crop": {
+              "x": 1200,
+              "y": 813,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 6,
+            "crop": {
+              "x": 1245,
+              "y": 813,
+              "width": 42,
+              "height": 42
+            }
+          }
+        ],
+        "battle_spell": {
+          "crop": {
+            "x": 1798,
+            "y": 393,
+            "width": 40,
+            "height": 40
+          }
+        }
+      },
+      {
+        "player_index": 2,
+        "item_slots": [
+          {
+            "slot": 1,
+            "crop": {
+              "x": 1020,
+              "y": 867,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 2,
+            "crop": {
+              "x": 1066,
+              "y": 867,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 3,
+            "crop": {
+              "x": 1111,
+              "y": 867,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 4,
+            "crop": {
+              "x": 1156,
+              "y": 867,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 5,
+            "crop": {
+              "x": 1200,
+              "y": 867,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 6,
+            "crop": {
+              "x": 1245,
+              "y": 867,
+              "width": 42,
+              "height": 42
+            }
+          }
+        ],
+        "battle_spell": {
+          "crop": {
+            "x": 1798,
+            "y": 481,
+            "width": 40,
+            "height": 40
+          }
+        }
+      },
+      {
+        "player_index": 3,
+        "item_slots": [
+          {
+            "slot": 1,
+            "crop": {
+              "x": 1020,
+              "y": 921,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 2,
+            "crop": {
+              "x": 1066,
+              "y": 921,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 3,
+            "crop": {
+              "x": 1111,
+              "y": 921,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 4,
+            "crop": {
+              "x": 1156,
+              "y": 921,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 5,
+            "crop": {
+              "x": 1200,
+              "y": 921,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 6,
+            "crop": {
+              "x": 1245,
+              "y": 921,
+              "width": 42,
+              "height": 42
+            }
+          }
+        ],
+        "battle_spell": {
+          "crop": {
+            "x": 1798,
+            "y": 566,
+            "width": 40,
+            "height": 40
+          }
+        }
+      },
+      {
+        "player_index": 4,
+        "item_slots": [
+          {
+            "slot": 1,
+            "crop": {
+              "x": 1020,
+              "y": 976,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 2,
+            "crop": {
+              "x": 1066,
+              "y": 976,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 3,
+            "crop": {
+              "x": 1111,
+              "y": 976,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 4,
+            "crop": {
+              "x": 1156,
+              "y": 976,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 5,
+            "crop": {
+              "x": 1200,
+              "y": 976,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 6,
+            "crop": {
+              "x": 1245,
+              "y": 976,
+              "width": 42,
+              "height": 42
+            }
+          }
+        ],
+        "battle_spell": {
+          "crop": {
+            "x": 1798,
+            "y": 652,
+            "width": 40,
+            "height": 40
+          }
+        }
+      },
+      {
+        "player_index": 5,
+        "item_slots": [
+          {
+            "slot": 1,
+            "crop": {
+              "x": 1020,
+              "y": 1030,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 2,
+            "crop": {
+              "x": 1066,
+              "y": 1030,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 3,
+            "crop": {
+              "x": 1111,
+              "y": 1030,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 4,
+            "crop": {
+              "x": 1156,
+              "y": 1030,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 5,
+            "crop": {
+              "x": 1200,
+              "y": 1030,
+              "width": 42,
+              "height": 42
+            }
+          },
+          {
+            "slot": 6,
+            "crop": {
+              "x": 1245,
+              "y": 1030,
+              "width": 42,
+              "height": 42
+            }
+          }
+        ],
+        "battle_spell": {
+          "crop": {
+            "x": 1798,
+            "y": 731,
+            "width": 40,
+            "height": 40
+          }
+        }
+      }
+    ]
+  }
+}

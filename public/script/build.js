@@ -2,7 +2,26 @@ function fetchData() {
     // Mengambil data dari file JSON yang memuat struktur teamdata
     fetch('/database/matchdatateam.json')
         .then(response => response.json())
-        .then(data => {
+        .then(async data => {
+            // Independently overlay screenshot-recognition matches before the existing build renderer.
+            try {
+                const response = await fetch('/api/build-recognition/state', { cache: 'no-store' });
+                if (response.ok) {
+                    const state = await response.json();
+                    if (state.active && state.teams) {
+                        for (const [side,key] of [['blue','blueteam'],['red','redteam']]) {
+                            for (const player of state.teams[side] || []) {
+                                const target = data.teamdata[key].playerlist[player.player_index-1];
+                                if (!target) continue;
+                                for (const item of player.items || []) {
+                                    if (item.status === 'matched' && item.name) target.itemlist[item.slot-1] = item.name;
+                                    else if (item.status === 'empty') target.itemlist[item.slot-1] = 'idle';
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (error) { console.warn('Recognition state unavailable', error); }
             // --- LOGIKA BLUE TEAM ---
             const bluePlayers = data.teamdata.blueteam.playerlist;
 
