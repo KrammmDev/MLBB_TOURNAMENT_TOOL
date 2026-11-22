@@ -437,3 +437,30 @@ test("Classic and Arena have visibly distinct HUD silhouette rules", () => {
   assert.ok(v3.includes('background: transparent;'), "Lead has no background");
   assert.ok(v3.includes('border: 0;'), "Lead has no border");
 });
+
+test("Arena OCR uses a high-contrast scoreboard while keeping the transparent overlay and team lead", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
+  const v4 = css.slice(css.indexOf("ARENA OCR V4"));
+  assert.ok(v4.includes('body.scoreboard-themed-ocr[data-scoreboard-theme="arena"]'));
+  assert.ok(!v4.includes('data-scoreboard-theme="classic"'), "Classic keeps its own look");
+  assert.ok(!v4.includes('data-scoreboard-theme="studio"'), "Studio remains untouched");
+  assert.ok(v4.includes('--arena-panel:'), "Dedicated readable Arena panel");
+  assert.ok(v4.includes('--arena-upper:'), "Objective rail is separately styled");
+  assert.ok(v4.includes('--arena-text: #f6f9fd;'), "Readable stat contrast");
+  assert.ok(v4.includes('.sb-ocr-icon img'), "Objective icons are visible");
+  assert.ok(v4.includes('drop-shadow(0 0 1px rgba(0,0,0,.95))'),
+    "Pale PNG icons have a readable outline");
+  assert.ok(v4.includes('top: 40px;'), "Combat row starts beneath objective rail");
+  assert.ok(v4.includes('font-size: 48px;'), "Kill numbers are broadcast size");
+  assert.ok(v4.includes('var(--es-blue)'), "Preserve dynamic Blue accent");
+  assert.ok(v4.includes('var(--es-red)'), "Preserve dynamic Red accent");
+  assert.ok(v4.includes('.teamnamesc .tn > .sb-ocr-goldlead.blue-lead'),
+    "Blue Gold Lead is under the leading team name");
+  assert.ok(v4.includes('.teamnamesc .tn > .sb-ocr-goldlead.red-lead'),
+    "Red Gold Lead is under the leading team name");
+  assert.ok(v4.includes('background: transparent;'), "Gold Lead remains unboxed");
+  const baseCss = fs.readFileSync(path.join(base, "themes/scoreboard-base.css"), "utf8");
+  assert.match(baseCss, /body\s*\{[^}]*background:\s*transparent;/);
+  const normal = fs.readFileSync(path.join(base, "scoreboard.html"), "utf8");
+  assert.ok(!normal.includes("scoreboard-ocr-esports.css"), "Non-OCR scoreboards are unchanged");
+});
