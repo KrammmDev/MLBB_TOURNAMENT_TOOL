@@ -41,12 +41,12 @@
     // Only currently displayable validated values contribute to the lead.
     const lead = $("goldLead"), leadValue = $("goldleadValue");
     if (lead && leadValue) {
-      // In Classic/Arena, place the ONLY Gold Lead directly beneath
-      // the team name of the side currently ahead. Studio retains its
-      // original lead placement and CSS. Never add a colored panel.
+      // Classic uses a hanging lead tag beneath the leading team name.
+      // Arena uses a small floating coin + lead just BELOW the scoreboard,
+      // aligned to the winning side. Studio keeps its original placement.
       const holder = document.querySelector(".midscorename");
       const theme = document.body.dataset.scoreboardTheme;
-      const namedLead = theme === "classic" || theme === "arena";
+      const namedLead = theme === "classic";
       const known = values.blueGold !== null && values.redGold !== null;
       const delta = known ? values.blueGold - values.redGold : 0;
       const destination = namedLead && delta !== 0

@@ -464,3 +464,33 @@ test("Arena OCR uses a high-contrast scoreboard while keeping the transparent ov
   const normal = fs.readFileSync(path.join(base, "scoreboard.html"), "utf8");
   assert.ok(!normal.includes("scoreboard-ocr-esports.css"), "Non-OCR scoreboards are unchanged");
 });
+
+test("Arena has a floating gold-icon lead below the winning side; Classic uses a hanging name tag", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
+  const client = fs.readFileSync(path.join(base, "script/scoreboard-themed-ocr-client.js"), "utf8");
+  const v5 = css.slice(css.indexOf("V5 — ARENA FLOATING GOLD LEAD"));
+  const arena = v5.slice(0, v5.indexOf("/* Classic: distinct MPL-inspired"));
+  const classic = v5.slice(v5.indexOf("/* Classic: distinct MPL-inspired"));
+  assert.ok(arena.includes('.midscorename > #goldLead.blue-lead'));
+  assert.ok(arena.includes('.midscorename > #goldLead.red-lead'));
+  assert.ok(arena.includes('top: 89px;'), "Float under the lower tier, not over the name");
+  assert.ok(arena.includes('right: 174px;'), "Mirror lead under the winning Red side");
+  assert.ok(arena.includes('/Assets/Other/gold1.png'), "Use an existing PNG coin, not emoji");
+  assert.ok(arena.includes('background: transparent;'), "Do not add a Gold Lead panel");
+  assert.ok(arena.includes('border: 0;'), "No floating Gold Lead border");
+  assert.ok(arena.includes('#goldLead[hidden]'), "Hide tie and unavailable reads");
+  assert.ok(client.includes('const namedLead = theme === "classic";'),
+    "Arena and Studio use original midscorename parent, Classic under name");
+  assert.ok(classic.includes('grid-template-columns: minmax(0,1fr) 170px minmax(0,1fr)'));
+  assert.ok(classic.includes('padding-right: 67px;'), "Blue stats reserve kill tile");
+  assert.ok(classic.includes('padding-left: 67px;'), "Red stats reserve kill tile");
+  assert.ok(classic.includes('top: 108px;'), "Clock hangs underneath the event crest");
+  assert.ok(classic.includes('top: 8px;'), "Event crest sits higher than team-name bar");
+  assert.ok(classic.includes('top: 55px;'), "Classic second tier is below top stat ribbon");
+  assert.ok(classic.includes('top: calc(100% + 3px);'), "Classic leading name gets small hanging tag");
+  assert.ok(classic.includes('var(--es-blue)'), "Preserve custom blue team color");
+  assert.ok(classic.includes('var(--es-red)'), "Preserve custom red team color");
+  assert.ok(!v5.includes('data-scoreboard-theme="studio"'), "Studio untouched");
+  const defaultScoreboard = fs.readFileSync(path.join(base, "scoreboard.html"), "utf8");
+  assert.ok(!defaultScoreboard.includes('scoreboard-ocr-esports.css'), "Original non-OCR unchanged");
+});
