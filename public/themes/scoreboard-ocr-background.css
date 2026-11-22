@@ -87,3 +87,16 @@ body.scoreboard-themed-ocr[data-ocr-background="off"] #matchinfo-main {
   -webkit-background-clip: border-box !important;
   background-clip: border-box !important;
 }
+
+
+/* STUDIO OCR ONLY — background OFF must also remove the two glowing
+   horizontal team-color underline decorations. In scoreboard-studio.css
+   these are .teamnamesc::before pseudo-elements, NOT .sb-win series bars.
+   Leave team names, logo artwork, game-win markers, stats and all geometry
+   unchanged. Original underlines return automatically when toggled ON. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="studio"][data-ocr-background="off"] .teamnamesc::before,
+body.scoreboard-themed-ocr[data-scoreboard-theme="studio"][data-ocr-background="off"] .teamnamesc.sb-right::before {
+  content: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}

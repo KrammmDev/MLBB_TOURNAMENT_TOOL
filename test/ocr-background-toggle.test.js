@@ -79,3 +79,19 @@ test("Background OFF leaves readable right-side text but hides match-info graphi
   assert.ok(studio.includes("#matchinfo-main"));
   assert.ok(studio.includes("#match-display"));
 });
+
+
+test("Studio OCR Background OFF hides only the decorative team underline, not series bars", () => {
+  const css = read("themes/scoreboard-ocr-background.css");
+  const studio = read("themes/scoreboard-studio.css");
+  const fix = css.slice(css.indexOf("STUDIO OCR ONLY — background OFF"));
+  assert.ok(studio.includes(".teamnamesc::before"), "Studio uses an actual nameplate pseudo-element");
+  assert.ok(studio.includes(".sb-right::before"), "Studio right-side underline has a mirrored pseudo-element");
+  assert.ok(fix.includes('[data-scoreboard-theme="studio"][data-ocr-background="off"] .teamnamesc::before'));
+  assert.ok(fix.includes('[data-scoreboard-theme="studio"][data-ocr-background="off"] .teamnamesc.sb-right::before'));
+  assert.ok(fix.includes("content: none !important;"), "Remove the generated colored lines");
+  assert.ok(fix.includes("box-shadow: none !important;"), "Remove underline glow");
+  assert.ok(!fix.includes(".sb-win {"), "Series score bars must remain visible");
+  assert.ok(!fix.includes('[data-scoreboard-theme="classic"]'), "Classic must remain untouched");
+  assert.ok(!fix.includes('[data-scoreboard-theme="arena"]'), "Arena must remain untouched");
+});
