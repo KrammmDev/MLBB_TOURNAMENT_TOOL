@@ -1177,3 +1177,137 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-red .sb-ocr-
   left: 0;
   right: auto;
 }
+
+
+/* ===============================================================
+   CLASSIC OCR — FINAL BROADCAST POLISH
+   Visual cleanup only. Keep the already-correct fixed grid
+   columns, 1920x1080 coordinates and centered hanging timer.
+   No changes to source OCR data, team colors or external assets.
+   =============================================================== */
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-hud {
+  font-variant-numeric: tabular-nums;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-side {
+  align-items: center;
+  gap: 0;
+  border-bottom: 2px solid var(--classic-trim);
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.09),transparent 34%),
+    var(--classic-panel-2);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-stat {
+  height: 52px;
+  min-width: 0;
+  gap: 5px;
+  padding: 0 4px;
+  border-right: 1px solid color-mix(in srgb,var(--classic-trim) 23%,transparent);
+  overflow: hidden;
+  white-space: nowrap;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-blue .sb-ocr-stat:last-of-type,
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-red .sb-ocr-stat:last-of-type {
+  border-right: 0;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-stat strong,
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-stat:has([id$="-gold"]) strong {
+  font-family: "Scoreboard Condensed", "Arial Narrow", sans-serif;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: .1px;
+  color: var(--classic-ink);
+  text-shadow: 0 1px 2px rgba(0,0,0,.65);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-icon {
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-icon img {
+  display: block;
+  width: 17px;
+  height: 17px;
+  object-fit: contain;
+  opacity: .98;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.85));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-side .sb-ocr-stat:has([id$="-kills"]) {
+  overflow: visible;
+  height: 55px;
+  border-right: 1px solid color-mix(in srgb,var(--classic-trim) 40%,transparent);
+  border-left: 1px solid color-mix(in srgb,var(--classic-trim) 40%,transparent);
+  border-bottom: 2px solid var(--classic-trim);
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.1),transparent 42%),
+    var(--classic-panel);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-side .sb-ocr-stat:has([id$="-kills"]) strong {
+  font-size: 38px;
+  line-height: 1;
+  letter-spacing: .2px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc,
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc.sb-right {
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.035),transparent 54%),
+    var(--classic-panel);
+  border-bottom-width: 2px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc.sb-left {
+  padding: 7px 20px 9px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc.sb-right {
+  padding: 7px 20px 9px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc .tn {
+  min-width: 0;
+  overflow: visible;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .name-box {
+  max-width: 100%;
+  font-size: 32px;
+  line-height: 1;
+  letter-spacing: .8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .score-dots {
+  bottom: 8px;
+  gap: 5px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-win,
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-right .sb-win {
+  width: 10px;
+  height: 23px;
+  opacity: .3;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-win.active {
+  opacity: 1;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] #sb-tournament-logo {
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.65));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-hud > .sb-ocr-clock {
+  /* Intentional: stay centered in middle grid track, do not
+     restore the absolute positioning that caused misalignment. */
+  grid-column: 2;
+  position: relative;
+  justify-self: center;
+  left: auto;
+  right: auto;
+  transform: none;
+  text-align: center;
+  border: 1px solid var(--classic-trim);
+  border-bottom-width: 2px;
+  box-shadow: 0 2px 4px rgba(0,0,0,.3);
+  font-variant-numeric: tabular-nums;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc .tn > #goldLead {
+  font-size: 14px;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0,0,0,.3);
+}
