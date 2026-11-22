@@ -516,3 +516,21 @@ test("Classic timer stays centered in its grid track without displacing Red stat
   assert.ok(!fix.includes('[data-scoreboard-theme="arena"]'), "Arena OCR not modified");
   assert.ok(!fix.includes('[data-scoreboard-theme="studio"]'), "Studio OCR not modified");
 });
+
+test("Classic OCR final polish improves spacing but preserves correct center geometry", () => {
+  const css = fs.readFileSync(path.join(base,"themes/scoreboard-ocr-esports.css"),"utf8");
+  const end = css.slice(css.indexOf("CLASSIC OCR — FINAL BROADCAST POLISH"));
+  assert.ok(end.includes('font-variant-numeric: tabular-nums;'));
+  assert.ok(end.includes('padding: 0 4px;'), "Objective cells get consistent padding");
+  assert.ok(end.includes('height: 55px;'), "Kill scores retain top-row height");
+  assert.ok(end.includes('font-size: 38px;'), "Kill scores remain readable");
+  assert.ok(end.includes('text-overflow: ellipsis;'), "Long team names cannot run into scoreline");
+  assert.ok(end.includes('object-fit: contain;'), "Tournament logo keeps its natural aspect ratio");
+  assert.ok(end.includes('grid-column: 2;'), "Clock remains inside dedicated center grid track");
+  assert.ok(end.includes('position: relative;'), "No return to absolute clock positioning");
+  assert.ok(end.includes('justify-self: center;'), "Timer aligns under event logo");
+  assert.ok(!end.includes('data-scoreboard-theme="arena"'), "Arena unaffected");
+  assert.ok(!end.includes('data-scoreboard-theme="studio"'), "Studio unaffected");
+  assert.ok(!fs.readFileSync(path.join(base,"scoreboard.html"),"utf8")
+    .includes("scoreboard-ocr-esports.css"),"Non-OCR output unaffected");
+});
