@@ -314,3 +314,27 @@ test("M Worlds and EWC OCR variants use different reference palette treatments",
   assert.ok(!fs.readFileSync(path.join(base, "scoreboard.html"), "utf8")
     .includes("scoreboard-ocr-telemetry.css"), "Original non-OCR output unchanged");
 });
+
+test("M Worlds and MSC/EWC OCR references use distinct compositions without event palette", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
+  const section = css.slice(css.indexOf("OCR COMPOSITION — STRUCTURE, NOT EVENT COLORS"));
+  const classic = section.slice(0, section.indexOf("/* MSC/EWC: stats"));
+  const arena = section.slice(section.indexOf("/* MSC/EWC: stats"));
+  assert.ok(classic.includes("grid-template-columns: minmax(0, 1fr) 106px minmax(0, 1fr)"));
+  assert.ok(classic.includes('data-scoreboard-theme="classic"] .sb-ocr-clock'));
+  assert.ok(classic.includes("height: 54px"), "Classic keeps kills near centered crest");
+  assert.ok(arena.includes('data-scoreboard-theme="arena"] .sb-ocr-side .sb-ocr-stat:has([id$="-kills"])'));
+  assert.ok(arena.includes("top: 48px"), "Arena kills belong in the team-name band");
+  assert.ok(arena.includes("top: 115px"), "Arena clock sits below its center tournament logo");
+  assert.ok(arena.includes("height: 25px"), "Arena lower clock should be compact");
+  assert.ok(arena.includes('grid-column: 3'), "Red side must stay in its own stats lane");
+  assert.ok(arena.includes("padding-left: 70px"), "Right name stays clear of central kill score");
+  assert.ok(section.includes("var(--blue-accent"), "Team colors remain customizable");
+  assert.ok(section.includes("var(--red-accent"), "Team colors remain customizable");
+  assert.ok(section.includes("var(--edge"), "Trim colors remain customizable");
+  assert.ok(!section.includes("#870c32"), "No event-brand palette copied");
+  const studio = css.slice(0, css.indexOf("CLASSIC + ARENA OCR: integrated match rail"));
+  assert.ok(studio.includes("Studio OCR kill frames mirror the logo holders"));
+  const standard = fs.readFileSync(path.join(base, "scoreboard.html"), "utf8");
+  assert.ok(!standard.includes("scoreboard-ocr-telemetry.css"));
+});
