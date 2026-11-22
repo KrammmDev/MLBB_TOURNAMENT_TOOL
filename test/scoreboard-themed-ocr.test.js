@@ -258,3 +258,24 @@ test("Classic and Arena use PNG stats, mirrored kills, and safe Gold Lead nameba
     assert.ok(html.includes('id="' + id + '"'), id);
   }
 });
+
+test("Classic and Arena OCR keep the original theme artwork geometry untouched", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
+  const section = css.slice(css.indexOf("CLASSIC + ARENA OCR: integrated match rail"));
+  const structural = [".sb-frame", ".sb-banner", ".sb-team-logo",
+    ".teamnamesc", ".score-dots", ".sb-win", "#sb-tournament-logo",
+    ".matchinfo-content", "#sb-sponsors", "#sb-map-label"];
+  for (const selector of structural) {
+    assert.ok(!section.includes(selector + " {"),
+      "OCR layer must not reposition original Classic/Arena geometry: " + selector);
+  }
+  assert.ok(section.includes("left: 510px;"));
+  assert.ok(section.includes("width: 905px;"));
+  assert.ok(section.includes("height: 54px;"));
+  const classic = fs.readFileSync(path.join(base, "themes/scoreboard-classic.css"), "utf8");
+  const arena = fs.readFileSync(path.join(base, "themes/scoreboard-arena.css"), "utf8");
+  assert.ok(classic.includes(".sb-map-frame"), "Keep Classic's minimap outline");
+  assert.ok(classic.includes(".sb-frame"), "Keep Classic's angular frame");
+  assert.ok(arena.includes(".sb-banner-right"), "Keep Arena's mirrored logo holder");
+  assert.ok(arena.includes("bottom: 7px"), "Keep Arena's original scoreline");
+});
