@@ -1,7 +1,8 @@
 /* OCR-only background switch.
-   OFF removes painted plates but retains the original 1920x1080
-   geometry, statistics, icons, names, logos and positional offsets.
-   Existing theme styles keep their original ON appearance. */
+   OFF removes main-scoreboard decorative plates but keeps the complete
+   match-information/sponsor/production panel (stage, day, game, logo,
+   patch and casters) visible with its original background and colors.
+   All existing 1920x1080 geometry and OCR content remain unchanged. */
 body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-frame,
 body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-banner,
 body.scoreboard-themed-ocr[data-ocr-background="off"] .gb1,
@@ -11,13 +12,7 @@ body.scoreboard-themed-ocr[data-ocr-background="off"] .teamnamesc,
 body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-side,
 body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-stat,
 body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-clock,
-body.scoreboard-themed-ocr[data-ocr-background="off"] .matchinfo-content,
-body.scoreboard-themed-ocr[data-ocr-background="off"] #match-display,
-body.scoreboard-themed-ocr[data-ocr-background="off"] #sb-sponsors,
-body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-goldlead,
-body.scoreboard-themed-ocr[data-ocr-background="off"] #sb-production-strip,
-body.scoreboard-themed-ocr[data-ocr-background="off"] #sb-patch-label,
-body.scoreboard-themed-ocr[data-ocr-background="off"] #sb-caster-cell {
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-goldlead {
   background: transparent !important;
   background-image: none !important;
   border-color: transparent !important;
@@ -44,7 +39,6 @@ body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-stat::before {
 body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-stat strong,
 body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-clock,
 body.scoreboard-themed-ocr[data-ocr-background="off"] .name-box,
-body.scoreboard-themed-ocr[data-ocr-background="off"] .matchinfo-content,
 body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-goldlead {
   color: var(--sb-readable, var(--sb-text, #fff)) !important;
   text-shadow: 0 1px 3px rgba(0,0,0,.9) !important;
