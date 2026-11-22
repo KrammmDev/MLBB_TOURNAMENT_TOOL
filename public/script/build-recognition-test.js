@@ -8,6 +8,7 @@ function slot(s,isSpell=false){
  const node=document.createElement('div');node.className='slot '+s.status+(isSpell?' spell':'');
  node.title=(s.name||s.candidate||s.status)+' · similarity '+(s.confidence||0);
  if(s.status==='matched'&&s.image){const image=document.createElement('img');image.src=s.image;image.alt=s.name;node.appendChild(image);}
+ else if(s.status==='empty'&&!isSpell){const image=document.createElement('img');image.src='/Assets/Itemandspell/idle.png';image.alt='Empty item slot (idle)';node.appendChild(image);}
  else node.textContent=s.status==='empty'?'—':s.status==='uncertain'?'~':'?';
  return node;
 }
