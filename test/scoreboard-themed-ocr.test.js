@@ -495,7 +495,7 @@ test("Arena has a floating gold-icon lead below the winning side; Classic uses a
   assert.ok(!defaultScoreboard.includes('scoreboard-ocr-esports.css'), "Original non-OCR unchanged");
 });
 
-test("Classic absolute hanging clock never auto-places Red stats into the center crest column", () => {
+test("Classic timer stays centered in its grid track without displacing Red stats", () => {
   const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
   const fix = css.slice(css.indexOf("CLASSIC OCR V6 — FIX REAL GRID COLLISION"));
   assert.ok(fix.includes('grid-template-columns: minmax(0,1fr) 170px minmax(0,1fr)'));
@@ -505,8 +505,12 @@ test("Classic absolute hanging clock never auto-places Red stats into the center
   assert.ok(fix.includes('grid-column: 3;'), "Red objectives must NOT occupy center crest column");
   assert.ok(fix.includes('.sb-ocr-hud > .sb-ocr-clock'));
   assert.ok(fix.includes('grid-column: 2;'), "Clock reserved for middle");
-  assert.ok(fix.includes('position: absolute;'), "Clock continues to hang below the HUD");
-  assert.ok(fix.includes('transform: translateX(-50%);'), "Clock stays horizontally centered");
+  const clock = fix.slice(fix.indexOf('.sb-ocr-hud > .sb-ocr-clock'), fix.indexOf('/* Make the 170px central reservation'));
+  assert.ok(clock.includes('position: relative;'), "Clock stays in the middle grid track");
+  assert.ok(clock.includes('justify-self: center;'), "Clock centers inside its 170px grid track");
+  assert.ok(clock.includes('left: auto;'), "Do not offset from the full HUD width");
+  assert.ok(clock.includes('transform: none;'), "Do not shift the clock to the right");
+  assert.ok(!clock.includes('position: absolute;'), "No absolute-position grid displacement");
   assert.ok(fix.includes('top: 108px;'), "Clock remains below the original tournament logo");
   assert.ok(fix.includes('left: 891px;'), "Tournament crest remains centered on stage");
   assert.ok(!fix.includes('[data-scoreboard-theme="arena"]'), "Arena OCR not modified");
