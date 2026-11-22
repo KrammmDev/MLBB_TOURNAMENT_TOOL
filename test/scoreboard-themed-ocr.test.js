@@ -579,3 +579,18 @@ test("Arena OCR covers the real minimap-to-logo spacer without affecting other t
   assert.ok(page.includes('class="sb-banner sb-banner-left"'),
     "The left logo holder uses the actual markup class");
 });
+
+test("Arena minimap connector stays behind the real left team logo", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
+  const section = css.slice(css.indexOf("ARENA OCR — MINIMAP / LEFT LOGO CONNECTOR"));
+  const html = fs.readFileSync(path.join(base, "scoreboard-themed-ocr.html"), "utf8");
+  assert.ok(section.includes('left: 342px;'));
+  assert.ok(section.includes('width: 52.08px;'));
+  assert.ok(section.includes('.scoreboard::before {\n  z-index: 0;'), "Connector stays behind the logo");
+  assert.ok(section.includes('.sb-banner-left {\n  z-index: 1;'), "Banner below real logo image");
+  assert.ok(section.includes('.upper {\n  position: absolute;\n  z-index: 4;'), "Logo container paints above the banner");
+  assert.ok(section.includes('.upper .sb-team-logo img'), "Preserve original team logo");
+  assert.ok(html.includes('id="displayImage1"'), "Original left team image binding intact");
+  assert.ok(!section.includes('data-scoreboard-theme="classic"'));
+  assert.ok(!section.includes('data-scoreboard-theme="studio"'));
+});
