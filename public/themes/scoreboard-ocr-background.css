@@ -1,7 +1,7 @@
 /* OCR-only background switch.
    OFF removes decorative surfaces across the scoreboard, including
-   right-side match info, sponsor and production panels. Only text
-   remains in the right-side panel; positions and OCR data stay intact.
+   right-side match info, sponsor and production panels. Text and
+   sponsor logos remain visible; positions and OCR data stay intact.
    ON retains each theme's exact existing design. */
 body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-frame,
 body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-banner,
@@ -59,15 +59,9 @@ body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-map-frame {
   opacity: 0 !important;
 }
 
-/* OCR Background OFF: right-side information is text-only.
-   Preserve the title, day, match/game, venue and caster labels;
-   the sponsor-logo image and its decorative slide are hidden. */
-body.scoreboard-themed-ocr[data-ocr-background="off"] .match-info #sb-sponsors > *,
-body.scoreboard-themed-ocr[data-ocr-background="off"] .match-info #sb-sponsors img,
-body.scoreboard-themed-ocr[data-ocr-background="off"] .match-info #sb-sponsors video,
-body.scoreboard-themed-ocr[data-ocr-background="off"] .match-info #sb-sponsors canvas {
-  visibility: hidden !important;
-}
+/* Background OFF only removes the sponsor SLOT's painted surface.
+   Keep the actual slideshow track and its logo images visible.
+   SponsorSlideshow owns rotation and must not be affected by this toggle. */
 /* Studio uses background-clip:text, so removing its gradient without
    resetting text fill makes the title disappear. Keep lettering visible
    over either dark or bright gameplay while preserving theme fonts. */
