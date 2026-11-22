@@ -295,3 +295,22 @@ test("Classic and Arena Gold Lead have separate theme-specific visuals", () => {
   assert.ok(css.includes(".sb-ocr-goldlead.blue-lead"));
   assert.ok(css.includes(".sb-ocr-goldlead.red-lead"));
 });
+
+test("M Worlds and EWC OCR variants use different reference palette treatments", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
+  const reference = css.slice(css.indexOf("Broadcast-reference styling for OCR variants only"));
+  assert.ok(reference.includes('data-scoreboard-theme="classic"] .sb-ocr-clock'));
+  assert.ok(reference.includes('data-scoreboard-theme="arena"] .sb-ocr-clock'));
+  assert.ok(reference.includes('color-mix(in srgb, var(--header-bg, #545454) 52%, #a5a5a5)'),
+    "M Worlds should use silver/graphite clock");
+  assert.ok(reference.includes("linear-gradient(180deg, #ffffff 0%, #f3f3f2 42%, #d9dadd 100%)"),
+    "EWC should use bright silver stat rail");
+  assert.ok(reference.includes("filter: brightness(0) opacity(.83)"),
+    "EWC white stat rail needs dark objective icons");
+  assert.ok(reference.includes('data-scoreboard-theme="classic"] .sb-ocr-goldlead'));
+  assert.ok(reference.includes('data-scoreboard-theme="arena"] .sb-ocr-goldlead'));
+  assert.ok(reference.includes('border-bottom: 3px solid var(--blue-accent'));
+  assert.ok(reference.includes('border-bottom: 3px solid var(--red-accent'));
+  assert.ok(!fs.readFileSync(path.join(base, "scoreboard.html"), "utf8")
+    .includes("scoreboard-ocr-telemetry.css"), "Original non-OCR output unchanged");
+});
