@@ -358,3 +358,246 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-goldlead {
   border-radius: 4px;
 }
 /* Never repaint the match-info box, sponsors, or original OBS artwork. */
+
+
+/* ================================================================
+   THEME SEPARATION V3 — Classic and Arena must NOT share a look.
+   The live single Gold Lead moves into the leading team's .tn via
+   scoreboard-themed-ocr-client.js. No label panel or divider.
+   ================================================================ */
+
+/* Put the lead under the winning team's name, never in the gap
+   between the team name and series score indicator. */
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"])
+  .teamnamesc .tn {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 0;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 3px;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"])
+  .teamnamesc.sb-right .tn {
+  align-items: flex-end;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"])
+  .teamnamesc .tn > .sb-ocr-goldlead,
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"])
+  .teamnamesc .tn > .sb-ocr-goldlead.blue-lead,
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"])
+  .teamnamesc .tn > .sb-ocr-goldlead.red-lead {
+  position: static;
+  inset: auto;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  display: block;
+  width: auto;
+  min-width: 0;
+  height: auto;
+  min-height: 0;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  flex: none;
+  text-align: inherit;
+  font: 900 16px/1 "Scoreboard Condensed", Impact, sans-serif;
+  letter-spacing: .5px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  clip-path: none;
+  text-shadow: none;
+  opacity: 1;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"])
+  .teamnamesc .tn > .sb-ocr-goldlead.blue-lead {
+  color: var(--es-blue);
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"])
+  .teamnamesc .tn > .sb-ocr-goldlead.red-lead {
+  color: var(--es-red);
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"])
+  .teamnamesc .tn > .sb-ocr-goldlead[hidden] {
+  display: none !important;
+}
+
+/* Classic = pronounced championship silhouette, dark metallic
+   nameplates and tall angled logo holders. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-frame {
+  height: 138px;
+  clip-path: polygon(0 0,100% 0,100% calc(100% - 24px),calc(100% - 38px) 100%,38px 100%,0 calc(100% - 24px));
+  background: var(--es-edge);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-frame::before {
+  display: block;
+  content: "";
+  position: absolute;
+  inset: 3px;
+  background: var(--es-surface);
+  clip-path: polygon(0 0,100% 0,100% calc(100% - 22px),calc(100% - 36px) 100%,36px 100%,0 calc(100% - 22px));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .lower {
+  top: 48px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  background: linear-gradient(110deg,
+    color-mix(in srgb,var(--es-surface) 86%,white),
+    var(--es-surface) 53%,
+    color-mix(in srgb,var(--es-surface) 90%,black));
+  border-bottom-width: 4px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .name-box {
+  font-family: "Classic Display", Impact, "Arial Narrow", sans-serif;
+  font-size: 35px;
+  font-weight: 400;
+  letter-spacing: 1.3px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-hud {
+  height: 48px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-side {
+  height: 48px;
+  box-shadow: inset 0 -3px 0 var(--es-edge);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-side .sb-ocr-stat:has([id$="-kills"]) {
+  top: 48px;
+  height: 82px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-clock {
+  height: 48px;
+  font-size: 30px;
+  border-bottom: 3px solid var(--es-edge);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-win {
+  width: 11px;
+  height: 30px;
+  transform: skewX(-15deg);
+  background: var(--es-edge);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-right .sb-win {
+  transform: skewX(15deg);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .score-dots {
+  bottom: 23px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] #sb-tournament-logo {
+  top: 62px;
+  height: 68px;
+}
+
+/* Arena = modern broadcast capsule: shallow pale stat rail,
+   larger segmented nameplates, strong square score tiles, and
+   short horizontal win pips. Unlike Classic there is NO large
+   metallic angular surround or oversized bottom corners. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-frame {
+  top: 0;
+  height: 124px;
+  clip-path: none;
+  border-top: 3px solid var(--es-edge);
+  border-bottom: 2px solid var(--es-edge);
+  background: color-mix(in srgb,var(--es-surface) 87%,white);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-banner {
+  height: 124px;
+  clip-path: polygon(0 0,100% 0,100% 100%,9px 100%,0 calc(100% - 9px));
+  background: var(--es-edge);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-banner-right {
+  clip-path: polygon(0 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-banner::before {
+  background: color-mix(in srgb,var(--es-surface) 82%,white);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .lower {
+  top: 38px;
+  height: 86px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .midscorename,
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .teamnamesc {
+  height: 86px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .teamnamesc {
+  padding: 9px 88px 12px 18px;
+  background: color-mix(in srgb,var(--es-surface) 83%,white);
+  border-bottom: 5px solid var(--es-blue);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .teamnamesc.sb-right {
+  padding: 9px 18px 12px 88px;
+  border-bottom-color: var(--es-red);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .name-box {
+  font-family: "Scoreboard Condensed", "Arial Narrow", Arial, sans-serif;
+  font-size: 29px;
+  font-weight: 900;
+  letter-spacing: .2px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-hud {
+  top: 0;
+  height: 38px;
+  grid-template-columns: minmax(0,1fr) 170px minmax(0,1fr);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-side {
+  height: 38px;
+  background: color-mix(in srgb,var(--es-surface) 72%,white);
+  box-shadow: inset 0 -1px 0 var(--es-edge);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-stat {
+  height: 38px;
+  color: var(--es-ink);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-stat strong {
+  font-size: 17px;
+  text-shadow: none;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-side .sb-ocr-stat:has([id$="-kills"]) {
+  top: 38px;
+  height: 86px;
+  width: 80px;
+  min-width: 80px;
+  background: color-mix(in srgb,var(--es-surface) 69%,white);
+  border-bottom: 5px solid var(--es-blue);
+  clip-path: none;
+  box-shadow: inset 1px 0 0 var(--es-edge);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-red .sb-ocr-stat:has([id$="-kills"]) {
+  border-bottom-color: var(--es-red);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-side .sb-ocr-stat:has([id$="-kills"]) strong {
+  font-size: 47px;
+  text-shadow: none;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-clock {
+  height: 38px;
+  font-size: 25px;
+  color: var(--es-ink);
+  background: color-mix(in srgb,var(--es-surface) 70%,white);
+  border-bottom: 1px solid var(--es-edge);
+  text-shadow: none;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-win,
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-right .sb-win {
+  width: 23px;
+  height: 7px;
+  clip-path: none;
+  transform: none;
+  border-radius: 0;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .score-dots {
+  bottom: 11px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] #sb-tournament-logo {
+  top: 46px;
+  width: 114px;
+  height: 72px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .teamnamesc .tn > .sb-ocr-goldlead {
+  font-size: 15px;
+}
