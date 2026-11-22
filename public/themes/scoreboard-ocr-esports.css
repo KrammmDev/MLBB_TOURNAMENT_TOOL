@@ -1311,3 +1311,159 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc .tn > #g
   white-space: nowrap;
   box-shadow: 0 1px 3px rgba(0,0,0,.3);
 }
+
+
+/* ================================================================
+   CLASSIC OCR V7 — SAVED PALETTE + MIRRORED SCORELINES
+   Never bake tournament-gold accents into Classic OCR. Palette
+   comes from Broadcast Themes: panel, primary, secondary, border,
+   left accent and right accent. All other themes are untouched.
+   ================================================================ */
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] {
+  --classic-panel: var(--es-surface);
+  --classic-panel-2: color-mix(in srgb, var(--es-surface) 87%, black);
+  --classic-ink: var(--es-ink);
+  --classic-muted: var(--sb-muted-readable, var(--es-ink));
+  --classic-trim: var(--es-edge);
+  --classic-line: color-mix(in srgb, var(--classic-trim) 42%, transparent);
+  --classic-left: var(--es-blue);
+  --classic-right: var(--es-red);
+}
+
+/* Neutral metallic framing, driven by the user's border color. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-frame {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.055), transparent 25%, rgba(0,0,0,.14)),
+    var(--classic-panel);
+  box-shadow: inset 0 -2px 0 var(--classic-trim);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-banner,
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-banner-left,
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-banner-right {
+  background: var(--classic-trim);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-banner::before {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.065), transparent 55%),
+    var(--classic-panel);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-side {
+  border-bottom: 2px solid var(--classic-trim);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.065), transparent 44%),
+    var(--classic-panel-2);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-stat {
+  border-right-color: var(--classic-line);
+  color: var(--classic-ink);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-stat strong,
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-stat:has([id$="-gold"]) strong {
+  color: var(--classic-ink);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc,
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc.sb-right {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.045), transparent 55%),
+    var(--classic-panel);
+  color: var(--classic-ink);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc.sb-left {
+  border-bottom-color: var(--classic-left);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc.sb-right {
+  border-bottom-color: var(--classic-right);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .name-box {
+  color: var(--classic-ink);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .gb2 {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.065), transparent 62%),
+    var(--classic-panel);
+  box-shadow: inset 0 -2px 0 var(--classic-trim);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-hud > .sb-ocr-clock {
+  background: var(--classic-panel);
+  color: var(--classic-ink);
+  border-color: var(--classic-trim);
+  border-bottom-color: var(--classic-trim);
+  /* Preserve the confirmed 170px center grid, logo and timer position. */
+  grid-column: 2;
+  grid-row: 1;
+  position: relative;
+  justify-self: center;
+  top: 108px;
+  left: auto;
+  right: auto;
+  transform: none;
+}
+
+/* Mirrored angled KILL SCORE tiles:
+   Blue's inside corner slopes \, Red's inside corner slopes /.
+   Large numbers stay fixed in the left/right objective lanes. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-blue .sb-ocr-stat:has([id$="-kills"]),
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-red .sb-ocr-stat:has([id$="-kills"]) {
+  position: absolute;
+  top: 0;
+  width: 64px;
+  min-width: 64px;
+  height: 55px;
+  overflow: hidden;
+  border: 0;
+  border-bottom: 2px solid var(--classic-trim);
+  box-shadow: none;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.075), transparent 52%),
+    var(--classic-panel-2);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-blue .sb-ocr-stat:has([id$="-kills"]) {
+  left: auto;
+  right: 0;
+  border-bottom-color: var(--classic-left);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 13px), calc(100% - 13px) 100%, 0 100%);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-red .sb-ocr-stat:has([id$="-kills"]) {
+  left: 0;
+  right: auto;
+  border-bottom-color: var(--classic-right);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 13px 100%, 0 calc(100% - 13px));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-side .sb-ocr-stat:has([id$="-kills"]) strong {
+  font: 900 38px/1 "Scoreboard Condensed", Impact, sans-serif;
+  color: var(--classic-ink);
+  letter-spacing: .2px;
+}
+
+/* Win/series markers mirror as well — left \ and right /. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-left .sb-win {
+  background: var(--classic-trim);
+  transform: skewX(-15deg);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-right .sb-win {
+  background: var(--classic-trim);
+  transform: skewX(15deg);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-left .sb-win.active {
+  background: var(--classic-left);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-right .sb-win.active {
+  background: var(--classic-right);
+}
+
+/* The lead marker may still show a positive advantage, but it
+   never forces a gold-colored surface into a custom theme. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc .tn > #goldLead,
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc .tn > #goldLead.blue-lead,
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc .tn > #goldLead.red-lead {
+  background: var(--classic-panel);
+  color: var(--classic-ink);
+  border: 1px solid var(--classic-trim);
+  box-shadow: 0 1px 3px rgba(0,0,0,.3);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc .tn > #goldLead.blue-lead {
+  border-bottom: 2px solid var(--classic-left);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc .tn > #goldLead.red-lead {
+  border-bottom: 2px solid var(--classic-right);
+}

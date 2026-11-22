@@ -534,3 +534,28 @@ test("Classic OCR final polish improves spacing but preserves correct center geo
   assert.ok(!fs.readFileSync(path.join(base,"scoreboard.html"),"utf8")
     .includes("scoreboard-ocr-esports.css"),"Non-OCR output unaffected");
 });
+
+
+test("Classic OCR uses saved palette and mirrored score tiles, never tournament-gold hardcodes", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
+  const v7 = css.slice(css.indexOf("CLASSIC OCR V7 — SAVED PALETTE + MIRRORED SCORELINES"));
+  assert.ok(v7.includes('--classic-panel: var(--es-surface);'));
+  assert.ok(v7.includes('--classic-ink: var(--es-ink);'));
+  assert.ok(v7.includes('--classic-trim: var(--es-edge);'));
+  assert.ok(v7.includes('--classic-left: var(--es-blue);'));
+  assert.ok(v7.includes('--classic-right: var(--es-red);'));
+  assert.ok(!/#(?:d4b457|f0cf67|d0a52d|b68c23|e2ac39)\b/i.test(v7),
+    "No fixed championship-gold styling in final Classic rules");
+  assert.ok(v7.includes('.sb-ocr-blue .sb-ocr-stat:has([id$="-kills"])'));
+  assert.ok(v7.includes('calc(100% - 13px) 100%'), "Blue score tile slopes down at inside corner");
+  assert.ok(v7.includes('.sb-ocr-red .sb-ocr-stat:has([id$="-kills"])'));
+  assert.ok(v7.includes('13px 100%, 0 calc(100% - 13px)'), "Red score tile mirrors Blue");
+  assert.ok(v7.includes('transform: skewX(-15deg);'), "Blue series markers lean one way");
+  assert.ok(v7.includes('transform: skewX(15deg);'), "Red series markers lean the other");
+  assert.ok(v7.includes('grid-column: 2;'), "Timer stays centered in its own grid track");
+  assert.ok(v7.includes('justify-self: center;'), "Timer does not move off center");
+  assert.ok(!v7.includes('data-scoreboard-theme="arena"'), "Arena remains unchanged");
+  assert.ok(!v7.includes('data-scoreboard-theme="studio"'), "Studio remains unchanged");
+  const normal = fs.readFileSync(path.join(base, "scoreboard.html"), "utf8");
+  assert.ok(!normal.includes("scoreboard-ocr-esports.css"), "Original non-OCR scoreboard unaffected");
+});
