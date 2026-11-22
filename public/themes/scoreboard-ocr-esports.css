@@ -1129,13 +1129,18 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-hud > .sb-oc
   min-width: 0;
 }
 body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-hud > .sb-ocr-clock {
+  /* Keep the timer IN the grid's middle track. Absolute positioning
+     used the wrong containing block and shifted it right of the crest. */
   grid-column: 2;
   grid-row: 1;
-  position: absolute;
+  position: relative;
+  justify-self: center;
+  align-self: start;
   top: 108px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: auto;
   right: auto;
+  transform: none;
+  margin: 0;
   width: 114px;
   min-width: 114px;
   height: 26px;
