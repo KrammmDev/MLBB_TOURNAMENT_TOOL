@@ -559,3 +559,23 @@ test("Classic OCR uses saved palette and mirrored score tiles, never tournament-
   const normal = fs.readFileSync(path.join(base, "scoreboard.html"), "utf8");
   assert.ok(!normal.includes("scoreboard-ocr-esports.css"), "Original non-OCR scoreboard unaffected");
 });
+
+test("Arena OCR covers the real minimap-to-logo spacer without affecting other themes", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
+  const cap = css.slice(css.indexOf("ARENA OCR — MINIMAP / LEFT LOGO CONNECTOR"));
+  assert.ok(cap.includes('body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .scoreboard::before'));
+  assert.ok(cap.includes('left: 342px;'), "The minimap ends at stage x=342");
+  assert.ok(cap.includes('width: 52.08px;'), "Cover must meet the left logo at x=394");
+  assert.ok(cap.includes('height: 127px;'), "Connector runs the full Arena OCR header");
+  assert.ok(cap.includes('var(--arena-panel'), "Connector honors Arena panel colors");
+  assert.ok(cap.includes('var(--es-edge'), "Connector honors the saved border color");
+  assert.ok(cap.includes('pointer-events: none;'), "Connector is only decorative");
+  assert.ok(cap.includes('body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-banner-left'),
+    "Left logo holder stays visually above the gap cover");
+  assert.ok(!cap.includes('data-scoreboard-theme="classic"'), "Classic is unaffected");
+  assert.ok(!cap.includes('data-scoreboard-theme="studio"'), "Studio is unaffected");
+  const page = fs.readFileSync(path.join(base, "scoreboard-themed-ocr.html"), "utf8");
+  assert.ok(page.includes('class="scoreboard"'), "Cover has a real containing element");
+  assert.ok(page.includes('class="sb-banner sb-banner-left"'),
+    "The left logo holder uses the actual markup class");
+});
