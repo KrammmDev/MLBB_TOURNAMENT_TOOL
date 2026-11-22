@@ -69,6 +69,15 @@
                 Use for selected output only
               </button>
             </div>
+            <div id="ocr-background-controls" class="ocr-background-controls" hidden>
+              <label class="ocr-background-switch" for="ocr-background-enabled">
+                <input id="ocr-background-enabled" type="checkbox" checked disabled />
+                <span>Scoreboard background</span>
+                <strong id="ocr-background-label">ON</strong>
+              </label>
+              <p>ON shows the original themed panels. OFF makes decorative panels transparent while retaining the OCR layout, stats and logos. Saved separately for Classic, Arena and Studio.</p>
+              <small id="ocr-background-status" role="status" aria-live="polite"></small>
+            </div>
             <div class="preview-surface">
               <iframe
                 id="theme-preview"
@@ -304,6 +313,7 @@
     <script src="/script/roster-themes.js"></script>
     <script src="/script/broadcast-color-model.js"></script>
     <script src="/script/roster-theme-control.js"></script>
+    <script src="/script/ocr-background-control.js"></script>
     <script src="/script/broadcast-color-control.js"></script>
     <script src="/script/scoreboard-branding-control.js"></script>
     <script src="/script/sponsor-control.js"></script>

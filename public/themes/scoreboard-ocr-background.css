@@ -1,0 +1,60 @@
+/* OCR-only background switch.
+   OFF removes painted plates but retains the original 1920x1080
+   geometry, statistics, icons, names, logos and positional offsets.
+   Existing theme styles keep their original ON appearance. */
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-frame,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-banner,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .gb1,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .gb2,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-team-logo,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .teamnamesc,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-side,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-stat,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-clock,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .matchinfo-content,
+body.scoreboard-themed-ocr[data-ocr-background="off"] #match-display,
+body.scoreboard-themed-ocr[data-ocr-background="off"] #sb-sponsors,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-goldlead,
+body.scoreboard-themed-ocr[data-ocr-background="off"] #sb-production-strip,
+body.scoreboard-themed-ocr[data-ocr-background="off"] #sb-patch-label,
+body.scoreboard-themed-ocr[data-ocr-background="off"] #sb-caster-cell {
+  background: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline-color: transparent !important;
+}
+/* Decorative plate layers only: do not hide coin icons or PNG logos. */
+body.scoreboard-themed-ocr[data-ocr-background="off"] .scoreboard::before,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-frame::before,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-frame::after,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-banner::before,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-banner::after,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-hud::before,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-hud::after,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-stat::before {
+  background: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  opacity: 0 !important;
+}
+/* Restore visibility of live data even if theme panels usually use
+   gradients/contrast treatments. SVG objective icons remain images. */
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-stat strong,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-clock,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .name-box,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .matchinfo-content,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-goldlead {
+  color: var(--sb-readable, var(--sb-text, #fff)) !important;
+  text-shadow: 0 1px 3px rgba(0,0,0,.9) !important;
+}
+/* Series-wins and active-score markers are important live match data:
+   retain them, and preserve each theme's exact geometry. */
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-win {
+  box-shadow: none !important;
+}
+/* No minimap frame drawing when the decorative overlay is disabled. */
+body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-map-frame {
+  opacity: 0 !important;
+}
