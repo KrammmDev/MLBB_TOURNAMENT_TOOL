@@ -820,3 +820,101 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-goldlead.red-l
   border-right: 3px solid var(--red-accent, var(--sb-right, #527fe8));
   clip-path: polygon(0 0, 100% 0, 100% 100%, 6px 100%, 0 calc(100% - 6px));
 }
+
+/* =========================================================
+   Broadcast-reference styling for OCR variants only.
+   CLASSIC = M Worlds graphite/silver championship HUD
+   ARENA   = EWC white/teal flat tournament HUD
+   All original team holders, names, map and sponsor geometry
+   remain controlled by their existing theme stylesheets.
+   ========================================================= */
+
+/* M Worlds: silver-grey stats, no gold timer tile. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-side {
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,.18) 0%,
+      rgba(255,255,255,.045) 32%,
+      rgba(0,0,0,.16) 100%),
+    color-mix(in srgb, var(--header-bg, #292929) 84%, #717171);
+  box-shadow: inset 0 -3px 0 var(--edge, #a1a1a1);
+  color: var(--sb-readable, #f8f8f8);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-stat {
+  border-right: 1px solid rgba(255,255,255,.10);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-stat:has([id$="-kills"]) {
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.22),transparent 45%,rgba(0,0,0,.15)),
+    var(--header-bg, #303030);
+  color: var(--sb-readable, #fff);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-blue .sb-ocr-stat:has([id$="-kills"]),
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-red .sb-ocr-stat:has([id$="-kills"]) {
+  border-bottom: 3px solid var(--edge, #a1a1a1);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-clock {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.28), transparent 42%, rgba(0,0,0,.20)),
+    color-mix(in srgb, var(--header-bg, #545454) 52%, #a5a5a5);
+  color: var(--sb-readable, #fff);
+  border-bottom: 3px solid var(--edge, #999);
+  font-family: "Classic Display", Impact, "Arial Narrow", sans-serif;
+  text-shadow: 0 1px 2px rgba(0,0,0,.55);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-goldlead {
+  background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(0,0,0,.10));
+  border: 0;
+  border-bottom: 2px solid var(--edge, #a1a1a1);
+  color: var(--sb-readable, #fff);
+}
+
+/* EWC: pale silver stats rail, crisp dark digits and white center clock. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-side {
+  background:
+    linear-gradient(180deg, #ffffff 0%, #f3f3f2 42%, #d9dadd 100%);
+  color: #19212b;
+  box-shadow: inset 0 -3px 0 var(--edge, #d2d6da);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-stat {
+  border-right: 1px solid rgba(25,33,43,.20);
+  color: #19212b;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-stat strong {
+  color: #19212b;
+  text-shadow: none;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-icon img {
+  filter: brightness(0) opacity(.83);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-stat:has([id$="-kills"]) {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.82), transparent 42%, rgba(0,0,0,.045)),
+    #f1f1f1;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-stat:has([id$="-kills"]) strong {
+  color: #14212e;
+  text-shadow: none;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-clock {
+  background: linear-gradient(180deg, #fff, #e6e7e8);
+  color: #1b2631;
+  border: 0;
+  border-bottom: 3px solid var(--edge, #bfcbd0);
+  text-shadow: none;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-goldlead {
+  background: linear-gradient(180deg,#ffffff,#edf0f1);
+  border: 1px solid var(--edge, #c8cdd0);
+  border-left: 0;
+  border-right: 0;
+  color: #1b2631;
+  text-shadow: none;
+  font-weight: 900;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-goldlead.blue-lead {
+  border-bottom: 3px solid var(--blue-accent, #0ba892);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-goldlead.red-lead {
+  border-bottom: 3px solid var(--red-accent, #0ba892);
+}
