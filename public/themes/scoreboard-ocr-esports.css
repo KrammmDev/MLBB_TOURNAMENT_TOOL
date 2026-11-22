@@ -1435,14 +1435,16 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-side .sb-ocr
   letter-spacing: .2px;
 }
 
-/* Win/series markers mirror as well — left \ and right /. */
+/* Win/series markers: left \\ and right /.
+   Positive skewX puts the top edge to the LEFT (\\),
+   negative skewX puts the top edge to the RIGHT (/). */
 body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-left .sb-win {
   background: var(--classic-trim);
-  transform: skewX(-15deg);
+  transform: skewX(15deg);
 }
 body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-right .sb-win {
   background: var(--classic-trim);
-  transform: skewX(15deg);
+  transform: skewX(-15deg);
 }
 body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-left .sb-win.active {
   background: var(--classic-left);
