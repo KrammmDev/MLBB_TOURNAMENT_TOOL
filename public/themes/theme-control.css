@@ -479,3 +479,46 @@ iframe {
   padding: 8px;
   border-radius: 4px;
 }
+
+
+/* OCR background visibility: one switch for the selected OCR theme only. */
+.ocr-background-controls {
+  margin: 12px 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--line, #334155);
+  border-radius: 9px;
+  background: #121a26;
+}
+.ocr-background-controls[hidden] { display: none !important; }
+.ocr-background-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  cursor: pointer;
+  color: #f0f6fc;
+  font-weight: 700;
+}
+.ocr-background-switch input {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  accent-color: #9de5d8;
+  cursor: pointer;
+}
+.ocr-background-switch strong {
+  font-size: 12px;
+  letter-spacing: .05em;
+  color: #a5e1d8;
+}
+.ocr-background-controls p {
+  margin: 8px 0 4px;
+  color: #bac8d9;
+  font-size: 13px;
+  line-height: 1.5;
+}
+#ocr-background-status {
+  display: block;
+  min-height: 1em;
+  color: #a5e1d8;
+  font-size: 12px;
+}
