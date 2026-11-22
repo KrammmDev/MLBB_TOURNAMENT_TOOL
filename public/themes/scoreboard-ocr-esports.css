@@ -1,0 +1,360 @@
+/* Dedicated esports composition for Classic and Arena OCR only.
+   Keep this file AFTER scoreboard-ocr-telemetry.css.
+   The existing DOM IDs, renderer, team logos and live OCR feeds stay intact.
+   Coordinates refer to the original 1920 x 1080 OBS stage. */
+
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) {
+  --es-surface: var(--header-bg, var(--sb-panel, #121b29));
+  --es-ink: var(--sb-readable, var(--sb-text, #fff));
+  --es-edge: var(--edge, var(--sb-border, #61758a));
+  --es-blue: var(--blue-accent, var(--sb-left, #2f92dd));
+  --es-red: var(--red-accent, var(--sb-right, #e45b6f));
+}
+
+/* Unify the geometry first: no floating third-party themed plates. */
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-frame {
+  left: 394px;
+  top: 0;
+  width: 1136px;
+  height: 128px;
+  background: var(--es-surface);
+  clip-path: polygon(0 0,100% 0,100% 100%,0 100%);
+  border: 0;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-frame::before,
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-frame::after {
+  display: none;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-banner {
+  height: 128px;
+  border: 0;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-banner::before {
+  background: linear-gradient(160deg,
+    color-mix(in srgb,var(--es-surface) 82%,white),
+    var(--es-surface) 45%,
+    color-mix(in srgb,var(--es-surface) 80%,black));
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .lower {
+  left: 0;
+  top: 46px;
+  height: 82px;
+  width: 1920px;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .midscorename {
+  position: relative;
+  width: 906.61px;
+  height: 82px;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .teamnamesc {
+  height: 82px;
+  padding: 10px 90px 12px 20px;
+  align-items: center;
+  box-sizing: border-box;
+  background: linear-gradient(180deg,
+    color-mix(in srgb,var(--es-surface) 89%,white),
+    var(--es-surface));
+  color: var(--es-ink);
+  border-bottom: 3px solid var(--es-blue);
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .teamnamesc.sb-right {
+  padding: 10px 20px 12px 90px;
+  border-bottom-color: var(--es-red);
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .teamnamesc::before {
+  display: none;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .name-box {
+  font-family: "Scoreboard Condensed", Impact, "Arial Narrow", sans-serif;
+  font-size: 29px;
+  line-height: 1.05;
+  font-weight: 900;
+  letter-spacing: .7px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .score-dots {
+  position: absolute;
+  top: auto;
+  bottom: 10px;
+  right: 89px;
+  left: auto;
+  transform: none;
+  display: flex;
+  gap: 4px;
+  z-index: 2;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-right .score-dots {
+  right: auto;
+  left: 89px;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-win {
+  width: 19px;
+  height: 5px;
+  transform: none;
+  clip-path: none;
+  opacity: .55;
+  background: var(--es-edge);
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-win.active {
+  opacity: 1;
+}
+
+/* Stat lanes never overlap the dedicated center timer/logo column. */
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-hud {
+  position: absolute;
+  left: 510px;
+  top: 0;
+  width: 905px;
+  height: 46px;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 170px minmax(0,1fr);
+  gap: 0;
+  align-items: stretch;
+  overflow: visible;
+  z-index: 15;
+  pointer-events: none;
+  color: var(--es-ink);
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-hud::before,
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-hud::after {
+  display: none;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-side {
+  position: relative;
+  height: 46px;
+  min-width: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: inset 0 -2px 0 var(--es-edge);
+  background: linear-gradient(180deg,
+    color-mix(in srgb,var(--es-surface) 83%,white),
+    var(--es-surface));
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-stat {
+  height: 46px;
+  min-width: 0;
+  flex: 1 1 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 3px;
+  gap: 4px;
+  border: 0;
+  border-right: 1px solid color-mix(in srgb,var(--es-ink) 12%,transparent);
+  background: transparent;
+  color: var(--es-ink);
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-stat[hidden] {
+  display: none !important;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-stat small {
+  display: none;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-icon {
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-icon img {
+  display: block;
+  width: 17px;
+  height: 17px;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.5));
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-stat strong {
+  font: 900 18px/1 "Scoreboard Condensed",Impact,sans-serif;
+  color: var(--es-ink);
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0,0,0,.4);
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-stat:has([id$="-gold"]) {
+  flex: 1.6 1 0;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-stat:has([id$="-gold"]) strong {
+  font-size: 20px;
+}
+
+/* The kill values are integrated with the names, not stat-row cells. */
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-side .sb-ocr-stat:has([id$="-kills"]) {
+  position: absolute;
+  top: 46px;
+  width: 76px;
+  height: 82px;
+  min-width: 76px;
+  padding: 0;
+  z-index: 18;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-bottom: 4px solid var(--es-blue);
+  border-radius: 0;
+  box-sizing: border-box;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.13),transparent 35%,rgba(0,0,0,.17)),
+    var(--es-surface);
+  clip-path: none;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-blue .sb-ocr-stat:has([id$="-kills"]) {
+  right: 0;
+  left: auto;
+  border-bottom-color: var(--es-blue);
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-red .sb-ocr-stat:has([id$="-kills"]) {
+  left: 0;
+  right: auto;
+  border-bottom-color: var(--es-red);
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-side .sb-ocr-stat:has([id$="-kills"])::before {
+  display: none;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-side .sb-ocr-stat:has([id$="-kills"]) strong {
+  position: relative;
+  z-index: 1;
+  font: 900 44px/1 "Scoreboard Condensed",Impact,sans-serif;
+  color: var(--es-ink);
+  text-shadow: 0 2px 3px rgba(0,0,0,.45);
+}
+/* Existing markup is ordered K,G,T,L,TR / TR,L,T,G,K.
+   Reorder with CSS so the kills remain inside each side. */
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-blue .sb-ocr-stat:has([id$="-gold"]) { order: 1; }
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-blue .sb-ocr-stat:has([id$="-tower"]) { order: 2; }
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-blue .sb-ocr-stat:has([id$="-lord"]) { order: 3; }
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-blue .sb-ocr-turtle { order: 4; }
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-red .sb-ocr-turtle { order: 1; }
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-red .sb-ocr-stat:has([id$="-lord"]) { order: 2; }
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-red .sb-ocr-stat:has([id$="-tower"]) { order: 3; }
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-red .sb-ocr-stat:has([id$="-gold"]) { order: 4; }
+
+/* One protected center column: timer, tournament crest, then GOLD LEAD.
+   Gold Lead remains bound to the same existing OCR DOM + JS. */
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-clock {
+  position: relative;
+  top: 0;
+  left: auto;
+  right: auto;
+  z-index: 18;
+  width: 170px;
+  height: 46px;
+  min-width: 170px;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 900 28px/1 "Scoreboard Condensed",Impact,sans-serif;
+  color: var(--es-ink);
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.13),transparent 55%),
+    var(--es-surface);
+  border: 0;
+  border-bottom: 2px solid var(--es-edge);
+  border-radius: 0;
+  clip-path: none;
+  text-shadow: 0 1px 2px rgba(0,0,0,.45);
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) #sb-tournament-logo {
+  top: 57px;
+  left: 903px;
+  width: 114px;
+  height: 63px;
+  z-index: 19;
+  padding: 0;
+  object-fit: contain;
+  background: transparent;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .gb2 {
+  width: 166.61px;
+  background: linear-gradient(180deg,
+    color-mix(in srgb,var(--es-surface) 75%,white),
+    var(--es-surface));
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-goldlead,
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-goldlead.blue-lead,
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-goldlead.red-lead {
+  position: absolute;
+  left: calc(50% - 54px);
+  right: auto;
+  top: 92px;
+  width: 108px;
+  height: 24px;
+  min-height: 24px;
+  z-index: 25;
+  padding: 0 6px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 900 17px/1 "Scoreboard Condensed",Impact,sans-serif;
+  color: var(--es-ink);
+  background: var(--es-surface);
+  border: 1px solid var(--es-edge);
+  border-bottom: 3px solid var(--es-blue);
+  border-radius: 2px;
+  clip-path: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,.25);
+  text-shadow: 0 1px 2px rgba(0,0,0,.4);
+  pointer-events: none;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-goldlead.red-lead {
+  border-bottom-color: var(--es-red);
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-goldlead[hidden] {
+  display: none !important;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"]) .sb-ocr-goldlead.even {
+  opacity: 0;
+}
+
+/* CLASSIC: bolder angular cuts + restrained metallic surfaces. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-frame {
+  clip-path: polygon(0 0,100% 0,100% calc(100% - 16px),calc(100% - 24px) 100%,24px 100%,0 calc(100% - 16px));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-side {
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.2),transparent 36%,rgba(0,0,0,.23)),
+    var(--es-surface);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-blue .sb-ocr-stat:has([id$="-kills"]) {
+  clip-path: polygon(0 0,100% 0,100% 100%,12px 100%,0 calc(100% - 12px));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-red .sb-ocr-stat:has([id$="-kills"]) {
+  clip-path: polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-goldlead {
+  border-radius: 0;
+  clip-path: polygon(0 0,100% 0,calc(100% - 8px) 100%,8px 100%);
+}
+
+/* ARENA: flatter tactical segmentation and thin dual-color floor. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-frame {
+  box-shadow: inset 0 -2px 0 var(--es-edge);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-side {
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.10),transparent 70%),
+    var(--es-surface);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-stat {
+  border-right-color: color-mix(in srgb,var(--es-ink) 10%,transparent);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-goldlead {
+  border-radius: 4px;
+}
+/* Never repaint the match-info box, sponsors, or original OBS artwork. */
