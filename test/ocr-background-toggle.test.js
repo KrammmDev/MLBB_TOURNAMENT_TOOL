@@ -58,7 +58,7 @@ test("OCR background server/API, toggles, stylesheet, and live OBS scripts are i
   assert.ok(!normal.includes('scoreboard-ocr-background-client.js'));
 });
 
-test("Background OFF leaves readable right-side text but hides match-info graphics", () => {
+test("Background OFF keeps right-side text and sponsor logos, but removes panel fills", () => {
   const css = read("themes/scoreboard-ocr-background.css");
   for (const selector of [
     ".matchinfo-content", "#match-display", "#sb-sponsors",
@@ -67,8 +67,8 @@ test("Background OFF leaves readable right-side text but hides match-info graphi
     assert.ok(css.includes('[data-ocr-background="off"] ' + selector),
       selector + " must lose its panel background in OFF mode");
   }
-  assert.ok(css.includes(".match-info #sb-sponsors > *"));
-  assert.ok(css.includes("visibility: hidden !important;"), "Sponsor logo must be hidden in text-only mode");
+  assert.ok(!css.includes(".match-info #sb-sponsors > *,"), "Do not hide the sponsor slideshow track");
+  assert.ok(!css.includes("visibility: hidden !important;"), "Sponsor images must remain visible");
   assert.ok(css.includes('background-clip: border-box !important;'),
     "Studio gradient title must stop using transparent background-clipped text");
   assert.ok(css.includes('-webkit-text-fill-color: var(--sb-readable'),
@@ -94,4 +94,17 @@ test("Studio OCR Background OFF hides only the decorative team underline, not se
   assert.ok(!fix.includes(".sb-win {"), "Series score bars must remain visible");
   assert.ok(!fix.includes('[data-scoreboard-theme="classic"]'), "Classic must remain untouched");
   assert.ok(!fix.includes('[data-scoreboard-theme="arena"]'), "Arena must remain untouched");
+});
+
+test("Sponsor slideshow continues to use the same slot and rotation in OCR background OFF", () => {
+  const css = read("themes/scoreboard-ocr-background.css");
+  const sponsors = read("script/sponsor-slideshow.js");
+  const markup = read("scoreboard-themed-ocr.html");
+  assert.ok(css.includes('[data-ocr-background="off"] #sb-sponsors,'));
+  assert.ok(css.includes("background: transparent !important;"));
+  assert.ok(!css.includes("visibility: hidden !important;"));
+  assert.ok(markup.includes('id="sb-sponsors"'));
+  assert.ok(sponsors.includes("function schedule()"));
+  assert.ok(sponsors.includes("function show(next)"));
+  assert.ok(sponsors.includes('"/broadcast-sponsors/" + logo.file'));
 });
