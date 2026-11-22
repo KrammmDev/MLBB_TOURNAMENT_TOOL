@@ -548,3 +548,275 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-red {
     inset 0 1px 0 rgba(255,255,255,.08),
     inset 0 -4px 0 var(--gold-2, var(--edge, #d9a93a));
 }
+
+
+/* ============================================================
+   CLASSIC + ARENA OCR: integrated match rail.
+   Studio OCR and all non-OCR outputs remain unchanged.
+   Stats occupy the upper center gap; names and tournament
+   branding retain each original theme's positioning.
+   ============================================================ */
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-hud {
+  top: 0;
+  left: 510px;
+  width: 905px;
+  height: 54px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 112px minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0;
+  z-index: 14;
+  color: var(--sb-readable, var(--sb-text, #fff));
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-side {
+  min-width: 0;
+  height: 54px;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0;
+  padding: 0 3px;
+  border: 0;
+  border-radius: 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.13) 0%, transparent 26%, rgba(0,0,0,.23) 100%),
+    var(--header-bg, var(--sb-panel, #101820));
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-stat {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 2px;
+  box-sizing: border-box;
+  white-space: nowrap;
+  border: 0;
+  border-right: 1px solid color-mix(in srgb, var(--sb-readable, #fff) 10%, transparent);
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-stat small {
+  display: none;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-icon {
+  display: inline-flex;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  align-items: center;
+  justify-content: center;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-icon img {
+  display: block;
+  width: 16px;
+  height: 16px;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,.7));
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-stat strong {
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-stat:has([id$="-gold"]) {
+  flex: 1.5 1 0;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-stat:has([id$="-gold"]) strong {
+  font-size: 20px;
+}
+/* Kill number closest to the central clock, no KILLS caption. */
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-stat:has([id$="-kills"]) {
+  flex: 0 0 61px;
+  padding: 0 4px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.13), transparent 30%, rgba(0,0,0,.22)),
+    var(--header-bg, var(--sb-panel, #101820));
+  color: var(--sb-readable, #fff);
+  border: 0;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-stat:has([id$="-kills"]) strong {
+  font-family: "Scoreboard Condensed", Impact, "Arial Narrow", sans-serif;
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--sb-readable, #fff);
+  text-shadow: 0 2px 2px rgba(0,0,0,.6);
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-blue .sb-ocr-stat:has([id$="-gold"]) { order: 1; }
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-blue .sb-ocr-stat:has([id$="-tower"]) { order: 2; }
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-blue .sb-ocr-stat:has([id$="-lord"]) { order: 3; }
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-blue .sb-ocr-turtle { order: 4; }
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-blue .sb-ocr-stat:has([id$="-kills"]) { order: 5; }
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-red .sb-ocr-stat:has([id$="-kills"]) { order: 1; }
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-red .sb-ocr-turtle { order: 2; }
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-red .sb-ocr-stat:has([id$="-lord"]) { order: 3; }
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-red .sb-ocr-stat:has([id$="-tower"]) { order: 4; }
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-red .sb-ocr-stat:has([id$="-gold"]) { order: 5; }
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-clock {
+  height: 54px;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  box-sizing: border-box;
+  font-variant-numeric: tabular-nums;
+  font-size: 28px;
+  border: 0;
+}
+/* Gold Lead shares the positioned name bar so it never drifts into
+   sponsor/match info, and hides on missing/even readings as before. */
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .midscorename {
+  position: relative;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-goldlead {
+  position: absolute;
+  display: flex;
+  top: 12px;
+  left: 173px;
+  width: 80px;
+  min-height: 23px;
+  padding: 2px 3px;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  font: 900 17px "Scoreboard Condensed", Arial, sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: var(--sb-readable, var(--sb-text, #fff));
+  background: transparent;
+  text-shadow: 0 1px 2px rgba(0,0,0,.85);
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-goldlead.blue-lead {
+  left: 173px;
+  right: auto;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-goldlead.red-lead {
+  left: auto;
+  right: 173px;
+}
+body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"]) .sb-ocr-goldlead.even {
+  opacity: 0;
+}
+
+/* CLASSIC OCR — angular, warm gold trim, retaining original map silhouette
+   and gold tournament crest. No non-OCR Classic geometry changes. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-hud {
+  height: 54px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-side {
+  height: 54px;
+  box-shadow: inset 0 -3px 0 var(--edge, var(--sb-border, #e2ac39));
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--header-bg, var(--sb-panel, #242424)) 76%, white),
+      var(--header-bg, var(--sb-panel, #242424)) 52%,
+      color-mix(in srgb, var(--header-bg, var(--sb-panel, #242424)) 75%, black));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-blue .sb-ocr-stat:has([id$="-kills"]) {
+  clip-path: polygon(0 0,100% 0,100% 100%,9px 100%,0 calc(100% - 9px));
+  border-bottom: 3px solid var(--blue-accent, var(--sb-left, #f08b2b));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-red .sb-ocr-stat:has([id$="-kills"]) {
+  clip-path: polygon(0 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%);
+  border-bottom: 3px solid var(--red-accent, var(--sb-right, #e4b640));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-clock {
+  color: var(--sb-info-text, #242424);
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--edge, var(--sb-border, #e2ac39)) 65%, white),
+    var(--edge, var(--sb-border, #e2ac39)));
+  border-bottom: 3px solid color-mix(in srgb, var(--edge, #e2ac39) 65%, black);
+  font-family: "Classic Display", Impact, "Arial Narrow", sans-serif;
+}
+/* Classic: restrained bevel inset, warm tournament-gold typography and trim. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-goldlead {
+  top: 27px;
+  height: 25px;
+  width: 82px;
+  font-family: "Classic Display", Impact, "Arial Narrow", sans-serif;
+  font-size: 21px;
+  letter-spacing: .5px;
+  color: var(--sb-readable, var(--sb-text, #faf7ed));
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.1), transparent 48%),
+    color-mix(in srgb, var(--header-bg, var(--sb-panel, #242424)) 83%, transparent);
+  border-bottom: 2px solid var(--edge, var(--sb-border, #e2ac39));
+  clip-path: polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-goldlead.red-lead {
+  clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 100%, 5px 100%);
+}
+
+/* ARENA OCR — tactical segmented plates with light cyan edge-work,
+   sharing the stock Arena bottom-dot series rails and distinct logo bevels. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-hud {
+  height: 59px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-side {
+  height: 59px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.18), transparent 14%, rgba(0,0,0,.18) 100%),
+    var(--header-bg, var(--sb-panel, #091827));
+  box-shadow: inset 0 -3px 0 var(--edge, var(--sb-border, #28435b));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-stat {
+  border-right: 1px solid color-mix(in srgb, var(--edge, var(--sb-border, #28435b)) 70%, transparent);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-stat:has([id$="-kills"]) {
+  height: 59px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-blue .sb-ocr-stat:has([id$="-kills"]) {
+  background:
+    linear-gradient(165deg,
+      color-mix(in srgb, var(--blue-accent, var(--sb-left, #1bc2d5)) 25%, transparent),
+      var(--header-bg, var(--sb-panel, #091827)) 75%);
+  clip-path: polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);
+  border-bottom: 4px solid var(--blue-accent, var(--sb-left, #1bc2d5));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-red .sb-ocr-stat:has([id$="-kills"]) {
+  background:
+    linear-gradient(195deg,
+      color-mix(in srgb, var(--red-accent, var(--sb-right, #527fe8)) 25%, transparent),
+      var(--header-bg, var(--sb-panel, #091827)) 75%);
+  clip-path: polygon(0 0,100% 0,100% 100%,12px 100%,0 calc(100% - 12px));
+  border-bottom: 4px solid var(--red-accent, var(--sb-right, #527fe8));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-clock {
+  height: 59px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.16), transparent 32%),
+    var(--header-bg, var(--sb-panel, #091827));
+  color: var(--sb-readable, var(--sb-text, #fff));
+  border-top: 2px solid var(--edge, var(--sb-border, #28435b));
+  border-bottom: 4px solid var(--edge, var(--sb-border, #28435b));
+}
+/* Arena: narrow tactical tag, crisp team-color side marker, no Classic gold bevel. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-goldlead {
+  top: 9px;
+  height: 23px;
+  width: 82px;
+  font-family: "Scoreboard Condensed", "Arial Narrow", sans-serif;
+  font-size: 17px;
+  letter-spacing: .5px;
+  color: var(--sb-readable, var(--sb-text, #f2f7fc));
+  background:
+    linear-gradient(110deg, rgba(255,255,255,.11), transparent 55%),
+    color-mix(in srgb, var(--header-bg, var(--sb-panel, #091827)) 88%, transparent);
+  border: 1px solid var(--edge, var(--sb-border, #28435b));
+  border-left: 3px solid var(--blue-accent, var(--sb-left, #1bc2d5));
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-goldlead.red-lead {
+  border-left: 1px solid var(--edge, var(--sb-border, #28435b));
+  border-right: 3px solid var(--red-accent, var(--sb-right, #527fe8));
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+}
