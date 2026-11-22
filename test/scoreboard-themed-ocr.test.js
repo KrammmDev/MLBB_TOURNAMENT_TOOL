@@ -338,3 +338,16 @@ test("M Worlds and MSC/EWC OCR references use distinct compositions without even
   const standard = fs.readFileSync(path.join(base, "scoreboard.html"), "utf8");
   assert.ok(!standard.includes("scoreboard-ocr-telemetry.css"));
 });
+
+test("Arena reference has a central trapezoid and separately positioned tournament crest and clock", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
+  const tail = css.slice(css.indexOf("Arena screenshot refinement: MSC/EWC-style center shield architecture"));
+  assert.ok(tail.includes('.sb-ocr-hud::before'), "Outer trapezoid");
+  assert.ok(tail.includes('.sb-ocr-hud::after'), "Inset trapezoid");
+  assert.ok(tail.includes('clip-path: polygon(22% 0, 78% 0, 100% 100%, 0 100%)'));
+  assert.ok(tail.includes('top: 110px'), "Timer below center crest");
+  assert.ok(tail.includes('top: 43px'), "Existing center logo remains visible");
+  assert.ok(tail.includes('var(--header-bg'), "Saved palette drives center shield");
+  assert.ok(tail.includes('var(--edge'), "Saved trim drives center shield");
+  assert.ok(!tail.includes('content: "MSC"'), "Never hardcode reference tournament branding");
+});
