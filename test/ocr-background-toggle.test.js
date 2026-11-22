@@ -58,20 +58,24 @@ test("OCR background server/API, toggles, stylesheet, and live OBS scripts are i
   assert.ok(!normal.includes('scoreboard-ocr-background-client.js'));
 });
 
-test("Background OFF preserves the complete right match-information panel", () => {
+test("Background OFF leaves readable right-side text but hides match-info graphics", () => {
   const css = read("themes/scoreboard-ocr-background.css");
-  const matchPanel = [
-    ".matchinfo-content", "#matchinfo-main", "#matchinfo-day",
-    "#match-display", "#sb-sponsors", "#sb-production-strip",
-    "#sb-patch-label", "#sb-caster-cell",
-  ];
-  for (const selector of matchPanel)
-    assert.ok(!css.includes('[data-ocr-background="off"] ' + selector),
-      selector + " must keep its original background, text and border styling");
-  assert.ok(css.includes('[data-ocr-background="off"] .sb-frame'),
-    "Main OCR rail still supports background OFF");
+  for (const selector of [
+    ".matchinfo-content", "#match-display", "#sb-sponsors",
+    "#sb-production-strip", "#sb-patch-label", "#sb-caster-cell",
+  ]) {
+    assert.ok(css.includes('[data-ocr-background="off"] ' + selector),
+      selector + " must lose its panel background in OFF mode");
+  }
+  assert.ok(css.includes(".match-info #sb-sponsors > *"));
+  assert.ok(css.includes("visibility: hidden !important;"), "Sponsor logo must be hidden in text-only mode");
+  assert.ok(css.includes('background-clip: border-box !important;'),
+    "Studio gradient title must stop using transparent background-clipped text");
+  assert.ok(css.includes('-webkit-text-fill-color: var(--sb-readable'),
+    "Stage title, day and match text stay visible");
+  assert.ok(css.includes('[data-ocr-background="off"] .sb-frame'));
+  assert.ok(!css.includes('display: none !important'), "Keep the text/layout boxes");
   const studio = read("themes/scoreboard-studio.css");
-  assert.ok(studio.includes(".matchinfo-content"));
   assert.ok(studio.includes("#matchinfo-main"));
   assert.ok(studio.includes("#match-display"));
 });

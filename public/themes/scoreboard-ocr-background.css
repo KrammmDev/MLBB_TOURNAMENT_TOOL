@@ -1,8 +1,8 @@
 /* OCR-only background switch.
-   OFF removes main-scoreboard decorative plates but keeps the complete
-   match-information/sponsor/production panel (stage, day, game, logo,
-   patch and casters) visible with its original background and colors.
-   All existing 1920x1080 geometry and OCR content remain unchanged. */
+   OFF removes decorative surfaces across the scoreboard, including
+   right-side match info, sponsor and production panels. Only text
+   remains in the right-side panel; positions and OCR data stay intact.
+   ON retains each theme's exact existing design. */
 body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-frame,
 body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-banner,
 body.scoreboard-themed-ocr[data-ocr-background="off"] .gb1,
@@ -12,6 +12,12 @@ body.scoreboard-themed-ocr[data-ocr-background="off"] .teamnamesc,
 body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-side,
 body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-stat,
 body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-clock,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .matchinfo-content,
+body.scoreboard-themed-ocr[data-ocr-background="off"] #match-display,
+body.scoreboard-themed-ocr[data-ocr-background="off"] #sb-sponsors,
+body.scoreboard-themed-ocr[data-ocr-background="off"] #sb-production-strip,
+body.scoreboard-themed-ocr[data-ocr-background="off"] #sb-patch-label,
+body.scoreboard-themed-ocr[data-ocr-background="off"] #sb-caster-cell,
 body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-ocr-goldlead {
   background: transparent !important;
   background-image: none !important;
@@ -51,4 +57,33 @@ body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-win {
 /* No minimap frame drawing when the decorative overlay is disabled. */
 body.scoreboard-themed-ocr[data-ocr-background="off"] .sb-map-frame {
   opacity: 0 !important;
+}
+
+/* OCR Background OFF: right-side information is text-only.
+   Preserve the title, day, match/game, venue and caster labels;
+   the sponsor-logo image and its decorative slide are hidden. */
+body.scoreboard-themed-ocr[data-ocr-background="off"] .match-info #sb-sponsors > *,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .match-info #sb-sponsors img,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .match-info #sb-sponsors video,
+body.scoreboard-themed-ocr[data-ocr-background="off"] .match-info #sb-sponsors canvas {
+  visibility: hidden !important;
+}
+/* Studio uses background-clip:text, so removing its gradient without
+   resetting text fill makes the title disappear. Keep lettering visible
+   over either dark or bright gameplay while preserving theme fonts. */
+body.scoreboard-themed-ocr[data-ocr-background="off"] .matchinfo-content,
+body.scoreboard-themed-ocr[data-ocr-background="off"] #matchinfo-main,
+body.scoreboard-themed-ocr[data-ocr-background="off"] #matchinfo-day,
+body.scoreboard-themed-ocr[data-ocr-background="off"] #match-display,
+body.scoreboard-themed-ocr[data-ocr-background="off"] #sb-patch-label,
+body.scoreboard-themed-ocr[data-ocr-background="off"] #sb-caster-cell {
+  color: var(--sb-readable, var(--sb-text, #fff)) !important;
+  -webkit-text-fill-color: var(--sb-readable, var(--sb-text, #fff)) !important;
+  text-shadow: 0 1px 3px rgba(0,0,0,.95), 0 0 2px rgba(0,0,0,.95) !important;
+}
+body.scoreboard-themed-ocr[data-ocr-background="off"] #matchinfo-main {
+  background: transparent !important;
+  background-image: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
 }
