@@ -53,6 +53,22 @@ test("themed OCR client displays accepted stats, held reads, turtles and safely 
     }
     return elements.get(id);
   };
+  const leftName = {append(node) { node.parentElement = this; }};
+  const rightName = {append(node) { node.parentElement = this; }};
+  const namebar = {append(node) { node.parentElement = this; }};
+  element("goldLead").parentElement = namebar;
+  const doc = {
+    body:{dataset:{scoreboardTheme:"classic"}},
+    documentElement:{dataset:{}},
+    getElementById:element,
+    querySelectorAll:()=>turtleItems,
+    querySelector(selector) {
+      return selector === ".midscorename" ? namebar
+        : selector === ".teamnamesc.sb-left .tn" ? leftName
+        : selector === ".teamnamesc.sb-right .tn" ? rightName
+        : null;
+    },
+  };
   const turtleItems = [{hidden:true},{hidden:true}];
   let handler, matchHandler;
   const game = { game_number:1, matchInfo:{ match:"Final",game:"GAME 1" },
@@ -75,11 +91,7 @@ test("themed OCR client displays accepted stats, held reads, turtles and safely 
     addEventListener() {},
   };
   const sandbox = {
-    window, document:{
-      documentElement:{dataset:{}},
-      getElementById:element,
-      querySelectorAll:()=>turtleItems,
-    },
+    window, document:doc,
     location:{search:"?ocr=custom"},
     URLSearchParams, Date,
     setInterval:()=>1, clearInterval:()=>{},
@@ -93,6 +105,7 @@ test("themed OCR client displays accepted stats, held reads, turtles and safely 
   assert.equal(element("goldleadValue").textContent, "+2.5K");
   assert.equal(element("goldLead").hidden, false);
   assert.equal(element("goldLead").classList.contains("blue-lead"), true);
+  assert.equal(element("goldLead").parentElement, leftName, "Blue lead sits beneath Blue name");
   assert.equal(element("ocr-timer").textContent,"10:20");
   assert.equal(element("ocr-blue-turtle").textContent,"2");
   assert.equal(element("ocr-red-turtle").textContent,"1");
@@ -104,10 +117,12 @@ test("themed OCR client displays accepted stats, held reads, turtles and safely 
   }});
   assert.equal(element("goldleadValue").textContent, "+2.7K");
   assert.equal(element("goldLead").classList.contains("red-lead"), true);
+  assert.equal(element("goldLead").parentElement, rightName, "Red lead sits beneath Red name");
   handler({type:"ocr_update",data:{
     ...snapshot, fields:{...snapshot.fields,blueGold:{value:36700},redGold:{value:36700}},
   }});
   assert.equal(element("goldLead").hidden, true);
+  assert.equal(element("goldLead").parentElement, namebar, "Hidden lead leaves the team name lane");
   handler({type:"ocr_update",data:{
     ...snapshot, fields:{...snapshot.fields,blueGold:{value:null}},
   }});
@@ -376,7 +391,7 @@ test("Classic and Arena OCR V2 use distinct 1920px geometry instead of stacked o
     .includes("scoreboard-ocr-telemetry.css"), "Non-OCR stays unchanged");
 });
 
-test("Classic and Arena esports skin places Gold Lead centrally below the timer and crest", () => {
+test("Classic and Arena esports skin positions transparent Gold Lead under the leading team name", () => {
   const page = fs.readFileSync(path.join(base, "scoreboard-themed-ocr.html"), "utf8");
   const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
   assert.ok(page.includes('/themes/scoreboard-ocr-esports.css'), "OCR-only page must load esports skin");
@@ -385,8 +400,14 @@ test("Classic and Arena esports skin places Gold Lead centrally below the timer 
   assert.ok(css.includes('grid-template-columns: minmax(0,1fr) 170px minmax(0,1fr)'),
     "Reserve central timer/crest column");
   assert.ok(css.includes('top: 46px;'), "Kills belong to main second row");
-  assert.ok(css.includes('left: calc(50% - 54px);'), "Gold Lead must be horizontally centered");
-  assert.ok(css.includes('top: 92px;'), "Gold Lead must be below the center logo, not beside team name");
+  assert.ok(css.includes('.teamnamesc .tn > .sb-ocr-goldlead.blue-lead'),
+    "Blue Gold Lead must live under Blue team name");
+  assert.ok(css.includes('.teamnamesc .tn > .sb-ocr-goldlead.red-lead'),
+    "Red Gold Lead must live under Red team name");
+  assert.ok(css.includes('position: static;'), "Gold Lead must be part of the name column");
+  assert.ok(css.includes('background: transparent;'), "No Gold Lead background box");
+  assert.ok(css.includes('box-shadow: none;'), "Gold Lead must have no card shadow");
+  assert.ok(script.includes('destination.append(lead)'), "Move Gold Lead to leading team name");
   assert.ok(css.includes('.sb-ocr-goldlead.red-lead'), "Red Gold Lead needs distinct accent");
   assert.ok(css.includes('.sb-ocr-goldlead[hidden]'), "Invalid/equal gold must be hidden");
   assert.ok(css.includes('var(--blue-accent'), "Team colors come from broadcast settings");
@@ -399,4 +420,20 @@ test("Classic and Arena esports skin places Gold Lead centrally below the timer 
   }
   assert.ok(!fs.readFileSync(path.join(base, "scoreboard.html"), "utf8")
     .includes('scoreboard-ocr-esports.css'), "Non-OCR output must remain unchanged");
+});
+
+test("Classic and Arena have visibly distinct HUD silhouette rules", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
+  const v3 = css.slice(css.indexOf("THEME SEPARATION V3"));
+  const classic = v3.slice(v3.indexOf("/* Classic ="), v3.indexOf("/* Arena ="));
+  const arena = v3.slice(v3.indexOf("/* Arena ="));
+  assert.ok(classic.includes('height: 138px;'), "Classic frame has deep angular edges");
+  assert.ok(classic.includes('font-size: 35px;'), "Classic condensed team names");
+  assert.ok(classic.includes('height: 30px;'), "Classic uses tall win strokes");
+  assert.ok(arena.includes('height: 124px;'), "Arena has a shorter tactical frame");
+  assert.ok(arena.includes('height: 38px;'), "Arena stats are more compact");
+  assert.ok(arena.includes('font-size: 47px;'), "Arena kill plates are larger");
+  assert.ok(arena.includes('width: 23px;'), "Arena uses short horizontal win pips");
+  assert.ok(v3.includes('background: transparent;'), "Lead has no background");
+  assert.ok(v3.includes('border: 0;'), "Lead has no border");
 });
