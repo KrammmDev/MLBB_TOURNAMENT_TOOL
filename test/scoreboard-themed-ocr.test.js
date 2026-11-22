@@ -494,3 +494,21 @@ test("Arena has a floating gold-icon lead below the winning side; Classic uses a
   const defaultScoreboard = fs.readFileSync(path.join(base, "scoreboard.html"), "utf8");
   assert.ok(!defaultScoreboard.includes('scoreboard-ocr-esports.css'), "Original non-OCR unchanged");
 });
+
+test("Classic absolute hanging clock never auto-places Red stats into the center crest column", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
+  const fix = css.slice(css.indexOf("CLASSIC OCR V6 — FIX REAL GRID COLLISION"));
+  assert.ok(fix.includes('grid-template-columns: minmax(0,1fr) 170px minmax(0,1fr)'));
+  assert.ok(fix.includes('.sb-ocr-hud > .sb-ocr-blue'));
+  assert.ok(fix.includes('grid-column: 1;'), "Blue objectives occupy the first grid column");
+  assert.ok(fix.includes('.sb-ocr-hud > .sb-ocr-red'));
+  assert.ok(fix.includes('grid-column: 3;'), "Red objectives must NOT occupy center crest column");
+  assert.ok(fix.includes('.sb-ocr-hud > .sb-ocr-clock'));
+  assert.ok(fix.includes('grid-column: 2;'), "Clock reserved for middle");
+  assert.ok(fix.includes('position: absolute;'), "Clock continues to hang below the HUD");
+  assert.ok(fix.includes('transform: translateX(-50%);'), "Clock stays horizontally centered");
+  assert.ok(fix.includes('top: 108px;'), "Clock remains below the original tournament logo");
+  assert.ok(fix.includes('left: 891px;'), "Tournament crest remains centered on stage");
+  assert.ok(!fix.includes('[data-scoreboard-theme="arena"]'), "Arena OCR not modified");
+  assert.ok(!fix.includes('[data-scoreboard-theme="studio"]'), "Studio OCR not modified");
+});

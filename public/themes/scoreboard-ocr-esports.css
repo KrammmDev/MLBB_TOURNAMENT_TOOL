@@ -1103,3 +1103,72 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc.sb-right
 body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc .tn > #goldLead[hidden] {
   display: none !important;
 }
+
+
+/* ================================================================
+   CLASSIC OCR V6 — FIX REAL GRID COLLISION (PRIORITY BUGFIX)
+   The clock is position:absolute for the hanging MPL-style tab.
+   Without explicit grid columns, auto-placement puts the RED
+   objectives in column 2 (the crest column), covering the logo.
+   Explicitly lock the two objectives to columns 1 / 3 and keep
+   a genuinely empty 170px crest column between them.
+   ================================================================ */
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-hud {
+  grid-template-columns: minmax(0,1fr) 170px minmax(0,1fr);
+  grid-template-rows: 55px;
+  overflow: visible;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-hud > .sb-ocr-blue {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-hud > .sb-ocr-red {
+  grid-column: 3;
+  grid-row: 1;
+  min-width: 0;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-hud > .sb-ocr-clock {
+  grid-column: 2;
+  grid-row: 1;
+  position: absolute;
+  top: 108px;
+  left: 50%;
+  transform: translateX(-50%);
+  right: auto;
+  width: 114px;
+  min-width: 114px;
+  height: 26px;
+}
+/* Make the 170px central reservation explicit; the original
+   tournament logo remains centered on the original 1920px stage. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] #sb-tournament-logo {
+  left: 891px;
+  top: 8px;
+  width: 138px;
+  height: 88px;
+  z-index: 20;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-side {
+  width: 100%;
+  min-width: 0;
+  overflow: visible;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-blue {
+  padding-left: 3px;
+  padding-right: 67px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-red {
+  padding-left: 67px;
+  padding-right: 3px;
+}
+/* The kill plates remain attached to their own objective strips;
+   their position no longer depends on auto-grid placement. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-blue .sb-ocr-stat:has([id$="-kills"]) {
+  right: 0;
+  left: auto;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-red .sb-ocr-stat:has([id$="-kills"]) {
+  left: 0;
+  right: auto;
+}
