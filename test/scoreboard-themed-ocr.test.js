@@ -375,3 +375,28 @@ test("Classic and Arena OCR V2 use distinct 1920px geometry instead of stacked o
   assert.ok(!fs.readFileSync(path.join(base, "scoreboard.html"), "utf8")
     .includes("scoreboard-ocr-telemetry.css"), "Non-OCR stays unchanged");
 });
+
+test("Classic and Arena esports skin places Gold Lead centrally below the timer and crest", () => {
+  const page = fs.readFileSync(path.join(base, "scoreboard-themed-ocr.html"), "utf8");
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
+  assert.ok(page.includes('/themes/scoreboard-ocr-esports.css'), "OCR-only page must load esports skin");
+  assert.ok(css.includes('body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"])'),
+    "Only Classic/Arena OCR should use new geometry");
+  assert.ok(css.includes('grid-template-columns: minmax(0,1fr) 170px minmax(0,1fr)'),
+    "Reserve central timer/crest column");
+  assert.ok(css.includes('top: 46px;'), "Kills belong to main second row");
+  assert.ok(css.includes('left: calc(50% - 54px);'), "Gold Lead must be horizontally centered");
+  assert.ok(css.includes('top: 92px;'), "Gold Lead must be below the center logo, not beside team name");
+  assert.ok(css.includes('.sb-ocr-goldlead.red-lead'), "Red Gold Lead needs distinct accent");
+  assert.ok(css.includes('.sb-ocr-goldlead[hidden]'), "Invalid/equal gold must be hidden");
+  assert.ok(css.includes('var(--blue-accent'), "Team colors come from broadcast settings");
+  assert.ok(css.includes('var(--red-accent'), "Team colors come from broadcast settings");
+  assert.ok(css.includes('var(--header-bg'), "Panel colors come from broadcast settings");
+  assert.ok(css.includes('.sb-ocr-stat[hidden]'), "Turtle toggle retains hidden behavior");
+  for (const id of ['ocr-blue-kills','ocr-red-kills','ocr-timer','goldLead','goldleadValue',
+    'displayImage1','displayImage2','name-box-1','name-box-8']) {
+    assert.ok(page.includes('id="' + id + '"'), id + " must retain existing binding");
+  }
+  assert.ok(!fs.readFileSync(path.join(base, "scoreboard.html"), "utf8")
+    .includes('scoreboard-ocr-esports.css'), "Non-OCR output must remain unchanged");
+});
