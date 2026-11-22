@@ -351,3 +351,27 @@ test("Arena reference has a central trapezoid and separately positioned tourname
   assert.ok(tail.includes('var(--edge'), "Saved trim drives center shield");
   assert.ok(!tail.includes('content: "MSC"'), "Never hardcode reference tournament branding");
 });
+
+test("Classic and Arena OCR V2 use distinct 1920px geometry instead of stacked overlays", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
+  const v2 = css.slice(css.indexOf("REFERENCE GEOMETRY V2"));
+  const classic = v2.slice(0, v2.indexOf("/* ARENA MSC/EWC"));
+  const arena = v2.slice(v2.indexOf("/* ARENA MSC/EWC"));
+  assert.match(classic, /\.sb-frame \{[\s\S]*?left: 394px;[\s\S]*?width: 1136px;[\s\S]*?height: 135px;/);
+  assert.ok(classic.includes("height: 79px;"), "Classic nameplate depth is increased");
+  assert.ok(classic.includes("font-size: 38px;"), "Classic large kills stay beside crest");
+  assert.ok(classic.includes("top: 65px;"), "Classic central tournament logo occupies lower tier");
+  assert.ok(arena.includes("grid-template-columns: minmax(0,1fr) 258px minmax(0,1fr)"),
+    "Arena reserves a dedicated shield column rather than overlapping other stats");
+  assert.ok(arena.includes("top: 43px;"), "Arena kill panels start in second tier");
+  assert.ok(arena.includes("height: 71px;"), "Arena kills fill the middle band");
+  assert.ok(arena.includes("padding: 0 130px 0 16px;"), "Arena team names reserve space");
+  assert.ok(arena.includes("padding: 0 16px 0 130px;"), "Red name has mirrored spacing");
+  assert.ok(arena.includes("top: 110px;"), "Arena timer hangs beneath crest");
+  assert.ok(arena.includes("clip-path: polygon(20% 0,80% 0,100% 100%,0 100%)"),
+    "Arena shield is genuinely trapezoidal");
+  assert.ok(arena.includes("var(--header-bg"), "Arena remains palette driven");
+  assert.ok(arena.includes("var(--edge"), "Arena edge remains palette driven");
+  assert.ok(!fs.readFileSync(path.join(base, "scoreboard.html"), "utf8")
+    .includes("scoreboard-ocr-telemetry.css"), "Non-OCR stays unchanged");
+});
