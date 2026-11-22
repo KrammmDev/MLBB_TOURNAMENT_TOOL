@@ -11,7 +11,7 @@ async function update(){
    for(const slot of player.items||[]){
     const el=parent.querySelector('#item'+slot.slot);if(!el)continue;
     if(slot.status==='matched'&&slot.image)el.style.backgroundImage='url('+JSON.stringify(slot.image)+')';
-    else if(slot.status==='empty')el.style.backgroundImage='none';
+    else if(slot.status==='empty')el.style.backgroundImage="url('/Assets/Itemandspell/idle.png')";
    }
    const heroNum=player.player_index+(team==='red'?5:0);
    const heroImg=document.getElementById('image-display-'+heroNum);
