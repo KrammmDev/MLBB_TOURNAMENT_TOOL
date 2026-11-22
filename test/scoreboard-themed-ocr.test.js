@@ -550,8 +550,8 @@ test("Classic OCR uses saved palette and mirrored score tiles, never tournament-
   assert.ok(v7.includes('calc(100% - 13px) 100%'), "Blue score tile slopes down at inside corner");
   assert.ok(v7.includes('.sb-ocr-red .sb-ocr-stat:has([id$="-kills"])'));
   assert.ok(v7.includes('13px 100%, 0 calc(100% - 13px)'), "Red score tile mirrors Blue");
-  assert.ok(v7.includes('transform: skewX(-15deg);'), "Blue series markers lean one way");
-  assert.ok(v7.includes('transform: skewX(15deg);'), "Red series markers lean the other");
+  assert.ok(v7.includes('transform: skewX(15deg);'), "Blue series markers lean like backslash");
+  assert.ok(v7.includes('transform: skewX(-15deg);'), "Red series markers lean like forward slash");
   assert.ok(v7.includes('grid-column: 2;'), "Timer stays centered in its own grid track");
   assert.ok(v7.includes('justify-self: center;'), "Timer does not move off center");
   assert.ok(!v7.includes('data-scoreboard-theme="arena"'), "Arena remains unchanged");
@@ -593,4 +593,16 @@ test("Arena minimap connector stays behind the real left team logo", () => {
   assert.ok(html.includes('id="displayImage1"'), "Original left team image binding intact");
   assert.ok(!section.includes('data-scoreboard-theme="classic"'));
   assert.ok(!section.includes('data-scoreboard-theme="studio"'));
+});
+
+test("Classic series scoreline uses left backslash and right slash, not reversed", () => {
+  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
+  const v7 = css.slice(css.indexOf("CLASSIC OCR V7 — SAVED PALETTE + MIRRORED SCORELINES"));
+  const left = v7.match(/\.sb-left \.sb-win \{([^}]*)\}/);
+  const right = v7.match(/\.sb-right \.sb-win \{([^}]*)\}/);
+  assert.ok(left && right, "Both Classic series marker rules exist");
+  assert.match(left[1], /transform:\s*skewX\(15deg\)/);
+  assert.match(right[1], /transform:\s*skewX\(-15deg\)/);
+  assert.ok(v7.includes('background: var(--classic-left);'));
+  assert.ok(v7.includes('background: var(--classic-right);'));
 });
