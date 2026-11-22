@@ -1492,8 +1492,25 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .scoreboard::before {
   pointer-events: none;
   z-index: 1;
 }
-/* Keep the original map silhouette visible and prevent a thin
-   translucent seam where the new connector meets the logo holder. */
+/* Restore the actual team logo: the connector/banner used to paint
+   ABOVE .upper, hiding displayImage1 under a solid block.
+   Keep the 52px connector underneath the real upper logo layer. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .scoreboard::before {
+  z-index: 0;
+}
 body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-banner-left {
-  z-index: 2;
+  z-index: 1;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .upper {
+  position: absolute;
+  z-index: 4;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .upper .sb-team-logo {
+  position: relative;
+  z-index: 1;
+  background: var(--arena-panel, var(--es-surface));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .upper .sb-team-logo img {
+  position: relative;
+  z-index: 1;
 }
