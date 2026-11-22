@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "gamesPlayed": 48
+    "gamesPlayed": 50
   },
   "heroes": {
     "Aamon": {
@@ -134,9 +134,9 @@
       "wins": 0
     },
     "Chou": {
-      "picks": 12,
+      "picks": 14,
       "bans": 0,
-      "wins": 5
+      "wins": 6
     },
     "Cici": {
       "picks": 17,
@@ -254,9 +254,9 @@
       "wins": 0
     },
     "Hanabi": {
-      "picks": 9,
+      "picks": 11,
       "bans": 1,
-      "wins": 3
+      "wins": 4
     },
     "Hanzo": {
       "picks": 0,
@@ -374,9 +374,9 @@
       "wins": 0
     },
     "Lancelot": {
-      "picks": 3,
+      "picks": 5,
       "bans": 0,
-      "wins": 2
+      "wins": 3
     },
     "Lapu Lapu": {
       "picks": 2,
@@ -394,14 +394,14 @@
       "wins": 0
     },
     "Lesley": {
-      "picks": 10,
+      "picks": 12,
       "bans": 0,
-      "wins": 6
+      "wins": 7
     },
     "Ling": {
-      "picks": 0,
+      "picks": 2,
       "bans": 2,
-      "wins": 0
+      "wins": 1
     },
     "Lolita": {
       "picks": 0,
@@ -469,9 +469,9 @@
       "wins": 2
     },
     "Moskov": {
-      "picks": 1,
+      "picks": 3,
       "bans": 2,
-      "wins": 0
+      "wins": 1
     },
     "Nana": {
       "picks": 0,
@@ -644,9 +644,9 @@
       "wins": 0
     },
     "Yve": {
-      "picks": 25,
+      "picks": 27,
       "bans": 5,
-      "wins": 11
+      "wins": 12
     },
     "Zetian": {
       "picks": 7,
