@@ -94,3 +94,14 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="studio"][data-ocr-background="
   background: none !important;
   box-shadow: none !important;
 }
+
+
+/* CLASSIC OCR — the rectangular outline is on the .match-info
+   wrapper itself (scoreboard-classic.css), not on #sb-sponsors.
+   Remove only that decorative frame when Background is OFF.
+   Keep title/day/game/production text and sponsor logos visible. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"][data-ocr-background="off"] .match-info {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}

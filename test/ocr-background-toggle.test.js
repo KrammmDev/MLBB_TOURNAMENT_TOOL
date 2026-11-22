@@ -108,3 +108,19 @@ test("Sponsor slideshow continues to use the same slot and rotation in OCR backg
   assert.ok(sponsors.includes("function show(next)"));
   assert.ok(sponsors.includes('"/broadcast-sponsors/" + logo.file'));
 });
+
+
+test("Classic OCR OFF removes match-info wrapper outline without hiding sponsors", () => {
+  const classic = read("themes/scoreboard-classic.css");
+  const css = read("themes/scoreboard-ocr-background.css");
+  const fix = css.slice(css.indexOf("CLASSIC OCR — the rectangular outline"));
+  assert.ok(classic.includes(".match-info {"));
+  assert.ok(classic.includes("border: 2px solid var(--edge"), "The outline belongs to the match-info wrapper");
+  assert.ok(fix.includes('[data-scoreboard-theme="classic"][data-ocr-background="off"] .match-info'));
+  assert.ok(fix.includes("border: 0 !important;"));
+  assert.ok(fix.includes("outline: none !important;"));
+  assert.ok(!fix.includes("visibility: hidden"), "Sponsor logo remains visible");
+  assert.ok(!fix.includes("display: none"), "Match information and sponsor logo keep their layout");
+  assert.ok(!fix.includes('data-scoreboard-theme="studio"'));
+  assert.ok(!fix.includes('data-scoreboard-theme="arena"'));
+});
