@@ -1128,3 +1128,237 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] #sb-tournament-logo {
 }
 /* The team names and series indicators are still owned by Arena's
    original scoreboard layout. Only the OCR kill tiles float over it. */
+
+
+/* ============================================================
+   REFERENCE GEOMETRY V2 — OCR ONLY (1920x1080 composition)
+   The previous iteration changed colors without relocating
+   the original namebar, kills and central crest. These rules
+   complete the structural alignment for Classic and Arena.
+   Saved --header-bg / --edge / team accents remain authoritative.
+   ============================================================ */
+
+/* M-WORLDS CLASSIC: graphic wings transition from a compact
+   objective bar to a deeper angled nameplate and center crest.
+   This does not affect Classic without OCR. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-frame {
+  top: 0;
+  left: 394px;
+  width: 1136px;
+  height: 135px;
+  clip-path: polygon(0 0,100% 0,100% 80%,97% 100%,3% 100%,0 80%);
+  background: var(--edge, var(--sb-border));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-frame::before {
+  inset: 3px;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--header-bg, var(--sb-panel)) 76%, white),
+      var(--header-bg, var(--sb-panel)) 40%,
+      color-mix(in srgb, var(--header-bg, var(--sb-panel)) 77%, black));
+  clip-path: polygon(0 0,100% 0,100% 79%,97% 100%,3% 100%,0 79%);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-frame::after {
+  left: calc(50% - 104px);
+  top: 52px;
+  width: 208px;
+  height: 94px;
+  right: auto;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb,var(--header-bg,var(--sb-panel)) 76%, white),
+      var(--header-bg,var(--sb-panel)) 65%,
+      color-mix(in srgb,var(--header-bg,var(--sb-panel)) 75%, black));
+  clip-path: polygon(11% 0,89% 0,100% 70%,50% 100%,0 70%);
+  filter: drop-shadow(0 2px 1px rgba(0,0,0,.3));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .lower {
+  top: 54px;
+  height: 79px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .midscorename,
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc {
+  height: 79px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .teamnamesc {
+  padding-left: 28px;
+  padding-right: 28px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-hud {
+  top: 0;
+  grid-template-columns: minmax(0,1fr) 112px minmax(0,1fr);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-side,
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-clock {
+  height: 53px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-stat:has([id$="-kills"]) {
+  flex: 0 0 72px;
+  height: 53px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-stat:has([id$="-kills"]) strong {
+  font-size: 38px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] #sb-tournament-logo {
+  top: 65px;
+  left: 901px;
+  width: 118px;
+  height: 72px;
+  z-index: 16;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="classic"] .sb-ocr-goldlead {
+  top: 29px;
+  z-index: 18;
+  background: var(--header-bg,var(--sb-panel));
+}
+
+/* ARENA MSC/EWC: independently position the center shield and
+   split the lower tier into team name + score + center crest.
+   The reference's logos and colors are never imported. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-frame {
+  top: 0;
+  left: 394px;
+  width: 1136px;
+  height: 116px;
+  background: var(--edge, var(--sb-border));
+  clip-path: polygon(0 0,100% 0,100% 100%,0 100%);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-frame::after {
+  display: none;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-frame::before {
+  content: "";
+  position: absolute;
+  inset: 2px 0 2px;
+  background: var(--header-bg,var(--sb-panel));
+  clip-path: none;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-hud {
+  top: 0;
+  left: 510px;
+  width: 905px;
+  height: 43px;
+  grid-template-columns: minmax(0,1fr) 258px minmax(0,1fr);
+  z-index: 14;
+  overflow: visible;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-hud::before {
+  top: 0;
+  left: calc(50% - 129px);
+  width: 258px;
+  height: 115px;
+  clip-path: polygon(20% 0,80% 0,100% 100%,0 100%);
+  background: var(--edge,var(--sb-border));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-hud::after {
+  top: 3px;
+  left: calc(50% - 124px);
+  width: 248px;
+  height: 108px;
+  clip-path: polygon(20% 0,80% 0,100% 100%,0 100%);
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb,var(--header-bg,var(--sb-panel)) 78%,white),
+      var(--header-bg,var(--sb-panel)) 66%);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-side {
+  height: 43px;
+  box-shadow: inset 0 -2px 0 var(--edge,var(--sb-border));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-side .sb-ocr-stat:has([id$="-kills"]) {
+  top: 43px;
+  height: 71px;
+  width: 71px;
+  min-width: 71px;
+  z-index: 3;
+  border-radius: 0;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-blue .sb-ocr-stat:has([id$="-kills"]) {
+  right: -2px;
+  clip-path: polygon(0 0,100% 0,100% 100%,10px 100%,0 calc(100% - 10px));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-red .sb-ocr-stat:has([id$="-kills"]) {
+  left: -2px;
+  clip-path: polygon(0 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-side .sb-ocr-stat:has([id$="-kills"]) strong {
+  font-size: 43px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .lower {
+  top: 43px;
+  height: 73px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .midscorename,
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .teamnamesc {
+  height: 73px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .teamnamesc {
+  padding: 0 130px 0 16px;
+  align-items: center;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .teamnamesc.sb-right {
+  padding: 0 16px 0 130px;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .name-box {
+  font-size: 26px;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .score-dots {
+  bottom: 18px;
+  right: 77px;
+  gap: 3px;
+  z-index: 2;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-right .score-dots {
+  left: 77px;
+  right: auto;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-win {
+  width: 13px;
+  height: 16px;
+  transform: none;
+  clip-path: polygon(50% 0,100% 100%,0 100%);
+  background: var(--edge,var(--sb-border));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-left .sb-win.active {
+  background: var(--blue-accent,var(--sb-left));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-right .sb-win.active {
+  background: var(--red-accent,var(--sb-right));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] #sb-tournament-logo {
+  top: 39px;
+  left: 902px;
+  width: 116px;
+  height: 65px;
+  z-index: 16;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-clock {
+  position: absolute;
+  left: calc(50% - 57px);
+  top: 110px;
+  width: 114px;
+  height: 26px;
+  z-index: 20;
+  font-size: 21px;
+  border: 0;
+  border-bottom: 3px solid var(--edge,var(--sb-border));
+  clip-path: polygon(0 0,100% 0,calc(100% - 12px) 100%,12px 100%);
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-goldlead {
+  top: 32px;
+  left: 155px;
+  width: 85px;
+  z-index: 19;
+  border-bottom: 2px solid var(--blue-accent,var(--sb-left));
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-goldlead.blue-lead {
+  left: 155px;
+  right: auto;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-goldlead.red-lead {
+  left: auto;
+  right: 155px;
+  border-bottom-color: var(--red-accent,var(--sb-right));
+}
