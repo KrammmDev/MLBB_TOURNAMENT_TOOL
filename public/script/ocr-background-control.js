@@ -18,7 +18,6 @@
   function update() {
     controls.hidden = !isOCR();
     if (!isOCR()) return;
-    selected = selectedTheme();
     const enabled = selected ? settings?.backgrounds?.[selected] : undefined;
     checkbox.disabled = busy || !selected || typeof enabled !== "boolean";
     checkbox.checked = enabled !== false;
@@ -48,7 +47,7 @@
   }
   async function save(enabled) {
     if (!isOCR() || busy || !settings || !revision) return;
-    const themeId = selectedTheme();
+    const themeId = selected;
     if (!presets.includes(themeId)) return;
     busy = true;
     status.textContent = "Saving " + themeId + " OCR background…";
@@ -77,7 +76,10 @@
     }
   }
   checkbox.addEventListener("change", () => save(checkbox.checked));
-  document.addEventListener("broadcast-preview-selection", update);
+  document.addEventListener("broadcast-preview-selection", event => {
+    selected = event.detail.id;
+    update();
+  });
   output.addEventListener("change", update);
   document.getElementById("reload-settings").addEventListener("click", reload);
   reload();
