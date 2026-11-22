@@ -1076,3 +1076,55 @@ body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .teamnamesc.sb-right {
   padding-right: 14px;
   padding-left: 70px;
 }
+
+/* Arena screenshot refinement: MSC/EWC-style center shield architecture.
+   The actual image remains the user's saved tournament logo. */
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-hud::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: calc(50% - 119px);
+  width: 238px;
+  height: 109px;
+  box-sizing: border-box;
+  background:
+    linear-gradient(125deg,
+      color-mix(in srgb, var(--edge, var(--sb-border)) 72%, transparent),
+      var(--header-bg, var(--sb-panel)) 45%,
+      color-mix(in srgb, var(--edge, var(--sb-border)) 65%, transparent));
+  clip-path: polygon(22% 0, 78% 0, 100% 100%, 0 100%);
+  filter: drop-shadow(0 2px 1px rgba(0,0,0,.28));
+  pointer-events: none;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-hud::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 3px;
+  left: calc(50% - 113px);
+  width: 226px;
+  height: 102px;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--header-bg, var(--sb-panel)) 65%, white),
+      var(--header-bg, var(--sb-panel)) 58%,
+      color-mix(in srgb, var(--header-bg, var(--sb-panel)) 85%, black));
+  clip-path: polygon(22% 0, 78% 0, 100% 100%, 0 100%);
+  pointer-events: none;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-side {
+  z-index: 1;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-ocr-clock {
+  top: 110px;
+  z-index: 18;
+}
+body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] #sb-tournament-logo {
+  top: 43px;
+  width: 116px;
+  height: 56px;
+  z-index: 16;
+}
+/* The team names and series indicators are still owned by Arena's
+   original scoreboard layout. Only the OCR kill tiles float over it. */
