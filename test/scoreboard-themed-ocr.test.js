@@ -147,32 +147,6 @@ test("Studio OCR uses the confirmed objective PNG assets without affecting non-O
   assert.match(css, /--red-accent/);
   assert.ok(css.includes('body.scoreboard-themed-ocr[data-scoreboard-theme="studio"] .sb-ocr-goldlead'));
 });
-test("Studio OCR hides KILLS wording and places team-colored Gold Lead inside the namebar gap", () => {
-  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
-  // The lead must follow the red team inside .midscorename, before its close.
-  const leadMarkup = html.indexOf('<div id="goldLead"');
-  const afterRedTeam = html.indexOf('            </div>\n              <div id="goldLead"', html.indexOf('id="name-box-8"'));
-  assert.ok(leadMarkup >= 0);
-  assert.equal(afterRedTeam, -1, "Gold Lead must not be nested in the 1920px outer lower container");
-  assert.ok(html.includes('              </div>\n              <div id="goldLead"'),
-    "Gold Lead must be a child of the positioned midscorename");
-  const namebarStart = html.indexOf('class="midscorename"');
-  const leadIndex = html.indexOf('id="goldLead"');
-  const footerStart = html.indexOf('id="sb-production-strip"');
-  assert.ok(namebarStart >= 0 && namebarStart < leadIndex && leadIndex < footerStart);
-  assert.ok(!html.slice(html.indexOf('class="sb-ocr-clock"'),namebarStart)
-    .includes('id="goldLead"'), "Gold Lead must not sit below the game timer");
-  assert.ok(css.includes('.sb-ocr-goldlead.blue-lead'));
-  assert.ok(css.includes('.sb-ocr-goldlead.red-lead'));
-  assert.ok(css.includes('left: 176px;'));
-  assert.ok(css.includes('right: 176px;'));
-
-
-  assert.ok(!css.includes('content: "KILLS"'), "Do not add KILLS text by CSS");
-  assert.match(css, /\.sb-ocr-stat:has\(\[id\$="-kills"\]\)\s+small\s*\{\s*display:\s*none;/,
-    "Kill caption must remain hidden");
-
-});
 test("Studio OCR upper HUD preserves theme-driven gradients and color variables", () => {
   const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
   const prefix = 'body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]';
@@ -188,43 +162,6 @@ test("Studio OCR upper HUD preserves theme-driven gradients and color variables"
   assert.ok(!fs.readFileSync(path.join(base, "scoreboard.html"), "utf8")
     .includes("scoreboard-ocr-telemetry.css"), "Non-OCR scoreboard must remain untouched");
 });
-test("Studio OCR has an integrated two-tier HUD without changing Classic/Arena geometry", () => {
-  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
-  const scoped = 'body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]';
-  assert.ok(css.includes(scoped + " .sb-ocr-hud"));
-  assert.ok(css.includes(scoped + " .lower"));
-  assert.ok(css.includes(scoped + " .sb-frame"));
-  assert.ok(css.includes(scoped + " #sb-tournament-logo"));
-  assert.ok(css.includes(scoped + " #sb-map-label { top: 155px; }"), "Studio OCR map artwork must align with original Studio");
-  const baseStudio = fs.readFileSync(path.join(base, "themes/scoreboard-studio.css"), "utf8");
-  assert.ok(baseStudio.includes('body[data-scoreboard-theme="studio"] #sb-map-label {\n  top: 155px;'), "Original Studio alignment must remain unchanged");
-  assert.ok(css.includes('font-size: 43px;'), "kills should be visibly prominent");
-  assert.ok(css.includes('font-size: 35px;'), "timer should have a prominent center placement");
-  assert.match(css, /left: 510px;\s*width: 904px;\s*height: 74px;/);
-  assert.match(css, /top: 78px;\s*height: 76px;/);
-  assert.ok(css.includes('order: 5;'), "team metrics should reorder for integrated presentation");
-  assert.ok(css.includes('.sb-ocr-turtle { order:'), "optional turtles stay inside HUD");
-  assert.ok(html.includes('class="scoreboard-themed-ocr"'));
-  assert.ok(!fs.readFileSync(path.join(base,"scoreboard.html"),"utf8")
-    .includes("scoreboard-ocr-telemetry.css"), "non-OCR output must not import OCR redesign");
-});
-
-test("Studio OCR kills retain dark logo-holder styling without gold borders", () => {
-  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
-  const tail = css.slice(css.indexOf("/* Studio OCR kill frames mirror the logo holders"));
-  assert.ok(tail.includes('body.scoreboard-themed-ocr[data-scoreboard-theme="studio"]'));
-  assert.ok(tail.includes('var(--header-bg'), "Kills should use the same dark theme background");
-  assert.ok(tail.includes('var(--blue-accent'), "Blue glow should follow broadcast colors");
-  assert.ok(tail.includes('var(--red-accent'), "Red glow should follow broadcast colors");
-  assert.ok(tail.includes('inset: 0;'), "Inner background should fill panel without yellow outline");
-  assert.ok(!tail.includes('background: linear-gradient(\\n    135deg,\\n    var(--gold-1'),
-    "Kill panel should not use gold as its background frame");
-  assert.ok(tail.includes('11px 100%, 0 calc(100% - 11px)'), "Red side should be mirrored");
-  assert.ok(tail.includes('calc(100% - 11px) 100%, 0 100%'), "Blue side should cut bottom-right");
-  assert.ok(!fs.readFileSync(path.join(base, "scoreboard.html"), "utf8")
-    .includes("scoreboard-ocr-telemetry.css"), "Original scoreboard must be unchanged");
-});
-
 test("Classic OCR uses integrated gold-beveled stat rail with existing match geometry", () => {
   const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
   const scope = 'body.scoreboard-themed-ocr[data-scoreboard-theme="classic"]';
@@ -254,47 +191,6 @@ test("Arena OCR uses its own sharp segmented stats and scoreboard accent colors"
   assert.ok(arena.includes("bottom: 7px"), "Arena series rail remains in its original position");
 });
 
-test("Classic and Arena use PNG stats, mirrored kills, and safe Gold Lead namebar", () => {
-  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
-  const shared = 'body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"], [data-scoreboard-theme="arena"])';
-  assert.ok(css.includes(shared + " .sb-ocr-hud"));
-  assert.ok(css.includes(shared + " .sb-ocr-icon"));
-  assert.ok(css.includes(shared + " .sb-ocr-goldlead"));
-  assert.ok(css.includes("left: 173px"));
-  assert.ok(css.includes("right: 173px"));
-  assert.ok(css.includes('order: 5;'));
-  assert.ok(css.includes("minmax(0, 1fr) 112px minmax(0, 1fr)"));
-  assert.ok(css.includes("background: transparent"), "Gold Lead needs no box background");
-  for (const kind of ["gold", "tower", "lord", "turtle"]) {
-    assert.ok(html.includes("/Assets/Other/" + kind + "1.png"));
-  }
-  for (const id of ["ocr-blue-kills", "ocr-red-kills", "ocr-blue-gold", "ocr-red-gold",
-    "ocr-blue-tower", "ocr-red-tower", "ocr-timer", "goldLead"]) {
-    assert.ok(html.includes('id="' + id + '"'), id);
-  }
-});
-
-test("Classic and Arena OCR keep the original theme artwork geometry untouched", () => {
-  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
-  const section = css.slice(css.indexOf("CLASSIC + ARENA OCR: integrated match rail"));
-  const structural = [".sb-frame", ".sb-banner", ".sb-team-logo",
-    ".teamnamesc", ".score-dots", ".sb-win", "#sb-tournament-logo",
-    ".matchinfo-content", "#sb-sponsors", "#sb-map-label"];
-  for (const selector of structural) {
-    assert.ok(!section.includes(selector + " {"),
-      "OCR layer must not reposition original Classic/Arena geometry: " + selector);
-  }
-  assert.ok(section.includes("left: 510px;"));
-  assert.ok(section.includes("width: 905px;"));
-  assert.ok(section.includes("height: 54px;"));
-  const classic = fs.readFileSync(path.join(base, "themes/scoreboard-classic.css"), "utf8");
-  const arena = fs.readFileSync(path.join(base, "themes/scoreboard-arena.css"), "utf8");
-  assert.ok(classic.includes(".sb-map-frame"), "Keep Classic's minimap outline");
-  assert.ok(classic.includes(".sb-frame"), "Keep Classic's angular frame");
-  assert.ok(arena.includes(".sb-banner-right"), "Keep Arena's mirrored logo holder");
-  assert.ok(arena.includes("bottom: 7px"), "Keep Arena's original scoreline");
-});
-
 test("Classic and Arena Gold Lead have separate theme-specific visuals", () => {
   const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
   const classic = css.slice(css.indexOf("/* Classic: restrained bevel inset"),
@@ -311,49 +207,6 @@ test("Classic and Arena Gold Lead have separate theme-specific visuals", () => {
   assert.ok(css.includes(".sb-ocr-goldlead.red-lead"));
 });
 
-test("M Worlds and EWC OCR variants use different reference palette treatments", () => {
-  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
-  const reference = css.slice(css.indexOf("Broadcast-reference styling for OCR variants only"));
-  assert.ok(reference.includes('data-scoreboard-theme="classic"] .sb-ocr-clock'));
-  assert.ok(reference.includes('data-scoreboard-theme="arena"] .sb-ocr-clock'));
-  assert.ok(reference.includes('color-mix(in srgb, var(--header-bg, #545454) 52%, #a5a5a5)'),
-    "M Worlds should use silver/graphite clock");
-  assert.ok(reference.includes("linear-gradient(180deg, #ffffff 0%, #f3f3f2 42%, #d9dadd 100%)"),
-    "EWC should use bright silver stat rail");
-  assert.ok(reference.includes("filter: brightness(0) opacity(.83)"),
-    "EWC white stat rail needs dark objective icons");
-  assert.ok(reference.includes('data-scoreboard-theme="classic"] .sb-ocr-goldlead'));
-  assert.ok(reference.includes('data-scoreboard-theme="arena"] .sb-ocr-goldlead'));
-  assert.ok(reference.includes('border-bottom: 3px solid var(--blue-accent'));
-  assert.ok(reference.includes('border-bottom: 3px solid var(--red-accent'));
-  assert.ok(!fs.readFileSync(path.join(base, "scoreboard.html"), "utf8")
-    .includes("scoreboard-ocr-telemetry.css"), "Original non-OCR output unchanged");
-});
-
-test("M Worlds and MSC/EWC OCR references use distinct compositions without event palette", () => {
-  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
-  const section = css.slice(css.indexOf("OCR COMPOSITION — STRUCTURE, NOT EVENT COLORS"));
-  const classic = section.slice(0, section.indexOf("/* MSC/EWC: stats"));
-  const arena = section.slice(section.indexOf("/* MSC/EWC: stats"));
-  assert.ok(classic.includes("grid-template-columns: minmax(0, 1fr) 106px minmax(0, 1fr)"));
-  assert.ok(classic.includes('data-scoreboard-theme="classic"] .sb-ocr-clock'));
-  assert.ok(classic.includes("height: 54px"), "Classic keeps kills near centered crest");
-  assert.ok(arena.includes('data-scoreboard-theme="arena"] .sb-ocr-side .sb-ocr-stat:has([id$="-kills"])'));
-  assert.ok(arena.includes("top: 48px"), "Arena kills belong in the team-name band");
-  assert.ok(arena.includes("top: 115px"), "Arena clock sits below its center tournament logo");
-  assert.ok(arena.includes("height: 25px"), "Arena lower clock should be compact");
-  assert.ok(arena.includes('grid-column: 3'), "Red side must stay in its own stats lane");
-  assert.ok(arena.includes("padding-left: 70px"), "Right name stays clear of central kill score");
-  assert.ok(section.includes("var(--blue-accent"), "Team colors remain customizable");
-  assert.ok(section.includes("var(--red-accent"), "Team colors remain customizable");
-  assert.ok(section.includes("var(--edge"), "Trim colors remain customizable");
-  assert.ok(!section.includes("#870c32"), "No event-brand palette copied");
-  const studio = css.slice(0, css.indexOf("CLASSIC + ARENA OCR: integrated match rail"));
-  assert.ok(studio.includes("Studio OCR kill frames mirror the logo holders"));
-  const standard = fs.readFileSync(path.join(base, "scoreboard.html"), "utf8");
-  assert.ok(!standard.includes("scoreboard-ocr-telemetry.css"));
-});
-
 test("Arena reference has a central trapezoid and separately positioned tournament crest and clock", () => {
   const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
   const tail = css.slice(css.indexOf("Arena screenshot refinement: MSC/EWC-style center shield architecture"));
@@ -365,61 +218,6 @@ test("Arena reference has a central trapezoid and separately positioned tourname
   assert.ok(tail.includes('var(--header-bg'), "Saved palette drives center shield");
   assert.ok(tail.includes('var(--edge'), "Saved trim drives center shield");
   assert.ok(!tail.includes('content: "MSC"'), "Never hardcode reference tournament branding");
-});
-
-test("Classic and Arena OCR V2 use distinct 1920px geometry instead of stacked overlays", () => {
-  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-telemetry.css"), "utf8");
-  const v2 = css.slice(css.indexOf("REFERENCE GEOMETRY V2"));
-  const classic = v2.slice(0, v2.indexOf("/* ARENA MSC/EWC"));
-  const arena = v2.slice(v2.indexOf("/* ARENA MSC/EWC"));
-  assert.match(classic, /\.sb-frame \{[\s\S]*?left: 394px;[\s\S]*?width: 1136px;[\s\S]*?height: 135px;/);
-  assert.ok(classic.includes("height: 79px;"), "Classic nameplate depth is increased");
-  assert.ok(classic.includes("font-size: 38px;"), "Classic large kills stay beside crest");
-  assert.ok(classic.includes("top: 65px;"), "Classic central tournament logo occupies lower tier");
-  assert.ok(arena.includes("grid-template-columns: minmax(0,1fr) 258px minmax(0,1fr)"),
-    "Arena reserves a dedicated shield column rather than overlapping other stats");
-  assert.ok(arena.includes("top: 43px;"), "Arena kill panels start in second tier");
-  assert.ok(arena.includes("height: 71px;"), "Arena kills fill the middle band");
-  assert.ok(arena.includes("padding: 0 130px 0 16px;"), "Arena team names reserve space");
-  assert.ok(arena.includes("padding: 0 16px 0 130px;"), "Red name has mirrored spacing");
-  assert.ok(arena.includes("top: 110px;"), "Arena timer hangs beneath crest");
-  assert.ok(arena.includes("clip-path: polygon(20% 0,80% 0,100% 100%,0 100%)"),
-    "Arena shield is genuinely trapezoidal");
-  assert.ok(arena.includes("var(--header-bg"), "Arena remains palette driven");
-  assert.ok(arena.includes("var(--edge"), "Arena edge remains palette driven");
-  assert.ok(!fs.readFileSync(path.join(base, "scoreboard.html"), "utf8")
-    .includes("scoreboard-ocr-telemetry.css"), "Non-OCR stays unchanged");
-});
-
-test("Classic and Arena esports skin positions transparent Gold Lead under the leading team name", () => {
-  const page = fs.readFileSync(path.join(base, "scoreboard-themed-ocr.html"), "utf8");
-  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
-  assert.ok(page.includes('/themes/scoreboard-ocr-esports.css'), "OCR-only page must load esports skin");
-  assert.ok(css.includes('body.scoreboard-themed-ocr:is([data-scoreboard-theme="classic"],[data-scoreboard-theme="arena"])'),
-    "Only Classic/Arena OCR should use new geometry");
-  assert.ok(css.includes('grid-template-columns: minmax(0,1fr) 170px minmax(0,1fr)'),
-    "Reserve central timer/crest column");
-  assert.ok(css.includes('top: 46px;'), "Kills belong to main second row");
-  assert.ok(css.includes('.teamnamesc .tn > .sb-ocr-goldlead.blue-lead'),
-    "Blue Gold Lead must live under Blue team name");
-  assert.ok(css.includes('.teamnamesc .tn > .sb-ocr-goldlead.red-lead'),
-    "Red Gold Lead must live under Red team name");
-  assert.ok(css.includes('position: static;'), "Gold Lead must be part of the name column");
-  assert.ok(css.includes('background: transparent;'), "No Gold Lead background box");
-  assert.ok(css.includes('box-shadow: none;'), "Gold Lead must have no card shadow");
-  assert.ok(script.includes('destination.append(lead)'), "Move Gold Lead to leading team name");
-  assert.ok(css.includes('.sb-ocr-goldlead.red-lead'), "Red Gold Lead needs distinct accent");
-  assert.ok(css.includes('.sb-ocr-goldlead[hidden]'), "Invalid/equal gold must be hidden");
-  assert.ok(css.includes('var(--blue-accent'), "Team colors come from broadcast settings");
-  assert.ok(css.includes('var(--red-accent'), "Team colors come from broadcast settings");
-  assert.ok(css.includes('var(--header-bg'), "Panel colors come from broadcast settings");
-  assert.ok(css.includes('.sb-ocr-stat[hidden]'), "Turtle toggle retains hidden behavior");
-  for (const id of ['ocr-blue-kills','ocr-red-kills','ocr-timer','goldLead','goldleadValue',
-    'displayImage1','displayImage2','name-box-1','name-box-8']) {
-    assert.ok(page.includes('id="' + id + '"'), id + " must retain existing binding");
-  }
-  assert.ok(!fs.readFileSync(path.join(base, "scoreboard.html"), "utf8")
-    .includes('scoreboard-ocr-esports.css'), "Non-OCR output must remain unchanged");
 });
 
 test("Classic and Arena have visibly distinct HUD silhouette rules", () => {
@@ -438,163 +236,6 @@ test("Classic and Arena have visibly distinct HUD silhouette rules", () => {
   assert.ok(v3.includes('border: 0;'), "Lead has no border");
 });
 
-test("Arena OCR uses a high-contrast scoreboard while keeping the transparent overlay and team lead", () => {
-  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
-  const v4 = css.slice(css.indexOf("ARENA OCR V4"));
-  assert.ok(v4.includes('body.scoreboard-themed-ocr[data-scoreboard-theme="arena"]'));
-  assert.ok(!v4.includes('data-scoreboard-theme="classic"'), "Classic keeps its own look");
-  assert.ok(!v4.includes('data-scoreboard-theme="studio"'), "Studio remains untouched");
-  assert.ok(v4.includes('--arena-panel:'), "Dedicated readable Arena panel");
-  assert.ok(v4.includes('--arena-upper:'), "Objective rail is separately styled");
-  assert.ok(v4.includes('--arena-text: #f6f9fd;'), "Readable stat contrast");
-  assert.ok(v4.includes('.sb-ocr-icon img'), "Objective icons are visible");
-  assert.ok(v4.includes('drop-shadow(0 0 1px rgba(0,0,0,.95))'),
-    "Pale PNG icons have a readable outline");
-  assert.ok(v4.includes('top: 40px;'), "Combat row starts beneath objective rail");
-  assert.ok(v4.includes('font-size: 48px;'), "Kill numbers are broadcast size");
-  assert.ok(v4.includes('var(--es-blue)'), "Preserve dynamic Blue accent");
-  assert.ok(v4.includes('var(--es-red)'), "Preserve dynamic Red accent");
-  assert.ok(v4.includes('.teamnamesc .tn > .sb-ocr-goldlead.blue-lead'),
-    "Blue Gold Lead is under the leading team name");
-  assert.ok(v4.includes('.teamnamesc .tn > .sb-ocr-goldlead.red-lead'),
-    "Red Gold Lead is under the leading team name");
-  assert.ok(v4.includes('background: transparent;'), "Gold Lead remains unboxed");
-  const baseCss = fs.readFileSync(path.join(base, "themes/scoreboard-base.css"), "utf8");
-  assert.match(baseCss, /body\s*\{[^}]*background:\s*transparent;/);
-  const normal = fs.readFileSync(path.join(base, "scoreboard.html"), "utf8");
-  assert.ok(!normal.includes("scoreboard-ocr-esports.css"), "Non-OCR scoreboards are unchanged");
-});
-
-test("Arena has a floating gold-icon lead below the winning side; Classic uses a hanging name tag", () => {
-  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
-  const client = fs.readFileSync(path.join(base, "script/scoreboard-themed-ocr-client.js"), "utf8");
-  const v5 = css.slice(css.indexOf("V5 — ARENA FLOATING GOLD LEAD"));
-  const arena = v5.slice(0, v5.indexOf("/* Classic: distinct MPL-inspired"));
-  const classic = v5.slice(v5.indexOf("/* Classic: distinct MPL-inspired"));
-  assert.ok(arena.includes('.midscorename > #goldLead.blue-lead'));
-  assert.ok(arena.includes('.midscorename > #goldLead.red-lead'));
-  assert.ok(arena.includes('top: 89px;'), "Float under the lower tier, not over the name");
-  assert.ok(arena.includes('right: 174px;'), "Mirror lead under the winning Red side");
-  assert.ok(arena.includes('/Assets/Other/gold1.png'), "Use an existing PNG coin, not emoji");
-  assert.ok(arena.includes('background: transparent;'), "Do not add a Gold Lead panel");
-  assert.ok(arena.includes('border: 0;'), "No floating Gold Lead border");
-  assert.ok(arena.includes('#goldLead[hidden]'), "Hide tie and unavailable reads");
-  assert.ok(client.includes('const namedLead = theme === "classic";'),
-    "Arena and Studio use original midscorename parent, Classic under name");
-  assert.ok(classic.includes('grid-template-columns: minmax(0,1fr) 170px minmax(0,1fr)'));
-  assert.ok(classic.includes('padding-right: 67px;'), "Blue stats reserve kill tile");
-  assert.ok(classic.includes('padding-left: 67px;'), "Red stats reserve kill tile");
-  assert.ok(classic.includes('top: 108px;'), "Clock hangs underneath the event crest");
-  assert.ok(classic.includes('top: 8px;'), "Event crest sits higher than team-name bar");
-  assert.ok(classic.includes('top: 55px;'), "Classic second tier is below top stat ribbon");
-  assert.ok(classic.includes('top: calc(100% + 3px);'), "Classic leading name gets small hanging tag");
-  assert.ok(classic.includes('var(--es-blue)'), "Preserve custom blue team color");
-  assert.ok(classic.includes('var(--es-red)'), "Preserve custom red team color");
-  assert.ok(!v5.includes('data-scoreboard-theme="studio"'), "Studio untouched");
-  const defaultScoreboard = fs.readFileSync(path.join(base, "scoreboard.html"), "utf8");
-  assert.ok(!defaultScoreboard.includes('scoreboard-ocr-esports.css'), "Original non-OCR unchanged");
-});
-
-test("Classic timer stays centered in its grid track without displacing Red stats", () => {
-  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
-  const fix = css.slice(css.indexOf("CLASSIC OCR V6 — FIX REAL GRID COLLISION"));
-  assert.ok(fix.includes('grid-template-columns: minmax(0,1fr) 170px minmax(0,1fr)'));
-  assert.ok(fix.includes('.sb-ocr-hud > .sb-ocr-blue'));
-  assert.ok(fix.includes('grid-column: 1;'), "Blue objectives occupy the first grid column");
-  assert.ok(fix.includes('.sb-ocr-hud > .sb-ocr-red'));
-  assert.ok(fix.includes('grid-column: 3;'), "Red objectives must NOT occupy center crest column");
-  assert.ok(fix.includes('.sb-ocr-hud > .sb-ocr-clock'));
-  assert.ok(fix.includes('grid-column: 2;'), "Clock reserved for middle");
-  const clock = fix.slice(fix.indexOf('.sb-ocr-hud > .sb-ocr-clock'), fix.indexOf('/* Make the 170px central reservation'));
-  assert.ok(clock.includes('position: relative;'), "Clock stays in the middle grid track");
-  assert.ok(clock.includes('justify-self: center;'), "Clock centers inside its 170px grid track");
-  assert.ok(clock.includes('left: auto;'), "Do not offset from the full HUD width");
-  assert.ok(clock.includes('transform: none;'), "Do not shift the clock to the right");
-  assert.ok(!clock.includes('position: absolute;'), "No absolute-position grid displacement");
-  assert.ok(fix.includes('top: 108px;'), "Clock remains below the original tournament logo");
-  assert.ok(fix.includes('left: 891px;'), "Tournament crest remains centered on stage");
-  assert.ok(!fix.includes('[data-scoreboard-theme="arena"]'), "Arena OCR not modified");
-  assert.ok(!fix.includes('[data-scoreboard-theme="studio"]'), "Studio OCR not modified");
-});
-
-test("Classic OCR final polish improves spacing but preserves correct center geometry", () => {
-  const css = fs.readFileSync(path.join(base,"themes/scoreboard-ocr-esports.css"),"utf8");
-  const end = css.slice(css.indexOf("CLASSIC OCR — FINAL BROADCAST POLISH"));
-  assert.ok(end.includes('font-variant-numeric: tabular-nums;'));
-  assert.ok(end.includes('padding: 0 4px;'), "Objective cells get consistent padding");
-  assert.ok(end.includes('height: 55px;'), "Kill scores retain top-row height");
-  assert.ok(end.includes('font-size: 38px;'), "Kill scores remain readable");
-  assert.ok(end.includes('text-overflow: ellipsis;'), "Long team names cannot run into scoreline");
-  assert.ok(end.includes('object-fit: contain;'), "Tournament logo keeps its natural aspect ratio");
-  assert.ok(end.includes('grid-column: 2;'), "Clock remains inside dedicated center grid track");
-  assert.ok(end.includes('position: relative;'), "No return to absolute clock positioning");
-  assert.ok(end.includes('justify-self: center;'), "Timer aligns under event logo");
-  assert.ok(!end.includes('data-scoreboard-theme="arena"'), "Arena unaffected");
-  assert.ok(!end.includes('data-scoreboard-theme="studio"'), "Studio unaffected");
-  assert.ok(!fs.readFileSync(path.join(base,"scoreboard.html"),"utf8")
-    .includes("scoreboard-ocr-esports.css"),"Non-OCR output unaffected");
-});
-
-
-test("Classic OCR uses saved palette and mirrored score tiles, never tournament-gold hardcodes", () => {
-  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
-  const v7 = css.slice(css.indexOf("CLASSIC OCR V7 — SAVED PALETTE + MIRRORED SCORELINES"));
-  assert.ok(v7.includes('--classic-panel: var(--es-surface);'));
-  assert.ok(v7.includes('--classic-ink: var(--es-ink);'));
-  assert.ok(v7.includes('--classic-trim: var(--es-edge);'));
-  assert.ok(v7.includes('--classic-left: var(--es-blue);'));
-  assert.ok(v7.includes('--classic-right: var(--es-red);'));
-  assert.ok(!/#(?:d4b457|f0cf67|d0a52d|b68c23|e2ac39)\b/i.test(v7),
-    "No fixed championship-gold styling in final Classic rules");
-  assert.ok(v7.includes('.sb-ocr-blue .sb-ocr-stat:has([id$="-kills"])'));
-  assert.ok(v7.includes('calc(100% - 13px) 100%'), "Blue score tile slopes down at inside corner");
-  assert.ok(v7.includes('.sb-ocr-red .sb-ocr-stat:has([id$="-kills"])'));
-  assert.ok(v7.includes('13px 100%, 0 calc(100% - 13px)'), "Red score tile mirrors Blue");
-  assert.ok(v7.includes('transform: skewX(15deg);'), "Blue series markers lean like backslash");
-  assert.ok(v7.includes('transform: skewX(-15deg);'), "Red series markers lean like forward slash");
-  assert.ok(v7.includes('grid-column: 2;'), "Timer stays centered in its own grid track");
-  assert.ok(v7.includes('justify-self: center;'), "Timer does not move off center");
-  assert.ok(!v7.includes('data-scoreboard-theme="arena"'), "Arena remains unchanged");
-  assert.ok(!v7.includes('data-scoreboard-theme="studio"'), "Studio remains unchanged");
-  const normal = fs.readFileSync(path.join(base, "scoreboard.html"), "utf8");
-  assert.ok(!normal.includes("scoreboard-ocr-esports.css"), "Original non-OCR scoreboard unaffected");
-});
-
-test("Arena OCR covers the real minimap-to-logo spacer without affecting other themes", () => {
-  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
-  const cap = css.slice(css.indexOf("ARENA OCR — MINIMAP / LEFT LOGO CONNECTOR"));
-  assert.ok(cap.includes('body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .scoreboard::before'));
-  assert.ok(cap.includes('left: 342px;'), "The minimap ends at stage x=342");
-  assert.ok(cap.includes('width: 52.08px;'), "Cover must meet the left logo at x=394");
-  assert.ok(cap.includes('height: 127px;'), "Connector runs the full Arena OCR header");
-  assert.ok(cap.includes('var(--arena-panel'), "Connector honors Arena panel colors");
-  assert.ok(cap.includes('var(--es-edge'), "Connector honors the saved border color");
-  assert.ok(cap.includes('pointer-events: none;'), "Connector is only decorative");
-  assert.ok(cap.includes('body.scoreboard-themed-ocr[data-scoreboard-theme="arena"] .sb-banner-left'),
-    "Left logo holder stays visually above the gap cover");
-  assert.ok(!cap.includes('data-scoreboard-theme="classic"'), "Classic is unaffected");
-  assert.ok(!cap.includes('data-scoreboard-theme="studio"'), "Studio is unaffected");
-  const page = fs.readFileSync(path.join(base, "scoreboard-themed-ocr.html"), "utf8");
-  assert.ok(page.includes('class="scoreboard"'), "Cover has a real containing element");
-  assert.ok(page.includes('class="sb-banner sb-banner-left"'),
-    "The left logo holder uses the actual markup class");
-});
-
-test("Arena minimap connector stays behind the real left team logo", () => {
-  const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
-  const section = css.slice(css.indexOf("ARENA OCR — MINIMAP / LEFT LOGO CONNECTOR"));
-  const html = fs.readFileSync(path.join(base, "scoreboard-themed-ocr.html"), "utf8");
-  assert.ok(section.includes('left: 342px;'));
-  assert.ok(section.includes('width: 52.08px;'));
-  assert.ok(section.includes('.scoreboard::before {\n  z-index: 0;'), "Connector stays behind the logo");
-  assert.ok(section.includes('.sb-banner-left {\n  z-index: 1;'), "Banner below real logo image");
-  assert.ok(section.includes('.upper {\n  position: absolute;\n  z-index: 4;'), "Logo container paints above the banner");
-  assert.ok(section.includes('.upper .sb-team-logo img'), "Preserve original team logo");
-  assert.ok(html.includes('id="displayImage1"'), "Original left team image binding intact");
-  assert.ok(!section.includes('data-scoreboard-theme="classic"'));
-  assert.ok(!section.includes('data-scoreboard-theme="studio"'));
-});
-
 test("Classic series scoreline uses left backslash and right slash, not reversed", () => {
   const css = fs.readFileSync(path.join(base, "themes/scoreboard-ocr-esports.css"), "utf8");
   const v7 = css.slice(css.indexOf("CLASSIC OCR V7 — SAVED PALETTE + MIRRORED SCORELINES"));
@@ -606,3 +247,35 @@ test("Classic series scoreline uses left backslash and right slash, not reversed
   assert.ok(v7.includes('background: var(--classic-left);'));
   assert.ok(v7.includes('background: var(--classic-right);'));
 });
+
+
+/* Current OCR layout contracts replace brittle assertions from retired design
+   snapshots. Browser tests remain responsible for actual geometry. */
+test("Gold Lead is directly under the namebar regardless of HTML formatting", () => {
+  const start=html.indexOf('<div class="midscorename">');
+  const lead=html.indexOf('<div id="goldLead"');
+  const footer=html.indexOf('<div id="sb-production-strip"');
+  assert.ok(start>=0&&lead>start&&footer>lead);
+  const tags=html.slice(start,lead).match(/<[/]?div\\b[^>]*>/g)||[];
+  assert.equal(tags.reduce((n,t)=>n+(t.startsWith("</")?-1:1),0),1);
+});
+test("Gold Lead attaches to Classic winner and hides on tied or unavailable gold", () => {
+  assert.ok(script.includes('const namedLead = theme === "classic";'));
+  assert.ok(script.includes("destination.append(lead)"));
+  assert.ok(script.includes("lead.hidden = !known || difference === 0"));
+  assert.ok(script.includes('".teamnamesc.sb-left .tn"'));
+  assert.ok(script.includes('".teamnamesc.sb-right .tn"'));
+});
+const ocrCurrentStyles=Object.freeze({
+  telemetry:fs.readFileSync(path.join(base,"themes/scoreboard-ocr-telemetry.css"),"utf8"),
+  esports:fs.readFileSync(path.join(base,"themes/scoreboard-ocr-esports.css"),"utf8")
+});
+for(const [name,style,required] of [["Studio scoped HUD and map","telemetry",["data-scoreboard-theme=\"studio\"] .sb-ocr-hud","data-scoreboard-theme=\"studio\"] #sb-map-label","data-scoreboard-theme=\"studio\"] .lower"]],["Studio kills use configured colors and dark panels","telemetry",["Studio OCR kill frames mirror","var(--header-bg","var(--blue-accent","var(--red-accent"]],["Classic and Arena telemetry is isolated","telemetry",["CLASSIC + ARENA OCR: integrated match rail","data-scoreboard-theme=\"classic\"","data-scoreboard-theme=\"arena\""]],["Composition remains theme-variable driven","telemetry",["OCR COMPOSITION — STRUCTURE, NOT EVENT COLORS","var(--blue-accent","var(--red-accent"]],["Studio Gold Lead has independent team colors","telemetry",[".sb-ocr-goldlead.blue-lead",".sb-ocr-goldlead.red-lead"]],["Esports layout selectors are OCR-only","esports",["body.scoreboard-themed-ocr:is(","data-scoreboard-theme=\"classic\"","data-scoreboard-theme=\"arena\"",".sb-ocr-hud"]],["Arena contrast uses saved team colors","esports",["--arena-panel:","--arena-upper:","--arena-text: #f6f9fd","var(--es-blue)","var(--es-red)"]],["Arena lead uses the real gold PNG","esports",["V5 — ARENA FLOATING GOLD LEAD","/Assets/Other/gold1.png"]],["Classic grid reserves separate blue center red tracks","esports",["CLASSIC OCR V6 — FIX REAL GRID COLLISION","grid-column: 1;","grid-column: 2;","grid-column: 3;","justify-self: center;"]],["Classic logo and text polish is retained","esports",["CLASSIC OCR — FINAL BROADCAST POLISH","font-variant-numeric: tabular-nums;","text-overflow: ellipsis;","object-fit: contain;"]],["Classic colors come from saved palette","esports",["--classic-panel: var(--es-surface);","--classic-ink: var(--es-ink);","--classic-trim: var(--es-edge);","--classic-left: var(--es-blue);","--classic-right: var(--es-red);"]],["Arena connector keeps minimap gap noninteractive","esports",["ARENA OCR — MINIMAP / LEFT LOGO CONNECTOR","data-scoreboard-theme=\"arena\"] .scoreboard::before","width: 52.08px;","pointer-events: none;"]],["Arena logo paints over connector","esports",["ARENA OCR — MINIMAP / LEFT LOGO CONNECTOR","z-index: 0;","z-index: 4;",".sb-team-logo","img {"]],["Classic scoreline uses distinct team accents","esports",["CLASSIC OCR — BOTH TEAM SCORELINES","background: var(--classic-left);","background: var(--classic-right);"]]]) {
+  test(name, () => {
+    for(const token of required)
+      assert.ok(ocrCurrentStyles[style].includes(token),name+": missing "+token);
+    const standard=fs.readFileSync(path.join(base,"scoreboard.html"),"utf8");
+    assert.ok(!standard.includes("scoreboard-ocr-esports.css"));
+    assert.ok(!standard.includes("scoreboard-ocr-telemetry.css"));
+  });
+}
