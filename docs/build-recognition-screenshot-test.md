@@ -68,3 +68,17 @@ The screenshot test page now includes **Refresh Devices**, a device selector, **
 5. Open `http://localhost:3000/build-recognition-test.html` **on the server PC**. Select the authorized device, press **Capture & Scan**, inspect matches, and press **Apply to Builds** only when ready. You can use Auto Scan if desired, but it only refreshes the draft.
 
 If no phone is connected, manual screenshot upload continues to work. ADB is not used for OBS recorded-video or virtual-camera capture.
+
+## Resolve uncertain items and spells manually
+
+After uploading a PNG or running an ADB Capture & Scan, **click an uncertain slot** in Blue or Red Team to open the compact asset picker. The picker contains a search field and icons sourced directly from the existing `item-mappings.json` and `spell-mappings.json`. Item slots offer **Clear Slot** to display `idle.png`; spells do not support equipment idle.
+
+1. Click the amber-bordered `?` slot. Auto Scan stops so it cannot overwrite the draft while you are correcting it.
+2. Search and choose an item/spell. Use **Confirm Selection** to save the choice to the server's current scan draft.
+3. The corrected slot becomes a green-bordered manual match (or a manual empty slot). Continue correcting other uncertain slots.
+4. Press **Apply to Builds** when the results are ready. Only then does the separate recognition state update `builds.html`.
+5. **Every fresh scan is a new draft.** Earlier manual selections are not automatically carried into a new screenshot. A scan ID guards against applying corrections to obsolete captures.
+
+The manual correction route `POST /api/build-recognition/correct` is localhost-only, validates team/player/slot/type/asset ID against the mapping JSON, and cannot modify match data. Manual corrections do not update the reference library or teach the matching algorithm; they only fix the current scanned draft. Browser hardware/OBS integration is unchanged.
+
+Run the regression test using `node --test test/build-recognition-corrections.test.js`, followed by `npm test`.
