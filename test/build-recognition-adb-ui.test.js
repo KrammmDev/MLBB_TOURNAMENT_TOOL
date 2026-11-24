@@ -56,7 +56,7 @@ test("ADB capture is scanned but never auto-applied; unauthorized device is excl
   const window = { addEventListener() {} };
   const URL = { createObjectURL: () => "blob:preview", revokeObjectURL() {} };
   const context = vm.createContext({
-    document: { getElementById: el, createElement: () => fakeElement() },
+    document: { getElementById: el, createElement: () => fakeElement(), addEventListener() {}, body: { classList: { add() {}, remove() {} } } },
     window, URL, Blob, fetch, encodeURIComponent,
     setTimeout: () => 1, clearTimeout() {}
   });
