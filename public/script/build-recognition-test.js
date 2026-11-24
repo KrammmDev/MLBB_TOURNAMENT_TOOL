@@ -1,15 +1,112 @@
 (function(){
 'use strict';
 const $=id=>document.getElementById(id);
-const status=$('status'),teams=$('teams');let previewUrl=null;
+const status=$('status'),teams=$('teams');let previewUrl=null,latestScan=null;
+let pickerContext=null,pickerSelection=null,pickerOpener=null,pickerBusy=false;
+const assetCache={item:null,spell:null};
 function info(s){status.textContent=s;}
 async function request(url,options={}){const response=await fetch(url,{cache:'no-store',...options});const body=await response.json();if(!response.ok)throw Error(body.error||'HTTP '+response.status);return body;}
-function slot(s,isSpell=false){
+async function catalog(kind){
+ if(assetCache[kind])return assetCache[kind];
+ const source=await request('/database/'+(kind==='spell'?'spell':'item')+'-mappings.json');
+ const type=kind==='spell'?'spell':'item';
+ const list=Object.entries(source).filter(([,v])=>v&&v.type===type&&v.type!=='placeholder'&&v.name!=='idle'&&typeof v.name==='string'&&typeof v.image==='string')
+   .map(([id,v])=>({id,name:v.name,image:v.image})).sort((a,b)=>a.name.localeCompare(b.name));
+ assetCache[kind]=list;
+ return list;
+}
+function pickerMessage(message){$('picker-subtitle').textContent=message;}
+function closePicker(){
+ if(pickerBusy)return;
+ $('asset-picker').hidden=true;document.body.classList.remove('picker-open');
+ pickerContext=null;pickerSelection=null;
+ if(pickerOpener&&pickerOpener.isConnected)pickerOpener.focus();
+ pickerOpener=null;
+}
+function chooseAsset(asset){
+ pickerSelection=asset;
+ $('picker-confirm').disabled=false;
+ for(const node of $('picker-grid').querySelectorAll('.picker-option')){
+  node.setAttribute('aria-pressed',String(node.dataset.assetId===asset.id));
+ }
+}
+function renderCatalog(items){
+ const query=$('picker-search').value.trim().toLowerCase();
+ const grid=$('picker-grid');
+ grid.replaceChildren();
+ const matches=items.filter(a=>a.name.toLowerCase().includes(query));
+ if(pickerContext.kind==='item'&&(!query||'clear slot'.includes(query))){
+  const clear=document.createElement('button');clear.type='button';clear.className='picker-option';
+  clear.dataset.assetId='idle';clear.textContent='Clear Slot';clear.setAttribute('aria-pressed',String(pickerSelection?.id==='idle'));
+  clear.onclick=()=>chooseAsset({id:'idle',name:'Clear Slot'});grid.appendChild(clear);
+ }
+ for(const asset of matches){
+  const card=document.createElement('button');card.type='button';card.className='picker-option';
+  card.dataset.assetId=asset.id;card.setAttribute('aria-pressed',String(pickerSelection?.id===asset.id));
+  const icon=document.createElement('img');icon.src=asset.image;icon.alt='';icon.loading='lazy';
+  const name=document.createElement('span');name.textContent=asset.name;
+  card.append(icon,name);card.onclick=()=>chooseAsset(asset);grid.appendChild(card);
+ }
+ if(!grid.childElementCount){
+  const empty=document.createElement('p');empty.className='picker-no-results';empty.textContent='No matching assets found.';grid.appendChild(empty);
+ }
+}
+async function openPicker(context,button){
+ if(scanning||pickerBusy||!latestScan?.scanId)return;
+ if(autoEnabled)stopAutoScan('Auto Scan stopped for manual correction.');
+ pickerContext=context;pickerSelection=null;pickerOpener=button;
+ const dialog=$('asset-picker');
+ dialog.hidden=false;document.body.classList.add('picker-open');
+ $('picker-title').textContent=context.kind==='spell'?'Resolve Uncertain Spell':'Resolve Uncertain Item';
+ pickerMessage('Choose '+(context.kind==='spell'?'a spell':'an item')+' for '+(context.team==='blue'?'Blue':'Red')+' Team — P'+context.playerIndex+(context.kind==='item'?' (Slot '+context.slot+')':'')+'.');
+ $('picker-search').value='';$('picker-grid').replaceChildren();$('picker-confirm').disabled=true;
+ try{
+  const items=await catalog(context.kind);
+  if(pickerContext!==context)return;
+  renderCatalog(items);
+  $('picker-search').focus();
+ }catch(e){
+  if(pickerContext===context){pickerMessage('Cannot load assets: '+e.message);$('picker-grid').replaceChildren();}
+ }
+}
+async function confirmPicker(){
+ if(pickerBusy||!pickerContext||!pickerSelection||!latestScan?.scanId)return;
+ pickerBusy=true;$('picker-confirm').disabled=true;
+ const target=pickerContext,asset=pickerSelection;
+ try{
+  const result=await request('/api/build-recognition/correct',{
+   method:'POST',headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({scanId:latestScan.scanId,team:target.team,playerIndex:target.playerIndex,
+    kind:target.kind,slot:target.slot,assetId:asset.id})
+  });
+  latestScan=result;render(result);$('apply').disabled=result.counts.matched===0;
+  pickerBusy=false;closePicker();
+  info((asset.id==='idle'?'Cleared slot':'Selected '+asset.name)+'. Review all results, then Apply to Builds.');
+ }catch(e){
+  pickerMessage('Could not save correction: '+e.message);
+  pickerBusy=false;$('picker-confirm').disabled=false;
+ }
+}
+$('picker-confirm').onclick=confirmPicker;
+$('picker-cancel').onclick=closePicker;
+$('picker-close').onclick=closePicker;
+$('picker-backdrop').onclick=closePicker;
+$('picker-search').oninput=()=>{if(!pickerContext)return;renderCatalog(assetCache[pickerContext.kind]||[]);};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('asset-picker').hidden)closePicker();});
+function slot(s,isSpell=false,context=null){
  const node=document.createElement('div');node.className='slot '+s.status+(isSpell?' spell':'');
  node.title=[s.name||s.candidate||s.status,'similarity '+(s.confidence||0),s.scoreGap!=null?'gap '+s.scoreGap:'',s.reason?'reason '+s.reason:'',s.method?'method '+s.method:'',s.diagnostic?'original '+s.diagnostic.originalConfidence+' / enhanced '+s.diagnostic.enhancedConfidence:'',...(s.alternatives||[]).map(x=>x.name+' '+x.confidence)].filter(Boolean).join(' · ');
  if(s.status==='matched'&&s.image){const image=document.createElement('img');image.src=s.image;image.alt=s.name;node.appendChild(image);}
  else if(s.status==='empty'&&!isSpell){const image=document.createElement('img');image.src='/Assets/Itemandspell/idle.png';image.alt='Empty item slot (idle)';node.appendChild(image);}
- else node.textContent=s.status==='empty'?'—':s.status==='uncertain'?'~':'?';
+ else node.textContent=s.status==='empty'?'—':s.status==='uncertain'?'?':'?';
+ if(s.method==='manual')node.classList.add('manual');
+ if(context&&(s.status==='uncertain'||s.method==='manual')){
+  node.tabIndex=0;node.setAttribute('role','button');
+  node.setAttribute('aria-label','Correct '+context.team+' player '+context.playerIndex+' '+context.kind+' '+context.slot);
+  node.title+=' · Click to choose manually';
+  node.onclick=()=>{void openPicker(context,node);};
+  node.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();void openPicker(context,node);}};
+ }
  return node;
 }
 function render(data){
@@ -22,8 +119,8 @@ function render(data){
    const row=document.createElement('div');row.className='player';
    const label=document.createElement('span');label.className='pid';label.textContent='P'+p.player_index;row.appendChild(label);
    const slots=document.createElement('div');slots.className='slots';
-   for(const s of p.items)slots.appendChild(slot(s));
-   row.appendChild(slots);row.appendChild(slot(p.battleSpell,true));section.appendChild(row);
+   for(const s of p.items)slots.appendChild(slot(s,false,{team:side,playerIndex:p.player_index,kind:'item',slot:s.slot}));
+   row.appendChild(slots);row.appendChild(slot(p.battleSpell,true,{team:side,playerIndex:p.player_index,kind:'spell',slot:1}));section.appendChild(row);
   }
   teams.appendChild(section);
  }
@@ -63,6 +160,7 @@ async function scanPNG(blob){
  const result=await request('/api/build-recognition/scan',{
   method:'POST',headers:{'Content-Type':'image/png'},body:blob
  });
+ latestScan=result;
  render(result);
  $('apply').disabled=result.counts.matched===0;
  return result;
