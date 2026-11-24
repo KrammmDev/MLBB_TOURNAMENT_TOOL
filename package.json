@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "node --test test/adb.test.js test/broadcast-colors.test.js test/caster-panel.test.js test/draft-model.test.js test/match-api.test.js test/match-store.test.js test/notifications.test.js test/ocr.test.js test/performance.test.js test/production-panel.test.js test/roster-theme.test.js test/scoreboard-branding.test.js test/sponsors.test.js test/startup.test.js test/scoreboard-themed-ocr.test.js",
+    "test": "node --test test/adb.test.js test/build-recognition-improved.test.js test/build-recognition-lowquality.test.js test/build-recognition-startup.test.js test/broadcast-colors.test.js test/caster-panel.test.js test/draft-model.test.js test/match-api.test.js test/match-store.test.js test/notifications.test.js test/ocr.test.js test/performance.test.js test/production-panel.test.js test/roster-theme.test.js test/scoreboard-branding.test.js test/sponsors.test.js test/startup.test.js test/scoreboard-themed-ocr.test.js",
     "start": "node server.js",
     "test:browser": "node --test --test-concurrency=2 test/broadcast-colors-browser.spec.js test/browser.spec.js test/casters-browser.spec.js test/control-browser.spec.js test/draft-browser.spec.js test/legacy-output-browser.spec.js test/match-winner-browser.spec.js test/notification-autoplay-browser.spec.js test/notifications-browser.spec.js test/ocr-browser.spec.js test/postdraft-browser.spec.js test/postgame-tournament-browser.spec.js test/production-panel-browser.spec.js test/roster-browser.spec.js test/schedule-browser.spec.js test/schedule-control-browser.spec.js test/scoreboard-browser.spec.js test/sponsor-browser.spec.js",
     "test:ocr": "node --test test/adb.test.js test/ocr.test.js test/ocr-browser.spec.js"
