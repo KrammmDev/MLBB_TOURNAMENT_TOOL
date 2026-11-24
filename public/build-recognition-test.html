@@ -7,6 +7,34 @@ select{max-width:270px;min-width:170px;padding:10px 12px;border-radius:8px;borde
 #adb-status[data-error="true"]{color:#ffb2a8}
 button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #84cbff;outline-offset:2px}
 
+
+/* Compact review picker — scoped to the recognition test page only. */
+.slot.uncertain{cursor:pointer;border-color:#f0af51;box-shadow:inset 0 0 0 1px rgba(240,175,81,.4)}
+.slot.uncertain:hover,.slot.uncertain:focus-visible{outline:2px solid #c7a1ff;outline-offset:2px}
+.slot.manual{border-color:#64d9b0;box-shadow:inset 0 0 0 1px rgba(100,217,176,.45)}
+.picker[hidden]{display:none}
+.picker{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:20px}
+.picker-backdrop{position:absolute;inset:0;background:rgba(2,6,18,.78)}
+.picker-dialog{position:relative;width:min(650px,100%);max-height:min(680px,calc(100vh - 40px));background:#141c30;border:1px solid #526180;border-radius:15px;box-shadow:0 28px 90px rgba(0,0,0,.65);display:flex;flex-direction:column;overflow:hidden}
+.picker-head{display:flex;justify-content:space-between;align-items:start;gap:12px;padding:20px 22px 14px;border-bottom:1px solid #2a3b55}
+.picker-head h2{font-size:21px;margin:0 0 5px}
+.picker-head p{font-size:13px;margin:0;color:#aebdd3}
+.picker-close{background:none;border:0;color:#e7eaff;padding:3px 9px;font-size:25px;line-height:1}
+.picker-search-wrap{padding:14px 20px;border-bottom:1px solid #2a3b55}
+#picker-search{background:#0b1425;border:1px solid #627191;color:#f4f7ff;border-radius:9px;padding:12px 14px;font:inherit;width:100%;max-width:none}
+#picker-search:focus{outline:2px solid #946dff;outline-offset:1px}
+.picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(95px,1fr));align-content:start;gap:10px;padding:17px 20px;overflow-y:auto;min-height:120px}
+.picker-option{display:flex;align-items:center;flex-direction:column;justify-content:center;gap:7px;min-height:112px;padding:11px 6px;border-radius:10px;border:1px solid #34425b;background:#1b263b;color:#eff3ff;cursor:pointer}
+.picker-option:hover,.picker-option:focus-visible{border-color:#a985fc;background:#26344e;outline:none}
+.picker-option img{height:47px;width:47px;object-fit:contain}
+.picker-option span{font-size:11px;line-height:1.25;text-align:center;overflow-wrap:anywhere}
+.picker-no-results{color:#afc0dc;grid-column:1/-1;padding:20px;text-align:center}
+.picker-footer{padding:13px 20px;display:flex;justify-content:flex-end;gap:10px;border-top:1px solid #2a3b55}
+.picker-footer button{padding:10px 18px}
+.picker-footer #picker-confirm{background:#6940be;border-color:#b296ff}
+.picker-footer #picker-confirm:disabled{opacity:.4}
+body.picker-open{overflow:hidden}
+@media(max-width:580px){.picker{padding:8px}.picker-dialog{max-height:calc(100vh - 16px)}.picker-grid{grid-template-columns:repeat(auto-fill,minmax(77px,1fr));gap:7px;padding:12px}.picker-option{min-height:95px}.picker-option img{width:40px;height:40px}.picker-head{padding:16px}}
 </style></head><body><main><h1>MLBB Screenshot Recognition Test</h1><p>Capture a screenshot from an authorized Android spectator device through ADB, or upload a PNG manually. Review detections before applying them to <a href="/builds.html" target="_blank">builds.html</a>. No Android device needed.</p>
 <section class="panel"><div class="controls"><label>Screenshot PNG <input id="upload" type="file" accept="image/png"></label><button id="scan">Scan Screenshot</button><button id="apply" disabled>Apply to Builds</button><button id="stop">Stop Simulation</button><a href="/builds.html" target="_blank">View builds.html</a></div><p id="status">Checking reference icons…</p><p>Manual match data and existing OCR are not modified. Only confirmed or empty slots are overlaid. Images must exist under <code>public/Assets/Itemandspell/</code> with names matching the mapping JSON.</p></section>
 <section class="panel" aria-labelledby="adb-title">
@@ -24,4 +52,20 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
   <p>Auto Scan updates the preview and detection draft only. <strong>Apply to Builds remains manual.</strong> Disconnects and scan errors stop Auto Scan automatically. No phone is required for manual PNG uploads.</p>
 </section>
 <section class="panel"><h2>Screenshot preview</h2><img id="preview" alt="Selected screenshot" hidden></section><section class="panel"><h2>Recognition results</h2><p id="summary"></p><div id="teams" class="teams"></div></section>
-</main><script src="/script/build-recognition-test.js"></script></body></html>
+</main>
+<div id="asset-picker" class="picker" hidden>
+  <div id="picker-backdrop" class="picker-backdrop"></div>
+  <section class="picker-dialog" role="dialog" aria-modal="true" aria-labelledby="picker-title" aria-describedby="picker-subtitle">
+    <div class="picker-head">
+      <div><h2 id="picker-title">Resolve Uncertain Item</h2><p id="picker-subtitle">Choose the correct item for this slot.</p></div>
+      <button type="button" id="picker-close" class="picker-close" aria-label="Close item picker">×</button>
+    </div>
+    <div class="picker-search-wrap"><input id="picker-search" type="search" placeholder="Search item..." autocomplete="off" aria-label="Search items or spells"></div>
+    <div id="picker-grid" class="picker-grid" aria-label="Available items"></div>
+    <div class="picker-footer">
+      <button type="button" id="picker-cancel">Cancel</button>
+      <button type="button" id="picker-confirm" disabled>Confirm Selection</button>
+    </div>
+  </section>
+</div>
+<script src="/script/build-recognition-test.js"></script></body></html>
