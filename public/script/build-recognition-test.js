@@ -6,7 +6,7 @@ function info(s){status.textContent=s;}
 async function request(url,options={}){const response=await fetch(url,{cache:'no-store',...options});const body=await response.json();if(!response.ok)throw Error(body.error||'HTTP '+response.status);return body;}
 function slot(s,isSpell=false){
  const node=document.createElement('div');node.className='slot '+s.status+(isSpell?' spell':'');
- node.title=(s.name||s.candidate||s.status)+' · similarity '+(s.confidence||0);
+ node.title=[s.name||s.candidate||s.status,'similarity '+(s.confidence||0),s.scoreGap!=null?'gap '+s.scoreGap:'',s.reason?'reason '+s.reason:'',s.method?'method '+s.method:'',s.diagnostic?'original '+s.diagnostic.originalConfidence+' / enhanced '+s.diagnostic.enhancedConfidence:'',...(s.alternatives||[]).map(x=>x.name+' '+x.confidence)].filter(Boolean).join(' · ');
  if(s.status==='matched'&&s.image){const image=document.createElement('img');image.src=s.image;image.alt=s.name;node.appendChild(image);}
  else if(s.status==='empty'&&!isSpell){const image=document.createElement('img');image.src='/Assets/Itemandspell/idle.png';image.alt='Empty item slot (idle)';node.appendChild(image);}
  else node.textContent=s.status==='empty'?'—':s.status==='uncertain'?'~':'?';
@@ -14,7 +14,7 @@ function slot(s,isSpell=false){
 }
 function render(data){
  teams.replaceChildren();
- $('summary').textContent='Matched: '+data.counts.matched+' · Empty: '+data.counts.empty+' · Uncertain: '+data.counts.uncertain+' · Missing reference: '+data.counts.missing_references;
+ $('summary').textContent='Matched: '+data.counts.matched+' · Empty: '+data.counts.empty+' · Uncertain: '+data.counts.uncertain+' · Missing reference: '+data.counts.missing_references+' · Recovered with enhancement: '+(data.diagnostics?.enhancedMatches||0)+' · Preprocessing conflicts: '+(data.diagnostics?.conflictingResults||0);
  for(const side of ['blue','red']){
   const section=document.createElement('section');section.className='team';
   const title=document.createElement('h3');title.textContent=side==='blue'?'Blue Team':'Red Team';section.appendChild(title);
