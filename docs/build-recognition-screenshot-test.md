@@ -1,6 +1,6 @@
 # MLBB Screenshot Recognition
 
-This first-stage feature tests item/spell image recognition using **an uploaded screenshot**. It is not yet an OBS Virtual Camera or live ADB reader. It does not replace existing OCR or directly edit `public/database/matchdatateam.json`.
+This feature recognizes item/spell icons using either **a manually uploaded PNG** or **an ADB screenshot captured from an authorized Android device**. It is not an OBS Virtual Camera capture source. It does not replace existing OCR or directly edit `public/database/matchdatateam.json`.
 
 ## Installation on Windows
 
@@ -23,7 +23,7 @@ This first-stage feature tests item/spell image recognition using **an uploaded 
 
 ## Limitations
 
-**No real-world recognition accuracy has been verified yet** using the user's source PNG icons. Similarity scores are heuristic and should not be interpreted as probabilities. Spell icons may be covered by cooldown overlays. Other aspect ratios, overlays, and OBS transforms require calibration. The test image has to be uploaded through the page. The server must be restarted after installing dependencies.
+**No real-world recognition accuracy has been verified yet** using the user's source PNG icons. Similarity scores are heuristic and should not be interpreted as probabilities. Spell icons may be covered by cooldown overlays. Other aspect ratios, overlays, and OBS transforms require calibration. Use an uploaded screenshot or the ADB capture controls on the page. The server must be restarted after installing dependencies.
 
 ## Low-quality capture recognition (experimental)
 
@@ -46,4 +46,25 @@ node --test test/build-recognition-lowquality.test.js test/build-recognition-imp
 npm test
 ```
 
-This is still screenshot-only; OBS multi-frame capture and cross-frame voting are **not implemented**. Before broadcast use, check the *correct item names*, not only the number of matched slots, against a manually annotated source screenshot.
+OBS video input, multi-frame voting and screenshot stabilization are **not implemented**. Before broadcast use, check the *correct item names*, not only the number of matched slots, against a manually annotated source screenshot.
+
+## Android Debug Bridge (ADB) capture
+
+The screenshot test page now includes **Refresh Devices**, a device selector, **Capture & Scan**, and **Start/Stop Auto Scan (5s)**. Existing localhost-only ADB endpoints are reused without changing the ADB service:
+
+- `GET /api/adb/devices` lists authorized, unauthorized, and offline devices.
+- `GET /api/adb/frame?serial=...` grabs an authorized device's PNG screenshot with `adb exec-out screencap -p`.
+- The browser submits the returned PNG to `POST /api/build-recognition/scan` and shows the same review grid as manual upload.
+- **Auto Scan runs one capture and recognition request at a time**, waiting five seconds after each completed scan. It **never automatically applies** to `builds.html`; click **Apply to Builds** only after reviewing results.
+- Stop Auto Scan explicitly or close/reload the page to stop scheduling captures. Capture/scan errors and device changes stop it as well. If a scan is already in progress, wait until it finishes before applying/stopping.
+- The image must contain the same 10-player **spectator equipment panel** calibrated in `public/database/mlbb-ingame-item-spell-slot-map.json`. Capturing a normal player's UI or a different HUD layout will not yield valid detections.
+
+### Windows setup
+
+1. Install official Android SDK Platform Tools; verify `adb version` works in PowerShell (or configure `ADB_PATH` for the server).
+2. Enable Developer options and USB debugging on the Android device, connect via USB, and approve the PC's debugging authorization.
+3. Run `adb devices -l` and confirm the phone reports `device`, not `unauthorized` or `offline`.
+4. In `D:\\MLBB_TOURNAMENT_TOOL`, run `npm ci`, then `node server.js`.
+5. Open `http://localhost:3000/build-recognition-test.html` **on the server PC**. Select the authorized device, press **Capture & Scan**, inspect matches, and press **Apply to Builds** only when ready. You can use Auto Scan if desired, but it only refreshes the draft.
+
+If no phone is connected, manual screenshot upload continues to work. ADB is not used for OBS recorded-video or virtual-camera capture.
