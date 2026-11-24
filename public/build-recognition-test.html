@@ -26,6 +26,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 .picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(95px,1fr));align-content:start;gap:10px;padding:17px 20px;overflow-y:auto;min-height:120px}
 .picker-option{display:flex;align-items:center;flex-direction:column;justify-content:center;gap:7px;min-height:112px;padding:11px 6px;border-radius:10px;border:1px solid #34425b;background:#1b263b;color:#eff3ff;cursor:pointer}
 .picker-option:hover,.picker-option:focus-visible{border-color:#a985fc;background:#26344e;outline:none}
+.picker-option[aria-pressed="true"]{border-color:#b59aff;background:#342652;box-shadow:0 0 0 1px rgba(181,154,255,.5)}
 .picker-option img{height:47px;width:47px;object-fit:contain}
 .picker-option span{font-size:11px;line-height:1.25;text-align:center;overflow-wrap:anywhere}
 .picker-no-results{color:#afc0dc;grid-column:1/-1;padding:20px;text-align:center}
