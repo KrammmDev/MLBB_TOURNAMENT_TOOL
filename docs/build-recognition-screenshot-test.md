@@ -1,10 +1,10 @@
-# MLBB Screenshot Recognition (Draft)
+# MLBB Screenshot Recognition
 
 This first-stage feature tests item/spell image recognition using **an uploaded screenshot**. It is not yet an OBS Virtual Camera or live ADB reader. It does not replace existing OCR or directly edit `public/database/matchdatateam.json`.
 
 ## Installation on Windows
 
-1. Pull the feature branch **only for testing** or wait until the PR is approved and merged to main.
+1. Pull the approved changes from `main` after merge, or check out the draft branch for local verification.
 2. From `D:\MLBB_TOURNAMENT_TOOL`, run `npm install sharp` once. This installs the new recognition dependency and locally updates package files. Commit package lock changes separately when the dependency is finalized.
 3. Verify your image files exist in `public/Assets/Itemandspell/`, with filenames and extensions matching `public/database/item-mappings.json` and `spell-mappings.json`. The PNG references are **not** bundled in the PR.
 4. Run `npm test` then `node server.js`.
@@ -23,4 +23,27 @@ This first-stage feature tests item/spell image recognition using **an uploaded 
 
 ## Limitations
 
-**No real-world recognition accuracy has been verified yet** using the user's source PNG icons. Similarity scores are heuristic and should not be interpreted as probabilities. Spell icons may be covered by cooldown overlays. Other aspect ratios, overlays, and OBS transforms require calibration. The test image has to be uploaded through the page. The server must be restarted after installing Sharp. Because this is a draft experiment, the Sharp dependency is intentionally installed manually and package-lock is not changed in this PR.
+**No real-world recognition accuracy has been verified yet** using the user's source PNG icons. Similarity scores are heuristic and should not be interpreted as probabilities. Spell icons may be covered by cooldown overlays. Other aspect ratios, overlays, and OBS transforms require calibration. The test image has to be uploaded through the page. The server must be restarted after installing dependencies.
+
+## Low-quality capture recognition (experimental)
+
+The recognizer now compares **both the original frame and a mildly contrast-adjusted/sharpened frame** against the same reference catalog. Each icon has a small bounded set of geometric templates, including one slightly softened reference for compressed video.
+
+- A confident original match is kept unless the enhanced pass confidently identifies a different item; disagreements are marked `uncertain`.
+- An `uncertain` original result can be rescued only when the enhanced result agrees with its original best candidate **and** meets stronger confidence and margin requirements.
+- Empty equipment slots still show `idle.png`; uncertain slots retain the configured/manual item.
+- Hover an item or spell in the test page to inspect `reason`, `scoreGap`, alternative candidates, and original/enhanced scores.
+- The scan summary reports **Recovered with enhancement** and **Preprocessing conflicts**. Recovery is *not* proof of correctness.
+
+### Capture tips
+
+Upload a PNG extracted directly from the original 1920×1080 (or higher) recording. Avoid uploading a screenshot of a browser video preview or scaling an already compressed capture. Keep the same aspect ratio and verify the equipment panel positions match the calibration map. Modest blur is sometimes recoverable; severe motion blur or missing detail cannot reliably be reconstructed by sharpening.
+
+### Regression tests
+
+```powershell
+node --test test/build-recognition-lowquality.test.js test/build-recognition-improved.test.js
+npm test
+```
+
+This is still screenshot-only; OBS multi-frame capture and cross-frame voting are **not implemented**. Before broadcast use, check the *correct item names*, not only the number of matched slots, against a manually annotated source screenshot.
