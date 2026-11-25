@@ -147,9 +147,17 @@
               <h2 id="equipment-colors-title">In-game equipment colors</h2>
               <strong>Build overlay</strong>
             </div>
-            <p>Change the Blue and Red accent lines, role panels and animated shine on <a href="/builds.html" target="_blank" rel="noopener">builds.html</a>. Saved separately from Draft and Scoreboard colors.</p>
+            <p>Change the background, text, Blue and Red accent lines, role panels and animated shine on <a href="/builds.html" target="_blank" rel="noopener">builds.html</a>. Saved separately from Draft and Scoreboard colors.</p>
             <form id="equipment-colors-form">
               <div class="color-fields">
+                <div class="color-field">
+                  <label for="equipment-background-color">Equipment background</label>
+                  <div class="color-inputs"><input id="equipment-background-color" type="color" value="#0b1220" aria-label="Equipment background color"><input id="equipment-background-hex" type="text" maxlength="7" pattern="#[0-9a-fA-F]{6}" value="#0b1220" required aria-label="Equipment background hex"></div>
+                </div>
+                <div class="color-field">
+                  <label for="equipment-text-color">Equipment text</label>
+                  <div class="color-inputs"><input id="equipment-text-color" type="color" value="#f3f6fa" aria-label="Equipment text color"><input id="equipment-text-hex" type="text" maxlength="7" pattern="#[0-9a-fA-F]{6}" value="#f3f6fa" required aria-label="Equipment text hex"></div>
+                </div>
                 <div class="color-field">
                   <label for="equipment-blue-color">Blue team accent</label>
                   <div class="color-inputs"><input id="equipment-blue-color" type="color" value="#258be0" aria-label="Blue equipment accent"><input id="equipment-blue-hex" type="text" maxlength="7" pattern="#[0-9a-fA-F]{6}" value="#258be0" required aria-label="Blue accent hex"></div>

@@ -205,6 +205,8 @@ test("equipment color controls are present in Broadcast Themes and wired into bu
   const client = await fs.readFile(path.join(dir, "script/builds-color-client.js"), "utf8");
   assert.match(themePage, /id="equipment-blue-color"/);
   assert.match(themePage, /id="equipment-red-color"/);
+  assert.match(themePage, /id="equipment-background-color"/);
+  assert.match(themePage, /id="equipment-text-color"/);
   assert.match(themePage, /src="\/builds.html"/);
   assert.match(themePage, /equipment-color-control.js/);
   assert.match(buildsPage, /builds-color-client.js/);
@@ -212,4 +214,10 @@ test("equipment color controls are present in Broadcast Themes and wired into bu
   assert.match(client, /equipment-colors-preview/);
   assert.match(style, /var\(--blue\)/);
   assert.match(style, /var\(--red\)/);
+  assert.match(style, /var\(--equipment-bg\)/);
+  assert.match(style, /var\(--equipment-text\)/);
+  assert.match(client, /--equipment-bg/);
+  assert.match(client, /--equipment-text/);
+  assert.match(editor, /palette\.background/);
+  assert.match(editor, /palette\.text/);
 });
