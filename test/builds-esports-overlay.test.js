@@ -87,5 +87,5 @@ test("clean broadcast styling avoids ornamental glow and keeps lane icons legibl
   assert.match(css, /filter: brightness\(0\) invert\(1\)/);
   assert.match(css, /\.middle::before, \.middle::after \{ display: none; \}/);
   assert.doesNotMatch(css, /text-shadow|clip-path|radial-gradient/);
-  assert.match(css, /background: #0b1220;/);
+  assert.match(css, /background: var\(--equipment-bg\);/);
 });
