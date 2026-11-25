@@ -1,9 +1,12 @@
 /* Reference-based tournament build graphic: six items, hero and center title.
    OBS canvas stays transparent at 1920x1080. No battle spells or extra UI. */
 :root{
+  --blue:#1177d8;
+  --blue-dark:#07376d;
+  --blue-edge:#0d65bd;
   --red:#ed2838;
   --red-dark:#8c0e1e;
-  --edge:#a81223;
+  --red-edge:#ba122a;
   --cell:45px;
   --row:45px;
 }
@@ -33,9 +36,9 @@ html, body{
   display:grid;
   grid-template-columns:330px 136px 330px;
   align-items:start;
-  background:linear-gradient(90deg,#ed2938 0%,#b7192e 46%,#a9152a 54%,#ee2538 100%);
-  border-top:3px solid #f53644;
-  border-bottom:5px solid #fb2c3c;
+  background:linear-gradient(90deg,#137ce1 0%,#0b4c98 41.9%,#121723 42%,#121723 58%,#ab1428 58.1%,#ef293b 100%);
+  border-top:3px solid #ced7e3;
+  border-bottom:5px solid #ced7e3;
   box-shadow:0 2px 0 rgba(0,0,0,.5);
 }
 .buildbox::before,.buildbox::after{
@@ -44,10 +47,10 @@ html, body{
   width:3px;
   height:100%;
   top:0;
-  background:#ef293b;
+  background:var(--blue);
 }
 .buildbox::before{left:0}
-.buildbox::after{right:0}
+.buildbox::after{right:0;background:var(--red)}
 .side{
   height:230px;
   display:flex;
@@ -64,19 +67,21 @@ html, body{
   margin:0;
   padding:0;
   gap:2px;
-  background:#6a0916;
+  background:#081b32;
   align-items:center;
 }
 #blue-side .player{
   grid-template-columns:repeat(6,45px) 45px;
+  background:#073a75;
 }
 #red-side .player{
   grid-template-columns:45px repeat(6,45px);
+  background:#710c1f;
 }
 .itembox{
   width:45px;
   height:45px;
-  border:2px solid var(--edge);
+  border:2px solid var(--blue-edge);
   border-radius:0;
   background-color:#f2f2f2;
   background-position:center;
@@ -86,8 +91,10 @@ html, body{
   transform:none;
   scale:1;
 }
+#red-side .itembox{border-color:var(--red-edge)}
 .hero{height:45px;width:45px;min-width:45px;margin:0}
-.image-box{height:45px;width:45px;overflow:hidden;background:#17181e}
+.image-box{height:45px;width:45px;overflow:hidden;background:#17181e;border:2px solid var(--blue-edge)}
+#red-side .image-box{border-color:var(--red-edge)}
 .image-box img:not(.recognized-spell){
   width:100%;
   height:100%;
@@ -104,9 +111,9 @@ html, body{
   justify-content:flex-start;
   gap:0;
   padding-top:22px;
-  background:linear-gradient(146deg,#e72c42 0%,#8e1628 64%,#f01832 100%);
-  border-left:2px solid rgba(0,0,0,.4);
-  border-right:2px solid rgba(0,0,0,.4);
+  background:linear-gradient(135deg,#202b3f,#10151f 65%,#20202a);
+  border-left:2px solid var(--blue-edge);
+  border-right:2px solid var(--red-edge);
   font-family:Impact,"Arial Narrow",Arial,sans-serif;
   font-weight:900;
   font-stretch:condensed;
