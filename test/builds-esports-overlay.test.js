@@ -15,7 +15,7 @@ test("OBS builds overlay keeps a transparent 1920x1080 compact equipment strip",
  assert.ok(css.includes("background: transparent !important;"));
  assert.ok(css.includes(".mainbox {"));
  assert.ok(css.includes(".buildbox {"));
- assert.ok(css.includes("height:255px;"));
+ assert.ok(css.includes("height: 325px;"));
  assert.ok(!css.includes("background-color: #f0f0f0"),"No opaque grey backdrop on OBS");
 });
 
@@ -40,31 +40,42 @@ test("existing recognition and match renderer scripts stay loaded",()=>{
  assert.ok(page.includes('src="script/build-recognition-bridge.js"'));
  assert.ok(css.includes("#blue-side .player"));
  assert.ok(css.includes("#red-side .player"));
- assert.ok(css.includes(".itembox{"));
+ assert.ok(css.includes(".itembox {"));
  assert.ok(!page.includes('class="recognized-spell"'));
 });
 
 test("reference layout has 60 equipment slots, ten portraits, no gold and no spells",()=>{
- assert.ok(css.includes("width:836px;"),"reference panel width");
- assert.ok(css.includes("grid-template-columns:330px 136px 330px;"));
- assert.ok(css.includes("background-size:contain;"));
+ assert.ok(css.includes("width: 1008px;"),"reference panel width");
+ assert.ok(css.includes("grid-template-columns: 400px 176px 400px;"));
+ assert.ok(css.includes("background-size: contain;"));
  assert.ok(page.includes('<span>ITEM</span>'));
  assert.ok(page.includes('<span>BUILD</span>'));
  assert.ok(!page.includes('class="gold"'));
  assert.ok(!css.includes(".gold{"));
  assert.ok(!page.includes('battleSpell'));
- assert.ok(css.includes(".recognized-spell{display:none !important}"));
+ assert.ok(css.includes(".recognized-spell { display: none !important; }"));
 });
 
 test("blue left / red right equipment palette with neutral center",()=>{
- assert.ok(css.includes("--blue:#1177d8;"));
- assert.ok(css.includes("--red:#ed2838;"));
- assert.ok(css.includes("#blue-side .player{"));
- assert.ok(css.includes("background:#073a75;"));
- assert.ok(css.includes("#red-side .player{"));
- assert.ok(css.includes("background:#710c1f;"));
- assert.ok(css.includes("#red-side .itembox{border-color:var(--red-edge)}"));
- assert.ok(css.includes("#red-side .image-box{border-color:var(--red-edge)}"));
- assert.ok(css.includes("border-left:2px solid var(--blue-edge);"));
- assert.ok(css.includes("border-right:2px solid var(--red-edge);"));
+ assert.ok(css.includes("--blue: #1289ff;"));
+ assert.ok(css.includes("--red: #ff354e;"));
+ assert.ok(css.includes("#blue-side .player {"));
+ assert.ok(css.includes("rgba(8,42,82,.98)"));
+ assert.ok(css.includes("#red-side .player {"));
+ assert.ok(css.includes("rgba(99,18,37,.98)"));
+ assert.ok(css.includes("#red-side .itembox {"));
+ assert.ok(css.includes("#red-side .image-box { border-color: var(--red-edge); }"));
+ assert.ok(css.includes("border-left: 2px solid var(--blue-edge);"));
+ assert.ok(css.includes("border-right: 2px solid var(--red-edge);"));
+});
+
+
+test("esports finish keeps larger portraits, dark empty slots and clean visual framing",()=>{
+ assert.ok(css.includes("--portrait: 60px;"));
+ assert.ok(css.includes("--slot: 54px;"));
+ assert.ok(css.includes("background-color: #111c2e;"));
+ assert.ok(css.includes("background-color: #24121e;"));
+ assert.ok(css.includes(".middle::before, .middle::after"));
+ assert.ok(css.includes("padding-bottom: 30px;"));
+ assert.ok(!css.includes("background-color: #f2f2f2;"));
 });
