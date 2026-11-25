@@ -15,6 +15,7 @@
       "matchwinner",
       "postgame",
       "casters",
+      "equipment",
     ];
   const fields = {
     background: "Panel background",
@@ -168,6 +169,16 @@
       border: "#f4df87",
     },
   };
+  defaults.equipment = Object.fromEntries(
+    themes.map((id) => [id, {
+      background: "#0b1220",
+      left: "#258be0",
+      right: "#e34e62",
+      text: "#f3f6fa",
+      muted: "#c7cfdb",
+      border: "#667080",
+    }]),
+  );
   function validColors(colors) {
     return (
       colors !== null &&
@@ -237,6 +248,13 @@
       );
     const vars = (names, value) =>
       names.split(",").forEach((name) => variables.push(name + ":" + value));
+    if (output === "equipment") {
+      return [
+        scope + "{--blue:" + palette.left + ";--red:" + palette.right + "}",
+        scope + " .equipment-heading{color:" + palette.text + "}",
+        scope + " .buildbox{background:" + palette.background + ";border-color:" + palette.border + "}",
+      ].join("\n");
+    }
     if (output === "casters") {
       for (const field of Object.keys(fields))
         vars("--cc-" + field, palette[field]);
