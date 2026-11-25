@@ -20,8 +20,8 @@ test("all ten player rows retain exactly six item targets and each hero ID",()=>
   for(let i=1;i<=5;i++){
    const rowStart=page.indexOf('id="'+team+'side'+i+'"');
    assert.ok(rowStart>0,team+" player "+i);
-   const nextClose=page.indexOf("</div>",rowStart);
-   const body=page.slice(rowStart,nextClose);
+   const nextRow=page.indexOf('<div class="player"',rowStart+1);
+   const body=page.slice(rowStart,nextRow<0?rowStart+650:nextRow);
    const found=[...body.matchAll(/id="item([1-6])"/g)].map(x=>Number(x[1]));
    assert.equal(found.length,6,team+" P"+i);
    assert.deepEqual([...found].sort((a,b)=>a-b),[1,2,3,4,5,6]);
