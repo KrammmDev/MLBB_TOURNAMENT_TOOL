@@ -1,22 +1,24 @@
-/* Compact 1920x1080 OBS equipment overlay: blue items-role-hero, red hero-role-items. */
+/* Clean competition broadcast item panel.
+   Keep legacy 1920x1080 transparent source and compact 1008x325 panel.
+   Item IDs, hero IDs and role data continue to be driven by existing scripts. */
 :root {
-  --blue: #168dff;
-  --red: #fc324e;
-  --gold: #e8c37b;
+  --blue: #258be0;
+  --red: #e34e62;
   --slot: 43px;
   --portrait: 60px;
   --role: 57px;
   --row: 56px;
+  --line: #314056;
 }
 * { box-sizing: border-box; }
 html, body {
-  margin: 0;
   width: 1920px;
   height: 1080px;
+  margin: 0;
   overflow: hidden;
   background: transparent !important;
-  color: #fff;
-  font-family: "Arial Narrow", "Segoe UI", Impact, Arial, sans-serif;
+  color: #f3f6fa;
+  font-family: "Segoe UI", Arial, sans-serif;
 }
 .mainbox {
   width: 1920px;
@@ -28,94 +30,97 @@ html, body {
 }
 .buildbox {
   position: relative;
-  isolation: isolate;
   display: grid;
   grid-template-columns: 400px 176px 400px;
   width: 1008px;
   height: 325px;
   padding: 15px 16px 16px;
-  border-top: 3px solid rgba(232,195,123,.88);
-  border-bottom: 4px solid rgba(232,195,123,.88);
-  background: linear-gradient(90deg,#051a37 0%,#071528 41%,#090e19 45%,#090e19 55%,#26101b 59%,#4b1024 100%);
-  box-shadow: 0 10px 23px rgba(0,0,0,.67), inset 0 0 0 1px rgba(255,255,255,.1);
+  background: #0b1220;
+  border: 1px solid #667080;
+  border-top: 2px solid #a1aab4;
+  box-shadow: 0 4px 13px rgba(0,0,0,.32);
 }
 .buildbox::before, .buildbox::after {
   content: "";
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 5px;
+  width: 4px;
   pointer-events: none;
 }
-.buildbox::before { left: 0; background: linear-gradient(#70c6ff,#0061e4); }
-.buildbox::after { right: 0; background: linear-gradient(#ff7b8c,#bb1031); }
+.buildbox::before { left: 0; background: var(--blue); }
+.buildbox::after { right: 0; background: var(--red); }
 .equipment-heading {
   position: absolute;
+  top: -36px;
   left: 50%;
-  top: -49px;
   transform: translateX(-50%);
-  min-width: 370px;
-  padding: 6px 30px 9px;
+  min-width: 290px;
+  padding: 8px 22px 9px;
+  background: #121b2a;
+  border: 1px solid #6b7688;
+  border-bottom: 2px solid #a4afbc;
+  color: #eff3f8;
   text-align: center;
   white-space: nowrap;
-  color: #f5d88e;
-  background: linear-gradient(#283248,#090e1b);
-  border: 2px solid var(--gold);
-  clip-path: polygon(5% 0,95% 0,100% 50%,95% 100%,5% 100%,0 50%);
-  font: 900 27px/1 Impact,"Arial Narrow",Arial,sans-serif;
-  letter-spacing: 1px;
-  text-shadow: 0 2px 3px #000;
+  font-family: "Arial Narrow", "Segoe UI", Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 1.5px;
 }
 .side {
+  min-width: 0;
+  height: 288px;
   display: flex;
   flex-direction: column;
   gap: 2px;
-  min-width: 0;
-  height: 288px;
 }
 .player {
   display: grid;
+  align-items: center;
   gap: 2px;
   height: var(--row);
   min-height: var(--row);
-  align-items: center;
   padding: 2px;
   overflow: hidden;
-  border: 1px solid rgba(255,255,255,.20);
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.65);
+  border: 1px solid #35445b;
+  background: #111b2a;
 }
 #blue-side .player {
   grid-template-columns: repeat(6,var(--slot)) var(--role) var(--portrait);
-  background: linear-gradient(90deg,#050d18,#0a244c);
   border-left: 3px solid var(--blue);
+  background: #10243c;
 }
 #red-side .player {
   grid-template-columns: var(--portrait) var(--role) repeat(6,var(--slot));
-  background: linear-gradient(90deg,#3d0f23,#080b12);
   border-right: 3px solid var(--red);
+  background: #301b29;
 }
 .itembox {
   width: var(--slot);
   height: 49px;
-  border: 1px solid #67788c;
-  background-color: #0e1621;
+  background-color: #101923;
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.5);
+  border: 1px solid #45556c;
 }
-#red-side .itembox { background-color: #1c1018; border-color: #7a5d68; }
+#red-side .itembox {
+  background-color: #1b1520;
+  border-color: #5b4552;
+}
 .hero, .image-box {
   width: var(--portrait);
-  height: 50px;
   min-width: var(--portrait);
+  height: 50px;
 }
 .image-box {
   overflow: hidden;
-  background: #101522;
-  border: 2px solid #3894f6;
+  background: #151e2a;
+  border: 1px solid #73a7d4;
 }
-#red-side .image-box { border-color: #ef4a63; }
+#red-side .image-box { border-color: #dc7b8c; }
 .image-box img:not(.recognized-spell) {
   display: block;
   width: 100%;
@@ -131,19 +136,21 @@ html, body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: linear-gradient(180deg,rgba(4,16,33,.3),rgba(0,0,0,.4));
-  border-left: 1px solid rgba(117,191,255,.5);
+  border: 1px solid #294662;
+  background: #163450;
 }
 #red-side .rolebox {
-  border-left: 0;
-  border-right: 1px solid rgba(255,118,139,.55);
+  background: #542a3a;
+  border-color: #704152;
 }
 .role-icon {
   display: block;
-  width: 43px;
-  height: 43px;
+  width: 35px;
+  height: 35px;
   object-fit: contain;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,.7));
+  /* Original lane PNGs are black on transparent: white glyphs read clearly on both teams. */
+  filter: brightness(0) invert(1);
+  opacity: .95;
 }
 .role-icon[hidden] { display: none; }
 .role-name { display: none; }
@@ -154,36 +161,26 @@ html, body {
   justify-content: center;
   width: 176px;
   height: 288px;
-  padding: 18px 10px;
   overflow: hidden;
-  border-left: 2px solid #176ed0;
-  border-right: 2px solid #d92b4b;
-  background: radial-gradient(ellipse at center,#243148,#0b1221 60%,#060a13);
+  padding: 18px 12px;
+  background: #0d1625;
+  border-left: 1px solid #254f78;
+  border-right: 1px solid #7e3449;
 }
-.middle::before, .middle::after {
-  content: "";
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  height: 2px;
-  background: linear-gradient(90deg,#288fff,var(--gold),#ff3954);
-}
-.middle::before { top: 36px; }
-.middle::after { bottom: 36px; }
+.middle::before, .middle::after { display: none; }
 #build-tournament-logo {
   display: block;
   max-width: 100%;
-  max-height: 215px;
+  max-height: 214px;
   width: auto;
   height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 5px 6px rgba(0,0,0,.65));
 }
 #build-tournament-logo[hidden], #build-logo-placeholder[hidden] { display: none; }
 #build-logo-placeholder {
-  font: 900 19px/1.1 Impact,"Arial Narrow",Arial,sans-serif;
+  font: 700 15px/1.4 "Segoe UI", Arial, sans-serif;
   text-align: center;
   letter-spacing: 1px;
-  color: #e3cd99;
+  color: #d3dbe7;
 }
 .recognized-spell { display: none !important; }
