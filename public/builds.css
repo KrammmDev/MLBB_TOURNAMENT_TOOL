@@ -1,69 +1,222 @@
-        
-        body {
-            display: flex;
-            justify-content: space-between;
-            font-family: Arial, sans-serif;
-            margin: 0;
-   
-            background-color: #f0f0f0;
-        }
-        .side {
-            display: flex;
-            flex-direction: column;
-             margin-top: 4px;
-        }
-        .player {
-            display: flex;
-            gap: 5px;
-            background-color: rgba(17, 17, 17, 0.267);
-            margin: 3px;
-   
-        }
-        .player div {
-            width: 50px;
-            height: 50px;
-            background-size: 140%;
-            background-position: center;
-            scale: 0.9;
-            border: 1px solid #f0f0f0;
-        }
-        #middle {
-            width: 200px;
-        }
-
-        .mainbox{
-            width: 1920px;
-            height: 1080px;
-
-            display: flex;
-            align-items: end;
-            justify-content: center;
-        }
-
-        .buildbox{
-            width: 1100px;
-            height: 300px;
-            background-image: url(Assets/Other/itembox.png);
-            background-size: 100%;
-            display: flex;
-            justify-content: center;
-           
-        }
-
-        .hero{
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-            overflow: hidden;
-            margin-left: 10px;
-            margin-right: 10px;
-            margin-top: 7.3px;
-        
-        }
-
-        .hero img{
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            margin-top: -5px;
-        }
+/* MLBB build overlay — 1920x1080 OBS scene.
+   Entire canvas outside the lower-third is transparent.
+   Keep selectors/DOM IDs used by build.js and build-recognition-bridge.js. */
+:root {
+  color-scheme: dark;
+  --build-blue: #28a8ff;
+  --build-red: #ff4f70;
+  --build-text: #edf5ff;
+  --build-muted: #92a7c2;
+  --build-line: rgba(160, 191, 236, .22);
+  --build-slot: #091627;
+}
+* { box-sizing: border-box; }
+html, body {
+  width: 1920px;
+  height: 1080px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: transparent !important;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: var(--build-text);
+}
+.mainbox {
+  width: 1920px;
+  height: 1080px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 44px;
+}
+.buildbox {
+  position: relative;
+  isolation: isolate;
+  width: 1130px;
+  height: 336px;
+  padding: 16px 24px 19px;
+  display: grid;
+  grid-template-columns: 54px 340px 144px 340px 54px;
+  justify-content: center;
+  align-items: end;
+  gap: 12px;
+  border: 1px solid rgba(148, 183, 237, .35);
+  border-radius: 15px;
+  background:
+    linear-gradient(90deg, rgba(19, 102, 179, .22), transparent 32%, transparent 68%, rgba(174, 36, 73, .2)),
+    linear-gradient(180deg, rgba(20, 35, 58, .97), rgba(5, 13, 27, .98));
+  box-shadow:
+    0 16px 44px rgba(0, 0, 0, .56),
+    inset 0 1px 0 rgba(234, 245, 255, .12);
+}
+.buildbox::before {
+  content: "";
+  position: absolute;
+  height: 3px;
+  left: 12px;
+  right: 12px;
+  top: 0;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--build-blue) 0 42%, rgba(180, 197, 220, .26) 50%, var(--build-red) 58% 100%);
+}
+.buildbox::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  inset: 35px 50% 15px;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(176, 206, 255, .27), transparent);
+}
+/* Hero portrait strips are intentionally placed outside the equipment lanes. */
+.side {
+  min-width: 0;
+  height: 297px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.buildbox > .side:first-child,
+.buildbox > .side:last-child {
+  padding-top: 32px;
+  gap: 6px;
+}
+.hero {
+  position: relative;
+  width: 52px;
+  height: 48px;
+  margin: 0;
+  flex: 0 0 48px;
+}
+.image-box {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(136, 186, 239, .53);
+  border-radius: 8px;
+  background: linear-gradient(150deg, #1d324a, #080f1b);
+  overflow: visible;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .45);
+}
+.buildbox > .side:last-child .image-box {
+  border-color: rgba(244, 121, 153, .58);
+}
+.hero img:not(.recognized-spell) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  object-fit: contain;
+  border-radius: 7px;
+}
+/* Retain the existing recognition overlay's spell icon and placement. */
+.hero .recognized-spell {
+  border: 1px solid rgba(237, 245, 255, .65);
+  border-radius: 5px;
+  background: #07101f;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, .7);
+}
+#blue-side, #red-side {
+  position: relative;
+  gap: 6px;
+  padding-top: 32px;
+}
+#blue-side::before, #red-side::before {
+  position: absolute;
+  top: 0;
+  height: 29px;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 2.4px;
+  border-radius: 6px;
+  border: 1px solid var(--build-line);
+}
+#blue-side::before {
+  content: "BLUE TEAM";
+  color: #8ad6ff;
+  border-left: 3px solid var(--build-blue);
+  background: linear-gradient(90deg, rgba(36, 144, 234, .23), rgba(17, 36, 61, .65));
+}
+#red-side::before {
+  content: "RED TEAM";
+  justify-content: flex-end;
+  color: #ffa1b5;
+  border-right: 3px solid var(--build-red);
+  background: linear-gradient(270deg, rgba(248, 69, 108, .22), rgba(17, 36, 61, .65));
+}
+.player {
+  height: 48px;
+  min-height: 48px;
+  margin: 0;
+  padding: 2px 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  border-radius: 7px;
+  border: 1px solid rgba(117, 159, 212, .19);
+  background: linear-gradient(180deg, rgba(38, 58, 84, .82), rgba(12, 23, 41, .88));
+}
+#blue-side .player {
+  border-left: 2px solid rgba(48, 174, 255, .77);
+}
+#red-side .player {
+  border-right: 2px solid rgba(255, 91, 123, .76);
+}
+.player > .itembox {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border: 1px solid rgba(129, 156, 201, .34);
+  border-radius: 5px;
+  background-color: var(--build-slot);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .3);
+}
+.player > .itembox:hover { border-color: rgba(199, 225, 255, .65); }
+/* Middle serves as a visual break, without introducing a fake live state. */
+#middle {
+  position: relative;
+  width: 144px;
+  height: 297px;
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+#middle::before {
+  content: "ITEM BUILDS";
+  display: block;
+  color: #f5f8ff;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: 1.6px;
+  text-align: center;
+  text-shadow: 0 2px 14px rgba(9, 19, 32, .9);
+}
+#middle::after {
+  content: "EQUIPMENT";
+  display: block;
+  padding: 7px 11px;
+  border: 1px solid rgba(150, 187, 232, .32);
+  border-radius: 50px;
+  color: var(--build-muted);
+  background: rgba(12, 28, 48, .8);
+  letter-spacing: 1.5px;
+  font-size: 10px;
+  font-weight: 750;
+}
+/* Preserve OBS pixel-perfect coordinate space. OBS sources should use
+   1920x1080; scale the entire browser source, not individual item cells. */
