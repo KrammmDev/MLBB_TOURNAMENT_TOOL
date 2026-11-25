@@ -3,12 +3,12 @@
 (() => {
   "use strict";
   const roleInfo = {
-    exp: { label: "EXP", mark: "E" },
-    junggle: { label: "JUNGLE", mark: "J" }, // control.html's persisted spelling
-    jungle: { label: "JUNGLE", mark: "J" },
-    mid: { label: "MID", mark: "M" },
-    roam: { label: "ROAM", mark: "R" },
-    gold: { label: "GOLD", mark: "G" }
+    exp: { label: "EXP", image: "exp.png" },
+    junggle: { label: "JUNGLE", image: "junggle.png" },
+    jungle: { label: "JUNGLE", image: "junggle.png" },
+    mid: { label: "MID", image: "mid.png" },
+    roam: { label: "ROAM", image: "roam.png" },
+    gold: { label: "GOLD", image: "gold.png" }
   };
   const logo = document.getElementById("build-tournament-logo");
   const placeholder = document.getElementById("build-logo-placeholder");
@@ -27,8 +27,16 @@
           const box = document.getElementById("build-role-" + (offset + i + 1));
           if (!box) continue;
           const role = roleInfo[String(players[i]?.lane || "").trim().toLowerCase()];
-          box.querySelector(".role-mark").textContent = role?.mark || "—";
+          const icon = box.querySelector(".role-icon");
+          const lane = role?.image || "None.png";
+          const src = "/Assets/lane/" + lane;
+          if (icon.dataset.source !== src) {
+            icon.dataset.source = src;
+            icon.hidden = false;
+            icon.src = src;
+          }
           box.querySelector(".role-name").textContent = role?.label || "—";
+          box.setAttribute("aria-label", "Player " + (offset + i + 1) + " role: " + (role?.label || "None"));
         }
       }
     } catch (err) { console.warn("Equipment roles unavailable:", err); }

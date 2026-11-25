@@ -50,3 +50,35 @@ test("center logo uses broadcast-themes branding API, not mock branding", () => 
   assert.match(page, /src="script\/build\.js"/);
   assert.match(page, /src="script\/build-recognition-bridge\.js"/);
 });
+
+
+test("compact equipment panel restores previous on-screen size", () => {
+  assert.match(css, /width:\s*1008px/);
+  assert.match(css, /height:\s*325px/);
+  assert.match(css, /grid-template-columns:\s*400px 176px 400px/);
+  assert.match(css, /--slot:\s*43px/);
+});
+
+test("role logo is the existing lane PNG and sits between items and hero on blue, hero and items on red", () => {
+  assert.match(metadata, /\/Assets\/lane\//);
+  for (const lane of ["exp.png", "junggle.png", "mid.png", "roam.png", "gold.png"]) {
+    assert.ok(metadata.includes(lane));
+  }
+  assert.equal((page.match(/class="role-icon"/g) || []).length, 10);
+  for (let i = 1; i <= 5; i++) {
+    const row = page.match(new RegExp('<div class="player" id="blueside' + i + '">([\\s\\S]*?)<\\/div>\\s*<\\/section>'));
+    const start = page.indexOf('id="blueside' + i + '"');
+    const next = page.indexOf('<div class="player"', start+1);
+    const body = page.slice(start, next < 0 ? page.indexOf('</section>',start) : next);
+    assert.ok(body.indexOf('id="item6"') < body.indexOf('id="build-role-' + i + '"'));
+    assert.ok(body.indexOf('id="build-role-' + i + '"') < body.indexOf('id="image-box-' + i + '"'));
+  }
+  for (let i = 1; i <= 5; i++) {
+    const num = i + 5;
+    const start = page.indexOf('id="redside' + i + '"');
+    const next = page.indexOf('<div class="player"', start+1);
+    const body = page.slice(start, next < 0 ? page.indexOf('</section>',start) : next);
+    assert.ok(body.indexOf('id="image-box-' + num + '"') < body.indexOf('id="build-role-' + num + '"'));
+    assert.ok(body.indexOf('id="build-role-' + num + '"') < body.indexOf('id="item6"'));
+  }
+});
