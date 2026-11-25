@@ -51,17 +51,17 @@ html, body {
 /* Restrained travelling highlight on the existing team accent lines. */
 .buildbox::before {
   left: 0;
-  background: linear-gradient(180deg,#258be0 0%,#258be0 36%,#c7efff 50%,#258be0 64%,#258be0 100%);
+  background: linear-gradient(180deg,var(--blue) 0%,var(--blue) 36%,color-mix(in srgb,var(--blue) 25%,white) 50%,var(--blue) 64%,var(--blue) 100%);
   background-size: 100% 260%;
   animation: equipment-blue-shine 5.5s linear infinite;
-  box-shadow: 0 0 6px rgba(37,139,224,.45);
+  box-shadow: 0 0 6px color-mix(in srgb,var(--blue) 45%,transparent);
 }
 .buildbox::after {
   right: 0;
-  background: linear-gradient(180deg,#e34e62 0%,#e34e62 36%,#ffe0e5 50%,#e34e62 64%,#e34e62 100%);
+  background: linear-gradient(180deg,var(--red) 0%,var(--red) 36%,color-mix(in srgb,var(--red) 25%,white) 50%,var(--red) 64%,var(--red) 100%);
   background-size: 100% 260%;
   animation: equipment-red-shine 5.5s linear infinite;
-  box-shadow: 0 0 6px rgba(227,78,98,.45);
+  box-shadow: 0 0 6px color-mix(in srgb,var(--red) 45%,transparent);
 }
 @keyframes equipment-blue-shine {
   from { background-position: 0 -160%; }
@@ -112,13 +112,13 @@ html, body {
   grid-template-columns: repeat(6,var(--slot)) var(--role) var(--portrait);
   border-left: 3px solid var(--blue);
   background: #10243c;
-  box-shadow: inset 2px 0 5px rgba(37,139,224,.16);
+  box-shadow: inset 2px 0 5px color-mix(in srgb,var(--blue) 16%,transparent);
 }
 #red-side .player {
   grid-template-columns: var(--portrait) var(--role) repeat(6,var(--slot));
   border-right: 3px solid var(--red);
   background: #301b29;
-  box-shadow: inset -2px 0 5px rgba(227,78,98,.16);
+  box-shadow: inset -2px 0 5px color-mix(in srgb,var(--red) 16%,transparent);
 }
 .itembox {
   width: var(--slot);
@@ -141,9 +141,9 @@ html, body {
 .image-box {
   overflow: hidden;
   background: #151e2a;
-  border: 1px solid #73a7d4;
+  border: 1px solid var(--blue);
 }
-#red-side .image-box { border-color: #dc7b8c; }
+#red-side .image-box { border-color: var(--red); }
 .image-box img:not(.recognized-spell) {
   display: block;
   width: 100%;
@@ -161,12 +161,12 @@ html, body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border: 1px solid #294662;
-  background: #163450;
+  border: 1px solid color-mix(in srgb,var(--blue) 35%,#294662);
+  background: color-mix(in srgb,var(--blue) 21%,#102035);
 }
 #red-side .rolebox {
-  background: #542a3a;
-  border-color: #704152;
+  background: color-mix(in srgb,var(--red) 22%,#2b1828);
+  border-color: color-mix(in srgb,var(--red) 35%,#704152);
 }
 .role-icon {
   display: block;
@@ -189,8 +189,8 @@ html, body {
   overflow: hidden;
   padding: 18px 12px;
   background: #0d1625;
-  border-left: 1px solid #254f78;
-  border-right: 1px solid #7e3449;
+  border-left: 1px solid var(--blue);
+  border-right: 1px solid var(--red);
 }
 .middle::before, .middle::after { display: none; }
 #build-tournament-logo {
