@@ -1,4 +1,4 @@
-/* Reference-based tournament build graphic: six items, hero, gold, center title.
+/* Reference-based tournament build graphic: six items, hero and center title.
    OBS canvas stays transparent at 1920x1080. No battle spells or extra UI. */
 :root{
   --red:#ed2838;
@@ -27,11 +27,11 @@ html, body{
 }
 .buildbox{
   position:relative;
-  width:1020px;
+  width:836px;
   height:255px;
   padding:9px 20px 15px;
   display:grid;
-  grid-template-columns:422px 136px 422px;
+  grid-template-columns:330px 136px 330px;
   align-items:start;
   background:linear-gradient(90deg,#ed2938 0%,#b7192e 46%,#a9152a 54%,#ee2538 100%);
   border-top:3px solid #f53644;
@@ -68,10 +68,10 @@ html, body{
   align-items:center;
 }
 #blue-side .player{
-  grid-template-columns:repeat(6,45px) 45px 93px;
+  grid-template-columns:repeat(6,45px) 45px;
 }
 #red-side .player{
-  grid-template-columns:93px 45px repeat(6,45px);
+  grid-template-columns:45px repeat(6,45px);
 }
 .itembox{
   width:45px;
@@ -95,36 +95,6 @@ html, body{
   object-fit:cover;
   margin:0;
 }
-.gold{
-  height:45px;
-  min-width:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:7px;
-  background:#09090d;
-  font-family:Impact,"Arial Narrow",Arial,sans-serif;
-  font-weight:800;
-  font-size:17px;
-  letter-spacing:.1px;
-  font-variant-numeric:tabular-nums;
-  white-space:nowrap;
-}
-.gold::after{
-  content:"$";
-  display:grid;
-  place-items:center;
-  width:16px;
-  height:16px;
-  flex:0 0 16px;
-  font-size:12px;
-  font-family:Arial,sans-serif;
-  font-weight:900;
-  color:#09090d;
-  background:#f5f5f5;
-  clip-path:polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
-}
-#red-side .gold{flex-direction:row-reverse}
 .middle{
   width:136px;
   height:230px;
