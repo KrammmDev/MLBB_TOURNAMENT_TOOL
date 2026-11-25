@@ -2,12 +2,14 @@
    Uses the existing versioned Broadcast Colors API and a preview-only iframe. */
 (() => {
   "use strict";
-  const defaults = { left: "#258be0", right: "#e34e62" };
+  const defaults = { left: "#258be0", right: "#e34e62", background: "#0b1220", text: "#f3f6fa" };
   const node = id => document.getElementById(id);
   const preview = node("equipment-color-preview");
   const controls = {
     left: [node("equipment-blue-color"), node("equipment-blue-hex")],
-    right: [node("equipment-red-color"), node("equipment-red-hex")]
+    right: [node("equipment-red-color"), node("equipment-red-hex")],
+    background: [node("equipment-background-color"), node("equipment-background-hex")],
+    text: [node("equipment-text-color"), node("equipment-text-hex")]
   };
   let colors = { ...defaults }, saved = { ...defaults };
   let revision = null, busy = false;
@@ -16,7 +18,7 @@
     node("equipment-color-status").textContent = text;
     node("equipment-color-status").dataset.error = String(error);
   };
-  const isDirty = () => colors.left !== saved.left || colors.right !== saved.right;
+  const isDirty = () => Object.keys(defaults).some(field => colors[field] !== saved[field]);
   function buttons() {
     const invalid = Object.values(controls).some(pair => !valid(pair[1].value));
     for (const pair of Object.values(controls))
@@ -26,7 +28,7 @@
     node("equipment-reload").disabled = busy;
   }
   function show() {
-    for (const side of ["left", "right"]) {
+    for (const side of Object.keys(defaults)) {
       controls[side][0].value = colors[side];
       controls[side][1].value = colors[side];
     }
@@ -68,7 +70,9 @@
       const palette = data.data.palettes?.classic?.equipment || {};
       saved = {
         left: valid(palette.left) ? palette.left.toLowerCase() : defaults.left,
-        right: valid(palette.right) ? palette.right.toLowerCase() : defaults.right
+        right: valid(palette.right) ? palette.right.toLowerCase() : defaults.right,
+        background: valid(palette.background) ? palette.background.toLowerCase() : defaults.background,
+        text: valid(palette.text) ? palette.text.toLowerCase() : defaults.text
       };
       revision = data.revision;
       colors = { ...saved };
@@ -88,7 +92,7 @@
   });
   node("equipment-colors-form").addEventListener("submit", async event => {
     event.preventDefault();
-    if (busy || !revision || !isDirty() || !valid(colors.left) || !valid(colors.right)) return;
+    if (busy || !revision || !isDirty() || Object.values(colors).some(value => !valid(value))) return;
     busy = true;
     buttons();
     try {
