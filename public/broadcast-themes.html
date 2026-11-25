@@ -142,6 +142,35 @@
               Loading color settings…
             </p>
           </section>
+          <section class="color-settings" aria-labelledby="equipment-colors-title">
+            <div class="color-heading">
+              <h2 id="equipment-colors-title">In-game equipment colors</h2>
+              <strong>Build overlay</strong>
+            </div>
+            <p>Change the Blue and Red accent lines, role panels and animated shine on <a href="/builds.html" target="_blank" rel="noopener">builds.html</a>. Saved separately from Draft and Scoreboard colors.</p>
+            <form id="equipment-colors-form">
+              <div class="color-fields">
+                <div class="color-field">
+                  <label for="equipment-blue-color">Blue team accent</label>
+                  <div class="color-inputs"><input id="equipment-blue-color" type="color" value="#258be0" aria-label="Blue equipment accent"><input id="equipment-blue-hex" type="text" maxlength="7" pattern="#[0-9a-fA-F]{6}" value="#258be0" required aria-label="Blue accent hex"></div>
+                </div>
+                <div class="color-field">
+                  <label for="equipment-red-color">Red team accent</label>
+                  <div class="color-inputs"><input id="equipment-red-color" type="color" value="#e34e62" aria-label="Red equipment accent"><input id="equipment-red-hex" type="text" maxlength="7" pattern="#[0-9a-fA-F]{6}" value="#e34e62" required aria-label="Red accent hex"></div>
+                </div>
+              </div>
+              <div class="color-actions">
+                <button id="equipment-save" type="submit" disabled>Save equipment colors</button>
+                <button id="equipment-reset" type="button" class="secondary" disabled>Default colors</button>
+                <button id="equipment-reload" type="button" class="secondary">Reload colors</button>
+              </div>
+            </form>
+            <p id="equipment-color-status" role="status" aria-live="polite">Loading equipment colors…</p>
+            <div style="width:100%;max-width:384px;height:216px;overflow:hidden;position:relative;border:1px solid #526075;background:#111827;margin-top:12px">
+              <iframe id="equipment-color-preview" title="Equipment colors preview" src="/builds.html" style="width:1920px;height:1080px;border:0;position:absolute;top:0;left:0;transform:scale(.2);transform-origin:top left" loading="lazy"></iframe>
+            </div>
+            <small>Preview only until Save. The live OBS source updates after saving.</small>
+          </section>
           <section
             id="broadcast-branding"
             class="sponsor-settings"
@@ -325,6 +354,7 @@
     <script src="/script/ocr-background-control.js"></script>
     <script src="/script/scoreboard-background-control.js"></script>
     <script src="/script/broadcast-color-control.js"></script>
+    <script src="/script/equipment-color-control.js"></script>
     <script src="/script/scoreboard-branding-control.js"></script>
     <script src="/script/sponsor-control.js"></script>
     <script src="/script/caster-control.js"></script>
