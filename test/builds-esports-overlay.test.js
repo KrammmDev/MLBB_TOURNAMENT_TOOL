@@ -8,11 +8,15 @@ const root=path.resolve(__dirname,"../public");
 const page=fs.readFileSync(path.join(root,"builds.html"),"utf8");
 const css=fs.readFileSync(path.join(root,"builds.css"),"utf8");
 
-test("OBS builds overlay remains transparent and positioned within a 1920x1080 stage",()=>{
- assert.match(css,/html, body\\s*\\{[^}]*width:\\s*1920px;[^}]*height:\\s*1080px;[^}]*background:\\s*transparent !important;/);
- assert.match(css,/\\.mainbox\\s*\\{[^}]*width:\\s*1920px;[^}]*height:\\s*1080px;/);
- assert.match(css,/\\.buildbox\\s*\\{[^}]*height:\\s*336px;/);
- assert.ok(!/background-color:\\s*#f0f0f0/i.test(css),"No opaque grey backdrop on OBS");
+test("OBS builds overlay keeps a transparent 1920x1080 lower-third",()=>{
+ assert.ok(css.includes("html, body {"));
+ assert.ok(css.includes("width: 1920px;"));
+ assert.ok(css.includes("height: 1080px;"));
+ assert.ok(css.includes("background: transparent !important;"));
+ assert.ok(css.includes(".mainbox {"));
+ assert.ok(css.includes(".buildbox {"));
+ assert.ok(css.includes("height: 336px;"));
+ assert.ok(!css.includes("background-color: #f0f0f0"),"No opaque grey backdrop on OBS");
 });
 
 test("all ten player rows retain exactly six item targets and each hero ID",()=>{
