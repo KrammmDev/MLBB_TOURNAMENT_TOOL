@@ -55,3 +55,16 @@ test("reference layout has 60 equipment slots, ten portraits, no gold and no spe
  assert.ok(!page.includes('battleSpell'));
  assert.ok(css.includes(".recognized-spell{display:none !important}"));
 });
+
+test("blue left / red right equipment palette with neutral center",()=>{
+ assert.ok(css.includes("--blue:#1177d8;"));
+ assert.ok(css.includes("--red:#ed2838;"));
+ assert.ok(css.includes("#blue-side .player{"));
+ assert.ok(css.includes("background:#073a75;"));
+ assert.ok(css.includes("#red-side .player{"));
+ assert.ok(css.includes("background:#710c1f;"));
+ assert.ok(css.includes("#red-side .itembox{border-color:var(--red-edge)}"));
+ assert.ok(css.includes("#red-side .image-box{border-color:var(--red-edge)}"));
+ assert.ok(css.includes("border-left:2px solid var(--blue-edge);"));
+ assert.ok(css.includes("border-right:2px solid var(--red-edge);"));
+});
