@@ -8,14 +8,14 @@ const root=path.resolve(__dirname,"../public");
 const page=fs.readFileSync(path.join(root,"builds.html"),"utf8");
 const css=fs.readFileSync(path.join(root,"builds.css"),"utf8");
 
-test("OBS builds overlay keeps a transparent 1920x1080 lower-third",()=>{
+test("OBS builds overlay keeps a transparent 1920x1080 compact equipment strip",()=>{
  assert.ok(css.includes("html, body {"));
  assert.ok(css.includes("width: 1920px;"));
  assert.ok(css.includes("height: 1080px;"));
  assert.ok(css.includes("background: transparent !important;"));
  assert.ok(css.includes(".mainbox {"));
  assert.ok(css.includes(".buildbox {"));
- assert.ok(css.includes("height: 336px;"));
+ assert.ok(css.includes("height: 256px;"));
  assert.ok(!css.includes("background-color: #f0f0f0"),"No opaque grey backdrop on OBS");
 });
 
@@ -42,4 +42,16 @@ test("existing recognition and match renderer scripts stay loaded",()=>{
  assert.ok(css.includes("#red-side::before"));
  assert.ok(css.includes(".player > .itembox"));
  assert.ok(css.includes(".hero .recognized-spell"));
+});
+
+test("compact tournament overlay has no oversized dashboard card decoration",()=>{
+ assert.ok(css.includes("width: 774px;"),"keep equipment panel compact");
+ assert.ok(css.includes("height: 256px;"),"lower-third stays shallow");
+ assert.ok(css.includes("clip-path: polygon("),"keep angular esports frame");
+ assert.ok(css.includes('content: "ITEM";'));
+ assert.ok(css.includes('content: "BUILD";'));
+ assert.ok(!css.includes('content: "EQUIPMENT";'),"avoid extra center badge");
+ assert.ok(css.includes("background-size: contain;"),"item artwork must not be cropped or zoomed");
+ assert.ok(css.includes("var(--blue-edge)"));
+ assert.ok(css.includes("var(--red-edge)"));
 });
