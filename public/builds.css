@@ -48,8 +48,29 @@ html, body {
   width: 4px;
   pointer-events: none;
 }
-.buildbox::before { left: 0; background: var(--blue); }
-.buildbox::after { right: 0; background: var(--red); }
+/* Restrained travelling highlight on the existing team accent lines. */
+.buildbox::before {
+  left: 0;
+  background: linear-gradient(180deg,#258be0 0%,#258be0 36%,#c7efff 50%,#258be0 64%,#258be0 100%);
+  background-size: 100% 260%;
+  animation: equipment-blue-shine 5.5s linear infinite;
+  box-shadow: 0 0 6px rgba(37,139,224,.45);
+}
+.buildbox::after {
+  right: 0;
+  background: linear-gradient(180deg,#e34e62 0%,#e34e62 36%,#ffe0e5 50%,#e34e62 64%,#e34e62 100%);
+  background-size: 100% 260%;
+  animation: equipment-red-shine 5.5s linear infinite;
+  box-shadow: 0 0 6px rgba(227,78,98,.45);
+}
+@keyframes equipment-blue-shine {
+  from { background-position: 0 -160%; }
+  to   { background-position: 0 160%; }
+}
+@keyframes equipment-red-shine {
+  from { background-position: 0 -160%; }
+  to   { background-position: 0 160%; }
+}
 .equipment-heading {
   position: absolute;
   top: -36px;
@@ -91,11 +112,13 @@ html, body {
   grid-template-columns: repeat(6,var(--slot)) var(--role) var(--portrait);
   border-left: 3px solid var(--blue);
   background: #10243c;
+  box-shadow: inset 2px 0 5px rgba(37,139,224,.16);
 }
 #red-side .player {
   grid-template-columns: var(--portrait) var(--role) repeat(6,var(--slot));
   border-right: 3px solid var(--red);
   background: #301b29;
+  box-shadow: inset -2px 0 5px rgba(227,78,98,.16);
 }
 .itembox {
   width: var(--slot);
@@ -184,3 +207,8 @@ html, body {
   color: #d3dbe7;
 }
 .recognized-spell { display: none !important; }
+
+/* Accessible static highlights when reduced motion is requested. */
+@media (prefers-reduced-motion: reduce) {
+  .buildbox::before, .buildbox::after { animation: none; background-position: center; }
+}
