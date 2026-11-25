@@ -4,6 +4,8 @@
 :root {
   --blue: #258be0;
   --red: #e34e62;
+  --equipment-bg: #0b1220;
+  --equipment-text: #f3f6fa;
   --slot: 43px;
   --portrait: 60px;
   --role: 57px;
@@ -17,7 +19,7 @@ html, body {
   margin: 0;
   overflow: hidden;
   background: transparent !important;
-  color: #f3f6fa;
+  color: var(--equipment-text);
   font-family: "Segoe UI", Arial, sans-serif;
 }
 .mainbox {
@@ -35,7 +37,7 @@ html, body {
   width: 1008px;
   height: 325px;
   padding: 15px 16px 16px;
-  background: #0b1220;
+  background: var(--equipment-bg);
   border: 1px solid #667080;
   border-top: 2px solid #a1aab4;
   box-shadow: 0 4px 13px rgba(0,0,0,.32);
@@ -78,10 +80,10 @@ html, body {
   transform: translateX(-50%);
   min-width: 290px;
   padding: 8px 22px 9px;
-  background: #121b2a;
+  background: color-mix(in srgb,var(--equipment-bg) 82%,#35425a);
   border: 1px solid #6b7688;
   border-bottom: 2px solid #a4afbc;
-  color: #eff3f8;
+  color: var(--equipment-text);
   text-align: center;
   white-space: nowrap;
   font-family: "Arial Narrow", "Segoe UI", Arial, sans-serif;
@@ -111,13 +113,13 @@ html, body {
 #blue-side .player {
   grid-template-columns: repeat(6,var(--slot)) var(--role) var(--portrait);
   border-left: 3px solid var(--blue);
-  background: #10243c;
+  background: color-mix(in srgb,var(--equipment-bg) 70%,var(--blue));
   box-shadow: inset 2px 0 5px color-mix(in srgb,var(--blue) 16%,transparent);
 }
 #red-side .player {
   grid-template-columns: var(--portrait) var(--role) repeat(6,var(--slot));
   border-right: 3px solid var(--red);
-  background: #301b29;
+  background: color-mix(in srgb,var(--equipment-bg) 73%,var(--red));
   box-shadow: inset -2px 0 5px color-mix(in srgb,var(--red) 16%,transparent);
 }
 .itembox {
@@ -188,7 +190,7 @@ html, body {
   height: 288px;
   overflow: hidden;
   padding: 18px 12px;
-  background: #0d1625;
+  background: color-mix(in srgb,var(--equipment-bg) 90%,#263855);
   border-left: 1px solid var(--blue);
   border-right: 1px solid var(--red);
 }
@@ -206,7 +208,7 @@ html, body {
   font: 700 15px/1.4 "Segoe UI", Arial, sans-serif;
   text-align: center;
   letter-spacing: 1px;
-  color: #d3dbe7;
+  color: var(--equipment-text);
 }
 .recognized-spell { display: none !important; }
 
