@@ -179,3 +179,37 @@ test("legacy palettes migrate once; draft and scoreboard saves/resets remain ind
   );
   assert.equal(store.snapshot().data.palettes.classic.draft.left, "#112233");
 });
+
+test("equipment color palette persists independently from scoreboard and draft", async () => {
+  const model = require("../public/script/broadcast-color-model");
+  const store = createColorStore({ persist: async () => {} });
+  assert.ok(model.validScope("classic", "equipment"));
+  assert.equal(model.defaults.equipment.classic.left, "#258be0");
+  await store.save("classic", "equipment", { left: "#ffcc22", right: "#6633aa" }, store.snapshot().revision);
+  await store.save("classic", "scoreboard", { left: "#ffffff" }, store.snapshot().revision);
+  assert.deepEqual(store.snapshot().data.palettes.classic.equipment, {
+    left: "#ffcc22", right: "#6633aa"
+  });
+  assert.deepEqual(store.snapshot().data.palettes.classic.scoreboard, { left: "#ffffff" });
+  await store.save("classic", "equipment", {}, store.snapshot().revision);
+  assert.deepEqual(store.snapshot().data.palettes.classic.equipment, {});
+  assert.equal(store.snapshot().data.palettes.classic.scoreboard.left, "#ffffff");
+});
+
+test("equipment color controls are present in Broadcast Themes and wired into builds", async () => {
+  const dir = path.join(__dirname, "../public");
+  const themePage = await fs.readFile(path.join(dir, "broadcast-themes.html"), "utf8");
+  const buildsPage = await fs.readFile(path.join(dir, "builds.html"), "utf8");
+  const style = await fs.readFile(path.join(dir, "builds.css"), "utf8");
+  const editor = await fs.readFile(path.join(dir, "script/equipment-color-control.js"), "utf8");
+  const client = await fs.readFile(path.join(dir, "script/builds-color-client.js"), "utf8");
+  assert.match(themePage, /id="equipment-blue-color"/);
+  assert.match(themePage, /id="equipment-red-color"/);
+  assert.match(themePage, /src="\/builds.html"/);
+  assert.match(themePage, /equipment-color-control.js/);
+  assert.match(buildsPage, /builds-color-client.js/);
+  assert.match(editor, /output: "equipment"/);
+  assert.match(client, /equipment-colors-preview/);
+  assert.match(style, /var\(--blue\)/);
+  assert.match(style, /var\(--red\)/);
+});
