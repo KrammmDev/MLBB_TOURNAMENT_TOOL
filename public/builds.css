@@ -70,7 +70,7 @@ html, body {
 /* Hero portrait strips are intentionally placed outside the equipment lanes. */
 .side {
   min-width: 0;
-  height: 292px;
+  height: 297px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -78,8 +78,8 @@ html, body {
 }
 .buildbox > .side:first-child,
 .buildbox > .side:last-child {
-  padding-top: 38px;
-  gap: 5px;
+  padding-top: 32px;
+  gap: 6px;
 }
 .hero {
   position: relative;
@@ -120,7 +120,7 @@ html, body {
 #blue-side, #red-side {
   position: relative;
   gap: 6px;
-  padding-top: 38px;
+  padding-top: 32px;
 }
 #blue-side::before, #red-side::before {
   position: absolute;
@@ -188,7 +188,7 @@ html, body {
 #middle {
   position: relative;
   width: 144px;
-  height: 292px;
+  height: 297px;
   align-self: end;
   display: flex;
   flex-direction: column;
