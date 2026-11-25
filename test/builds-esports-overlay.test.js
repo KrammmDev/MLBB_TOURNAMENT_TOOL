@@ -14,7 +14,7 @@ test("OBS keeps a transparent 1920x1080 layout with tournament equipment heading
   assert.match(css, /height:\s*1080px/);
   assert.match(css, /background:\s*transparent\s*!important/);
   assert.match(page, /IN-GAME EQUIPMENT/);
-  assert.match(css, /grid-template-columns:\s*760px 280px 760px/);
+  assert.match(css, /grid-template-columns:\s*400px 176px 400px/);
 });
 
 test("all player identifiers, item slots and hero portraits remain intact", () => {
@@ -81,4 +81,11 @@ test("role logo is the existing lane PNG and sits between items and hero on blue
     assert.ok(body.indexOf('id="image-box-' + num + '"') < body.indexOf('id="build-role-' + num + '"'));
     assert.ok(body.indexOf('id="build-role-' + num + '"') < body.indexOf('id="item6"'));
   }
+});
+
+test("clean broadcast styling avoids ornamental glow and keeps lane icons legible", () => {
+  assert.match(css, /filter: brightness\(0\) invert\(1\)/);
+  assert.match(css, /\.middle::before, \.middle::after \{ display: none; \}/);
+  assert.doesNotMatch(css, /text-shadow|clip-path|radial-gradient/);
+  assert.match(css, /background: #0b1220;/);
 });
