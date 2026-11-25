@@ -1,207 +1,151 @@
-/* Compact international-tournament-inspired MLBB equipment lower-third.
-   Original esports visual language, not official MPL/M-Series artwork.
-   Keep the 1920x1080 transparent browser source and all legacy slot IDs. */
-:root {
-  color-scheme: dark;
-  --blue-edge: #5daee6;
-  --red-edge: #eb7892;
-  --metal: #a9b5c5;
-  --ink: #edf2f8;
-  --panel: rgba(10, 17, 29, .94);
+/* Reference-based tournament build graphic: six items, hero, gold, center title.
+   OBS canvas stays transparent at 1920x1080. No battle spells or extra UI. */
+:root{
+  --red:#ed2838;
+  --red-dark:#8c0e1e;
+  --edge:#a81223;
+  --cell:45px;
+  --row:45px;
 }
-* { box-sizing: border-box; }
-html, body {
-  width: 1920px;
-  height: 1080px;
-  margin: 0;
-  overflow: hidden;
-  background: transparent !important;
-  font-family: "Arial Narrow", "Segoe UI Condensed", "Segoe UI", Arial, sans-serif;
-  color: var(--ink);
+*{box-sizing:border-box}
+html, body{
+  margin:0;
+  width:1920px;
+  height:1080px;
+  overflow:hidden;
+  background:transparent !important;
+  font-family:Impact,"Arial Narrow","Segoe UI Condensed",Arial,sans-serif;
+  color:white;
 }
-.mainbox {
-  width: 1920px;
-  height: 1080px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  padding-bottom: 34px;
+.mainbox{
+  width:1920px;
+  height:1080px;
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+  padding-bottom:34px;
 }
-/* Remove the previous oversized dashboard-card silhouette.
-   Narrow angled wings are inspired by tournament broadcast stat rails. */
-.buildbox {
-  position: relative;
-  isolation: isolate;
-  display: grid;
-  grid-template-columns: 39px 251px 82px 251px 39px;
-  gap: 5px;
-  justify-content: center;
-  align-items: end;
-  width: 774px;
-  height: 256px;
-  padding: 9px 13px 10px;
-  border: 0;
-  border-radius: 0;
-  clip-path: polygon(15px 0, calc(100% - 15px) 0, 100% 16px,
-    100% calc(100% - 13px), calc(100% - 13px) 100%,
-    13px 100%, 0 calc(100% - 13px), 0 13px);
-  background:
-    linear-gradient(90deg, rgba(54, 120, 171, .11) 0, transparent 35%, transparent 65%, rgba(181, 56, 88, .1) 100%),
-    linear-gradient(180deg, rgba(28, 37, 53, .98), var(--panel) 18%, rgba(5, 11, 21, .97));
-  box-shadow: inset 0 1px rgba(227, 236, 248, .3), inset 0 -1px rgba(160, 177, 202, .22);
+.buildbox{
+  position:relative;
+  width:1020px;
+  height:255px;
+  padding:9px 20px 15px;
+  display:grid;
+  grid-template-columns:422px 136px 422px;
+  align-items:start;
+  background:linear-gradient(90deg,#ed2938 0%,#b7192e 46%,#a9152a 54%,#ee2538 100%);
+  border-top:3px solid #f53644;
+  border-bottom:5px solid #fb2c3c;
+  box-shadow:0 2px 0 rgba(0,0,0,.5);
 }
-.buildbox::before {
-  content: "";
-  pointer-events: none;
-  position: absolute;
-  left: 10px;
-  right: 10px;
-  top: 0;
-  height: 3px;
-  background: linear-gradient(90deg,
-    var(--blue-edge) 0 38%, #d9dfe8 48%, #d9dfe8 52%, var(--red-edge) 62% 100%);
-  opacity: .85;
+.buildbox::before,.buildbox::after{
+  content:"";
+  position:absolute;
+  width:3px;
+  height:100%;
+  top:0;
+  background:#ef293b;
 }
-.buildbox::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  pointer-events: none;
-  inset: 3px 3px 3px;
-  border: 1px solid rgba(187, 205, 230, .18);
-  clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px,
-    100% calc(100% - 12px), calc(100% - 12px) 100%,
-    12px 100%, 0 calc(100% - 12px), 0 12px);
+.buildbox::before{left:0}
+.buildbox::after{right:0}
+.side{
+  height:230px;
+  display:flex;
+  flex-direction:column;
+  justify-content:start;
+  gap:1px;
+  padding:0;
+  min-width:0;
 }
-/* All four row columns have precisely equal baselines. */
-.side {
-  height: 233px;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 4px;
-  padding-top: 29px;
+.player{
+  display:grid;
+  height:45px;
+  min-height:45px;
+  margin:0;
+  padding:0;
+  gap:2px;
+  background:#6a0916;
+  align-items:center;
 }
-.hero {
-  width: 39px;
-  height: 36px;
-  flex: 0 0 36px;
-  position: relative;
-  margin: 0;
+#blue-side .player{
+  grid-template-columns:repeat(6,45px) 45px 93px;
 }
-.image-box {
-  width: 36px;
-  height: 36px;
-  position: relative;
-  overflow: visible;
-  border: 1px solid rgba(195, 207, 228, .55);
-  background: #0c1727;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+#red-side .player{
+  grid-template-columns:93px 45px repeat(6,45px);
 }
-.buildbox > .side:last-child .image-box {
-  margin-left: 3px;
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%);
+.itembox{
+  width:45px;
+  height:45px;
+  border:2px solid var(--edge);
+  border-radius:0;
+  background-color:#f2f2f2;
+  background-position:center;
+  background-repeat:no-repeat;
+  background-size:contain;
+  box-shadow:none;
+  transform:none;
+  scale:1;
 }
-.hero img:not(.recognized-spell) {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  margin: 0;
+.hero{height:45px;width:45px;min-width:45px;margin:0}
+.image-box{height:45px;width:45px;overflow:hidden;background:#17181e}
+.image-box img:not(.recognized-spell){
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  margin:0;
 }
-/* Existing spell overlay is inserted into hero containers by the recognition bridge. */
-.hero .recognized-spell {
-  border: 1px solid rgba(233, 240, 249, .8);
-  border-radius: 3px;
-  background: #08111c;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, .75);
+.gold{
+  height:45px;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  background:#09090d;
+  font-family:Impact,"Arial Narrow",Arial,sans-serif;
+  font-weight:800;
+  font-size:17px;
+  letter-spacing:.1px;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
 }
-/* Small tournament-style top labels, never a large standalone card header. */
-#blue-side, #red-side { position: relative; }
-#blue-side::before, #red-side::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 24px;
-  padding: 0 9px;
-  display: flex;
-  align-items: center;
-  font-size: 11px;
-  letter-spacing: 2px;
-  font-weight: 900;
-  line-height: 1;
-  color: #d9e5f3;
-  border-bottom: 1px solid rgba(188, 204, 225, .4);
+.gold::after{
+  content:"$";
+  display:grid;
+  place-items:center;
+  width:16px;
+  height:16px;
+  flex:0 0 16px;
+  font-size:12px;
+  font-family:Arial,sans-serif;
+  font-weight:900;
+  color:#09090d;
+  background:#f5f5f5;
+  clip-path:polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
 }
-#blue-side::before {
-  content: "BLUE";
-  border-left: 3px solid var(--blue-edge);
-  background: linear-gradient(90deg, rgba(62, 144, 202, .26), transparent 90%);
+#red-side .gold{flex-direction:row-reverse}
+.middle{
+  width:136px;
+  height:230px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:0;
+  padding-top:22px;
+  background:linear-gradient(146deg,#e72c42 0%,#8e1628 64%,#f01832 100%);
+  border-left:2px solid rgba(0,0,0,.4);
+  border-right:2px solid rgba(0,0,0,.4);
+  font-family:Impact,"Arial Narrow",Arial,sans-serif;
+  font-weight:900;
+  font-stretch:condensed;
+  letter-spacing:0;
+  font-size:43px;
+  line-height:.93;
+  text-align:center;
+  text-shadow:0 2px 0 rgba(0,0,0,.25);
 }
-#red-side::before {
-  content: "RED";
-  justify-content: flex-end;
-  border-right: 3px solid var(--red-edge);
-  background: linear-gradient(270deg, rgba(195, 75, 101, .25), transparent 90%);
-}
-.player {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  width: 251px;
-  height: 36px;
-  min-height: 36px;
-  padding: 0 4px;
-  margin: 0;
-  background: linear-gradient(180deg, rgba(65, 76, 94, .36), rgba(12, 21, 35, .3));
-  border-top: 1px solid rgba(180, 199, 224, .14);
-  border-bottom: 1px solid rgba(180, 199, 224, .13);
-}
-#blue-side .player { border-left: 2px solid rgba(83, 167, 222, .85); }
-#red-side .player { border-right: 2px solid rgba(233, 112, 145, .85); }
-.player > .itembox {
-  width: 36px;
-  height: 34px;
-  flex: 0 0 36px;
-  background-color: #090f18;
-  background-position: center;
-  background-size: contain;
-  background-repeat: no-repeat;
-  border: 1px solid rgba(173, 186, 207, .25);
-  border-radius: 0;
-  box-shadow: none;
-  transform: none;
-}
-/* Avoid any big central dashboard logo—only a slim central scoring spine. */
-#middle {
-  position: relative;
-  width: 82px;
-  height: 233px;
-  align-self: end;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
-#middle::before {
-  content: "ITEM";
-  font-size: 14px;
-  font-weight: 900;
-  letter-spacing: 2px;
-  line-height: 1;
-  color: #e5e9ee;
-  text-shadow: 0 1px 5px rgba(0, 0, 0, .7);
-}
-#middle::after {
-  content: "BUILD";
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 2.6px;
-  line-height: 1;
-  color: var(--metal);
-}
+.middle span{display:block}
+.middle span:last-child{font-size:47px}
+.recognized-spell{display:none !important}
