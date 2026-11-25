@@ -7,7 +7,7 @@
   --slot: 82px;
   --portrait: 96px;
   --role: 126px;
-  --row: 100px;
+  --row: 99px;
 }
 * { box-sizing: border-box; }
 html, body {
@@ -72,7 +72,7 @@ html, body {
 .side {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 1px;
   min-width: 0;
   height: 504px;
 }
